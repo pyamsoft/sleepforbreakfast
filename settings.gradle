@@ -1,0 +1,17 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "SleepForBreakfast"
+include ':app'
+include ':core'
+include ':db'
+include ':db-room'
+include ':ui'
+include ':main'
+include ':home'
+include ':transactions'
