@@ -65,7 +65,9 @@ internal constructor(
       offerUndo: Boolean,
   ) {
     val s = state
-    s.transactions.update { list -> list.filterNot { it.id == transaction.id } }
+    s.transactions.update { list ->
+      list.filterNot { it.id == transaction.id }.sortedByDescending { it.date }
+    }
 
     if (offerUndo) {
       Timber.d("Offer undo on transaction delete: $transaction")
@@ -75,12 +77,12 @@ internal constructor(
 
   private fun handleTransactionUpdated(transaction: DbTransaction) {
     state.transactions.update { list ->
-      list.map { if (it.id == transaction.id) transaction else it }
+      list.map { if (it.id == transaction.id) transaction else it }.sortedByDescending { it.date }
     }
   }
 
   private fun handleTransactionInserted(transaction: DbTransaction) {
-    state.transactions.update { it + transaction }
+    state.transactions.update { list -> (list + transaction).sortedByDescending { it.date } }
   }
 
   override fun registerSaveState(

@@ -26,6 +26,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbModule
 import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
 import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
+import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
 import dagger.BindsInstance
@@ -50,6 +51,8 @@ import javax.inject.Singleton
 internal interface BreakfastComponent {
 
   fun inject(application: SleepForBreakfast)
+
+  fun inject(service: SpendingTrackerService)
 
   @CheckResult fun plusMainComponent(): MainComponent.Factory
 
