@@ -18,46 +18,45 @@ apply plugin: "com.android.library"
 
 //noinspection GroovyMissingReturnStatement
 android {
-    namespace "com.pyamsoft.sleepforbreakfast.worker"
+  namespace "com.pyamsoft.sleepforbreakfast.worker"
 
-    compileSdkVersion rootProject.ext.compileSdk
+  compileSdkVersion rootProject.ext.compileSdk
 
-    //noinspection GroovyMissingReturnStatement
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdk
-        targetSdkVersion rootProject.ext.targetSdk
-        resConfigs 'en'
+  //noinspection GroovyMissingReturnStatement
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdk
+    targetSdkVersion rootProject.ext.targetSdk
+    resConfigs 'en'
+  }
 
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    // Flag to enable support for the new language APIs
+    coreLibraryDesugaringEnabled true
+  }
 
-        // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled true
-    }
+  kotlinOptions {
+    jvmTarget = "11"
+  }
 
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+  buildFeatures {
+    compose true
+    buildConfig false
+  }
 
-    buildFeatures {
-        compose true
-        buildConfig false
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion "$compose_compiler_version"
-    }
+  composeOptions {
+    kotlinCompilerExtensionVersion "$compose_compiler_version"
+  }
 }
 
 dependencies {
-    kapt "com.google.dagger:dagger-compiler:$dagger"
+  kapt "com.google.dagger:dagger-compiler:$dagger"
 
-    api "androidx.work:work-runtime:$workmanager"
-    api "androidx.work:work-runtime-ktx:$workmanager"
+  api "androidx.work:work-runtime:$workmanager"
+  api "androidx.work:work-runtime-ktx:$workmanager"
 
-    implementation project(':db')
-    implementation project(':worker')
+  implementation project(':db')
+  implementation project(':worker')
 }

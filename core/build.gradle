@@ -18,50 +18,50 @@ apply plugin: "com.android.library"
 
 //noinspection GroovyMissingReturnStatement
 android {
-    namespace "com.pyamsoft.sleepforbreakfast.core"
+  namespace "com.pyamsoft.sleepforbreakfast.core"
 
-    compileSdkVersion rootProject.ext.compileSdk
+  compileSdkVersion rootProject.ext.compileSdk
 
-    //noinspection GroovyMissingReturnStatement
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdk
-        targetSdkVersion rootProject.ext.targetSdk
+  //noinspection GroovyMissingReturnStatement
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdk
+    targetSdkVersion rootProject.ext.targetSdk
 
-        resConfigs "en"
-    }
+    resConfigs "en"
+  }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
 
-        // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled true
-    }
+    // Flag to enable support for the new language APIs
+    coreLibraryDesugaringEnabled true
+  }
 
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+  kotlinOptions {
+    jvmTarget = "11"
+  }
 
-    buildFeatures {
-        buildConfig false
-    }
+  buildFeatures {
+    buildConfig false
+  }
 }
 
 dependencies {
-    kapt "com.google.dagger:dagger-compiler:$dagger"
+  kapt "com.google.dagger:dagger-compiler:$dagger"
 
-    api "com.jakewharton.timber:timber:$timber"
+  api "com.jakewharton.timber:timber:$timber"
 
-    // Compose runtime for annotations
-    api "androidx.compose.runtime:runtime:$compose_version"
+  // Compose runtime for annotations
+  api "androidx.compose.runtime:runtime:$compose_version"
 
-    // PYDroid
-    api "com.github.pyamsoft.pydroid:arch:$pydroid"
-    api "com.github.pyamsoft.pydroid:ui:$pydroid"
+  // PYDroid
+  api "com.github.pyamsoft.pydroid:arch:$pydroid"
+  api "com.github.pyamsoft.pydroid:ui:$pydroid"
 
-    // Android support library.
-    api "androidx.core:core-ktx:$core"
+  // Android support library.
+  api "androidx.core:core-ktx:$core"
 
-    // Dagger
-    api "com.google.dagger:dagger:$dagger"
+  // Dagger
+  api "com.google.dagger:dagger:$dagger"
 }

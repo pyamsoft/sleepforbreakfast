@@ -19,9 +19,9 @@ package com.pyamsoft.sleepforbreakfast.db.room.source.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
-import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
+import com.pyamsoft.sleepforbreakfast.db.source.DbSource
+import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

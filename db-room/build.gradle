@@ -18,48 +18,47 @@ apply plugin: "com.android.library"
 
 //noinspection GroovyMissingReturnStatement
 android {
-    namespace "com.pyamsoft.sleepforbreakfast.db.room"
+  namespace "com.pyamsoft.sleepforbreakfast.db.room"
 
-    compileSdkVersion rootProject.ext.compileSdk
+  compileSdkVersion rootProject.ext.compileSdk
 
-    //noinspection GroovyMissingReturnStatement
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdk
-        targetSdkVersion rootProject.ext.targetSdk
-        resConfigs 'en'
+  //noinspection GroovyMissingReturnStatement
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdk
+    targetSdkVersion rootProject.ext.targetSdk
+    resConfigs 'en'
+  }
 
-    }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_11
+    targetCompatibility JavaVersion.VERSION_11
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+    // Flag to enable support for the new language APIs
+    coreLibraryDesugaringEnabled true
+  }
 
-        // Flag to enable support for the new language APIs
-        coreLibraryDesugaringEnabled true
-    }
+  kotlinOptions {
+    jvmTarget = "11"
+  }
 
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-
-    buildFeatures {
-        buildConfig false
-    }
+  buildFeatures {
+    buildConfig false
+  }
 }
 
 room {
-    schemaLocationDir.set(file("schemas"))
+  schemaLocationDir.set(file("schemas"))
 }
 
 dependencies {
-    kapt "com.google.dagger:dagger-compiler:$dagger"
+  kapt "com.google.dagger:dagger-compiler:$dagger"
 
-    // Room
-    // Need this format for variable resolution for AGP cache plugin fix
-    implementation "androidx.room:room-runtime:${rootProject.ext.room}"
-    implementation "androidx.room:room-ktx:${rootProject.ext.room}"
-    kapt "androidx.room:room-compiler:${rootProject.ext.room}"
+  // Room
+  // Need this format for variable resolution for AGP cache plugin fix
+  implementation "androidx.room:room-runtime:${rootProject.ext.room}"
+  implementation "androidx.room:room-ktx:${rootProject.ext.room}"
+  kapt "androidx.room:room-compiler:${rootProject.ext.room}"
 
-    implementation project(':core')
-    implementation project(':db')
+  implementation project(':core')
+  implementation project(':db')
 }

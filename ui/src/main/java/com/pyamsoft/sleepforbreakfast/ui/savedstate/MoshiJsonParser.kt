@@ -9,7 +9,7 @@ import javax.inject.Singleton
 internal class MoshiJsonParser
 @Inject
 constructor(
-  @InternalApi private val moshi: Moshi,
+    @InternalApi private val moshi: Moshi,
 ) : JsonParser {
 
   override fun <T : Any> toJson(data: T): String {

@@ -19,9 +19,9 @@ package com.pyamsoft.sleepforbreakfast.db.room.automatic.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Delete
-import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
-import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

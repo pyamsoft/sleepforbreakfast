@@ -4,8 +4,8 @@ import com.pyamsoft.pydroid.core.Enforcer
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.transactions.base.CreateTransactionInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.InternalApi
+import com.pyamsoft.sleepforbreakfast.transactions.base.CreateTransactionInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionInteractor
 import javax.inject.Inject
 import javax.inject.Singleton
