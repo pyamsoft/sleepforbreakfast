@@ -16,38 +16,62 @@
 
 package com.pyamsoft.sleepforbreakfast.db.room
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.converter.DbAutomaticIdConverter
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
+import com.pyamsoft.sleepforbreakfast.db.room.converter.DayOfWeekConverter
+import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
+import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
+import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalTimeConverter
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.source.converter.DbSourceIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionCategoriesConverter
-import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 
 @Database(
     exportSchema = true,
-    version = 1,
+    version = 2,
     entities =
         [
             // Version 1
             RoomDbTransaction::class,
             RoomDbCategory::class,
             RoomDbSource::class,
+
+            // Version 2
+            RoomDbRepeat::class,
+            RoomDbAutomatic::class,
         ],
-    autoMigrations = [],
+    autoMigrations =
+        [
+            AutoMigration(from = 1, to = 2),
+        ],
 )
 @TypeConverters(
     // Version 1
     DbTransactionIdConverter::class,
     DbTransactionTypeConverter::class,
-    DbTransactionDateConverter::class,
+    LocalDateTimeConverter::class,
     DbTransactionCategoriesConverter::class,
     DbSourceIdConverter::class,
     DbCategoryIdConverter::class,
+
+    // Version 2
+    DayOfWeekConverter::class,
+    LocalTimeConverter::class,
+    LocalDateConverter::class,
+    DbRepeatIdConverter::class,
+    DbRepeatTypeConverter::class,
+    DbAutomaticIdConverter::class,
 )
 internal abstract class RoomSleepDbImpl internal constructor() : RoomDatabase(), RoomSleepDb

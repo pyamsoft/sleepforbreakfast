@@ -19,7 +19,9 @@ package com.pyamsoft.sleepforbreakfast.db.transaction
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import java.time.Clock
 import java.time.LocalDateTime
@@ -43,6 +45,10 @@ interface DbTransaction {
 
   @get:CheckResult val note: String
 
+  @get:CheckResult val repeatId: DbRepeat.Id?
+
+  @get:CheckResult val automaticId: DbAutomatic.Id?
+
   @CheckResult fun sourceId(id: DbSource.Id): DbTransaction
 
   @CheckResult fun removeSourceId(): DbTransaction
@@ -62,6 +68,10 @@ interface DbTransaction {
   @CheckResult fun type(type: Type): DbTransaction
 
   @CheckResult fun note(note: String): DbTransaction
+
+  @CheckResult fun repeatId(id: DbRepeat.Id): DbTransaction
+
+  @CheckResult fun automaticId(id: DbAutomatic.Id): DbTransaction
 
   enum class Type {
     SPEND,
@@ -87,6 +97,8 @@ interface DbTransaction {
       override val amountInCents: Long = 0,
       override val type: Type = Type.SPEND,
       override val note: String = "",
+      override val repeatId: DbRepeat.Id? = null,
+      override val automaticId: DbAutomatic.Id? = null,
   ) : DbTransaction {
     override fun sourceId(id: DbSource.Id): DbTransaction {
       return this.copy(sourceId = id)
@@ -126,6 +138,14 @@ interface DbTransaction {
 
     override fun note(note: String): DbTransaction {
       return this.copy(note = note)
+    }
+
+    override fun repeatId(id: DbRepeat.Id): DbTransaction {
+      return this.copy(repeatId = id)
+    }
+
+    override fun automaticId(id: DbAutomatic.Id): DbTransaction {
+      return this.copy(automaticId = id)
     }
   }
 

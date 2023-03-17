@@ -17,9 +17,15 @@
 package com.pyamsoft.sleepforbreakfast.db.room
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticInsertDao
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatInsertDao
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.source.dao.RoomSourceDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.source.dao.RoomSourceInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.source.dao.RoomSourceQueryDao
@@ -43,4 +49,14 @@ internal interface RoomSleepDb {
   @get:CheckResult val roomSourceQueryDao: RoomSourceQueryDao
   @get:CheckResult val roomSourceInsertDao: RoomSourceInsertDao
   @get:CheckResult val roomSourceDeleteDao: RoomSourceDeleteDao
+
+  // Repeat
+  @get:CheckResult val roomRepeatQueryDao: RoomRepeatQueryDao
+  @get:CheckResult val roomRepeatInsertDao: RoomRepeatInsertDao
+  @get:CheckResult val roomRepeatDeleteDao: RoomRepeatDeleteDao
+
+  // Automatic
+  @get:CheckResult val roomAutomaticQueryDao: RoomAutomaticQueryDao
+  @get:CheckResult val roomAutomaticInsertDao: RoomAutomaticInsertDao
+  @get:CheckResult val roomAutomaticDeleteDao: RoomAutomaticDeleteDao
 }

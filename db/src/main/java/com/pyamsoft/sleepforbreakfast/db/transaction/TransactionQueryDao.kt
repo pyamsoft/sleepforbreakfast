@@ -17,14 +17,15 @@
 package com.pyamsoft.sleepforbreakfast.db.transaction
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
 
 interface TransactionQueryDao : DbQuery<DbTransaction> {
 
-  interface Cache : DbQuery.Cache
-}
+  @CheckResult suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction>
 
-@CheckResult
-suspend fun TransactionQueryDao.queryById(id: DbTransaction.Id): DbTransaction? {
-  return this.query().firstOrNull { it.id == id }
+  interface Cache : DbQuery.Cache {
+
+    suspend fun invalidateById(id: DbTransaction.Id)
+  }
 }

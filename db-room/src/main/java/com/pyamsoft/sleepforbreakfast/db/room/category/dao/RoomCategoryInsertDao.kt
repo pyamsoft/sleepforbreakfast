@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
@@ -34,6 +35,7 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomCategoryInsertDao : CategoryInsertDao {
 
+  @Transaction
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
       withContext(context = Dispatchers.IO) {
         val roomCategory = RoomDbCategory.create(o)

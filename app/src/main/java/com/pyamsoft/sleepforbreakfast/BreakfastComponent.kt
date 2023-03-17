@@ -27,6 +27,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
 import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
+import com.pyamsoft.sleepforbreakfast.spending.SpendingAppModule
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
 import dagger.BindsInstance
@@ -46,6 +47,7 @@ import javax.inject.Singleton
             RoomModule::class,
             TransactionAppModule::class,
             UiAppModule::class,
+            SpendingAppModule::class,
         ],
 )
 internal interface BreakfastComponent {

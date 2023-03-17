@@ -21,19 +21,21 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
-import com.pyamsoft.sleepforbreakfast.db.source.SourceInsertDao
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_UPDATE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_ID_INSERT_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
+import com.pyamsoft.sleepforbreakfast.db.source.DbSource
+import com.pyamsoft.sleepforbreakfast.db.source.SourceInsertDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomSourceInsertDao : SourceInsertDao {
 
+  @Transaction
   override suspend fun insert(o: DbSource): DbInsert.InsertResult<DbSource> =
       withContext(context = Dispatchers.IO) {
         val roomSource = RoomDbSource.create(o)

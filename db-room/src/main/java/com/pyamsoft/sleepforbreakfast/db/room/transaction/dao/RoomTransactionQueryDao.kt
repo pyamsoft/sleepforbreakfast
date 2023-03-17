@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.room.transaction.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
+import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
@@ -34,4 +35,20 @@ internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
   @CheckResult
   @Query("""SELECT * FROM ${RoomDbTransaction.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
+
+  override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
+      withContext(context = Dispatchers.IO) {
+        when (val transaction = daoQueryById(id)) {
+          null -> Maybe.None
+          else -> Maybe.Data(transaction)
+        }
+      }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+  WHERE ${RoomDbTransaction.COLUMN_ID} = :id
+""")
+  internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 }

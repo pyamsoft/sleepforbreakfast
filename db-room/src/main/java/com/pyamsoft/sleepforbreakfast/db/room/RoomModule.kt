@@ -5,9 +5,15 @@ import androidx.annotation.CheckResult
 import androidx.room.Room
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.SleepDb
+import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
+import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
+import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.source.SourceDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.source.SourceInsertDao
 import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
@@ -40,6 +46,7 @@ abstract class RoomModule {
       return Room.databaseBuilder(appContext, RoomSleepDbImpl::class.java, DB_NAME).build()
     }
 
+    // DbTransaction
     @DbApi
     @Provides
     @JvmStatic
@@ -65,6 +72,7 @@ abstract class RoomModule {
       return db.roomTransactionDeleteDao
     }
 
+    // DbCategory
     @DbApi
     @Provides
     @JvmStatic
@@ -86,6 +94,7 @@ abstract class RoomModule {
       return db.roomCategoryDeleteDao
     }
 
+    // DbSource
     @DbApi
     @Provides
     @JvmStatic
@@ -105,6 +114,50 @@ abstract class RoomModule {
     @JvmStatic
     internal fun provideRoomSourceDeleteDao(@InternalApi db: RoomSleepDb): SourceDeleteDao {
       return db.roomSourceDeleteDao
+    }
+
+    // DbRepeat
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomRepeatQueryDao(@InternalApi db: RoomSleepDb): RepeatQueryDao {
+      return db.roomRepeatQueryDao
+    }
+
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomRepeatInsertDao(@InternalApi db: RoomSleepDb): RepeatInsertDao {
+      return db.roomRepeatInsertDao
+    }
+
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomRepeatDeleteDao(@InternalApi db: RoomSleepDb): RepeatDeleteDao {
+      return db.roomRepeatDeleteDao
+    }
+
+    // DbAutomatic
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomAutomaticQueryDao(@InternalApi db: RoomSleepDb): AutomaticQueryDao {
+      return db.roomAutomaticQueryDao
+    }
+
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomAutomaticInsertDao(@InternalApi db: RoomSleepDb): AutomaticInsertDao {
+      return db.roomAutomaticInsertDao
+    }
+
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomAutomaticDeleteDao(@InternalApi db: RoomSleepDb): AutomaticDeleteDao {
+      return db.roomAutomaticDeleteDao
     }
   }
 }

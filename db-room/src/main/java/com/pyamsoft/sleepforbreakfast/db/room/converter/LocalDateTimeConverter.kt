@@ -1,11 +1,11 @@
-package com.pyamsoft.sleepforbreakfast.db.room.transaction.converter
+package com.pyamsoft.sleepforbreakfast.db.room.converter
 
 import androidx.annotation.CheckResult
 import androidx.room.TypeConverter
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-internal object DbTransactionDateConverter {
+internal object LocalDateTimeConverter {
 
   @JvmStatic
   @TypeConverter

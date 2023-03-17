@@ -19,41 +19,85 @@ package com.pyamsoft.sleepforbreakfast.db.room.transaction.entity
 import androidx.annotation.CheckResult
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
+import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
+import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDateTime
 
-@Entity(tableName = RoomDbTransaction.TABLE_NAME)
+@Entity(
+    tableName = RoomDbTransaction.TABLE_NAME,
+    foreignKeys =
+        [
+            // Link DbAutomatic entries to the Transactions they create
+            ForeignKey(
+                entity = RoomDbAutomatic::class,
+                parentColumns = [RoomDbAutomatic.COLUMN_ID],
+                childColumns = [RoomDbTransaction.COLUMN_AUTOMATIC_ID],
+                onDelete = ForeignKey.CASCADE,
+            ),
+
+            // Link DbRepeat entries to the Transactions they create
+            ForeignKey(
+                entity = RoomDbRepeat::class,
+                parentColumns = [RoomDbRepeat.COLUMN_ID],
+                childColumns = [RoomDbTransaction.COLUMN_REPEAT_ID],
+                onDelete = ForeignKey.CASCADE,
+            ),
+
+            // Link DbSource entries to the Transactions they create
+            ForeignKey(
+                entity = RoomDbSource::class,
+                parentColumns = [RoomDbSource.COLUMN_ID],
+                childColumns = [RoomDbTransaction.COLUMN_SOURCE_ID],
+                onDelete = ForeignKey.CASCADE,
+            ),
+
+            // TODO Peter: How do we FK on many category IDs?
+        ],
+)
 internal data class RoomDbTransaction
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbTransaction.Id,
-    @JvmField @ColumnInfo(name = COLUMN_SOURCE_ID) val dbSourceId: DbSource.Id?,
+    @JvmField @ColumnInfo(name = COLUMN_SOURCE_ID, index = true) val dbSourceId: DbSource.Id?,
     @JvmField @ColumnInfo(name = COLUMN_CATEGORY_ID) val dbCategories: List<DbCategory.Id>,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
     @JvmField @ColumnInfo(name = COLUMN_TYPE) val dbType: DbTransaction.Type,
     @JvmField @ColumnInfo(name = COLUMN_AMOUNT_IN_CENTS) val dbAmountInCents: Long,
     @JvmField @ColumnInfo(name = COLUMN_DATE) val dbDate: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NOTE) val dbNote: String,
+    @JvmField @ColumnInfo(name = COLUMN_REPEAT_ID, index = true) val dbRepeatId: DbRepeat.Id?,
+    @JvmField
+    @ColumnInfo(name = COLUMN_AUTOMATIC_ID, index = true)
+    val dbAutomaticId: DbAutomatic.Id?,
 ) : DbTransaction {
 
-  @Ignore override val id: DbTransaction.Id = dbId
+  @Ignore override val id = dbId
 
-  @Ignore override val sourceId: DbSource.Id? = dbSourceId
+  @Ignore override val sourceId = dbSourceId
 
-  @Ignore override val categories: List<DbCategory.Id> = dbCategories
+  @Ignore override val categories = dbCategories
 
-  @Ignore override val name: String = dbName
+  @Ignore override val name = dbName
 
-  @Ignore override val type: DbTransaction.Type = dbType
+  @Ignore override val type = dbType
 
-  @Ignore override val amountInCents: Long = dbAmountInCents
+  @Ignore override val amountInCents = dbAmountInCents
 
-  @Ignore override val date: LocalDateTime = dbDate
+  @Ignore override val date = dbDate
 
-  @Ignore override val note: String = dbNote
+  @Ignore override val note = dbNote
+
+  @Ignore override val repeatId = dbRepeatId
+
+  @Ignore override val automaticId = dbAutomaticId
 
   @Ignore
   override fun sourceId(id: DbSource.Id): DbTransaction {
@@ -105,6 +149,16 @@ internal constructor(
     return this.copy(dbNote = note)
   }
 
+  @Ignore
+  override fun repeatId(id: DbRepeat.Id): DbTransaction {
+    return this.copy(dbRepeatId = id)
+  }
+
+  @Ignore
+  override fun automaticId(id: DbAutomatic.Id): DbTransaction {
+    return this.copy(dbAutomaticId = id)
+  }
+
   companion object {
 
     @Ignore internal const val TABLE_NAME = "room_transactions_table"
@@ -125,6 +179,10 @@ internal constructor(
 
     @Ignore internal const val COLUMN_NOTE = "note"
 
+    @Ignore internal const val COLUMN_REPEAT_ID = "repeat_id"
+
+    @Ignore internal const val COLUMN_AUTOMATIC_ID = "automatic_id"
+
     @Ignore
     @JvmStatic
     @CheckResult
@@ -140,6 +198,8 @@ internal constructor(
             item.amountInCents,
             item.date,
             item.note,
+            item.repeatId,
+            item.automaticId,
         )
       }
     }

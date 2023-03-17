@@ -118,6 +118,7 @@ dependencies {
     implementation project(':db-room')
     implementation project(':home')
     implementation project(':main')
+    implementation project(':spending')
     implementation project(':transactions')
     implementation project(':ui')
 }

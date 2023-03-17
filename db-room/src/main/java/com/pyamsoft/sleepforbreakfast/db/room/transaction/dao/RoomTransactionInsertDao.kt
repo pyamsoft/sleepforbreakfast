@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_UPDATE_INVALID
@@ -34,6 +35,7 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomTransactionInsertDao : TransactionInsertDao {
 
+  @Transaction
   override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> =
       withContext(context = Dispatchers.IO) {
         val roomTransaction = RoomDbTransaction.create(o)
