@@ -26,6 +26,11 @@ internal constructor(
     private val automaticInsertDao: AutomaticInsertDao,
 ) : SpendingTrackerHandler {
 
+  private fun handleProcessUnusedAutomatic(automatic: DbAutomatic) {
+    Timber.d("TODO Process unused automatic: $automatic")
+    // TODO workmanager
+  }
+
   override suspend fun processNotification(
       sbn: StatusBarNotification,
       extras: Bundle,
@@ -101,11 +106,12 @@ internal constructor(
           is DbInsert.InsertResult.Fail -> {
             Timber.e(result.error, "Failed to insert automatic $automatic")
           }
-          is DbInsert.InsertResult.Insert -> {
-            Timber.d("Inserted automatic: $automatic")
-          }
           is DbInsert.InsertResult.Update -> {
             Timber.d("Update existing automatic: $automatic")
+          }
+          is DbInsert.InsertResult.Insert -> {
+            Timber.d("Inserted automatic: $automatic")
+            handleProcessUnusedAutomatic(automatic)
           }
         }
       }
