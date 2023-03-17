@@ -41,6 +41,8 @@ interface DbAutomatic {
 
   @get:CheckResult val notificationTitle: String
 
+  @get:CheckResult val used: Boolean
+
   @CheckResult fun notificationId(id: Int): DbAutomatic
 
   @CheckResult fun notificationKey(key: String): DbAutomatic
@@ -56,6 +58,8 @@ interface DbAutomatic {
   @CheckResult fun notificationAmountInCents(amount: Long): DbAutomatic
 
   @CheckResult fun notificationTitle(title: String): DbAutomatic
+
+  @CheckResult fun consume(): DbAutomatic
 
   data class Id(@get:CheckResult val raw: String) {
 
@@ -77,6 +81,7 @@ interface DbAutomatic {
       override val notificationAmountInCents: Long = 0,
       override val notificationMatchText: String = "",
       override val notificationTitle: String = "",
+      override val used: Boolean = false,
   ) : DbAutomatic {
 
     override fun notificationId(id: Int): DbAutomatic {
@@ -109,6 +114,10 @@ interface DbAutomatic {
 
     override fun notificationTitle(title: String): DbAutomatic {
       return this.copy(notificationTitle = title)
+    }
+
+    override fun consume(): DbAutomatic {
+      return this.copy(used = true)
     }
   }
 

@@ -22,6 +22,8 @@ import com.pyamsoft.sleepforbreakfast.db.DbQuery
 
 interface AutomaticQueryDao : DbQuery<DbAutomatic> {
 
+  @CheckResult suspend fun queryUnused(): List<DbAutomatic>
+
   @CheckResult
   suspend fun queryByNotification(
       notificationId: Int,

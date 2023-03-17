@@ -23,8 +23,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 
-@Entity(tableName = RoomDbAutomatic.TABLE_NAME,
-indices = [])
+@Entity(tableName = RoomDbAutomatic.TABLE_NAME, indices = [])
 internal data class RoomDbAutomatic
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbAutomatic.Id,
@@ -36,6 +35,7 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_MATCH_TEXT) val dbNotificationMatches: String,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_AMOUNT) val dbNotificationAmount: Long,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_TITLE) val dbNotificationTitle: String,
+    @JvmField @ColumnInfo(name = COLUMN_USED) val dbUsed: Boolean,
 ) : DbAutomatic {
 
   @Ignore override val id = dbId
@@ -55,6 +55,8 @@ internal constructor(
   @Ignore override val notificationAmountInCents = dbNotificationAmount
 
   @Ignore override val notificationTitle = dbNotificationTitle
+
+  @Ignore override val used = dbUsed
 
   @Ignore
   override fun notificationId(id: Int): DbAutomatic {
@@ -96,6 +98,11 @@ internal constructor(
     return this.copy(dbNotificationTitle = title)
   }
 
+  @Ignore
+  override fun consume(): DbAutomatic {
+    return this.copy(dbUsed = true)
+  }
+
   companion object {
 
     @Ignore internal const val TABLE_NAME = "room_automatics_table"
@@ -118,6 +125,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_NOTIFICATION_TITLE = "notification_title"
 
+    @Ignore internal const val COLUMN_USED = "used"
+
     @Ignore
     @JvmStatic
     @CheckResult
@@ -134,6 +143,7 @@ internal constructor(
             item.notificationMatchText,
             item.notificationAmountInCents,
             item.notificationTitle,
+            item.used,
         )
       }
     }

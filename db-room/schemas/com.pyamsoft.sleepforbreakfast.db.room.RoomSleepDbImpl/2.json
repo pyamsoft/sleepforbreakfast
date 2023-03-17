@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "1980437de5a2478ddcfc925020b49150",
+    "identityHash": "f07f22802c240079c24ffa0d188f71de",
     "entities": [
       {
         "tableName": "room_transactions_table",
@@ -286,7 +286,7 @@
       },
       {
         "tableName": "room_automatics_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `notification_id` INTEGER NOT NULL, `notification_key` TEXT NOT NULL, `notification_group` TEXT NOT NULL, `notification_package_name` TEXT NOT NULL, `notification_post_time` INTEGER NOT NULL, `notification_match_text` TEXT NOT NULL, `notification_amount_in_cents` INTEGER NOT NULL, `notification_title` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `notification_id` INTEGER NOT NULL, `notification_key` TEXT NOT NULL, `notification_group` TEXT NOT NULL, `notification_package_name` TEXT NOT NULL, `notification_post_time` INTEGER NOT NULL, `notification_match_text` TEXT NOT NULL, `notification_amount_in_cents` INTEGER NOT NULL, `notification_title` TEXT NOT NULL, `used` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -341,6 +341,12 @@
             "columnName": "notification_title",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "dbUsed",
+            "columnName": "used",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -356,7 +362,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1980437de5a2478ddcfc925020b49150')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f07f22802c240079c24ffa0d188f71de')"
     ]
   }
 }

@@ -53,6 +53,12 @@ internal constructor(
         return@cachify realQueryDao.query()
       }
 
+  private val queryUnusedCache =
+      cachify<List<DbAutomatic>> {
+        Enforcer.assertOffMainThread()
+        return@cachify realQueryDao.queryUnused()
+      }
+
   private val queryByNotificationCache =
       multiCachify<
           QueryByNotificationKey, Maybe<out DbAutomatic>, Int, String, String, String, Long> {
@@ -84,6 +90,7 @@ internal constructor(
         Enforcer.assertOffMainThread()
         queryCache.clear()
         queryByNotificationCache.clear()
+        queryUnusedCache.clear()
       }
 
   override suspend fun invalidateByNotification(
@@ -118,6 +125,12 @@ internal constructor(
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
         return@withContext queryCache.call()
+      }
+
+  override suspend fun queryUnused(): List<DbAutomatic> =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+        return@withContext queryUnusedCache.call()
       }
 
   override suspend fun queryByNotification(

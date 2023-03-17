@@ -74,4 +74,14 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
       packageName: String,
       postTime: Long
   ): RoomDbAutomatic?
+
+  override suspend fun queryUnused(): List<DbAutomatic> =
+      withContext(context = Dispatchers.IO) { daoQueryUnused() }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_USED}
+""")
+  internal abstract suspend fun daoQueryUnused(): List<RoomDbAutomatic>
 }
