@@ -40,6 +40,9 @@ buildscript {
         // Room
         room = "2.5.0"
 
+        // Jobs
+        workmanager = "2.8.0"
+
         // Moshi
         moshi = "1.14.0"
 

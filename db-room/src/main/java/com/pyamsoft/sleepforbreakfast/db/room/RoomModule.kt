@@ -5,7 +5,6 @@ import androidx.annotation.CheckResult
 import androidx.room.Room
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.SleepDb
-import com.pyamsoft.sleepforbreakfast.db.TransactionHandler
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
@@ -25,7 +24,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Qualifier
-import javax.inject.Singleton
 
 @Qualifier @Retention(AnnotationRetention.BINARY) private annotation class InternalApi
 
@@ -51,14 +49,6 @@ abstract class RoomModule {
     internal fun provideRoom(context: Context): RoomSleepDbImpl {
       val appContext = context.applicationContext
       return Room.databaseBuilder(appContext, RoomSleepDbImpl::class.java, DB_NAME).build()
-    }
-
-    @Provides
-    @Singleton
-    @JvmStatic
-    @CheckResult
-    internal fun provideTransactionHandler(@InternalApi room: RoomSleepDbImpl): TransactionHandler {
-      return TransactionHandler { scope, block -> room.runInTransaction { scope.block() } }
     }
 
     // DbTransaction

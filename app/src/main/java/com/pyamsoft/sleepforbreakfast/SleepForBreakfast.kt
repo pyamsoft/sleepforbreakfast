@@ -9,6 +9,7 @@ import com.pyamsoft.pydroid.ui.installPYDroid
 import com.pyamsoft.pydroid.util.isDebugMode
 import com.pyamsoft.sleepforbreakfast.core.PRIVACY_POLICY_URL
 import com.pyamsoft.sleepforbreakfast.core.TERMS_CONDITIONS_URL
+import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
 
 class SleepForBreakfast : Application() {
 
@@ -29,6 +30,11 @@ class SleepForBreakfast : Application() {
     )
   }
 
+  private fun installWorkerComponent(component: BreakfastComponent) {
+    val wc = component.plusWorkerComponent().create()
+    WorkerObjectGraph.install(this, wc)
+  }
+
   private fun installComponent(moduleProvider: ModuleProvider) {
     val mods = moduleProvider.get()
     val component =
@@ -42,6 +48,7 @@ class SleepForBreakfast : Application() {
     component.inject(this)
 
     ObjectGraph.ApplicationScope.install(this, component)
+    installWorkerComponent(component)
   }
 
   override fun onCreate() {

@@ -30,6 +30,8 @@ import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
 import com.pyamsoft.sleepforbreakfast.spending.SpendingAppModule
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
+import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkManagerAppModule
+import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerComponent
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -48,6 +50,7 @@ import javax.inject.Singleton
             TransactionAppModule::class,
             UiAppModule::class,
             SpendingAppModule::class,
+            WorkManagerAppModule::class,
         ],
 )
 internal interface BreakfastComponent {
@@ -57,6 +60,8 @@ internal interface BreakfastComponent {
   fun inject(service: SpendingTrackerService)
 
   @CheckResult fun plusMainComponent(): MainComponent.Factory
+
+  @CheckResult fun plusWorkerComponent(): WorkerComponent.Factory
 
   @Component.Factory
   interface Factory {

@@ -121,4 +121,6 @@ dependencies {
     implementation project(':spending')
     implementation project(':transactions')
     implementation project(':ui')
+    implementation project(':worker')
+    implementation project(':worker-workmanager')
 }
