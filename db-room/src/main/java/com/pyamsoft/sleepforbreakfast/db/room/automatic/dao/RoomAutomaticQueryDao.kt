@@ -66,6 +66,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_GROUP} = :group
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_PACKAGE} = :packageName
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_POST_TIME} = :postTime
+  LIMIT 1
 """)
   internal abstract suspend fun daoQueryByNotification(
       id: Int,

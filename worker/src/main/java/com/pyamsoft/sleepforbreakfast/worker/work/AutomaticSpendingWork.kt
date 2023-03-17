@@ -30,7 +30,7 @@ internal constructor(
 ) : BgWorker {
 
   private fun getNotificationPostTime(auto: DbAutomatic): LocalDateTime {
-    val epoch = Instant.ofEpochSecond(auto.notificationPostTime)
+    val epoch = Instant.ofEpochMilli(auto.notificationPostTime)
     return LocalDateTime.ofInstant(epoch, TimeZone.getDefault().toZoneId())
   }
 

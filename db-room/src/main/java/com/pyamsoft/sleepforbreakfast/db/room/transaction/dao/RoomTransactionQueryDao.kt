@@ -49,6 +49,7 @@ internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
       """
 SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   WHERE ${RoomDbTransaction.COLUMN_ID} = :id
+  LIMIT 1
 """)
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 }
