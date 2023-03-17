@@ -5,6 +5,7 @@ import androidx.annotation.CheckResult
 import androidx.room.Room
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.SleepDb
+import com.pyamsoft.sleepforbreakfast.db.TransactionHandler
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
@@ -24,13 +25,19 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Qualifier @Retention(AnnotationRetention.BINARY) private annotation class InternalApi
 
 @Module
 abstract class RoomModule {
 
-  @Binds @CheckResult internal abstract fun provideDb(impl: SleepDbImpl): SleepDb
+  @Binds @CheckResult internal abstract fun bindDb(impl: SleepDbImpl): SleepDb
+
+  @Binds
+  @CheckResult
+  @InternalApi
+  internal abstract fun bindRoomDb(@InternalApi impl: RoomSleepDbImpl): RoomSleepDb
 
   @Module
   companion object {
@@ -41,9 +48,17 @@ abstract class RoomModule {
     @JvmStatic
     @CheckResult
     @InternalApi
-    internal fun provideRoom(context: Context): RoomSleepDb {
+    internal fun provideRoom(context: Context): RoomSleepDbImpl {
       val appContext = context.applicationContext
       return Room.databaseBuilder(appContext, RoomSleepDbImpl::class.java, DB_NAME).build()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    @CheckResult
+    internal fun provideTransactionHandler(@InternalApi room: RoomSleepDbImpl): TransactionHandler {
+      return TransactionHandler { scope, block -> room.runInTransaction { scope.block() } }
     }
 
     // DbTransaction
