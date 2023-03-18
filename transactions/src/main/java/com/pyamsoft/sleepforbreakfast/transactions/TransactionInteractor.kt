@@ -6,7 +6,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 
-interface TransactionInteractor {
+internal interface TransactionInteractor {
 
   @CheckResult suspend fun loadAll(force: Boolean): ResultWrapper<List<DbTransaction>>
 

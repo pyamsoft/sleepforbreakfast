@@ -5,7 +5,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 
-interface DeleteRestoreHandler {
+internal interface DeleteRestoreHandler {
 
   fun <T : Any> handleDeleteFinal(recentlyDeleted: MutableStateFlow<T?>, onDeleted: (T) -> Unit)
 

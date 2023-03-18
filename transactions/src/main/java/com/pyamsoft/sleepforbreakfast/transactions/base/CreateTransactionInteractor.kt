@@ -5,7 +5,7 @@ import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 
-interface CreateTransactionInteractor {
+internal interface CreateTransactionInteractor {
 
   @CheckResult
   suspend fun submit(

@@ -5,7 +5,7 @@ import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionInteractor
 
-interface TransactionDeleteInteractor : SingleTransactionInteractor {
+internal interface TransactionDeleteInteractor : SingleTransactionInteractor {
 
   @CheckResult suspend fun deleteTransaction(transaction: DbTransaction): ResultWrapper<Boolean>
 }
