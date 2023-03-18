@@ -103,7 +103,7 @@ internal constructor(
       registry: SaveableStateRegistry
   ) {
     registry
-        .registerProvider(KEY_DATE) { DateTimeFormatter.ISO_DATE_TIME.format(state.date.value) }
+        .registerProvider(KEY_DATE) { DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(state.date.value) }
         .also { add(it) }
 
     registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }
@@ -172,7 +172,6 @@ internal constructor(
   }
 
   companion object {
-
     private const val KEY_DATE_DIALOG = "key_date_dialog"
     private const val KEY_TIME_DIALOG = "key_time_dialog"
     private const val KEY_DATE = "key_date"

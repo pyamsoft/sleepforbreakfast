@@ -22,11 +22,13 @@ import com.pyamsoft.highlander.highlander
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
 import com.pyamsoft.sleepforbreakfast.repeat.base.LoadRepeatHandler
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
@@ -49,6 +51,25 @@ internal constructor(
   @CheckResult
   private fun compile(): DbRepeat {
     return DbRepeat.create(clock, params.repeatId)
+        .repeatTime(state.repeatTime.value)
+        .repeatType(state.repeatType.value)
+        .firstDay(state.repeatFirstDay.value)
+        .unarchive()
+        .activate()
+        .transactionName(state.name.value)
+        .transactionAmountInCents(state.amount.value)
+        .transactionNote(state.note.value)
+        .transactionType(state.type.value)
+        .run {
+          state.source.value.let { sid ->
+            if (sid == null) {
+              removeTransactionSourceId()
+            } else {
+              transactionSourceId(sid)
+            }
+          }
+        }
+        .replaceTransactionCategories(state.categories.value)
   }
 
   override fun onBind(scope: CoroutineScope) {
@@ -62,13 +83,41 @@ internal constructor(
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
-    // TODO
+    registry
+        .consumeRestored(KEY_FIRST_DAY)
+        ?.let { it as String }
+        ?.let { LocalDate.parse(it, DateTimeFormatter.ISO_LOCAL_DATE) }
+        ?.also { state.repeatFirstDay.value = it }
+
+    registry
+        .consumeRestored(KEY_REPEAT_TIME)
+        ?.let { it as String }
+        ?.let { LocalTime.parse(it, DateTimeFormatter.ISO_LOCAL_TIME) }
+        ?.also { state.repeatTime.value = it }
+
+    registry
+        .consumeRestored(KEY_REPEAT_TYPE)
+        ?.let { it as String }
+        ?.let { DbRepeat.Type.valueOf(it) }
+        ?.also { state.repeatType.value = it }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
       registry: SaveableStateRegistry
   ) {
-    // TODO
+    registry
+        .registerProvider(KEY_FIRST_DAY) {
+          DateTimeFormatter.ISO_LOCAL_DATE.format(state.repeatFirstDay.value)
+        }
+        .also { add(it) }
+
+    registry
+        .registerProvider(KEY_REPEAT_TIME) {
+          DateTimeFormatter.ISO_LOCAL_TIME.format(state.repeatTime.value)
+        }
+        .also { add(it) }
+
+    registry.registerProvider(KEY_REPEAT_TYPE) { state.repeatType.value.name }.also { add(it) }
   }
 
   override fun onReset(payload: ResetPayload?) {
@@ -85,16 +134,16 @@ internal constructor(
   }
 
   override suspend fun onSubmitResult(): ResultWrapper<*> {
-    val transaction = compile()
+    val repeat = compile()
     return submitRunner
-        .call(transaction)
-        .onFailure { Timber.e(it, "Error occurred when submitting transaction $transaction") }
+        .call(repeat)
+        .onFailure { Timber.e(it, "Error occurred when submitting repeat $repeat") }
         .onSuccess { res ->
           when (res) {
-            is DbInsert.InsertResult.Insert -> Timber.d("New transaction: ${res.data}")
-            is DbInsert.InsertResult.Update -> Timber.d("Update transaction: ${res.data}")
+            is DbInsert.InsertResult.Insert -> Timber.d("New repeat: ${res.data}")
+            is DbInsert.InsertResult.Update -> Timber.d("Update repeat: ${res.data}")
             is DbInsert.InsertResult.Fail -> {
-              Timber.e(res.error, "Failed to insert transaction: $transaction")
+              Timber.e(res.error, "Failed to insert repeat: $repeat")
 
               // Will be caught by onFailure below
               throw res.error
@@ -102,8 +151,14 @@ internal constructor(
           }
         }
         .onFailure {
-          Timber.e(it, "Unable to process transaction: $transaction")
+          Timber.e(it, "Unable to process repeat: $repeat")
           // TODO handle error in UI
         }
+  }
+
+  companion object {
+    private const val KEY_FIRST_DAY = "key_repeat_first_date"
+    private const val KEY_REPEAT_TIME = "key_repeat_time"
+    private const val KEY_REPEAT_TYPE = "key_repeat_type"
   }
 }
