@@ -9,11 +9,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Singleton
-class SingleTransactionHandlerImpl
+class LoadTransactionHandlerImpl
 @Inject
 internal constructor(
-    private val interactor: SingleTransactionInteractor,
-) : SingleTransactionHandler {
+    private val interactor: LoadTransactionInteractor,
+) : LoadTransactionHandler {
 
   override fun loadExistingTransaction(
       scope: CoroutineScope,

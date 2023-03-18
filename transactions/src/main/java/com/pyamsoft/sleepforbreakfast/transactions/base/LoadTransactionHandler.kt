@@ -3,7 +3,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.base
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import kotlinx.coroutines.CoroutineScope
 
-internal interface SingleTransactionHandler {
+internal interface LoadTransactionHandler {
 
   fun loadExistingTransaction(
       scope: CoroutineScope,

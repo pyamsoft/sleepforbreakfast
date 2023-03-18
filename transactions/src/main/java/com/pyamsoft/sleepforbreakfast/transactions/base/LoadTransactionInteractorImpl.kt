@@ -12,11 +12,11 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Singleton
-internal class SingleTransactionInteractorImpl
+internal class LoadTransactionInteractorImpl
 @Inject
 constructor(
     private val transactionQueryDao: TransactionQueryDao,
-) : SingleTransactionInteractor {
+) : LoadTransactionInteractor {
 
   override suspend fun load(transactionId: DbTransaction.Id): ResultWrapper<DbTransaction> =
       withContext(context = Dispatchers.IO) {

@@ -20,13 +20,26 @@ import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewState
 import com.pyamsoft.sleepforbreakfast.money.MutableMoneyViewState
 import java.time.Clock
+import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-@Stable interface TransactionAddViewState : MoneyViewState
+@Stable
+interface TransactionAddViewState : MoneyViewState {
+  val date: StateFlow<LocalDateTime>
+  val isDateDialogOpen: StateFlow<Boolean>
+  val isTimeDialogOpen: StateFlow<Boolean>
+}
 
 @Stable
 class MutableTransactionAddViewState
 @Inject
 internal constructor(
     clock: Clock,
-) : TransactionAddViewState, MutableMoneyViewState(clock)
+) : TransactionAddViewState, MutableMoneyViewState() {
+
+  override val date = MutableStateFlow<LocalDateTime>(LocalDateTime.now(clock))
+  override val isDateDialogOpen = MutableStateFlow(false)
+  override val isTimeDialogOpen = MutableStateFlow(false)
+}

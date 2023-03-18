@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.room.repeat.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
+import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
@@ -34,4 +35,21 @@ internal abstract class RoomRepeatQueryDao : RepeatQueryDao {
   @CheckResult
   @Query("""SELECT * FROM ${RoomDbRepeat.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbRepeat>
+
+  override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =
+      withContext(context = Dispatchers.IO) {
+        when (val transaction = daoQueryById(id)) {
+          null -> Maybe.None
+          else -> Maybe.Data(transaction)
+        }
+      }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbRepeat.TABLE_NAME}
+  WHERE ${RoomDbRepeat.COLUMN_ID} = :id
+  LIMIT 1
+""")
+  internal abstract suspend fun daoQueryById(id: DbRepeat.Id): RoomDbRepeat?
 }

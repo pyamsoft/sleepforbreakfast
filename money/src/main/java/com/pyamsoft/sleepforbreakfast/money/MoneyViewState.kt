@@ -21,8 +21,6 @@ import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import java.time.Clock
-import java.time.LocalDateTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -34,27 +32,16 @@ interface MoneyViewState : UiViewState {
   val amount: StateFlow<Long>
   val type: StateFlow<DbTransaction.Type>
   val note: StateFlow<String>
-  val date: StateFlow<LocalDateTime>
-
-  val isDateDialogOpen: StateFlow<Boolean>
-  val isTimeDialogOpen: StateFlow<Boolean>
-
   val working: StateFlow<Boolean>
 }
 
 @Stable
-abstract class MutableMoneyViewState
-protected constructor(
-    clock: Clock,
-) : MoneyViewState {
+abstract class MutableMoneyViewState protected constructor() : MoneyViewState {
   final override val name = MutableStateFlow("")
   final override val source = MutableStateFlow<DbSource.Id?>(null)
   final override val categories = MutableStateFlow<List<DbCategory.Id>>(emptyList())
   final override val amount = MutableStateFlow(0L)
   final override val type = MutableStateFlow(DbTransaction.Type.SPEND)
   final override val note = MutableStateFlow("")
-  final override val date = MutableStateFlow<LocalDateTime>(LocalDateTime.now(clock))
-  final override val isDateDialogOpen = MutableStateFlow(false)
-  final override val isTimeDialogOpen = MutableStateFlow(false)
   final override val working = MutableStateFlow(false)
 }

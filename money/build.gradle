@@ -56,10 +56,6 @@ dependencies {
 
     implementation "com.github.pyamsoft:highlander:$highlander"
 
-    // Moshi
-    api "com.squareup.moshi:moshi:$moshi"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
-
     implementation project(':db')
     implementation project(':ui')
 }

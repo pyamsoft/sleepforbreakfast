@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.transactions.add
+package com.pyamsoft.sleepforbreakfast.money
 
 import android.text.format.DateFormat
 import android.widget.DatePicker
@@ -19,13 +19,12 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
 import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Composable
 internal fun DatePickerDialog(
     modifier: Modifier = Modifier,
-    initialDate: LocalDateTime,
+    initialDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -65,7 +64,7 @@ internal fun DatePickerDialog(
 @Composable
 internal fun TimePickerDialog(
     modifier: Modifier = Modifier,
-    initialTime: LocalDateTime,
+    initialTime: LocalTime,
     onTimeSelected: (LocalTime) -> Unit,
     onDismiss: () -> Unit,
 ) {

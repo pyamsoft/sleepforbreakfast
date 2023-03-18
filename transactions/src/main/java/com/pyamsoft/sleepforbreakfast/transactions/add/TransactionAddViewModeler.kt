@@ -17,16 +17,22 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.annotation.CheckResult
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.highlander.highlander
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
-import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionHandler
+import com.pyamsoft.sleepforbreakfast.transactions.base.LoadTransactionHandler
 import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
 
 class TransactionAddViewModeler
@@ -36,12 +42,8 @@ internal constructor(
     private val clock: Clock,
     private val params: TransactionAddParams,
     private val interactor: TransactionAddInteractor,
-    private val singleTransactionHandler: SingleTransactionHandler,
-) :
-    MoneyViewModeler<MutableTransactionAddViewState>(
-        state,
-        clock,
-    ) {
+    private val loadTransactionHandler: LoadTransactionHandler,
+) : MoneyViewModeler<MutableTransactionAddViewState>(state) {
 
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbTransaction>>, DbTransaction> { transaction
@@ -71,12 +73,79 @@ internal constructor(
 
   override fun onBind(scope: CoroutineScope) {
     // Upon opening, load up with this Transaction
-    singleTransactionHandler.loadExistingTransaction(
+    loadTransactionHandler.loadExistingTransaction(
         scope = scope,
         transactionId = params.transactionId,
     ) {
-      handleReset(it)
+      handleReset(ResetPayload.Transaction(it))
     }
+  }
+
+  override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
+    registry
+        .consumeRestored(KEY_DATE)
+        ?.let { it as String }
+        ?.let { LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME) }
+        ?.also { state.date.value = it }
+
+    registry
+        .consumeRestored(KEY_DATE_DIALOG)
+        ?.let { it as Boolean }
+        ?.also { state.isDateDialogOpen.value = it }
+
+    registry
+        .consumeRestored(KEY_TIME_DIALOG)
+        ?.let { it as Boolean }
+        ?.also { state.isTimeDialogOpen.value = it }
+  }
+
+  override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
+      registry: SaveableStateRegistry
+  ) {
+    registry
+        .registerProvider(KEY_DATE) { DateTimeFormatter.ISO_DATE_TIME.format(state.date.value) }
+        .also { add(it) }
+
+    registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }
+
+    registry.registerProvider(KEY_TIME_DIALOG) { state.isTimeDialogOpen.value }.also { add(it) }
+  }
+
+  override fun onReset(payload: ResetPayload?) {
+    if (payload == null) {
+      state.date.value = LocalDateTime.now(clock)
+    } else if (payload is ResetPayload.Transaction) {
+      state.date.value = payload.transaction.date
+    }
+
+    handleCloseDateDialog()
+    handleCloseTimeDialog()
+  }
+
+  fun handleOpenDateDialog() {
+    state.isDateDialogOpen.value = true
+  }
+
+  fun handleCloseDateDialog() {
+    state.isDateDialogOpen.value = false
+  }
+
+  fun handleOpenTimeDialog() {
+    state.isTimeDialogOpen.value = true
+  }
+
+  fun handleCloseTimeDialog() {
+    state.isTimeDialogOpen.value = false
+  }
+
+  fun handleDateChanged(date: LocalDate) {
+    state.date.update {
+      it.withYear(date.year).withMonth(date.monthValue).withDayOfMonth(date.dayOfMonth)
+    }
+  }
+
+  fun handleTimeChanged(time: LocalTime) {
+    state.date.update { it.withHour(time.hour).withMinute(time.minute).withSecond(0).withNano(0) }
   }
 
   override suspend fun onSubmitResult(): ResultWrapper<*> {
@@ -100,5 +169,12 @@ internal constructor(
           Timber.e(it, "Unable to process transaction: $transaction")
           // TODO handle error in UI
         }
+  }
+
+  companion object {
+
+    private const val KEY_DATE_DIALOG = "key_date_dialog"
+    private const val KEY_TIME_DIALOG = "key_time_dialog"
+    private const val KEY_DATE = "key_date"
   }
 }

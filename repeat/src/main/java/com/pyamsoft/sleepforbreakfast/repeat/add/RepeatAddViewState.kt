@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.repeat
+package com.pyamsoft.sleepforbreakfast.repeat.add
 
-import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.core.Maybe
-import com.pyamsoft.sleepforbreakfast.db.DbQuery
+import androidx.compose.runtime.Stable
+import com.pyamsoft.sleepforbreakfast.money.MoneyViewState
+import com.pyamsoft.sleepforbreakfast.money.MutableMoneyViewState
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-interface RepeatQueryDao : DbQuery<DbRepeat> {
+@Stable
+interface RepeatAddViewState : MoneyViewState {
+  val repeatName: StateFlow<String>
+}
 
-  @CheckResult suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat>
-
-  interface Cache : DbQuery.Cache {
-
-    suspend fun invalidateById(id: DbRepeat.Id)
-  }
+@Stable
+class MutableRepeatAddViewState @Inject internal constructor() :
+    RepeatAddViewState, MutableMoneyViewState() {
+  override val repeatName = MutableStateFlow("")
 }

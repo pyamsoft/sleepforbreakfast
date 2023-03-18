@@ -2,29 +2,23 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import com.pyamsoft.pydroid.core.Enforcer
 import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.transactions.InternalApi
-import com.pyamsoft.sleepforbreakfast.transactions.base.CreateTransactionInteractor
-import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionInteractor
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
+import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddInteractor
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @Singleton
 internal class TransactionAddInteractorImpl
 @Inject
 constructor(
-    @InternalApi private val create: CreateTransactionInteractor,
-    @InternalApi private val single: SingleTransactionInteractor,
+    private val transactionInsertDao: TransactionInsertDao,
 ) : TransactionAddInteractor {
-  override suspend fun load(transactionId: DbTransaction.Id): ResultWrapper<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext single.load(transactionId)
-      }
 
   override suspend fun submit(
       transaction: DbTransaction
@@ -32,6 +26,13 @@ constructor(
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
 
-        return@withContext create.submit(transaction)
+        return@withContext try {
+          ResultWrapper.success(transactionInsertDao.insert(transaction))
+        } catch (e: Throwable) {
+          e.ifNotCancellation {
+            Timber.e(e, "Error submitting transaction: $transaction")
+            ResultWrapper.failure(e)
+          }
+        }
       }
 }
