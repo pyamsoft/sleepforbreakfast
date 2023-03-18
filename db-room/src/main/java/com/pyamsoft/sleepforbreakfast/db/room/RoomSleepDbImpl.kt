@@ -24,10 +24,10 @@ import com.pyamsoft.sleepforbreakfast.db.room.automatic.converter.DbAutomaticIdC
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
-import com.pyamsoft.sleepforbreakfast.db.room.converter.DayOfWeekConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalTimeConverter
+import com.pyamsoft.sleepforbreakfast.db.room.migrate.MigrateSpec2To3
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
@@ -40,7 +40,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 2,
+    version = 3,
     entities =
         [
             // Version 1
@@ -54,7 +54,15 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
         ],
     autoMigrations =
         [
+            /** Adds DbRepeat and DbAutomatic tables and updates existing models */
             AutoMigration(from = 1, to = 2),
+
+            /** Removes DbRepeat.repeatDay */
+            AutoMigration(
+                from = 2,
+                to = 3,
+                spec = MigrateSpec2To3::class,
+            ),
         ],
 )
 @TypeConverters(
@@ -67,7 +75,10 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
     DbCategoryIdConverter::class,
 
     // Version 2
-    DayOfWeekConverter::class,
+    /*
+     This was added in V2 but removed in V3
+     DayOfWeekConverter::class,
+    */
     LocalTimeConverter::class,
     LocalDateConverter::class,
     DbRepeatIdConverter::class,

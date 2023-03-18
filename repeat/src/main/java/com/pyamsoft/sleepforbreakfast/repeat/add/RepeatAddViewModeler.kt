@@ -25,6 +25,8 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
 import com.pyamsoft.sleepforbreakfast.repeat.base.LoadRepeatHandler
 import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalTime
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
@@ -71,9 +73,14 @@ internal constructor(
 
   override fun onReset(payload: ResetPayload?) {
     if (payload == null) {
-      // TODO
+      state.repeatFirstDay.value = LocalDate.now(clock)
+      state.repeatTime.value = LocalTime.now(clock)
+      state.repeatType.value = DbRepeat.Type.DAILY
     } else if (payload is ResetPayload.Repeat) {
-      // TODO
+      val repeat = payload.repeat
+      state.repeatFirstDay.value = repeat.firstDate
+      state.repeatTime.value = repeat.repeatTime
+      state.repeatType.value = repeat.repeatType
     }
   }
 

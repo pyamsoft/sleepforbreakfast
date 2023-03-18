@@ -23,7 +23,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -45,8 +44,6 @@ interface DbRepeat {
   @get:CheckResult val transactionNote: String
 
   @get:CheckResult val firstDate: LocalDate
-
-  @get:CheckResult val repeatDay: DayOfWeek
 
   @get:CheckResult val repeatTime: LocalTime
 
@@ -73,8 +70,6 @@ interface DbRepeat {
   @CheckResult fun transactionType(type: DbTransaction.Type): DbRepeat
 
   @CheckResult fun transactionNote(note: String): DbRepeat
-
-  @CheckResult fun repeatDay(dayOfWeek: DayOfWeek): DbRepeat
 
   @CheckResult fun repeatTime(time: LocalTime): DbRepeat
 
@@ -124,7 +119,6 @@ interface DbRepeat {
       override val transactionAmountInCents: Long = 0,
       override val transactionType: DbTransaction.Type = DbTransaction.Type.SPEND,
       override val transactionNote: String = "",
-      override val repeatDay: DayOfWeek = DayOfWeek.MONDAY,
       override val repeatType: Type = Type.DAILY,
       override val active: Boolean = true,
       override val archived: Boolean = false,
@@ -164,10 +158,6 @@ interface DbRepeat {
 
     override fun transactionNote(note: String): DbRepeat {
       return this.copy(transactionNote = note)
-    }
-
-    override fun repeatDay(dayOfWeek: DayOfWeek): DbRepeat {
-      return this.copy(repeatDay = dayOfWeek)
     }
 
     override fun repeatTime(time: LocalTime): DbRepeat {
