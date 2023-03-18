@@ -5,6 +5,10 @@ import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddInteractorImpl
 import com.pyamsoft.sleepforbreakfast.transactions.base.CreateTransactionInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.base.CreateTransactionInteractorImpl
+import com.pyamsoft.sleepforbreakfast.transactions.base.DeleteRestoreHandler
+import com.pyamsoft.sleepforbreakfast.transactions.base.DeleteRestoreHandlerImpl
+import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionHandler
+import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionHandlerImpl
 import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.base.SingleTransactionInteractorImpl
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteInteractor
@@ -17,6 +21,24 @@ import javax.inject.Qualifier
 
 @Module
 abstract class TransactionAppModule {
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindSingleTransactionHandler(
+      impl: SingleTransactionHandlerImpl
+  ): SingleTransactionHandler
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindDeleteRestoreHandler(
+      impl: DeleteRestoreHandlerImpl
+  ): DeleteRestoreHandler
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindSingleInteractor(
+      impl: SingleTransactionInteractorImpl
+  ): SingleTransactionInteractor
 
   @Binds
   @CheckResult

@@ -22,8 +22,5 @@ sealed class RepeatChangeEvent {
 
   data class Update(val repeat: DbRepeat) : RepeatChangeEvent()
 
-  data class Delete(
-      val repeat: DbRepeat,
-      val offerUndo: Boolean,
-  ) : RepeatChangeEvent()
+  data class Delete(val repeat: DbRepeat) : RepeatChangeEvent()
 }

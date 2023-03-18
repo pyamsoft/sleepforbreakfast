@@ -97,13 +97,13 @@ internal constructor(
         }
       }
 
-  override suspend fun delete(o: DbCategory, offerUndo: Boolean): Boolean =
+  override suspend fun delete(o: DbCategory): Boolean =
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
-        return@withContext realDeleteDao.delete(o, offerUndo).also { deleted ->
+        return@withContext realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
-            publish(CategoryChangeEvent.Delete(o, offerUndo))
+            publish(CategoryChangeEvent.Delete(o))
           }
         }
       }

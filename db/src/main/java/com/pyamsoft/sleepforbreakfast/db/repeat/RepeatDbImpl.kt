@@ -97,13 +97,13 @@ internal constructor(
         }
       }
 
-  override suspend fun delete(o: DbRepeat, offerUndo: Boolean): Boolean =
+  override suspend fun delete(o: DbRepeat): Boolean =
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
-        return@withContext realDeleteDao.delete(o, offerUndo).also { deleted ->
+        return@withContext realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
-            publish(RepeatChangeEvent.Delete(o, offerUndo))
+            publish(RepeatChangeEvent.Delete(o))
           }
         }
       }

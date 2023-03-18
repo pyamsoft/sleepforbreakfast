@@ -17,10 +17,11 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
-import com.pyamsoft.sleepforbreakfast.transactions.base.DeleteRestoreViewModeler
+import com.pyamsoft.sleepforbreakfast.transactions.base.DeleteRestoreHandler
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
@@ -37,7 +38,8 @@ internal constructor(
     override val state: MutableTransactionViewState,
     private val interactor: TransactionInteractor,
     private val jsonParser: JsonParser,
-) : DeleteRestoreViewModeler<TransactionViewState>(state) {
+    private val deleteRestoreHandler: DeleteRestoreHandler,
+) : AbstractViewModeler<TransactionViewState>(state) {
 
   private fun handleAddParams(params: TransactionAddParams) {
     state.addParams.value = params
@@ -52,7 +54,8 @@ internal constructor(
       interactor.listenToTransactions { event ->
         when (event) {
           is TransactionChangeEvent.Delete ->
-              handleTransactionDeleted(event.transaction, event.offerUndo)
+              // When actually deleted from the DB, offer undo ability
+              handleTransactionDeleted(event.transaction, offerUndo = true)
           is TransactionChangeEvent.Insert -> handleTransactionInserted(event.transaction)
           is TransactionChangeEvent.Update -> handleTransactionUpdated(event.transaction)
         }
@@ -180,13 +183,14 @@ internal constructor(
   }
 
   fun handleTransactionDeleteFinal() {
-    handleDeleteFinal(state.recentlyDeleteTransaction) {
+    deleteRestoreHandler.handleDeleteFinal(state.recentlyDeleteTransaction) {
+      // Once finally deleted, don't offer undo
       handleTransactionDeleted(it, offerUndo = false)
     }
   }
 
   fun handleRestoreDeletedTransaction(scope: CoroutineScope) {
-    handleRestoreDeleted(
+    deleteRestoreHandler.handleRestoreDeleted(
         scope = scope,
         recentlyDeleted = state.recentlyDeleteTransaction,
     ) {

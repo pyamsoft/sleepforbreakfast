@@ -22,8 +22,5 @@ sealed class CategoryChangeEvent {
 
   data class Update(val category: DbCategory) : CategoryChangeEvent()
 
-  data class Delete(
-      val category: DbCategory,
-      val offerUndo: Boolean,
-  ) : CategoryChangeEvent()
+  data class Delete(val category: DbCategory) : CategoryChangeEvent()
 }

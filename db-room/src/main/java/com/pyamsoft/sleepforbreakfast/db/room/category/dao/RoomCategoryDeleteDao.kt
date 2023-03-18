@@ -28,7 +28,7 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomCategoryDeleteDao : CategoryDeleteDao {
 
-  override suspend fun delete(o: DbCategory, offerUndo: Boolean): Boolean =
+  override suspend fun delete(o: DbCategory): Boolean =
       withContext(context = Dispatchers.IO) {
         val roomCategory = RoomDbCategory.create(o)
         return@withContext daoDelete(roomCategory) > 0

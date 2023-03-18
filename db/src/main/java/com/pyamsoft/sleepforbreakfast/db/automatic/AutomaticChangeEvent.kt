@@ -22,8 +22,5 @@ sealed class AutomaticChangeEvent {
 
   data class Update(val automatic: DbAutomatic) : AutomaticChangeEvent()
 
-  data class Delete(
-      val automatic: DbAutomatic,
-      val offerUndo: Boolean,
-  ) : AutomaticChangeEvent()
+  data class Delete(val automatic: DbAutomatic) : AutomaticChangeEvent()
 }

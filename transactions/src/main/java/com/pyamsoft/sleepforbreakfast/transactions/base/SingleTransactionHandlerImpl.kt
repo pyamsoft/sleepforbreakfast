@@ -1,20 +1,21 @@
 package com.pyamsoft.sleepforbreakfast.transactions.base
 
-import com.pyamsoft.pydroid.arch.AbstractViewModeler
-import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class SingleViewModeler<S : UiViewState>
-protected constructor(
-    override val state: S,
+@Singleton
+class SingleTransactionHandlerImpl
+@Inject
+internal constructor(
     private val interactor: SingleTransactionInteractor,
-) : AbstractViewModeler<S>(state) {
+) : SingleTransactionHandler {
 
-  protected fun loadExistingTransaction(
+  override fun loadExistingTransaction(
       scope: CoroutineScope,
       transactionId: DbTransaction.Id,
       onLoaded: (DbTransaction) -> Unit,

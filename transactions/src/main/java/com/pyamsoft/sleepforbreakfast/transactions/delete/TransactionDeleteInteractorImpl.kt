@@ -32,7 +32,7 @@ constructor(
         Enforcer.assertOffMainThread()
 
         return@withContext try {
-          ResultWrapper.success(transactionDeleteDao.delete(transaction, offerUndo = true))
+          ResultWrapper.success(transactionDeleteDao.delete(transaction))
         } catch (e: Throwable) {
           Timber.e(e, "Error deleting transaction: $transaction")
           ResultWrapper.failure(e)

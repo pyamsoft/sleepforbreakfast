@@ -22,8 +22,5 @@ sealed class TransactionChangeEvent {
 
   data class Update(val transaction: DbTransaction) : TransactionChangeEvent()
 
-  data class Delete(
-      val transaction: DbTransaction,
-      val offerUndo: Boolean,
-  ) : TransactionChangeEvent()
+  data class Delete(val transaction: DbTransaction) : TransactionChangeEvent()
 }

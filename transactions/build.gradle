@@ -61,5 +61,6 @@ dependencies {
   kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
 
   implementation project(':db')
+  implementation project(':money')
   implementation project(':ui')
 }

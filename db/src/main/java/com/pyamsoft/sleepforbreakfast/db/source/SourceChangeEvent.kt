@@ -22,8 +22,5 @@ sealed class SourceChangeEvent {
 
   data class Update(val source: DbSource) : SourceChangeEvent()
 
-  data class Delete(
-      val source: DbSource,
-      val offerUndo: Boolean,
-  ) : SourceChangeEvent()
+  data class Delete(val source: DbSource) : SourceChangeEvent()
 }
