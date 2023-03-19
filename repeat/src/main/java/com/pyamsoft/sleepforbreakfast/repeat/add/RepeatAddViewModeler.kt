@@ -24,7 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
-import com.pyamsoft.sleepforbreakfast.repeat.base.LoadRepeatHandler
+import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalTime
@@ -40,7 +40,7 @@ internal constructor(
     private val clock: Clock,
     private val params: RepeatAddParams,
     private val interactor: RepeatAddInteractor,
-    private val loadRepeatHandler: LoadRepeatHandler,
+    private val loadRepeatHandler: LoadExistingHandler<DbRepeat.Id, DbRepeat>,
 ) : MoneyViewModeler<MutableRepeatAddViewState>(state) {
 
   private val submitRunner =
@@ -74,9 +74,9 @@ internal constructor(
 
   override fun onBind(scope: CoroutineScope) {
     // Upon opening, load up with this Transaction
-    loadRepeatHandler.loadExistingRepeat(
+    loadRepeatHandler.loadExisting(
         scope = scope,
-        repeatId = params.repeatId,
+        id = params.repeatId,
     ) {
       handleReset(ResetPayload.Repeat(it))
     }

@@ -1,8 +1,6 @@
 package com.pyamsoft.sleepforbreakfast.transaction.add
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,7 +9,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
@@ -80,7 +77,7 @@ internal fun TransactionAddEntry(
   )
 
   TransactionAddScreen(
-      modifier = modifier.padding(MaterialTheme.keylines.content),
+      modifier = modifier,
       state = viewModel.state,
       onDismiss = { handleDismiss() },
       onNameChanged = { viewModel.handleNameChanged(it) },

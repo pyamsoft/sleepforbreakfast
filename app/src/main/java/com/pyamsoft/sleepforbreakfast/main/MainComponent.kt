@@ -19,6 +19,8 @@ package com.pyamsoft.sleepforbreakfast.main
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.core.ActivityScope
 import com.pyamsoft.sleepforbreakfast.home.HomeComponent
+import com.pyamsoft.sleepforbreakfast.repeat.RepeatComponent
+import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddComponent
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionComponent
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddComponent
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteComponent
@@ -42,6 +44,10 @@ internal interface MainComponent {
   @CheckResult fun plusHome(): HomeComponent.Factory
 
   @CheckResult fun plusTransactions(): TransactionComponent.Factory
+
+  @CheckResult fun plusRepeats(): RepeatComponent.Factory
+
+  @CheckResult fun plusAddRepeat(): RepeatAddComponent.Factory
 
   @CheckResult fun plusAddTransactions(): TransactionAddComponent.Factory
 

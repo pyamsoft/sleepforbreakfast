@@ -1,9 +1,7 @@
-package com.pyamsoft.sleepforbreakfast.transactions.base
+package com.pyamsoft.sleepforbreakfast.money.helper
 
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,12 +9,11 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@Singleton
-internal class DeleteRestoreHandlerImpl @Inject internal constructor() : DeleteRestoreHandler {
+abstract class DeleteRestoreHandlerImpl<T : Any> protected constructor() : DeleteRestoreHandler<T> {
 
-  override fun <T : Any> handleDeleteFinal(
+  final override fun handleDeleteFinal(
       recentlyDeleted: MutableStateFlow<T?>,
-      onDeleted: (T) -> Unit
+      onDeleted: (T) -> Unit,
   ) {
     val deleted = recentlyDeleted.getAndUpdate { null }
     if (deleted != null) {
@@ -24,7 +21,7 @@ internal class DeleteRestoreHandlerImpl @Inject internal constructor() : DeleteR
     }
   }
 
-  override fun <T : Any> handleRestoreDeleted(
+  final override fun handleRestoreDeleted(
       scope: CoroutineScope,
       recentlyDeleted: MutableStateFlow<T?>,
       restore: suspend (T) -> ResultWrapper<DbInsert.InsertResult<T>>

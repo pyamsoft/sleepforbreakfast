@@ -24,7 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
-import com.pyamsoft.sleepforbreakfast.transactions.base.LoadTransactionHandler
+import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -42,7 +42,7 @@ internal constructor(
     private val clock: Clock,
     private val params: TransactionAddParams,
     private val interactor: TransactionAddInteractor,
-    private val loadTransactionHandler: LoadTransactionHandler,
+    private val loadTransactionHandler: LoadExistingHandler<DbTransaction.Id, DbTransaction>,
 ) : MoneyViewModeler<MutableTransactionAddViewState>(state) {
 
   private val submitRunner =
@@ -73,9 +73,9 @@ internal constructor(
 
   override fun onBind(scope: CoroutineScope) {
     // Upon opening, load up with this Transaction
-    loadTransactionHandler.loadExistingTransaction(
+    loadTransactionHandler.loadExisting(
         scope = scope,
-        transactionId = params.transactionId,
+        id = params.transactionId,
     ) {
       handleReset(ResetPayload.Transaction(it))
     }
@@ -103,7 +103,9 @@ internal constructor(
       registry: SaveableStateRegistry
   ) {
     registry
-        .registerProvider(KEY_DATE) { DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(state.date.value) }
+        .registerProvider(KEY_DATE) {
+          DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(state.date.value)
+        }
         .also { add(it) }
 
     registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }

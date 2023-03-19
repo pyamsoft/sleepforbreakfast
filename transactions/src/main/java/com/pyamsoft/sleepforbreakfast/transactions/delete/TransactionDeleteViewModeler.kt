@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.delete
 
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.transactions.base.LoadTransactionHandler
+import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,13 +31,13 @@ internal constructor(
     override val state: MutableTransactionDeleteViewState,
     private val params: TransactionDeleteParams,
     private val interactor: TransactionDeleteInteractor,
-    private val singleHandler: LoadTransactionHandler,
+    private val loadTransactionHandler: LoadExistingHandler<DbTransaction.Id, DbTransaction>,
 ) : AbstractViewModeler<TransactionDeleteViewState>(state) {
 
   fun bind(scope: CoroutineScope) {
-    singleHandler.loadExistingTransaction(
+    loadTransactionHandler.loadExisting(
         scope = scope,
-        transactionId = params.transactionId,
+        id = params.transactionId,
     ) {
       state.transaction.value = it
     }

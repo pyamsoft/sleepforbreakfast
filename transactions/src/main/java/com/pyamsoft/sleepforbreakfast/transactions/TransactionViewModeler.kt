@@ -20,8 +20,8 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
+import com.pyamsoft.sleepforbreakfast.money.helper.DeleteRestoreHandler
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
-import com.pyamsoft.sleepforbreakfast.transactions.base.DeleteRestoreHandler
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
@@ -38,7 +38,7 @@ internal constructor(
     override val state: MutableTransactionViewState,
     private val interactor: TransactionInteractor,
     private val jsonParser: JsonParser,
-    private val deleteRestoreHandler: DeleteRestoreHandler,
+    private val deleteRestoreHandler: DeleteRestoreHandler<DbTransaction>,
 ) : AbstractViewModeler<TransactionViewState>(state) {
 
   private fun handleAddParams(params: TransactionAddParams) {
