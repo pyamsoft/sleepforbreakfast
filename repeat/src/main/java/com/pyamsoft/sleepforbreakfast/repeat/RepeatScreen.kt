@@ -2,6 +2,7 @@ package com.pyamsoft.sleepforbreakfast.repeat
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -37,7 +38,7 @@ fun RepeatScreen(
       },
   ) { pv ->
     Spacer(
-        modifier = Modifier.padding(pv),
+        modifier = Modifier.padding(pv).statusBarsPadding(),
     )
   }
 }

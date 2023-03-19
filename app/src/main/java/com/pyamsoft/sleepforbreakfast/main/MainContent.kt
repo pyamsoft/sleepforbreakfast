@@ -15,6 +15,7 @@ internal fun MainContent(
     appName: String,
     state: MainViewState,
     onClosePage: () -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
 ) {
@@ -26,8 +27,10 @@ internal fun MainContent(
     if (p == null) {
       HomeEntry(
           modifier = modifier,
+          appName = appName,
           onOpenTransactions = onOpenTransactions,
           onOpenRepeats = onOpenRepeats,
+          onOpenSettings = onOpenSettings,
       )
     } else {
       when (p) {

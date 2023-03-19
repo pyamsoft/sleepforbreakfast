@@ -1,10 +1,8 @@
-package com.pyamsoft.sleepforbreakfast.main
+package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -17,17 +15,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun MainHeader(
+fun HomeHeader(
     modifier: Modifier = Modifier,
     appName: String,
-    scaffoldPaddingValues: PaddingValues,
-    onSettingsOpen: () -> Unit,
+    onOpenSettings: () -> Unit,
 ) {
   Column(
       modifier = modifier,
   ) {
     Spacer(
-        modifier = Modifier.padding(scaffoldPaddingValues).statusBarsPadding(),
+        modifier = Modifier.statusBarsPadding(),
     )
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,7 +35,7 @@ fun MainHeader(
           style = MaterialTheme.typography.h5,
       )
       IconButton(
-          onClick = onSettingsOpen,
+          onClick = onOpenSettings,
       ) {
         Icon(
             imageVector = Icons.Filled.Settings,

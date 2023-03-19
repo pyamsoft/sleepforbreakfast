@@ -16,17 +16,13 @@
 
 package com.pyamsoft.sleepforbreakfast.main
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.pyamsoft.pydroid.theme.keylines
 
 @Composable
 fun MainScreen(
@@ -44,23 +40,15 @@ fun MainScreen(
   Scaffold(
       modifier = modifier.fillMaxSize(),
   ) { pv ->
-    Column {
-      MainHeader(
-          modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
-          appName = appName,
-          scaffoldPaddingValues = pv,
-          onSettingsOpen = onOpenSettings,
-      )
-
-      MainContent(
-          modifier = Modifier.fillMaxWidth().weight(1F),
-          appName = appName,
-          state = state,
-          onClosePage = onClosePage,
-          onOpenTransactions = onOpenTransactions,
-          onOpenRepeats = onOpenRepeats,
-      )
-    }
+    MainContent(
+        modifier = Modifier.fillMaxSize().padding(pv),
+        appName = appName,
+        state = state,
+        onClosePage = onClosePage,
+        onOpenSettings = onOpenSettings,
+        onOpenTransactions = onOpenTransactions,
+        onOpenRepeats = onOpenRepeats,
+    )
 
     if (isSettingsOpen) {
       SettingsDialog(

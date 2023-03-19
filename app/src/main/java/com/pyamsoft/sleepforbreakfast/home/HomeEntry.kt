@@ -40,6 +40,8 @@ private fun MountHooks(viewModel: HomeViewModeler) {
 @Composable
 internal fun HomeEntry(
     modifier: Modifier = Modifier,
+    appName: String,
+    onOpenSettings: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
 ) {
@@ -54,6 +56,8 @@ internal fun HomeEntry(
   HomeScreen(
       modifier = modifier,
       state = viewModel.state,
+      appName = appName,
+      onOpenSettings = onOpenSettings,
       onOpenNotificationListenerSettings = {
         viewModel.handleOpenNotificationSettings(scope = scope)
       },
