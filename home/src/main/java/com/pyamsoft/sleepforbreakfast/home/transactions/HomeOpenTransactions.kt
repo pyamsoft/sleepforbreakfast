@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.home
+package com.pyamsoft.sleepforbreakfast.home.transactions
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,7 +21,7 @@ import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 @Composable
 internal fun HomeOpenTransactions(
     modifier: Modifier = Modifier,
-    onOpenTransactions: () -> Unit,
+    onOpen: () -> Unit,
 ) {
   val shape = MaterialTheme.shapes.medium
 
@@ -41,7 +41,7 @@ internal fun HomeOpenTransactions(
     ) {
       Column(
           modifier =
-              Modifier.clickable { onOpenTransactions() }.padding(MaterialTheme.keylines.content),
+              Modifier.clickable { onOpen() }.padding(MaterialTheme.keylines.content),
       ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

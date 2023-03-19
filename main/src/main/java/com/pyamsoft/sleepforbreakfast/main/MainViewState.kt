@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface MainViewState : UiViewState {
   val isSettingsOpen: StateFlow<Boolean>
   val isTransactionsOpen: StateFlow<Boolean>
+  val isRepeatOpen: StateFlow<Boolean>
 }
 
 @Stable
@@ -34,4 +35,5 @@ interface MainViewState : UiViewState {
 class MutableMainViewState @Inject internal constructor() : MainViewState {
   override val isSettingsOpen = MutableStateFlow(false)
   override val isTransactionsOpen = MutableStateFlow(false)
+  override val isRepeatOpen = MutableStateFlow(false)
 }

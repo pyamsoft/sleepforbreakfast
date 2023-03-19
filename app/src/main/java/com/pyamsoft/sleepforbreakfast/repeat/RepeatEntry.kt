@@ -39,7 +39,7 @@ private fun MountHooks(
 }
 
 @Composable
-internal fun TransactionEntry(
+internal fun RepeatEntry(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
 ) {

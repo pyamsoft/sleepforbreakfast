@@ -44,9 +44,11 @@ internal fun MainEntry(
       modifier = modifier,
       appName = appName,
       state = viewModel.state,
-      onSettingsOpen = { viewModel.handleOpenSettings() },
-      onSettingsClose = { viewModel.handleCloseSettings() },
+      onOpenSettings = { viewModel.handleOpenSettings() },
+      onCloseSettings = { viewModel.handleCloseSettings() },
       onOpenTransactions = { viewModel.handleOpenTransactions() },
       onCloseTransactions = { viewModel.handleCloseTransactions() },
+      onOpenRepeats = { viewModel.handleOpenRepeats() },
+      onCloseRepeats = { viewModel.handleCloseRepeats() },
   )
 }

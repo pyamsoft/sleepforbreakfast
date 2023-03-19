@@ -41,6 +41,7 @@ private fun MountHooks(viewModel: HomeViewModeler) {
 internal fun HomeEntry(
     modifier: Modifier = Modifier,
     onOpenTransactions: () -> Unit,
+    onOpenRepeats: () -> Unit,
 ) {
   val component = rememberComposableInjector { HomeInjector() }
   val viewModel = rememberNotNull(component.viewModel)
@@ -53,9 +54,10 @@ internal fun HomeEntry(
   HomeScreen(
       modifier = modifier,
       state = viewModel.state,
-      onOpenTransactions = onOpenTransactions,
       onOpenNotificationListenerSettings = {
         viewModel.handleOpenNotificationSettings(scope = scope)
       },
+      onOpenTransactions = onOpenTransactions,
+      onOpenRepeats = onOpenRepeats,
   )
 }

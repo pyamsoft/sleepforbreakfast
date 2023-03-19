@@ -33,10 +33,12 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     appName: String,
     state: MainViewState,
-    onSettingsOpen: () -> Unit,
-    onSettingsClose: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onCloseSettings: () -> Unit,
     onOpenTransactions: () -> Unit,
     onCloseTransactions: () -> Unit,
+    onOpenRepeats: () -> Unit,
+    onCloseRepeats: () -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsState()
 
@@ -48,7 +50,7 @@ fun MainScreen(
           modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
           appName = appName,
           scaffoldPaddingValues = pv,
-          onSettingsOpen = onSettingsOpen,
+          onSettingsOpen = onOpenSettings,
       )
 
       MainContent(
@@ -57,13 +59,15 @@ fun MainScreen(
           state = state,
           onOpenTransactions = onOpenTransactions,
           onCloseTransactions = onCloseTransactions,
+          onOpenRepeats = onOpenRepeats,
+          onCloseRepeats = onCloseRepeats,
       )
     }
 
     if (isSettingsOpen) {
       SettingsDialog(
           modifier = Modifier.fillMaxSize(),
-          onDismiss = onSettingsClose,
+          onDismiss = onCloseSettings,
       )
     }
   }

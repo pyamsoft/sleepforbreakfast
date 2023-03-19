@@ -36,6 +36,7 @@ internal constructor(
 
         registry.registerProvider(KEY_SETTINGS) { s.isSettingsOpen.value }.also { add(it) }
         registry.registerProvider(KEY_TRANSACTIONS) { s.isTransactionsOpen.value }.also { add(it) }
+        registry.registerProvider(KEY_REPEATS) { s.isRepeatOpen.value }.also { add(it) }
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
@@ -50,6 +51,8 @@ internal constructor(
         .consumeRestored(KEY_TRANSACTIONS)
         ?.let { it as Boolean }
         ?.also { s.isTransactionsOpen.value = it }
+
+    registry.consumeRestored(KEY_REPEATS)?.let { it as Boolean }?.also { s.isRepeatOpen.value = it }
   }
 
   fun handleOpenSettings() {
@@ -68,9 +71,18 @@ internal constructor(
     state.isTransactionsOpen.value = false
   }
 
+  fun handleOpenRepeats() {
+    state.isRepeatOpen.value = true
+  }
+
+  fun handleCloseRepeats() {
+    state.isRepeatOpen.value = false
+  }
+
   companion object {
 
     private const val KEY_SETTINGS = "is_settings_open"
-    private const val KEY_TRANSACTIONS = "is_transcations_open"
+    private const val KEY_TRANSACTIONS = "is_transactions_open"
+    private const val KEY_REPEATS = "is_repeats_open"
   }
 }
