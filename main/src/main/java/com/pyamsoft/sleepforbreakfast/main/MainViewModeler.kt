@@ -35,8 +35,7 @@ internal constructor(
         val s = state
 
         registry.registerProvider(KEY_SETTINGS) { s.isSettingsOpen.value }.also { add(it) }
-        registry.registerProvider(KEY_TRANSACTIONS) { s.isTransactionsOpen.value }.also { add(it) }
-        registry.registerProvider(KEY_REPEATS) { s.isRepeatOpen.value }.also { add(it) }
+        registry.registerProvider(KEY_PAGE) { s.page.value?.name }.also { add(it) }
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
@@ -48,11 +47,10 @@ internal constructor(
         ?.also { s.isSettingsOpen.value = it }
 
     registry
-        .consumeRestored(KEY_TRANSACTIONS)
-        ?.let { it as Boolean }
-        ?.also { s.isTransactionsOpen.value = it }
-
-    registry.consumeRestored(KEY_REPEATS)?.let { it as Boolean }?.also { s.isRepeatOpen.value = it }
+        .consumeRestored(KEY_PAGE)
+        ?.let { it as String }
+        ?.let { MainPage.valueOf(it) }
+        ?.also { s.page.value = it }
   }
 
   fun handleOpenSettings() {
@@ -62,27 +60,21 @@ internal constructor(
   fun handleCloseSettings() {
     state.isSettingsOpen.value = false
   }
-
-  fun handleOpenTransactions() {
-    state.isTransactionsOpen.value = true
+  fun handleClosePage() {
+    state.page.value = null
   }
 
-  fun handleCloseTransactions() {
-    state.isTransactionsOpen.value = false
+  fun handleOpenTransactions() {
+    state.page.value = MainPage.TRANSACTION
   }
 
   fun handleOpenRepeats() {
-    state.isRepeatOpen.value = true
-  }
-
-  fun handleCloseRepeats() {
-    state.isRepeatOpen.value = false
+    state.page.value = MainPage.REPEAT
   }
 
   companion object {
 
     private const val KEY_SETTINGS = "is_settings_open"
-    private const val KEY_TRANSACTIONS = "is_transactions_open"
-    private const val KEY_REPEATS = "is_repeats_open"
+    private const val KEY_PAGE = "main_page"
   }
 }

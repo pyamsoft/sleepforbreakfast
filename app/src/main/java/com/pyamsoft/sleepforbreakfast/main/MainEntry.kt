@@ -46,9 +46,8 @@ internal fun MainEntry(
       state = viewModel.state,
       onOpenSettings = { viewModel.handleOpenSettings() },
       onCloseSettings = { viewModel.handleCloseSettings() },
+      onClosePage = { viewModel.handleClosePage() },
       onOpenTransactions = { viewModel.handleOpenTransactions() },
-      onCloseTransactions = { viewModel.handleCloseTransactions() },
       onOpenRepeats = { viewModel.handleOpenRepeats() },
-      onCloseRepeats = { viewModel.handleCloseRepeats() },
   )
 }

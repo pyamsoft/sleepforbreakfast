@@ -35,10 +35,9 @@ fun MainScreen(
     state: MainViewState,
     onOpenSettings: () -> Unit,
     onCloseSettings: () -> Unit,
+    onClosePage: () -> Unit,
     onOpenTransactions: () -> Unit,
-    onCloseTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onCloseRepeats: () -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsState()
 
@@ -57,10 +56,9 @@ fun MainScreen(
           modifier = Modifier.fillMaxWidth().weight(1F),
           appName = appName,
           state = state,
+          onClosePage = onClosePage,
           onOpenTransactions = onOpenTransactions,
-          onCloseTransactions = onCloseTransactions,
           onOpenRepeats = onOpenRepeats,
-          onCloseRepeats = onCloseRepeats,
       )
     }
 

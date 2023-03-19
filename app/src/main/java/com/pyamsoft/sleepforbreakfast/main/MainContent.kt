@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
@@ -15,55 +14,36 @@ internal fun MainContent(
     modifier: Modifier = Modifier,
     appName: String,
     state: MainViewState,
+    onClosePage: () -> Unit,
     onOpenTransactions: () -> Unit,
-    onCloseTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onCloseRepeats: () -> Unit,
 ) {
-  val isTransactionsOpen by state.isTransactionsOpen.collectAsState()
-  val isRepeatOpen by state.isRepeatOpen.collectAsState()
-
-  val opens =
-      remember(
-          isTransactionsOpen,
-          isRepeatOpen,
-      ) {
-        if (!isTransactionsOpen && !isRepeatOpen) {
-          null
-        } else {
-          OpenScreens(
-              transactions = isTransactionsOpen,
-              repeats = isRepeatOpen,
-          )
-        }
-      }
+  val page by state.page.collectAsState()
 
   Crossfade(
-      targetState = opens,
-  ) { open ->
-    if (open == null) {
+      targetState = page,
+  ) { p ->
+    if (p == null) {
       HomeEntry(
           modifier = modifier,
           onOpenTransactions = onOpenTransactions,
           onOpenRepeats = onOpenRepeats,
       )
     } else {
-      if (open.transactions) {
-        TransactionEntry(
-            modifier = modifier,
-            onDismiss = onCloseTransactions,
-        )
-      } else if (open.repeats) {
-        RepeatEntry(
-            modifier = modifier,
-            onDismiss = onCloseRepeats,
-        )
+      when (p) {
+        MainPage.TRANSACTION -> {
+          TransactionEntry(
+              modifier = modifier,
+              onDismiss = onClosePage,
+          )
+        }
+        MainPage.REPEAT -> {
+          RepeatEntry(
+              modifier = modifier,
+              onDismiss = onClosePage,
+          )
+        }
       }
     }
   }
 }
-
-private data class OpenScreens(
-    val transactions: Boolean,
-    val repeats: Boolean,
-)
