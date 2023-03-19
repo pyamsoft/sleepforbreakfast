@@ -19,8 +19,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.ui.defaults.CardDefaults
+import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.ui.MoneyVisualTransformation
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
@@ -120,6 +123,7 @@ internal fun TransactionTotal(
       modifier = modifier,
       contentModifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
       shape = RectangleShape,
+      elevation = ZeroElevation,
       title = "Total",
       titleStyle = MaterialTheme.typography.h6,
       date = "",
@@ -137,6 +141,7 @@ private fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
+    elevation: Dp = CardDefaults.Elevation,
     title: String,
     titleStyle: TextStyle,
     date: String,
@@ -175,6 +180,7 @@ private fun TransactionCard(
   Card(
       modifier = modifier,
       shape = shape,
+      elevation = elevation,
   ) {
     Column(
         modifier = contentModifier,

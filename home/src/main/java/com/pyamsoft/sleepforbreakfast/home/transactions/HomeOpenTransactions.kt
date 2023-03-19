@@ -40,8 +40,7 @@ internal fun HomeOpenTransactions(
         elevation = DialogDefaults.Elevation,
     ) {
       Column(
-          modifier =
-              Modifier.clickable { onOpen() }.padding(MaterialTheme.keylines.content),
+          modifier = Modifier.clickable { onOpen() }.padding(MaterialTheme.keylines.content),
       ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

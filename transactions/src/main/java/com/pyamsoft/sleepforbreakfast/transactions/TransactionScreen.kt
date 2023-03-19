@@ -19,6 +19,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarResult
+import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
@@ -108,8 +109,16 @@ fun TransactionScreen(
       },
   ) { pv ->
     Column {
+      Surface(
+          modifier = Modifier.fillMaxWidth(),
+      ) {
+        Spacer(
+            modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+        )
+      }
+
       TransactionTotal(
-          modifier = Modifier.fillMaxWidth().padding(pv).statusBarsPadding(),
+          modifier = Modifier.fillMaxWidth().padding(pv),
           transactions = transactions,
       )
 

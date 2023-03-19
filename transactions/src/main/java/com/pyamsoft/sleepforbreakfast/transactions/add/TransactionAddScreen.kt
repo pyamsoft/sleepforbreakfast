@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -23,11 +22,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.MoneyAmount
@@ -78,11 +77,9 @@ fun TransactionAddScreen(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colors.primary,
-        elevation = AppBarDefaults.TopAppBarElevation,
-        shape = RectangleShape,
     ) {
       Spacer(
-          modifier = Modifier.statusBarsPadding(),
+          modifier = Modifier.fillMaxWidth().statusBarsPadding(),
       )
     }
 
@@ -90,6 +87,7 @@ fun TransactionAddScreen(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary,
+        elevation = ZeroElevation,
         navigationIcon = {
           IconButton(
               onClick = onDismiss,
