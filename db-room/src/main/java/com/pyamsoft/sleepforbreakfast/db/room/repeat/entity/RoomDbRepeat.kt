@@ -26,7 +26,6 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDate
-import java.time.LocalTime
 
 @Entity(tableName = RoomDbRepeat.TABLE_NAME)
 internal data class RoomDbRepeat
@@ -44,7 +43,6 @@ internal constructor(
     @ColumnInfo(name = COLUMN_TRANSACTION_AMOUNT_IN_CENTS)
     val dbTransactionAmountInCents: Long,
     @JvmField @ColumnInfo(name = COLUMN_TRANSACTION_NOTE) val dbTransactionNote: String,
-    @JvmField @ColumnInfo(name = COLUMN_REPEAT_TIME) val dbRepeatTime: LocalTime,
     @JvmField @ColumnInfo(name = COLUMN_REPEAT_TYPE) val dbRepeatType: DbRepeat.Type,
     @JvmField @ColumnInfo(name = COLUMN_FIRST_DAY) val dbFirstDay: LocalDate,
     @JvmField @ColumnInfo(name = COLUMN_ACTIVE) val dbActive: Boolean,
@@ -64,8 +62,6 @@ internal constructor(
   @Ignore override val transactionType = dbTransactionType
 
   @Ignore override val transactionNote = dbTransactionNote
-
-  @Ignore override val repeatTime = dbRepeatTime
 
   @Ignore override val repeatType = dbRepeatType
 
@@ -121,11 +117,6 @@ internal constructor(
   }
 
   @Ignore
-  override fun repeatTime(time: LocalTime): DbRepeat {
-    return this.copy(dbRepeatTime = time)
-  }
-
-  @Ignore
   override fun repeatType(type: DbRepeat.Type): DbRepeat {
     return this.copy(dbRepeatType = type)
   }
@@ -173,8 +164,6 @@ internal constructor(
 
     @Ignore internal const val COLUMN_TRANSACTION_NOTE = "transaction_note"
 
-    @Ignore internal const val COLUMN_REPEAT_TIME = "repeat_time"
-
     @Ignore internal const val COLUMN_REPEAT_TYPE = "repeat_type"
 
     @Ignore internal const val COLUMN_FIRST_DAY = "first_day"
@@ -184,6 +173,8 @@ internal constructor(
     @Ignore internal const val COLUMN_ARCHIVED = "archived"
 
     @Ignore internal const val V2_COLUMN_REPEAT_DATE = "repeat_date"
+
+    @Ignore internal const val V3_COLUMN_REPEAT_TIME = "repeat_time"
 
     @Ignore
     @JvmStatic
@@ -199,7 +190,6 @@ internal constructor(
             item.transactionType,
             item.transactionAmountInCents,
             item.transactionNote,
-            item.repeatTime,
             item.repeatType,
             item.firstDate,
             item.active,

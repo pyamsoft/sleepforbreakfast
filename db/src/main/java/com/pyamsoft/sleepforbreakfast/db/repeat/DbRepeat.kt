@@ -24,7 +24,6 @@ import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
 import java.time.LocalDate
-import java.time.LocalTime
 
 @Stable
 interface DbRepeat {
@@ -44,8 +43,6 @@ interface DbRepeat {
   @get:CheckResult val transactionNote: String
 
   @get:CheckResult val firstDate: LocalDate
-
-  @get:CheckResult val repeatTime: LocalTime
 
   @get:CheckResult val repeatType: Type
 
@@ -70,8 +67,6 @@ interface DbRepeat {
   @CheckResult fun transactionType(type: DbTransaction.Type): DbRepeat
 
   @CheckResult fun transactionNote(note: String): DbRepeat
-
-  @CheckResult fun repeatTime(time: LocalTime): DbRepeat
 
   @CheckResult fun repeatType(type: Type): DbRepeat
 
@@ -111,7 +106,6 @@ interface DbRepeat {
 
   private data class Impl(
       override val id: Id,
-      override val repeatTime: LocalTime,
       override val firstDate: LocalDate,
       override val transactionSourceId: DbSource.Id? = null,
       override val transactionCategories: List<DbCategory.Id> = emptyList(),
@@ -160,10 +154,6 @@ interface DbRepeat {
       return this.copy(transactionNote = note)
     }
 
-    override fun repeatTime(time: LocalTime): DbRepeat {
-      return this.copy(repeatTime = time)
-    }
-
     override fun repeatType(type: Type): DbRepeat {
       return this.copy(repeatType = type)
     }
@@ -199,7 +189,6 @@ interface DbRepeat {
     ): DbRepeat {
       return Impl(
           id = if (id.isEmpty) DbRepeat.Id(IdGenerator.generate()) else id,
-          repeatTime = LocalTime.now(clock),
           firstDate = LocalDate.now(clock),
       )
     }

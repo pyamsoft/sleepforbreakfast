@@ -14,3 +14,14 @@ import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
     columnName = RoomDbRepeat.V2_COLUMN_REPEAT_DATE,
 )
 internal class MigrateSpec2To3 : AutoMigrationSpec
+
+/**
+ * From v2 to v3
+ *
+ * We drop the repeatTime column
+ */
+@DeleteColumn(
+    tableName = RoomDbRepeat.TABLE_NAME,
+    columnName = RoomDbRepeat.V3_COLUMN_REPEAT_TIME,
+)
+internal class MigrateSpec3To4 : AutoMigrationSpec

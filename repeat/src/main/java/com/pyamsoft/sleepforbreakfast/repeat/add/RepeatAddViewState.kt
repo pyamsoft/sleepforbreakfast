@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 interface RepeatAddViewState : MoneyViewState {
   val repeatFirstDay: StateFlow<LocalDate>
-  val repeatTime: StateFlow<LocalTime>
   val repeatType: StateFlow<DbRepeat.Type>
 }
 
@@ -41,6 +40,5 @@ internal constructor(
     clock: Clock,
 ) : RepeatAddViewState, MutableMoneyViewState() {
   override val repeatFirstDay = MutableStateFlow(LocalDate.now(clock))
-  override val repeatTime = MutableStateFlow(LocalTime.now(clock))
   override val repeatType = MutableStateFlow(DbRepeat.Type.DAILY)
 }

@@ -27,7 +27,6 @@ import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
 import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
 import java.time.Clock
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +50,6 @@ internal constructor(
   @CheckResult
   private fun compile(): DbRepeat {
     return DbRepeat.create(clock, params.repeatId)
-        .repeatTime(state.repeatTime.value)
         .repeatType(state.repeatType.value)
         .firstDay(state.repeatFirstDay.value)
         .unarchive()
@@ -90,12 +88,6 @@ internal constructor(
         ?.also { state.repeatFirstDay.value = it }
 
     registry
-        .consumeRestored(KEY_REPEAT_TIME)
-        ?.let { it as String }
-        ?.let { LocalTime.parse(it, DateTimeFormatter.ISO_LOCAL_TIME) }
-        ?.also { state.repeatTime.value = it }
-
-    registry
         .consumeRestored(KEY_REPEAT_TYPE)
         ?.let { it as String }
         ?.let { DbRepeat.Type.valueOf(it) }
@@ -111,24 +103,16 @@ internal constructor(
         }
         .also { add(it) }
 
-    registry
-        .registerProvider(KEY_REPEAT_TIME) {
-          DateTimeFormatter.ISO_LOCAL_TIME.format(state.repeatTime.value)
-        }
-        .also { add(it) }
-
     registry.registerProvider(KEY_REPEAT_TYPE) { state.repeatType.value.name }.also { add(it) }
   }
 
   override fun onReset(payload: ResetPayload?) {
     if (payload == null) {
       state.repeatFirstDay.value = LocalDate.now(clock)
-      state.repeatTime.value = LocalTime.now(clock)
       state.repeatType.value = DbRepeat.Type.DAILY
     } else if (payload is ResetPayload.Repeat) {
       val repeat = payload.repeat
       state.repeatFirstDay.value = repeat.firstDate
-      state.repeatTime.value = repeat.repeatTime
       state.repeatType.value = repeat.repeatType
     }
   }
@@ -158,7 +142,6 @@ internal constructor(
 
   companion object {
     private const val KEY_FIRST_DAY = "key_repeat_first_date"
-    private const val KEY_REPEAT_TIME = "key_repeat_time"
     private const val KEY_REPEAT_TYPE = "key_repeat_type"
   }
 }

@@ -26,8 +26,8 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdCon
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
-import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalTimeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.migrate.MigrateSpec2To3
+import com.pyamsoft.sleepforbreakfast.db.room.migrate.MigrateSpec3To4
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
@@ -40,7 +40,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 3,
+    version = 4,
     entities =
         [
             // Version 1
@@ -63,6 +63,13 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
                 to = 3,
                 spec = MigrateSpec2To3::class,
             ),
+
+            /** Removes DbRepeat.repeatTime */
+            AutoMigration(
+                from = 3,
+                to = 4,
+                spec = MigrateSpec3To4::class,
+            ),
         ],
 )
 @TypeConverters(
@@ -78,8 +85,10 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
     /*
      This was added in V2 but removed in V3
      DayOfWeekConverter::class,
+
+     This was added in V2 but removed in V4
+     LocalTimeConverter::class,
     */
-    LocalTimeConverter::class,
     LocalDateConverter::class,
     DbRepeatIdConverter::class,
     DbRepeatTypeConverter::class,
