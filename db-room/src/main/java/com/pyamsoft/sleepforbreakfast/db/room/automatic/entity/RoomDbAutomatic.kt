@@ -22,11 +22,13 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
+import java.time.LocalDateTime
 
 @Entity(tableName = RoomDbAutomatic.TABLE_NAME, indices = [])
 internal data class RoomDbAutomatic
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbAutomatic.Id,
+    @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_ID) val dbNotificationId: Int,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_KEY) val dbNotificationKey: String,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_GROUP) val dbNotificationGroup: String,
@@ -39,6 +41,8 @@ internal constructor(
 ) : DbAutomatic {
 
   @Ignore override val id = dbId
+
+  @Ignore override val createdAt = dbCreatedAt
 
   @Ignore override val notificationId = dbNotificationId
 
@@ -107,6 +111,8 @@ internal constructor(
 
     @Ignore internal const val TABLE_NAME = "room_automatics_table"
 
+    @Ignore internal const val COLUMN_CREATED_AT = "created_at"
+
     @Ignore internal const val COLUMN_ID = "_id"
 
     @Ignore internal const val COLUMN_NOTIFICATION_ID = "notification_id"
@@ -135,6 +141,7 @@ internal constructor(
       else {
         RoomDbAutomatic(
             item.id,
+            item.createdAt,
             item.notificationId,
             item.notificationKey,
             item.notificationGroup,

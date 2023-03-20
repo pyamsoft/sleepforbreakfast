@@ -22,15 +22,19 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
+import java.time.LocalDateTime
 
 @Entity(tableName = RoomDbSource.TABLE_NAME)
 internal data class RoomDbSource
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbSource.Id,
+    @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
 ) : DbSource {
 
   @Ignore override val id: DbSource.Id = dbId
+
+  @Ignore override val createdAt = dbCreatedAt
 
   @Ignore override val name: String = dbName
 
@@ -45,6 +49,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_ID = "_id"
 
+    @Ignore internal const val COLUMN_CREATED_AT = "created_at"
+
     @Ignore internal const val COLUMN_NAME = "name"
 
     @Ignore
@@ -55,6 +61,7 @@ internal constructor(
       else {
         RoomDbSource(
             item.id,
+            item.createdAt,
             item.name,
         )
       }

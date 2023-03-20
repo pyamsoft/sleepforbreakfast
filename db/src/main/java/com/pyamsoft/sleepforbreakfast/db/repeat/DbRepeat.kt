@@ -24,11 +24,14 @@ import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Stable
 interface DbRepeat {
 
   @get:CheckResult val id: Id
+
+  @get:CheckResult val createdAt: LocalDateTime
 
   @get:CheckResult val transactionSourceId: DbSource.Id?
 
@@ -106,6 +109,7 @@ interface DbRepeat {
 
   private data class Impl(
       override val id: Id,
+      override val createdAt: LocalDateTime,
       override val firstDate: LocalDate,
       override val transactionSourceId: DbSource.Id? = null,
       override val transactionCategories: List<DbCategory.Id> = emptyList(),
@@ -188,7 +192,8 @@ interface DbRepeat {
         id: Id,
     ): DbRepeat {
       return Impl(
-          id = if (id.isEmpty) DbRepeat.Id(IdGenerator.generate()) else id,
+          id = if (id.isEmpty) Id(IdGenerator.generate()) else id,
+          createdAt = LocalDateTime.now(clock),
           firstDate = LocalDate.now(clock),
       )
     }

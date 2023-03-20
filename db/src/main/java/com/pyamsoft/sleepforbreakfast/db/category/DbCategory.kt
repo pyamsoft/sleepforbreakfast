@@ -18,11 +18,14 @@ package com.pyamsoft.sleepforbreakfast.db.category
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
+import java.time.LocalDateTime
 
 @Stable
 interface DbCategory {
 
   @get:CheckResult val id: Id
+
+  @get:CheckResult val createdAt: LocalDateTime
 
   @get:CheckResult val name: String
 

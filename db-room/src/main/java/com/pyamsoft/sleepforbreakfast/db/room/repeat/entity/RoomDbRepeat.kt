@@ -26,11 +26,13 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity(tableName = RoomDbRepeat.TABLE_NAME)
 internal data class RoomDbRepeat
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbRepeat.Id,
+    @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField
     @ColumnInfo(name = COLUMN_TRANSACTION_SOURCE_ID)
     val dbTransactionSourceId: DbSource.Id?,
@@ -50,6 +52,8 @@ internal constructor(
 ) : DbRepeat {
 
   @Ignore override val id = dbId
+
+  @Ignore override val createdAt = dbCreatedAt
 
   @Ignore override val transactionSourceId = dbTransactionSourceId
 
@@ -152,6 +156,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_ID = "_id"
 
+    @Ignore internal const val COLUMN_CREATED_AT = "created_at"
+
     @Ignore internal const val COLUMN_TRANSACTION_SOURCE_ID = "transaction_source_id"
 
     @Ignore internal const val COLUMN_TRANSACTION_CATEGORY_ID = "transaction_category_id"
@@ -184,6 +190,7 @@ internal constructor(
       else {
         RoomDbRepeat(
             item.id,
+            item.createdAt,
             item.transactionSourceId,
             item.transactionCategories,
             item.transactionName,

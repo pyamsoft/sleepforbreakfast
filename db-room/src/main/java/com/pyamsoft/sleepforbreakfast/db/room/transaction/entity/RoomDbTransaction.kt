@@ -66,6 +66,7 @@ import java.time.LocalDateTime
 internal data class RoomDbTransaction
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbTransaction.Id,
+    @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_SOURCE_ID, index = true) val dbSourceId: DbSource.Id?,
     @JvmField @ColumnInfo(name = COLUMN_CATEGORY_ID) val dbCategories: List<DbCategory.Id>,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
@@ -80,6 +81,8 @@ internal constructor(
 ) : DbTransaction {
 
   @Ignore override val id = dbId
+
+  @Ignore override val createdAt = dbCreatedAt
 
   @Ignore override val sourceId = dbSourceId
 
@@ -165,6 +168,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_ID = "_id"
 
+    @Ignore internal const val COLUMN_CREATED_AT = "created_at"
+
     @Ignore internal const val COLUMN_SOURCE_ID = "source_id"
 
     @Ignore internal const val COLUMN_CATEGORY_ID = "category_id"
@@ -191,6 +196,7 @@ internal constructor(
       else {
         RoomDbTransaction(
             item.id,
+            item.createdAt,
             item.sourceId,
             item.categories,
             item.name,

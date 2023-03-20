@@ -20,23 +20,25 @@ import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
 import com.pyamsoft.sleepforbreakfast.core.Maybe
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
 
-  override suspend fun query(): List<DbTransaction> =
+  final override suspend fun query(): List<DbTransaction> =
       withContext(context = Dispatchers.IO) { daoQuery() }
 
   @CheckResult
   @Query("""SELECT * FROM ${RoomDbTransaction.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
 
-  override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
+  final override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
       withContext(context = Dispatchers.IO) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
@@ -52,4 +54,24 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   LIMIT 1
 """)
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
+
+  final override suspend fun queryByRepeatOnDate(
+      id: DbRepeat.Id,
+      date: LocalDate
+  ): Maybe<out DbTransaction> {
+    TODO("Not yet implemented")
+  }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+  WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
+  AND ${RoomDbTransaction.COLUMN_CREATED_AT} LIKE :dateString
+  LIMIT 1
+""")
+  internal abstract suspend fun daoQueryByRepeatOnDate(
+      id: DbRepeat.Id,
+      dateString: String
+  ): RoomDbTransaction?
 }

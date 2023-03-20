@@ -16,6 +16,7 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.automatic.queryByAutomaticNotification
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.job.AutomaticSpendingConverterJob
+import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
 import timber.log.Timber
@@ -27,6 +28,7 @@ internal constructor(
     private val automaticQueryDao: AutomaticQueryDao,
     private val automaticInsertDao: AutomaticInsertDao,
     private val workerQueue: WorkerQueue,
+    private val clock: Clock,
 ) : SpendingTrackerHandler {
 
   private suspend fun handleProcessUnusedAutomatic(automatic: DbAutomatic) {
@@ -88,7 +90,7 @@ internal constructor(
     }
 
     val automatic =
-        DbAutomatic.create()
+        DbAutomatic.create(clock)
             .notificationId(sbn.id)
             .notificationKey(sbn.key)
             .notificationGroup(sbn.groupKey)

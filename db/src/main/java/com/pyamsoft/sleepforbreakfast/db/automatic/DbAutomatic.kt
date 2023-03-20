@@ -19,11 +19,15 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Stable
 interface DbAutomatic {
 
   @get:CheckResult val id: Id
+
+  @get:CheckResult val createdAt: LocalDateTime
 
   @get:CheckResult val notificationId: Int
 
@@ -73,6 +77,7 @@ interface DbAutomatic {
 
   private data class Impl(
       override val id: Id,
+      override val createdAt: LocalDateTime,
       override val notificationId: Int = 0,
       override val notificationKey: String = "",
       override val notificationGroup: String = "",
@@ -125,9 +130,10 @@ interface DbAutomatic {
 
     @JvmStatic
     @CheckResult
-    fun create(): DbAutomatic {
+    fun create(clock: Clock): DbAutomatic {
       return Impl(
           id = Id(IdGenerator.generate()),
+          createdAt = LocalDateTime.now(clock),
       )
     }
   }

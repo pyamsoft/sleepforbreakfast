@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.db.room
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -26,8 +25,6 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdCon
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
-import com.pyamsoft.sleepforbreakfast.db.room.migrate.MigrateSpec2To3
-import com.pyamsoft.sleepforbreakfast.db.room.migrate.MigrateSpec3To4
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
@@ -40,36 +37,14 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 4,
+    version = 1,
     entities =
         [
-            // Version 1
             RoomDbTransaction::class,
             RoomDbCategory::class,
             RoomDbSource::class,
-
-            // Version 2
             RoomDbRepeat::class,
             RoomDbAutomatic::class,
-        ],
-    autoMigrations =
-        [
-            /** Adds DbRepeat and DbAutomatic tables and updates existing models */
-            AutoMigration(from = 1, to = 2),
-
-            /** Removes DbRepeat.repeatDay */
-            AutoMigration(
-                from = 2,
-                to = 3,
-                spec = MigrateSpec2To3::class,
-            ),
-
-            /** Removes DbRepeat.repeatTime */
-            AutoMigration(
-                from = 3,
-                to = 4,
-                spec = MigrateSpec3To4::class,
-            ),
         ],
 )
 @TypeConverters(
@@ -80,15 +55,6 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
     DbTransactionCategoriesConverter::class,
     DbSourceIdConverter::class,
     DbCategoryIdConverter::class,
-
-    // Version 2
-    /*
-     This was added in V2 but removed in V3
-     DayOfWeekConverter::class,
-
-     This was added in V2 but removed in V4
-     LocalTimeConverter::class,
-    */
     LocalDateConverter::class,
     DbRepeatIdConverter::class,
     DbRepeatTypeConverter::class,

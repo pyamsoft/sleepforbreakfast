@@ -31,6 +31,8 @@ interface DbTransaction {
 
   @get:CheckResult val id: Id
 
+  @get:CheckResult val createdAt: LocalDateTime
+
   @get:CheckResult val sourceId: DbSource.Id?
 
   @get:CheckResult val categories: List<DbCategory.Id>
@@ -90,6 +92,7 @@ interface DbTransaction {
 
   private data class Impl(
       override val id: Id,
+      override val createdAt: LocalDateTime,
       override val date: LocalDateTime,
       override val sourceId: DbSource.Id? = null,
       override val categories: List<DbCategory.Id> = emptyList(),
@@ -159,6 +162,7 @@ interface DbTransaction {
     ): DbTransaction {
       return Impl(
           id = if (id.isEmpty) Id(IdGenerator.generate()) else id,
+          createdAt = LocalDateTime.now(clock),
           date = LocalDateTime.now(clock),
       )
     }

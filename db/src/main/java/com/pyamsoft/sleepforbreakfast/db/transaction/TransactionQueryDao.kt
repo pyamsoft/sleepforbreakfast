@@ -19,13 +19,26 @@ package com.pyamsoft.sleepforbreakfast.db.transaction
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import java.time.LocalDate
 
 interface TransactionQueryDao : DbQuery<DbTransaction> {
 
   @CheckResult suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction>
 
+  @CheckResult
+  suspend fun queryByRepeatOnDate(
+      id: DbRepeat.Id,
+      date: LocalDate,
+  ): Maybe<out DbTransaction>
+
   interface Cache : DbQuery.Cache {
 
     suspend fun invalidateById(id: DbTransaction.Id)
+
+    suspend fun invalidateByRepeatOnDate(
+        id: DbRepeat.Id,
+        date: LocalDate,
+    )
   }
 }
