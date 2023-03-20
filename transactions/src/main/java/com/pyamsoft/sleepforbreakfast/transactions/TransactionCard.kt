@@ -122,6 +122,7 @@ internal fun TransactionTotal(
   TransactionCard(
       modifier = modifier,
       contentModifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+      color = MaterialTheme.colors.primary,
       shape = RectangleShape,
       elevation = ZeroElevation,
       title = "Total",
@@ -140,6 +141,7 @@ internal fun TransactionTotal(
 private fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.surface,
     shape: Shape = MaterialTheme.shapes.medium,
     elevation: Dp = CardDefaults.Elevation,
     title: String,
@@ -156,7 +158,7 @@ private fun TransactionCard(
   val hasNote = remember(note) { note.isNotBlank() }
 
   val defaultColor = MaterialTheme.colors.onSurface
-  val color =
+  val priceColor =
       remember(
           priceDirection,
           defaultColor,
@@ -181,6 +183,7 @@ private fun TransactionCard(
       modifier = modifier,
       shape = shape,
       elevation = elevation,
+      backgroundColor = color,
   ) {
     Column(
         modifier = contentModifier,
@@ -220,7 +223,7 @@ private fun TransactionCard(
           style =
               priceStyle.copy(
                   color =
-                      color.copy(
+                      priceColor.copy(
                           alpha = ContentAlpha.high,
                       ),
               ),

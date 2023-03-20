@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
@@ -58,9 +59,21 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   final override suspend fun queryByRepeatOnDate(
       id: DbRepeat.Id,
       date: LocalDate
-  ): Maybe<out DbTransaction> {
-    TODO("Not yet implemented")
-  }
+  ): Maybe<out DbTransaction> =
+      withContext(context = Dispatchers.IO) {
+        val stringified = LocalDateConverter.fromDate(date)
+
+        // This should only hunt for dates that look like it:
+        //
+        // dateString => 2023-01-04T%
+        // createdAt => 2023-01-04T12:03:05:30
+        val dateString = "${stringified}T%"
+
+        when (val transaction = daoQueryByRepeatOnDate(id, dateString)) {
+          null -> Maybe.None
+          else -> Maybe.Data(transaction)
+        }
+      }
 
   @CheckResult
   @Query(

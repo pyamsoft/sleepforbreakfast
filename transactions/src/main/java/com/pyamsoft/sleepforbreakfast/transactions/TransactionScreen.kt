@@ -111,6 +111,7 @@ fun TransactionScreen(
     Column {
       Surface(
           modifier = Modifier.fillMaxWidth(),
+          color = MaterialTheme.colors.primary,
       ) {
         Spacer(
             modifier = Modifier.fillMaxWidth().statusBarsPadding(),
