@@ -1,7 +1,6 @@
 package com.pyamsoft.sleepforbreakfast.transaction
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -59,31 +58,27 @@ internal fun TransactionEntry(
       viewModel = viewModel,
   )
 
-  Crossfade(
-      targetState = addParams,
-  ) { ap ->
-    if (ap == null) {
-      BackHandler(
-          onBack = onDismiss,
-      )
+  BackHandler(
+      onBack = onDismiss,
+  )
 
-      TransactionScreen(
-          modifier = modifier,
-          state = state,
-          onDismiss = onDismiss,
-          onAddNewTransaction = { viewModel.handleAddNewTransaction() },
-          onEditTransaction = { viewModel.handleEditTransaction(it) },
-          onDeleteTransaction = { viewModel.handleDeleteTransaction(it) },
-          onTransactionRestored = { viewModel.handleRestoreDeletedTransaction(scope = scope) },
-          onTransactionDeleteFinalized = { viewModel.handleTransactionDeleteFinal() },
-      )
-    } else {
-      TransactionAddEntry(
-          modifier = modifier,
-          params = ap,
-          onDismiss = { viewModel.handleCloseAddTransaction() },
-      )
-    }
+  TransactionScreen(
+      modifier = modifier,
+      state = state,
+      onDismiss = onDismiss,
+      onAddNewTransaction = { viewModel.handleAddNewTransaction() },
+      onEditTransaction = { viewModel.handleEditTransaction(it) },
+      onDeleteTransaction = { viewModel.handleDeleteTransaction(it) },
+      onTransactionRestored = { viewModel.handleRestoreDeletedTransaction(scope = scope) },
+      onTransactionDeleteFinalized = { viewModel.handleTransactionDeleteFinal() },
+  )
+
+  addParams?.also { p ->
+    TransactionAddEntry(
+        modifier = modifier,
+        params = p,
+        onDismiss = { viewModel.handleCloseAddTransaction() },
+    )
   }
 
   deleteParams?.also { p ->

@@ -1,14 +1,20 @@
 package com.pyamsoft.sleepforbreakfast.transaction.add
 
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
+import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
+import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
@@ -72,25 +78,31 @@ internal fun TransactionAddEntry(
       viewModel = viewModel,
   )
 
-  BackHandler(
-      onBack = { handleDismiss() },
-  )
-
-  TransactionAddScreen(
-      modifier = modifier,
-      state = viewModel.state,
-      onDismiss = { handleDismiss() },
-      onNameChanged = { viewModel.handleNameChanged(it) },
-      onNoteChanged = { viewModel.handleNoteChanged(it) },
-      onAmountChanged = { viewModel.handleAmountChanged(it) },
-      onTypeChanged = { viewModel.handleTypeChanged(it) },
-      onOpenTimeDialog = { viewModel.handleOpenTimeDialog() },
-      onCloseTimeDialog = { viewModel.handleCloseTimeDialog() },
-      onTimeChanged = { viewModel.handleTimeChanged(it) },
-      onOpenDateDialog = { viewModel.handleOpenDateDialog() },
-      onCloseDateDialog = { viewModel.handleCloseDateDialog() },
-      onDateChanged = { viewModel.handleDateChanged(it) },
-      onReset = { viewModel.handleReset() },
-      onSubmit = { handleSubmit() },
-  )
+  Dialog(
+      properties = rememberDialogProperties(),
+      onDismissRequest = { handleDismiss() },
+  ) {
+    Surface(
+        modifier = modifier.padding(MaterialTheme.keylines.content),
+        elevation = DialogDefaults.Elevation,
+        shape = MaterialTheme.shapes.medium,
+    ) {
+      TransactionAddScreen(
+          state = viewModel.state,
+          onDismiss = { handleDismiss() },
+          onNameChanged = { viewModel.handleNameChanged(it) },
+          onNoteChanged = { viewModel.handleNoteChanged(it) },
+          onAmountChanged = { viewModel.handleAmountChanged(it) },
+          onTypeChanged = { viewModel.handleTypeChanged(it) },
+          onOpenTimeDialog = { viewModel.handleOpenTimeDialog() },
+          onCloseTimeDialog = { viewModel.handleCloseTimeDialog() },
+          onTimeChanged = { viewModel.handleTimeChanged(it) },
+          onOpenDateDialog = { viewModel.handleOpenDateDialog() },
+          onCloseDateDialog = { viewModel.handleCloseDateDialog() },
+          onDateChanged = { viewModel.handleDateChanged(it) },
+          onReset = { viewModel.handleReset() },
+          onSubmit = { handleSubmit() },
+      )
+    }
+  }
 }
