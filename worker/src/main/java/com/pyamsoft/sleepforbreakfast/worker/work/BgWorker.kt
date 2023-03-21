@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.worker
+package com.pyamsoft.sleepforbreakfast.worker.work
 
 import androidx.annotation.CheckResult
 

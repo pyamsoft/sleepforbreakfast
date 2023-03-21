@@ -53,6 +53,12 @@ internal constructor(
         return@cachify realQueryDao.query()
       }
 
+  private val queryActiveCache =
+      cachify<List<DbRepeat>> {
+        Enforcer.assertOffMainThread()
+        return@cachify realQueryDao.queryActive()
+      }
+
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbRepeat>, DbRepeat.Id> { id ->
         Enforcer.assertOffMainThread()
@@ -72,6 +78,14 @@ internal constructor(
         Enforcer.assertOffMainThread()
         queryCache.clear()
         queryByIdCache.clear()
+        queryActiveCache.clear()
+      }
+
+  override suspend fun invalidateActive() =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        queryActiveCache.clear()
       }
 
   override suspend fun invalidateById(id: DbRepeat.Id) =
@@ -96,6 +110,13 @@ internal constructor(
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
         return@withContext queryCache.call()
+      }
+
+  override suspend fun queryActive(): List<DbRepeat> =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        return@withContext queryActiveCache.call()
       }
 
   override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =

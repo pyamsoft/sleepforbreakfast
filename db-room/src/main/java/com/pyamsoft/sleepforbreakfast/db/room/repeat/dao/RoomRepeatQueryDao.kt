@@ -29,14 +29,14 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomRepeatQueryDao : RepeatQueryDao {
 
-  override suspend fun query(): List<DbRepeat> =
+  final override suspend fun query(): List<DbRepeat> =
       withContext(context = Dispatchers.IO) { daoQuery() }
 
   @CheckResult
   @Query("""SELECT * FROM ${RoomDbRepeat.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbRepeat>
 
-  override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =
+  final override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =
       withContext(context = Dispatchers.IO) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
@@ -52,4 +52,16 @@ SELECT * FROM ${RoomDbRepeat.TABLE_NAME}
   LIMIT 1
 """)
   internal abstract suspend fun daoQueryById(id: DbRepeat.Id): RoomDbRepeat?
+
+  final override suspend fun queryActive(): List<DbRepeat> =
+      withContext(context = Dispatchers.IO) { daoQueryActive() }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbRepeat.TABLE_NAME}
+  WHERE ${RoomDbRepeat.COLUMN_ACTIVE} = TRUE
+  AND ${RoomDbRepeat.COLUMN_ARCHIVED} = FALSE
+""")
+  internal abstract suspend fun daoQueryActive(): List<RoomDbRepeat>
 }

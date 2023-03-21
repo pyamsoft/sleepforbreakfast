@@ -7,7 +7,6 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
-import com.pyamsoft.sleepforbreakfast.worker.BgWorker
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDateTime

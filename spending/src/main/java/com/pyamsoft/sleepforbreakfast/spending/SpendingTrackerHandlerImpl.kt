@@ -14,8 +14,8 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.automatic.queryByAutomaticNotification
+import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
-import com.pyamsoft.sleepforbreakfast.worker.job.AutomaticSpendingConverterJob
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,8 +32,7 @@ internal constructor(
 ) : SpendingTrackerHandler {
 
   private suspend fun handleProcessUnusedAutomatic(automatic: DbAutomatic) {
-    val job = AutomaticSpendingConverterJob
-
+    val job = WorkJobType.AUTOMATIC_SPENDING_CONVERTER
     Timber.d("Enqueue job for processing $automatic: $job")
     workerQueue.enqueue(job)
   }

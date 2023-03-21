@@ -4,9 +4,6 @@ import androidx.annotation.CheckResult
 
 interface WorkJob {
 
-  @get:CheckResult val type: Type
+  @get:CheckResult val type: WorkJobType
 
-  enum class Type {
-    AUTOMATIC_SPENDING_CONVERTER
-  }
 }

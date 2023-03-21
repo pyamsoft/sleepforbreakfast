@@ -22,9 +22,13 @@ import com.pyamsoft.sleepforbreakfast.db.DbQuery
 
 interface RepeatQueryDao : DbQuery<DbRepeat> {
 
+  @CheckResult suspend fun queryActive(): List<DbRepeat>
+
   @CheckResult suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat>
 
   interface Cache : DbQuery.Cache {
+
+    suspend fun invalidateActive()
 
     suspend fun invalidateById(id: DbRepeat.Id)
   }

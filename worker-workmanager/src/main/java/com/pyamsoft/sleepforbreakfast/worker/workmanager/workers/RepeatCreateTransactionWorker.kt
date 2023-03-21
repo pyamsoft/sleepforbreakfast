@@ -3,18 +3,18 @@ package com.pyamsoft.sleepforbreakfast.worker.workmanager.workers
 import android.content.Context
 import androidx.work.WorkerParameters
 import com.pyamsoft.pydroid.core.requireNotNull
-import com.pyamsoft.sleepforbreakfast.worker.work.AutomaticSpendingWork
 import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
+import com.pyamsoft.sleepforbreakfast.worker.work.RepeatCreateTransactionWork
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerComponent
 import javax.inject.Inject
 
-class AutomaticSpendingWorker
+class RepeatCreateTransactionWorker
 internal constructor(
     context: Context,
     params: WorkerParameters,
 ) : AbstractJobWorker(context, params) {
 
-  @Inject @JvmField internal var work: AutomaticSpendingWork? = null
+  @Inject @JvmField internal var work: RepeatCreateTransactionWork? = null
 
   override fun onInject(component: WorkerComponent) {
     component.inject(this)

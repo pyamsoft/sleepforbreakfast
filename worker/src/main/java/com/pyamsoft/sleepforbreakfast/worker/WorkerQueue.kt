@@ -2,9 +2,9 @@ package com.pyamsoft.sleepforbreakfast.worker
 
 interface WorkerQueue {
 
-  suspend fun enqueue(job: WorkJob)
+  suspend fun enqueue(type: WorkJobType)
 
-  suspend fun cancel(type: WorkJob.Type)
+  suspend fun cancel(type: WorkJobType)
 
   suspend fun cancelAll()
 }
