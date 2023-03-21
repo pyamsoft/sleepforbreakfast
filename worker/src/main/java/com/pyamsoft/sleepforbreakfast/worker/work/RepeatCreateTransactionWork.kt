@@ -101,29 +101,114 @@ internal constructor(
       repeat: DbRepeat,
       today: LocalDate,
   ) {
-    // No additional checks, daily just gets made
-    insertNewTransaction(repeat, today)
+    // Make sure there is not already a transaction created for today
+    when (val existing = transactionQueryDao.queryByRepeatOnDate(repeat.id, today)) {
+      is Maybe.Data -> {
+        Timber.w(
+            "A transaction already exists for today for the given repeat: ${mapOf(
+                      "repeat" to repeat,
+                      "transaction" to existing,
+                  )}")
+      }
+      is Maybe.None -> {
+        // No additional checks, daily just gets made
+        insertNewTransaction(repeat, today)
+      }
+    }
   }
 
   private suspend fun createTransactionFromWeeklyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
   ) {
-    TODO()
+    val mostRecentCreated =
+        transactionQueryDao.queryByRepeat(repeat.id).maxByOrNull { it.createdAt }
+
+    // If we have no recent transaction, or the recent transaction is before today,
+    // we may be able to
+    //
+    // else
+    //
+    // The most recent date is the same before today, we may be able to
+    val canCreate: Boolean =
+        if (mostRecentCreated == null) true else mostRecentCreated.createdAt.toLocalDate() < today
+
+    if (!canCreate) {
+      Timber.d("Not asked to create new weekly transaction, no good")
+      return
+    }
+
+    // Make sure the day of the week matches the requested,
+    // then this should be the "next" week, so make it again
+    if (today.dayOfWeek == repeat.firstDate.dayOfWeek) {
+      insertNewTransaction(repeat, today)
+    }
   }
 
   private suspend fun createTransactionFromMonthlyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
   ) {
-    TODO()
+    val mostRecentCreated =
+        transactionQueryDao.queryByRepeat(repeat.id).maxByOrNull { it.createdAt }
+
+    var canCreate = false
+
+    // If we have no recent transaction we can create if the day matches
+    if (mostRecentCreated == null) {
+      canCreate = true
+    } else if (mostRecentCreated.createdAt.toLocalDate() < today) {
+      // If the most recently created date is before today, maybe
+
+      // The month is last month
+      if (mostRecentCreated.createdAt.month < today.month) {
+        canCreate = true
+      }
+    }
+
+    if (!canCreate) {
+      Timber.d("Not asked to create new monthly transaction, no good")
+      return
+    }
+
+    // Make sure the day of the month matches the requested,
+    // then this should be the "next" month, so make it again
+    if (today.dayOfMonth == repeat.firstDate.dayOfMonth) {
+      insertNewTransaction(repeat, today)
+    }
   }
 
   private suspend fun createTransactionFromYearlyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
   ) {
-    TODO()
+    val mostRecentCreated =
+        transactionQueryDao.queryByRepeat(repeat.id).maxByOrNull { it.createdAt }
+
+    var canCreate = false
+
+    // If we have no recent transaction we can create if the day matches
+    if (mostRecentCreated == null) {
+      canCreate = true
+    } else if (mostRecentCreated.createdAt.toLocalDate() < today) {
+      // If the most recently created date is before today, maybe
+
+      // The month is last month
+      if (mostRecentCreated.createdAt.year < today.year) {
+        canCreate = true
+      }
+    }
+
+    if (!canCreate) {
+      Timber.d("Not asked to create new yearly transaction, no good")
+      return
+    }
+
+    // Make sure the day of the year matches the requested,
+    // then this should be the "next" month, so make it again
+    if (today.dayOfYear == repeat.firstDate.dayOfYear) {
+      insertNewTransaction(repeat, today)
+    }
   }
 
   private suspend fun maybeCreateTransactionFromRepeat(repeat: DbRepeat, today: LocalDate) {
@@ -148,22 +233,11 @@ internal constructor(
     for (rep in allRepeats) {
 
       // Don't do anything if we haven't "started" yet
-      if (rep.firstDate <= today) {
+      if (rep.firstDate < today) {
         continue
       }
 
-      // Make sure there is not already a transaction created for today
-      when (val existing = transactionQueryDao.queryByRepeatOnDate(rep.id, today)) {
-        is Maybe.Data -> {
-          Timber.w(
-              "A transaction already exists for today for the given repeat: ${mapOf(
-                "repeat" to rep,
-                "transaction" to existing,
-            )}")
-          continue
-        }
-        is Maybe.None -> maybeCreateTransactionFromRepeat(rep, today)
-      }
+      maybeCreateTransactionFromRepeat(rep, today)
     }
   }
 

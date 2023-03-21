@@ -26,6 +26,8 @@ interface TransactionQueryDao : DbQuery<DbTransaction> {
 
   @CheckResult suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction>
 
+  @CheckResult suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction>
+
   @CheckResult
   suspend fun queryByRepeatOnDate(
       id: DbRepeat.Id,
@@ -35,6 +37,8 @@ interface TransactionQueryDao : DbQuery<DbTransaction> {
   interface Cache : DbQuery.Cache {
 
     suspend fun invalidateById(id: DbTransaction.Id)
+
+    suspend fun invalidateByRepeat(id: DbRepeat.Id)
 
     suspend fun invalidateByRepeatOnDate(
         id: DbRepeat.Id,

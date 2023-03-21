@@ -87,4 +87,15 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
       id: DbRepeat.Id,
       dateString: String
   ): RoomDbTransaction?
+
+  final override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
+      withContext(context = Dispatchers.IO) { daoQueryByRepeat(id) }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+  WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
+""")
+  internal abstract suspend fun daoQueryByRepeat(id: DbRepeat.Id): List<RoomDbTransaction>
 }

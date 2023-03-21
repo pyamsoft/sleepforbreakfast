@@ -61,6 +61,12 @@ internal constructor(
         return@multiCachify realQueryDao.queryById(id)
       }
 
+  private val queryByRepeat =
+      multiCachify<QueryByRepeat, List<DbTransaction>, DbRepeat.Id> { id ->
+        Enforcer.assertOffMainThread()
+        return@multiCachify realQueryDao.queryByRepeat(id)
+      }
+
   private val queryByRepeatOnDate =
       multiCachify<QueryByRepeatOnDate, Maybe<out DbTransaction>, DbRepeat.Id, LocalDate> { id, date
         ->
@@ -81,6 +87,7 @@ internal constructor(
         Enforcer.assertOffMainThread()
         queryCache.clear()
         queryByIdCache.clear()
+        queryByRepeat.clear()
         queryByRepeatOnDate.clear()
       }
 
@@ -94,6 +101,18 @@ internal constructor(
             )
 
         queryByIdCache.key(key).clear()
+      }
+
+  override suspend fun invalidateByRepeat(id: DbRepeat.Id) =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        val key =
+            QueryByRepeat(
+                repeatId = id,
+            )
+
+        queryByRepeat.key(key).clear()
       }
 
   override suspend fun invalidateByRepeatOnDate(
@@ -134,6 +153,18 @@ internal constructor(
             )
 
         return@withContext queryByIdCache.key(key).call(id)
+      }
+
+  override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        val key =
+            QueryByRepeat(
+                repeatId = id,
+            )
+
+        return@withContext queryByRepeat.key(key).call(id)
       }
 
   override suspend fun queryByRepeatOnDate(
@@ -185,6 +216,10 @@ internal constructor(
 
   private data class QueryByIdKey(
       val transactionId: DbTransaction.Id,
+  )
+
+  private data class QueryByRepeat(
+      val repeatId: DbRepeat.Id,
   )
 
   private data class QueryByRepeatOnDate(
