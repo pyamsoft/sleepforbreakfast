@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.money
+package com.pyamsoft.sleepforbreakfast.ui
 
 import android.text.format.DateFormat
 import android.widget.DatePicker
@@ -22,7 +22,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-internal fun DatePickerDialog(
+fun DatePickerDialog(
     modifier: Modifier = Modifier,
     initialDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
@@ -62,7 +62,7 @@ internal fun DatePickerDialog(
 }
 
 @Composable
-internal fun TimePickerDialog(
+fun TimePickerDialog(
     modifier: Modifier = Modifier,
     initialTime: LocalTime,
     onTimeSelected: (LocalTime) -> Unit,

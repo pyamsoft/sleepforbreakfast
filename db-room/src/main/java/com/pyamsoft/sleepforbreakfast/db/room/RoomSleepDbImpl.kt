@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.db.room
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -37,7 +38,14 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 1,
+    version = 2,
+    autoMigrations =
+        [
+            AutoMigration(
+                from = 1,
+                to = 2,
+            ),
+        ],
     entities =
         [
             RoomDbTransaction::class,

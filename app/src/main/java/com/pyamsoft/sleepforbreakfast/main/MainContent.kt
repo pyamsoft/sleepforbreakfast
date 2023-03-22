@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
+import com.pyamsoft.sleepforbreakfast.sources.SourcesEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 
 @Composable
@@ -42,6 +43,12 @@ internal fun MainContent(
         }
         MainPage.REPEAT -> {
           RepeatEntry(
+              modifier = modifier,
+              onDismiss = onClosePage,
+          )
+        }
+        MainPage.SOURCES -> {
+          SourcesEntry(
               modifier = modifier,
               onDismiss = onClosePage,
           )

@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.room.source.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
+import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
@@ -28,10 +29,27 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomSourceQueryDao : SourceQueryDao {
 
-  override suspend fun query(): List<DbSource> =
+  final override suspend fun query(): List<DbSource> =
       withContext(context = Dispatchers.IO) { daoQuery() }
 
   @CheckResult
   @Query("""SELECT * FROM ${RoomDbSource.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbSource>
+
+  final override suspend fun queryById(id: DbSource.Id): Maybe<out DbSource> =
+      withContext(context = Dispatchers.IO) {
+        when (val transaction = daoQueryById(id)) {
+          null -> Maybe.None
+          else -> Maybe.Data(transaction)
+        }
+      }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbSource.TABLE_NAME}
+  WHERE ${RoomDbSource.COLUMN_ID} = :id
+  LIMIT 1
+""")
+  internal abstract suspend fun daoQueryById(id: DbSource.Id): RoomDbSource?
 }

@@ -30,6 +30,8 @@ internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbSource.Id,
     @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
+    @JvmField @ColumnInfo(name = COLUMN_NOTE, defaultValue = "") val dbNote: String,
+    @JvmField @ColumnInfo(name = COLUMN_ACCOUNT, defaultValue = "") val dbAccount: String,
 ) : DbSource {
 
   @Ignore override val id: DbSource.Id = dbId
@@ -38,9 +40,23 @@ internal constructor(
 
   @Ignore override val name: String = dbName
 
+  @Ignore override val note = dbNote
+
+  @Ignore override val accountNumber = dbAccount
+
   @Ignore
   override fun name(name: String): DbSource {
     return this.copy(dbName = name)
+  }
+
+  @Ignore
+  override fun note(note: String): DbSource {
+    return this.copy(dbNote = note)
+  }
+
+  @Ignore
+  override fun accountNumber(accountNumber: String): DbSource {
+    return this.copy(dbAccount = accountNumber)
   }
 
   companion object {
@@ -53,6 +69,10 @@ internal constructor(
 
     @Ignore internal const val COLUMN_NAME = "name"
 
+    @Ignore internal const val COLUMN_NOTE = "note"
+
+    @Ignore internal const val COLUMN_ACCOUNT = "account"
+
     @Ignore
     @JvmStatic
     @CheckResult
@@ -63,6 +83,8 @@ internal constructor(
             item.id,
             item.createdAt,
             item.name,
+            item.note,
+            item.accountNumber,
         )
       }
     }

@@ -34,7 +34,9 @@ import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.widget.MaterialCheckable
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.MoneyVisualTransformation
+import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -239,6 +241,22 @@ fun MoneySubmit(
     onSubmit: () -> Unit,
 ) {
   val working by state.working.collectAsState()
+
+  AddSubmit(
+      modifier = modifier,
+      working = working,
+      onReset = onReset,
+      onSubmit = onSubmit,
+  )
+}
+
+@Composable
+fun AddSubmit(
+    modifier: Modifier = Modifier,
+    working: Boolean,
+    onReset: () -> Unit,
+    onSubmit: () -> Unit,
+) {
   val isButtonEnabled = remember(working) { !working }
 
   Row(
@@ -296,6 +314,21 @@ fun MoneyName(
 ) {
   val name by state.name.collectAsState()
 
+  AddName(
+      modifier = modifier,
+      name = name,
+      keyboardTextOptions = keyboardTextOptions,
+      onNameChanged = onNameChanged,
+  )
+}
+
+@Composable
+fun AddName(
+    modifier: Modifier = Modifier,
+    name: String,
+    keyboardTextOptions: KeyboardOptions,
+    onNameChanged: (String) -> Unit,
+) {
   TextField(
       modifier = modifier,
       value = name,
@@ -321,7 +354,19 @@ fun MoneyNote(
     onNoteChanged: (String) -> Unit,
 ) {
   val note by state.note.collectAsState()
+  AddNote(
+      modifier = modifier,
+      note = note,
+      onNoteChanged = onNoteChanged,
+  )
+}
 
+@Composable
+fun AddNote(
+    modifier: Modifier = Modifier,
+    note: String,
+    onNoteChanged: (String) -> Unit,
+) {
   TextField(
       modifier = modifier,
       value = note,

@@ -14,18 +14,31 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.source
+package com.pyamsoft.sleepforbreakfast.sources.add
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.core.Maybe
-import com.pyamsoft.sleepforbreakfast.db.DbQuery
+import dagger.BindsInstance
+import dagger.Module
+import dagger.Subcomponent
 
-interface SourceQueryDao : DbQuery<DbSource> {
+@Subcomponent(
+    modules =
+        [
+            SourcesAddComponent.SourcesModule::class,
+        ],
+)
+internal interface SourcesAddComponent {
 
-  @CheckResult suspend fun queryById(id: DbSource.Id): Maybe<out DbSource>
+  fun inject(injector: SourcesAddInjector)
 
-  interface Cache : DbQuery.Cache {
+  @Subcomponent.Factory
+  interface Factory {
 
-    suspend fun invalidateById(id: DbSource.Id)
+    @CheckResult
+    fun create(
+        @BindsInstance params: SourcesAddParams,
+    ): SourcesAddComponent
   }
+
+  @Module abstract class SourcesModule
 }
