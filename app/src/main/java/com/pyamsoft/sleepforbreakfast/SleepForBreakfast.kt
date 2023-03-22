@@ -1,6 +1,8 @@
 package com.pyamsoft.sleepforbreakfast
 
 import android.app.Application
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.bootstrap.libraries.OssLibraries
 import com.pyamsoft.pydroid.ui.ModuleProvider
@@ -9,9 +11,17 @@ import com.pyamsoft.pydroid.ui.installPYDroid
 import com.pyamsoft.pydroid.util.isDebugMode
 import com.pyamsoft.sleepforbreakfast.core.PRIVACY_POLICY_URL
 import com.pyamsoft.sleepforbreakfast.core.TERMS_CONDITIONS_URL
+import com.pyamsoft.sleepforbreakfast.work.enqueueAppWork
+import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class SleepForBreakfast : Application() {
+
+  @Inject @JvmField internal var workerQueue: WorkerQueue? = null
 
   @CheckResult
   private fun installPYDroid(): ModuleProvider {
@@ -51,6 +61,14 @@ class SleepForBreakfast : Application() {
     installWorkerComponent(component)
   }
 
+  private fun beginWork() {
+    // Coroutine start up is slow. What we can do instead is create a handler, which is cheap, and
+    // post to the main thread to defer this work until after start up is done
+    Handler(Looper.getMainLooper()).post {
+      MainScope().launch(context = Dispatchers.Default) { workerQueue?.enqueueAppWork() }
+    }
+  }
+
   override fun onCreate() {
     super.onCreate()
 
@@ -59,6 +77,7 @@ class SleepForBreakfast : Application() {
     installComponent(modules)
 
     addLibraries()
+    beginWork()
   }
 
   companion object {

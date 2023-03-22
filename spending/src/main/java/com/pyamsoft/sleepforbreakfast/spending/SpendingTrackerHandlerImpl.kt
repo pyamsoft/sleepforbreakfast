@@ -32,7 +32,7 @@ internal constructor(
 ) : SpendingTrackerHandler {
 
   private suspend fun handleProcessUnusedAutomatic(automatic: DbAutomatic) {
-    val job = WorkJobType.AUTOMATIC_SPENDING_CONVERTER
+    val job = WorkJobType.ONESHOT_AUTOMATIC_TRANSACTION
     Timber.d("Enqueue job for processing $automatic: $job")
     workerQueue.enqueue(job)
   }

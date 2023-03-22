@@ -25,6 +25,26 @@ protected constructor(
     onDestroy()
   }
 
+  @CheckResult
+  private suspend fun process(worker: BgWorker): Result {
+    val tags = this.tags
+
+    return when (val result = worker.work()) {
+      is BgWorker.WorkResult.Cancelled -> {
+        Timber.w("Work was cancelled, report success to avoid retry policy: $tags")
+        Result.success()
+      }
+      is BgWorker.WorkResult.Failed -> {
+        Timber.e(result.throwable, "Work failed to complete: $tags")
+        Result.failure()
+      }
+      is BgWorker.WorkResult.Success -> {
+        Timber.d("Work succeeded: $tags")
+        Result.success()
+      }
+    }
+  }
+
   final override suspend fun doWork(): Result =
       withContext(context = Dispatchers.Default) {
         try {
@@ -44,25 +64,4 @@ protected constructor(
   protected abstract fun onDestroy()
 
   protected abstract fun worker(): BgWorker
-
-  companion object {
-
-    @CheckResult
-    private suspend fun process(worker: BgWorker): Result {
-      return when (val result = worker.work()) {
-        is BgWorker.WorkResult.Cancelled -> {
-          Timber.w("Work was cancelled, report success to avoid retry policy")
-          Result.success()
-        }
-        is BgWorker.WorkResult.Failed -> {
-          Timber.e(result.throwable, "Work failed to complete")
-          Result.failure()
-        }
-        is BgWorker.WorkResult.Success -> {
-          Timber.d("Work succeeded")
-          Result.success()
-        }
-      }
-    }
-  }
 }

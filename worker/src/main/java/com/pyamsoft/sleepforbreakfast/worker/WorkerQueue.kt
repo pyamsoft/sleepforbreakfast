@@ -5,6 +5,4 @@ interface WorkerQueue {
   suspend fun enqueue(type: WorkJobType)
 
   suspend fun cancel(type: WorkJobType)
-
-  suspend fun cancelAll()
 }
