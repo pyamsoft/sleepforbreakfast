@@ -13,8 +13,8 @@ import timber.log.Timber
 class AutomaticSpendingWork
 @Inject
 internal constructor(
-  private val automaticQueryDao: AutomaticQueryDao,
-  private val handler: AutomaticTransactionHandler,
+    private val automaticQueryDao: AutomaticQueryDao,
+    private val handler: AutomaticTransactionHandler,
 ) : BgWorker {
 
   private suspend fun processJobs() {

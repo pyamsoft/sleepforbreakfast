@@ -5,5 +5,4 @@ import androidx.annotation.CheckResult
 interface WorkJob {
 
   @get:CheckResult val type: WorkJobType
-
 }
