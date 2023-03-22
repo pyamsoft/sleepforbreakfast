@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.main
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -23,6 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.pyamsoft.sleepforbreakfast.home.HomeEntry
+import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
+import com.pyamsoft.sleepforbreakfast.sources.SourcesEntry
+import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 
 @Composable
 fun MainScreen(
@@ -34,21 +39,49 @@ fun MainScreen(
     onClosePage: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
+    onOpenSources: () -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsState()
+  val page by state.page.collectAsState()
 
   Scaffold(
       modifier = modifier.fillMaxSize(),
   ) { pv ->
-    MainContent(
-        modifier = Modifier.fillMaxSize().padding(pv),
-        appName = appName,
-        state = state,
-        onClosePage = onClosePage,
-        onOpenSettings = onOpenSettings,
-        onOpenTransactions = onOpenTransactions,
-        onOpenRepeats = onOpenRepeats,
-    )
+    Crossfade(
+        targetState = page,
+    ) { p ->
+      if (p == null) {
+        HomeEntry(
+            modifier = Modifier.fillMaxSize().padding(pv),
+            appName = appName,
+            onOpenTransactions = onOpenTransactions,
+            onOpenRepeats = onOpenRepeats,
+            onOpenSettings = onOpenSettings,
+            onOpenSources = onOpenSources,
+        )
+      } else {
+        when (p) {
+          MainPage.TRANSACTION -> {
+            TransactionEntry(
+                modifier = Modifier.fillMaxSize().padding(pv),
+                onDismiss = onClosePage,
+            )
+          }
+          MainPage.REPEAT -> {
+            RepeatEntry(
+                modifier = Modifier.fillMaxSize().padding(pv),
+                onDismiss = onClosePage,
+            )
+          }
+          MainPage.SOURCES -> {
+            SourcesEntry(
+                modifier = Modifier.fillMaxSize().padding(pv),
+                onDismiss = onClosePage,
+            )
+          }
+        }
+      }
+    }
 
     if (isSettingsOpen) {
       SettingsDialog(

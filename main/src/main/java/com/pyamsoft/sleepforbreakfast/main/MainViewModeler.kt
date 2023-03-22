@@ -72,6 +72,10 @@ internal constructor(
     state.page.value = MainPage.REPEAT
   }
 
+  fun handleOpenSources() {
+    state.page.value = MainPage.SOURCES
+  }
+
   companion object {
 
     private const val KEY_SETTINGS = "is_settings_open"
