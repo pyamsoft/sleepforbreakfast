@@ -39,7 +39,6 @@ internal constructor(
     interactor: RepeatInteractor,
     params: RepeatAddParams,
     private val clock: Clock,
-    private val addInteractor: RepeatAddInteractor,
 ) :
     MoneyAddViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
         state = state,
@@ -49,7 +48,7 @@ internal constructor(
 
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbRepeat>>, DbRepeat> { repeat ->
-        addInteractor.submit(repeat)
+        interactor.submit(repeat)
       }
 
   @CheckResult

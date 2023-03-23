@@ -20,7 +20,6 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
-import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddInteractor
 import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddParams
 import com.pyamsoft.sleepforbreakfast.repeat.delete.RepeatDeleteParams
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
@@ -33,13 +32,11 @@ class RepeatViewModeler
 internal constructor(
     state: MutableRepeatViewState,
     interactor: RepeatInteractor,
-    addInteractor: RepeatAddInteractor,
     private val jsonParser: JsonParser,
 ) :
     ListViewModeler<DbRepeat, RepeatChangeEvent, MutableRepeatViewState>(
         state = state,
         interactor = interactor,
-        addInteractor = addInteractor,
     ) {
 
   private fun handleAddParams(params: RepeatAddParams) {

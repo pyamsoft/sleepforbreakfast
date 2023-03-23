@@ -27,13 +27,11 @@ internal constructor(
     state: MutableTransactionDeleteViewState,
     params: TransactionDeleteParams,
     interactor: TransactionInteractor,
-    deleteInteractor: TransactionDeleteInteractor,
 ) :
     DeleteViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionDeleteViewState>(
         state = state,
         initialId = params.transactionId,
         interactor = interactor,
-        deleteInteractor = deleteInteractor,
     ) {
 
   override fun isIdEmpty(id: DbTransaction.Id): Boolean {

@@ -20,7 +20,6 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.source.SourceChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
-import com.pyamsoft.sleepforbreakfast.sources.add.SourceAddInteractor
 import com.pyamsoft.sleepforbreakfast.sources.add.SourcesAddParams
 import com.pyamsoft.sleepforbreakfast.sources.delete.SourcesDeleteParams
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
@@ -33,13 +32,11 @@ class SourcesViewModeler
 internal constructor(
     state: MutableSourcesViewState,
     interactor: SourcesInteractor,
-    addInteractor: SourceAddInteractor,
     private val jsonParser: JsonParser,
 ) :
     ListViewModeler<DbSource, SourceChangeEvent, MutableSourcesViewState>(
         state = state,
         interactor = interactor,
-        addInteractor = addInteractor,
     ) {
 
   private fun handleAddParams(params: SourcesAddParams) {

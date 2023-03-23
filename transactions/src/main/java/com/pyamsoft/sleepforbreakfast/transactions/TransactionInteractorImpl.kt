@@ -1,8 +1,11 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import com.pyamsoft.sleepforbreakfast.core.Maybe
+import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
@@ -14,6 +17,8 @@ internal class TransactionInteractorImpl
 @Inject
 constructor(
     private val transactionRealtime: TransactionRealtime,
+    private val transactionInsertDao: TransactionInsertDao,
+    private val transactionDeleteDao: TransactionDeleteDao,
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
 ) :
@@ -34,5 +39,13 @@ constructor(
 
   override suspend fun performListenRealtime(onEvent: (TransactionChangeEvent) -> Unit) {
     transactionRealtime.listenForChanges(onEvent)
+  }
+
+  override suspend fun performInsert(item: DbTransaction): DbInsert.InsertResult<DbTransaction> {
+    return transactionInsertDao.insert(item)
+  }
+
+  override suspend fun performDelete(item: DbTransaction): Boolean {
+    return transactionDeleteDao.delete(item)
   }
 }

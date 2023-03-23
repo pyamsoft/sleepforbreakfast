@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.money.list
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
-import com.pyamsoft.sleepforbreakfast.money.add.ListAddInteractor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +31,6 @@ abstract class ListViewModeler<T : Any, CE : Any, S : MutableListViewState<T>>
 protected constructor(
     final override val state: S,
     private val interactor: ListInteractor<*, T, CE>,
-    private val addInteractor: ListAddInteractor<T>,
 ) : AbstractViewModeler<S>(state) {
 
   private fun listenForItems(scope: CoroutineScope) {
@@ -119,7 +117,7 @@ protected constructor(
     val deleted = state.recentlyDeleted.getAndUpdate { null }
     if (deleted != null) {
       scope.launch(context = Dispatchers.Main) {
-        addInteractor
+        interactor
             .submit(deleted)
             .onFailure { Timber.e(it, "Error when restoring $deleted") }
             .onSuccess { result ->

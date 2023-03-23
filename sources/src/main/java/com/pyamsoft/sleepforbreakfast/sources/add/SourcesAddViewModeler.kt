@@ -37,7 +37,6 @@ internal constructor(
     params: SourcesAddParams,
     interactor: SourcesInteractor,
     private val clock: Clock,
-    private val addInteractor: SourceAddInteractor,
 ) :
     OneViewModeler<DbSource.Id, DbSource, MutableSourcesAddViewState>(
         state = state,
@@ -47,7 +46,7 @@ internal constructor(
 
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbSource>>, DbSource> { source ->
-        addInteractor.submit(source)
+        interactor.submit(source)
       }
 
   @CheckResult

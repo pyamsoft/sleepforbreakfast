@@ -20,7 +20,6 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
-import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
@@ -33,13 +32,11 @@ class TransactionViewModeler
 internal constructor(
     state: MutableTransactionViewState,
     interactor: TransactionInteractor,
-    addInteractor: TransactionAddInteractor,
     private val jsonParser: JsonParser,
 ) :
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
         state = state,
         interactor = interactor,
-        addInteractor = addInteractor,
     ) {
 
   private fun handleAddParams(params: TransactionAddParams) {

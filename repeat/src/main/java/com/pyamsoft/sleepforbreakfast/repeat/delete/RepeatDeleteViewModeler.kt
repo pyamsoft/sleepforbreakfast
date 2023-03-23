@@ -27,13 +27,11 @@ internal constructor(
     state: MutableRepeatDeleteViewState,
     params: RepeatDeleteParams,
     interactor: RepeatInteractor,
-    deleteInteractor: RepeatDeleteInteractor,
 ) :
     DeleteViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatDeleteViewState>(
         state = state,
         initialId = params.repeatId,
         interactor = interactor,
-        deleteInteractor = deleteInteractor,
     ) {
 
   override fun isIdEmpty(id: DbRepeat.Id): Boolean {

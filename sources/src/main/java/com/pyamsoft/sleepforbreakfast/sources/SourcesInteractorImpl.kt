@@ -1,8 +1,11 @@
 package com.pyamsoft.sleepforbreakfast.sources
 
 import com.pyamsoft.sleepforbreakfast.core.Maybe
+import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.source.SourceChangeEvent
+import com.pyamsoft.sleepforbreakfast.db.source.SourceDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.source.SourceInsertDao
 import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
 import com.pyamsoft.sleepforbreakfast.db.source.SourceRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
@@ -13,6 +16,8 @@ import javax.inject.Singleton
 internal class SourcesInteractorImpl
 @Inject
 constructor(
+    private val sourceInsertDao: SourceInsertDao,
+    private val sourceDeleteDao: SourceDeleteDao,
     private val sourceRealtime: SourceRealtime,
     private val sourceQueryDao: SourceQueryDao,
     private val sourceQueryCache: SourceQueryDao.Cache,
@@ -32,5 +37,13 @@ constructor(
 
   override suspend fun performListenRealtime(onEvent: (SourceChangeEvent) -> Unit) {
     sourceRealtime.listenForChanges(onEvent)
+  }
+
+  override suspend fun performInsert(item: DbSource): DbInsert.InsertResult<DbSource> {
+    return sourceInsertDao.insert(item)
+  }
+
+  override suspend fun performDelete(item: DbSource): Boolean {
+    return sourceDeleteDao.delete(item)
   }
 }

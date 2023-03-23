@@ -42,7 +42,6 @@ internal constructor(
     interactor: TransactionInteractor,
     params: TransactionAddParams,
     private val clock: Clock,
-    private val addInteractor: TransactionAddInteractor,
 ) :
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
         state = state,
@@ -53,7 +52,7 @@ internal constructor(
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbTransaction>>, DbTransaction> { transaction
         ->
-        addInteractor.submit(transaction)
+        interactor.submit(transaction)
       }
 
   @CheckResult

@@ -27,13 +27,11 @@ internal constructor(
     state: MutableSourcesDeleteViewState,
     params: SourcesDeleteParams,
     interactor: SourcesInteractor,
-    deleteInteractor: SourcesDeleteInteractor,
 ) :
     DeleteViewModeler<DbSource.Id, DbSource, MutableSourcesDeleteViewState>(
         state = state,
         initialId = params.sourcesId,
         interactor = interactor,
-        deleteInteractor = deleteInteractor,
     ) {
 
   override fun isIdEmpty(id: DbSource.Id): Boolean {
