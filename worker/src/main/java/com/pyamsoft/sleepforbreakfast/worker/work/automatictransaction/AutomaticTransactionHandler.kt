@@ -37,6 +37,7 @@ internal constructor(
             .clearCategories()
             .removeSourceId()
             .amountInCents(auto.notificationAmountInCents)
+            .type(auto.notificationType)
             .date(getNotificationPostTime(auto))
             .name(auto.notificationTitle)
             .note(
@@ -51,8 +52,6 @@ Key: ${auto.notificationKey}
 Group: ${auto.notificationGroup}
 """
                     .trimIndent())
-            // Assume this is a spend
-            .type(DbTransaction.Type.SPEND)
 
     return when (val result = transactionInsertDao.insert(transaction)) {
       is DbInsert.InsertResult.Fail -> {
