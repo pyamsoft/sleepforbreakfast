@@ -24,7 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
-import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
+import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
 import java.time.Clock
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -36,20 +36,25 @@ class RepeatAddViewModeler
 @Inject
 internal constructor(
     state: MutableRepeatAddViewState,
+    interactor: RepeatInteractor,
+    params: RepeatAddParams,
     private val clock: Clock,
-    private val params: RepeatAddParams,
-    private val interactor: RepeatAddInteractor,
-    private val loadRepeatHandler: LoadExistingHandler<DbRepeat.Id, DbRepeat>,
-) : MoneyViewModeler<MutableRepeatAddViewState>(state) {
+    private val addInteractor: RepeatAddInteractor,
+) :
+    MoneyViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
+        state = state,
+        initialId = params.repeatId,
+        interactor = interactor,
+    ) {
 
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbRepeat>>, DbRepeat> { repeat ->
-        interactor.submit(repeat)
+        addInteractor.submit(repeat)
       }
 
   @CheckResult
   private fun compile(): DbRepeat {
-    return DbRepeat.create(clock, params.repeatId)
+    return DbRepeat.create(clock, initialId)
         .repeatType(state.repeatType.value)
         .firstDay(state.repeatFirstDay.value)
         .unarchive()
@@ -70,14 +75,18 @@ internal constructor(
         .replaceTransactionCategories(state.categories.value)
   }
 
+  override fun isIdEmpty(id: DbRepeat.Id): Boolean {
+    return id.isEmpty
+  }
+
   override fun onBind(scope: CoroutineScope) {
-    // Upon opening, load up with this Transaction
-    loadRepeatHandler.loadExisting(
-        scope = scope,
-        id = params.repeatId,
-    ) {
-      handleReset(ResetPayload.Repeat(it))
-    }
+    // Clear everything
+    handleReset()
+  }
+
+  override fun onDataLoaded(result: DbRepeat) {
+    // But once we are loaded initialize everything
+    handleReset(ResetPayload.Repeat(result))
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {

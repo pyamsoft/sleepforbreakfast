@@ -18,11 +18,11 @@ package com.pyamsoft.sleepforbreakfast.sources.add
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.highlander.highlander
-import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
-import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
+import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import com.pyamsoft.sleepforbreakfast.sources.SourcesInteractor
 import java.time.Clock
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
@@ -33,24 +33,40 @@ import timber.log.Timber
 class SourcesAddViewModeler
 @Inject
 internal constructor(
-    override val state: MutableSourcesAddViewState,
+    state: MutableSourcesAddViewState,
+    params: SourcesAddParams,
+    interactor: SourcesInteractor,
     private val clock: Clock,
-    private val params: SourcesAddParams,
-    private val interactor: SourceAddInteractor,
-    private val loadSourceHandler: LoadExistingHandler<DbSource.Id, DbSource>,
-) : AbstractViewModeler<SourcesAddViewState>(state) {
+    private val addInteractor: SourceAddInteractor,
+) :
+    OneViewModeler<DbSource.Id, DbSource, MutableSourcesAddViewState>(
+        state = state,
+        initialId = params.sourcesId,
+        interactor = interactor,
+    ) {
 
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbSource>>, DbSource> { source ->
-        interactor.submit(source)
+        addInteractor.submit(source)
       }
 
   @CheckResult
   private fun compile(): DbSource {
-    return DbSource.create(clock, params.sourcesId)
+    return DbSource.create(clock, initialId)
         .name(state.name.value)
         .accountNumber(state.accountNumber.value)
         .note(state.note.value)
+  }
+  override fun onBind(scope: CoroutineScope) {
+    handleReset()
+  }
+
+  override fun isIdEmpty(id: DbSource.Id): Boolean {
+    return id.isEmpty
+  }
+
+  override fun onDataLoaded(result: DbSource) {
+    handleReset(result)
   }
 
   fun handleReset(s: DbSource? = null) {
@@ -75,18 +91,6 @@ internal constructor(
 
   fun handleAccountNumberChanged(num: String) {
     state.accountNumber.value = num
-  }
-
-  fun bind(scope: CoroutineScope) {
-    handleReset()
-
-    // Upon opening, load up with this Transaction
-    loadSourceHandler.loadExisting(
-        scope = scope,
-        id = params.sourcesId,
-    ) {
-      handleReset(it)
-    }
   }
 
   fun handleSubmit(

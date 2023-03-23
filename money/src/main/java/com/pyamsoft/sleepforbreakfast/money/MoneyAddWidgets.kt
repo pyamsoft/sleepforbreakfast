@@ -49,7 +49,7 @@ private val REGEX_FILTER_ONLY_DIGITS = Regex("[^\\d+]")
 @Composable
 fun MoneyAmount(
     modifier: Modifier = Modifier,
-    state: MoneyViewState,
+    state: MoneyAddViewState,
     keyboardNumberOptions: KeyboardOptions,
     onAmountChanged: (Long) -> Unit,
 ) {
@@ -127,7 +127,7 @@ fun MoneyAmount(
 @Composable
 fun MoneyType(
     modifier: Modifier = Modifier,
-    state: MoneyViewState,
+    state: MoneyAddViewState,
     onTypeChanged: (DbTransaction.Type) -> Unit,
 ) {
   val type by state.type.collectAsState()
@@ -236,7 +236,7 @@ fun TimePicker(
 @Composable
 fun MoneySubmit(
     modifier: Modifier = Modifier,
-    state: MoneyViewState,
+    state: MoneyAddViewState,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
 ) {
@@ -308,7 +308,7 @@ fun AddSubmit(
 @Composable
 fun MoneyName(
     modifier: Modifier = Modifier,
-    state: MoneyViewState,
+    state: MoneyAddViewState,
     keyboardTextOptions: KeyboardOptions,
     onNameChanged: (String) -> Unit,
 ) {
@@ -350,7 +350,7 @@ fun AddName(
 @Composable
 fun MoneyNote(
     modifier: Modifier = Modifier,
-    state: MoneyViewState,
+    state: MoneyAddViewState,
     onNoteChanged: (String) -> Unit,
     label: (@Composable () -> Unit)? = null
 ) {

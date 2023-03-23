@@ -18,19 +18,27 @@ package com.pyamsoft.sleepforbreakfast.money
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
+import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class MoneyViewModeler<S : MutableMoneyAddViewState>
+abstract class MoneyViewModeler<I : Any, T : Any, S : MutableMoneyAddViewState>
 protected constructor(
-    final override val state: S,
-) : AbstractViewModeler<S>(state) {
+    state: S,
+    initialId: I,
+    interactor: ListInteractor<I, T, *>,
+) :
+    OneViewModeler<I, T, S>(
+        state = state,
+        initialId = initialId,
+        interactor = interactor,
+    ) {
 
   final override fun registerSaveState(
       registry: SaveableStateRegistry
@@ -112,11 +120,6 @@ protected constructor(
     }
   }
 
-  fun bind(scope: CoroutineScope) {
-    handleReset()
-    onBind(scope = scope)
-  }
-
   fun handleSubmit(
       scope: CoroutineScope,
       onSubmit: () -> Unit,
@@ -152,8 +155,6 @@ protected constructor(
   protected abstract fun onConsumeRestoredState(registry: SaveableStateRegistry)
 
   protected abstract fun onReset(payload: ResetPayload?)
-
-  protected abstract fun onBind(scope: CoroutineScope)
 
   @CheckResult protected abstract suspend fun onSubmitResult(): ResultWrapper<*>
 

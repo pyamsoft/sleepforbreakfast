@@ -16,9 +16,9 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.delete
 
-import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
+import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,19 +28,25 @@ import timber.log.Timber
 class TransactionDeleteViewModeler
 @Inject
 internal constructor(
-    override val state: MutableTransactionDeleteViewState,
-    private val params: TransactionDeleteParams,
-    private val interactor: TransactionDeleteInteractor,
-    private val loadTransactionHandler: LoadExistingHandler<DbTransaction.Id, DbTransaction>,
-) : AbstractViewModeler<TransactionDeleteViewState>(state) {
-
-  fun bind(scope: CoroutineScope) {
-    loadTransactionHandler.loadExisting(
-        scope = scope,
-        id = params.transactionId,
+    state: MutableTransactionDeleteViewState,
+    params: TransactionDeleteParams,
+    interactor: TransactionInteractor,
+    private val deleteInteractor: TransactionDeleteInteractor,
+) :
+    OneViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionDeleteViewState>(
+        state = state,
+        initialId = params.transactionId,
+        interactor = interactor,
     ) {
-      state.transaction.value = it
-    }
+
+  override fun onBind(scope: CoroutineScope) {}
+
+  override fun isIdEmpty(id: DbTransaction.Id): Boolean {
+    return id.isEmpty
+  }
+
+  override fun onDataLoaded(result: DbTransaction) {
+    state.transaction.value = result
   }
 
   fun handleDeleteTransaction(
@@ -65,7 +71,7 @@ internal constructor(
       }
 
       state.working.value = true
-      interactor
+      deleteInteractor
           .delete(transaction)
           .onFailure { Timber.e(it, "Failed to delete transaction: $transaction") }
           .onSuccess { deleted ->

@@ -24,7 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
-import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandler
+import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -39,21 +39,26 @@ class TransactionAddViewModeler
 @Inject
 internal constructor(
     state: MutableTransactionAddViewState,
+    interactor: TransactionInteractor,
+    params: TransactionAddParams,
     private val clock: Clock,
-    private val params: TransactionAddParams,
-    private val interactor: TransactionAddInteractor,
-    private val loadTransactionHandler: LoadExistingHandler<DbTransaction.Id, DbTransaction>,
-) : MoneyViewModeler<MutableTransactionAddViewState>(state) {
+    private val addInteractor: TransactionAddInteractor,
+) :
+    MoneyViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
+        state = state,
+        initialId = params.transactionId,
+        interactor = interactor,
+    ) {
 
   private val submitRunner =
       highlander<ResultWrapper<DbInsert.InsertResult<DbTransaction>>, DbTransaction> { transaction
         ->
-        interactor.submit(transaction)
+        addInteractor.submit(transaction)
       }
 
   @CheckResult
   private fun compile(): DbTransaction {
-    return DbTransaction.create(clock, params.transactionId)
+    return DbTransaction.create(clock, initialId)
         .name(state.name.value)
         .amountInCents(state.amount.value)
         .date(state.date.value)
@@ -71,14 +76,16 @@ internal constructor(
         .replaceCategories(state.categories.value)
   }
 
+  override fun isIdEmpty(id: DbTransaction.Id): Boolean {
+    return id.isEmpty
+  }
+
   override fun onBind(scope: CoroutineScope) {
-    // Upon opening, load up with this Transaction
-    loadTransactionHandler.loadExisting(
-        scope = scope,
-        id = params.transactionId,
-    ) {
-      handleReset(ResetPayload.Transaction(it))
-    }
+    handleReset()
+  }
+
+  override fun onDataLoaded(result: DbTransaction) {
+    handleReset(ResetPayload.Transaction(result))
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {

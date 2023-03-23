@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
-interface MoneyViewState : UiViewState {
+interface MoneyAddViewState : UiViewState {
   val name: StateFlow<String>
   val source: StateFlow<DbSource.Id?>
   val categories: StateFlow<List<DbCategory.Id>>
@@ -36,7 +36,7 @@ interface MoneyViewState : UiViewState {
 }
 
 @Stable
-abstract class MutableMoneyAddViewState protected constructor() : MoneyViewState {
+abstract class MutableMoneyAddViewState protected constructor() : MoneyAddViewState {
   final override val name = MutableStateFlow("")
   final override val source = MutableStateFlow<DbSource.Id?>(null)
   final override val categories = MutableStateFlow<List<DbCategory.Id>>(emptyList())

@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
-import com.pyamsoft.sleepforbreakfast.money.MoneyViewState
+import com.pyamsoft.sleepforbreakfast.money.MoneyAddViewState
 import com.pyamsoft.sleepforbreakfast.money.MutableMoneyAddViewState
 import java.time.Clock
 import java.time.LocalDateTime
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
-interface TransactionAddViewState : MoneyViewState {
+interface TransactionAddViewState : MoneyAddViewState {
   val date: StateFlow<LocalDateTime>
   val isDateDialogOpen: StateFlow<Boolean>
   val isTimeDialogOpen: StateFlow<Boolean>
