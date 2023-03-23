@@ -78,7 +78,7 @@ internal fun SourcesEntry(
       SourcesAddEntry(
           modifier = modifier,
           params = ap,
-          onDismiss = { viewModel.handleCloseDeleteSource() },
+          onDismiss = { viewModel.handleCloseAddSource() },
       )
     }
   }
