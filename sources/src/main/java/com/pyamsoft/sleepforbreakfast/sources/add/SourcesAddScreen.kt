@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -92,6 +93,11 @@ fun SourcesAddScreen(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             note = note,
             onNoteChanged = onNoteChanged,
+            label = {
+              Text(
+                  text = "Note about this Source",
+              )
+            },
         )
       }
 
@@ -134,5 +140,10 @@ private fun AccountNumber(
       value = accountNumber,
       onValueChange = { handleAccountChanged(it) },
       keyboardOptions = keyboardNumberOptions,
+      label = {
+        Text(
+            text = "Last 4 digits",
+        )
+      },
   )
 }

@@ -352,12 +352,14 @@ fun MoneyNote(
     modifier: Modifier = Modifier,
     state: MoneyViewState,
     onNoteChanged: (String) -> Unit,
+    label: (@Composable () -> Unit)? = null
 ) {
   val note by state.note.collectAsState()
   AddNote(
       modifier = modifier,
       note = note,
       onNoteChanged = onNoteChanged,
+      label = label,
   )
 }
 
@@ -366,11 +368,13 @@ fun AddNote(
     modifier: Modifier = Modifier,
     note: String,
     onNoteChanged: (String) -> Unit,
+    label: (@Composable () -> Unit)? = null
 ) {
   TextField(
       modifier = modifier,
       value = note,
       onValueChange = onNoteChanged,
       maxLines = 4,
+      label = label,
   )
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -144,6 +145,11 @@ fun TransactionAddScreen(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
             onNoteChanged = onNoteChanged,
+            label = {
+              Text(
+                  text = "Note about this Transaction",
+              )
+            },
         )
       }
 
