@@ -30,6 +30,19 @@ internal constructor(
 
   @CheckResult
   private suspend fun createTransactionFromTemplate(auto: DbAutomatic): Boolean {
+    val note =
+        """
+Automatically created from Notification
+
+${auto.notificationMatchText}
+
+Package: ${auto.notificationPackageName}
+ID: ${auto.notificationId}
+Key: ${auto.notificationKey}
+Group: ${auto.notificationGroup}
+"""
+            .trimIndent()
+
     val transaction =
         DbTransaction.create(clock, DbTransaction.Id.EMPTY)
             // Tie to this automatic
@@ -40,18 +53,7 @@ internal constructor(
             .type(auto.notificationType)
             .date(getNotificationPostTime(auto))
             .name(auto.notificationTitle)
-            .note(
-                """
-Automatically created from Notification
-
-${auto.notificationMatchText}
-
-Package: ${auto.notificationPackageName}
-ID: ${auto.notificationId}
-Key: ${auto.notificationKey}
-Group: ${auto.notificationGroup}
-"""
-                    .trimIndent())
+            .note(note)
 
     return when (val result = transactionInsertDao.insert(transaction)) {
       is DbInsert.InsertResult.Fail -> {
