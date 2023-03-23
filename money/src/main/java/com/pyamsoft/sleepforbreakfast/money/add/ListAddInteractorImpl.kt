@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.money.list
+package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.Enforcer

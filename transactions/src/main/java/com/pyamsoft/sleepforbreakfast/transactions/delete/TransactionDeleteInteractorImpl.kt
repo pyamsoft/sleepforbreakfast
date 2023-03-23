@@ -2,7 +2,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.delete
 
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
-import com.pyamsoft.sleepforbreakfast.money.list.ListDeleteInteractorImpl
+import com.pyamsoft.sleepforbreakfast.money.delete.ListDeleteInteractorImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 

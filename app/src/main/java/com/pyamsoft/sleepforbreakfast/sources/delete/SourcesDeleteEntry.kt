@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.transaction.delete
+package com.pyamsoft.sleepforbreakfast.sources.delete
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -19,22 +19,19 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
-import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
-import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler
 import javax.inject.Inject
 
-internal class TransactionDeleteInjector
+internal class SourcesDeleteInjector
 @Inject
 internal constructor(
-    private val params: TransactionDeleteParams,
+    private val params: SourcesDeleteParams,
 ) : ComposableInjector() {
 
-  @JvmField @Inject internal var viewModel: TransactionDeleteViewModeler? = null
+  @JvmField @Inject internal var viewModel: SourcesDeleteViewModeler? = null
 
   override fun onInject(activity: FragmentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
-        .plusDeleteTransactions()
+        .plusDeleteSources()
         .create(
             params = params,
         )
@@ -47,20 +44,20 @@ internal constructor(
 }
 
 @Composable
-private fun MountHooks(viewModel: TransactionDeleteViewModeler) {
+private fun MountHooks(viewModel: SourcesDeleteViewModeler) {
   SaveStateDisposableEffect(viewModel)
 
   LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
 }
 
 @Composable
-internal fun TransactionDeleteEntry(
+internal fun SourcesDeleteEntry(
     modifier: Modifier = Modifier,
-    params: TransactionDeleteParams,
+    params: SourcesDeleteParams,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
-    TransactionDeleteInjector(
+    SourcesDeleteInjector(
         params = params,
     )
   }
@@ -87,7 +84,7 @@ internal fun TransactionDeleteEntry(
         shape = MaterialTheme.shapes.medium,
         elevation = DialogDefaults.Elevation,
     ) {
-      TransactionDeleteScreen(
+      SourcesDeleteScreen(
           modifier = modifier,
           state = viewModel.state,
           onDismiss = { handleDismiss() },

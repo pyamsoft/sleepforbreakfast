@@ -24,9 +24,9 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.core.REGEX_FILTER_ONLY_DIGITS
-import com.pyamsoft.sleepforbreakfast.money.AddName
-import com.pyamsoft.sleepforbreakfast.money.AddNote
-import com.pyamsoft.sleepforbreakfast.money.AddSubmit
+import com.pyamsoft.sleepforbreakfast.money.add.AddName
+import com.pyamsoft.sleepforbreakfast.money.add.AddNote
+import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
 
 @Composable
 fun SourcesAddScreen(

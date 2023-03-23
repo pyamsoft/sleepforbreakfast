@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions.delete
+package com.pyamsoft.sleepforbreakfast.repeat.delete
 
-import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteViewModeler
-import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
+import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
 import javax.inject.Inject
 
-class TransactionDeleteViewModeler
+class RepeatDeleteViewModeler
 @Inject
 internal constructor(
-    state: MutableTransactionDeleteViewState,
-    params: TransactionDeleteParams,
-    interactor: TransactionInteractor,
-    deleteInteractor: TransactionDeleteInteractor,
+    state: MutableRepeatDeleteViewState,
+    params: RepeatDeleteParams,
+    interactor: RepeatInteractor,
+    deleteInteractor: RepeatDeleteInteractor,
 ) :
-    DeleteViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionDeleteViewState>(
+    DeleteViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatDeleteViewState>(
         state = state,
-        initialId = params.transactionId,
+        initialId = params.repeatId,
         interactor = interactor,
         deleteInteractor = deleteInteractor,
     ) {
 
-  override fun isIdEmpty(id: DbTransaction.Id): Boolean {
+  override fun isIdEmpty(id: DbRepeat.Id): Boolean {
     return id.isEmpty
   }
 }

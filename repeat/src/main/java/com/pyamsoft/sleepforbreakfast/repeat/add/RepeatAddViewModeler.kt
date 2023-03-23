@@ -23,7 +23,7 @@ import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
-import com.pyamsoft.sleepforbreakfast.money.MoneyViewModeler
+import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
 import java.time.Clock
 import java.time.LocalDate
@@ -41,7 +41,7 @@ internal constructor(
     private val clock: Clock,
     private val addInteractor: RepeatAddInteractor,
 ) :
-    MoneyViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
+    MoneyAddViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
         state = state,
         initialId = params.repeatId,
         interactor = interactor,

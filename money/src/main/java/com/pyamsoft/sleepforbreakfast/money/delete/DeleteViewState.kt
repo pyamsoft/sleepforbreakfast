@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.repeat.add
+package com.pyamsoft.sleepforbreakfast.money.delete
 
 import androidx.compose.runtime.Stable
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewState
-import com.pyamsoft.sleepforbreakfast.money.add.MutableMoneyAddViewState
-import java.time.Clock
-import java.time.LocalDate
-import javax.inject.Inject
+import com.pyamsoft.pydroid.arch.UiViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
-interface RepeatAddViewState : MoneyAddViewState {
-  val repeatFirstDay: StateFlow<LocalDate>
-  val repeatType: StateFlow<DbRepeat.Type>
+interface DeleteViewState<T : Any> : UiViewState {
+  val working: StateFlow<Boolean>
+  val item: StateFlow<T?>
 }
 
 @Stable
-class MutableRepeatAddViewState
-@Inject
-internal constructor(
-    clock: Clock,
-) : RepeatAddViewState, MutableMoneyAddViewState() {
-  override val repeatFirstDay = MutableStateFlow(LocalDate.now(clock))
-  override val repeatType = MutableStateFlow(DbRepeat.Type.DAILY)
+abstract class MutableDeleteViewState<T : Any> protected constructor() : DeleteViewState<T> {
+  final override val working = MutableStateFlow(false)
+  final override val item = MutableStateFlow<T?>(null)
 }

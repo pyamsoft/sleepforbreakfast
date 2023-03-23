@@ -17,8 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
-import com.pyamsoft.sleepforbreakfast.money.MoneyAddViewState
-import com.pyamsoft.sleepforbreakfast.money.MutableMoneyAddViewState
+import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewState
+import com.pyamsoft.sleepforbreakfast.money.add.MutableMoneyAddViewState
 import java.time.Clock
 import java.time.LocalDateTime
 import javax.inject.Inject

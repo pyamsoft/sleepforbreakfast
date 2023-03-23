@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.money
+package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable

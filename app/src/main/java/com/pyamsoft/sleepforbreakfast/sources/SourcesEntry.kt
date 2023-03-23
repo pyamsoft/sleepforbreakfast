@@ -15,6 +15,7 @@ import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.sources.add.SourcesAddEntry
+import com.pyamsoft.sleepforbreakfast.sources.delete.SourcesDeleteEntry
 import javax.inject.Inject
 
 internal class SourcesInjector @Inject internal constructor() : ComposableInjector() {
@@ -50,7 +51,7 @@ internal fun SourcesEntry(
 
   val state = viewModel.state
   val addParams by state.addParams.collectAsState()
-  //  val deleteParams by state.deleteParams.collectAsState()
+  val deleteParams by state.deleteParams.collectAsState()
 
   MountHooks(
       viewModel = viewModel,
@@ -82,11 +83,11 @@ internal fun SourcesEntry(
       )
     }
   }
-  //
-  //  deleteParams?.also { p ->
-  //    TransactionDeleteEntry(
-  //        params = p,
-  //        onDismiss = { viewModel.handleCloseDeleteTransaction() },
-  //    )
-  //  }
+
+  deleteParams?.also { p ->
+    SourcesDeleteEntry(
+        params = p,
+        onDismiss = { viewModel.handleCloseDeleteSource() },
+    )
+  }
 }

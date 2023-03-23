@@ -3,7 +3,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
-import com.pyamsoft.sleepforbreakfast.money.list.ListAddInteractorImpl
+import com.pyamsoft.sleepforbreakfast.money.add.ListAddInteractorImpl
 import javax.inject.Inject
 import javax.inject.Singleton
 

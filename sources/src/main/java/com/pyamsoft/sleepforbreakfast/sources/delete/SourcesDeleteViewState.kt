@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions.delete
+package com.pyamsoft.sleepforbreakfast.sources.delete
 
 import androidx.compose.runtime.Stable
-import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteViewState
 import com.pyamsoft.sleepforbreakfast.money.delete.MutableDeleteViewState
 import javax.inject.Inject
 
-@Stable interface TransactionDeleteViewState : DeleteViewState<DbTransaction>
+@Stable interface SourcesDeleteViewState : DeleteViewState<DbSource>
 
 @Stable
-class MutableTransactionDeleteViewState @Inject internal constructor() :
-    TransactionDeleteViewState, MutableDeleteViewState<DbTransaction>()
+class MutableSourcesDeleteViewState @Inject internal constructor() :
+    SourcesDeleteViewState, MutableDeleteViewState<DbSource>()

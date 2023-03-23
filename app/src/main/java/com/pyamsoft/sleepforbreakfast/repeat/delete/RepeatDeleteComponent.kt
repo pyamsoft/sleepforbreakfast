@@ -14,16 +14,31 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions.delete
+package com.pyamsoft.sleepforbreakfast.repeat.delete
 
-import androidx.compose.runtime.Stable
-import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.money.delete.DeleteViewState
-import com.pyamsoft.sleepforbreakfast.money.delete.MutableDeleteViewState
-import javax.inject.Inject
+import androidx.annotation.CheckResult
+import dagger.BindsInstance
+import dagger.Module
+import dagger.Subcomponent
 
-@Stable interface TransactionDeleteViewState : DeleteViewState<DbTransaction>
+@Subcomponent(
+    modules =
+        [
+            RepeatDeleteComponent.RepeatModule::class,
+        ],
+)
+internal interface RepeatDeleteComponent {
 
-@Stable
-class MutableTransactionDeleteViewState @Inject internal constructor() :
-    TransactionDeleteViewState, MutableDeleteViewState<DbTransaction>()
+  fun inject(injector: RepeatDeleteInjector)
+
+  @Subcomponent.Factory
+  interface Factory {
+
+    @CheckResult
+    fun create(
+        @BindsInstance params: RepeatDeleteParams,
+    ): RepeatDeleteComponent
+  }
+
+  @Module abstract class RepeatModule
+}

@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.transactions.delete
+package com.pyamsoft.sleepforbreakfast.sources.delete
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -7,12 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteScreen
-import com.pyamsoft.sleepforbreakfast.transactions.TransactionCard
+import com.pyamsoft.sleepforbreakfast.sources.SourcesCard
 
 @Composable
-fun TransactionDeleteScreen(
+fun SourcesDeleteScreen(
     modifier: Modifier = Modifier,
-    state: TransactionDeleteViewState,
+    state: SourcesDeleteViewState,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
@@ -21,10 +21,10 @@ fun TransactionDeleteScreen(
       state = state,
       onDismiss = onDismiss,
       onConfirm = onConfirm,
-  ) { transaction ->
-    TransactionCard(
+  ) { source ->
+    SourcesCard(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-        transaction = transaction,
+        source = source,
     )
   }
 }
