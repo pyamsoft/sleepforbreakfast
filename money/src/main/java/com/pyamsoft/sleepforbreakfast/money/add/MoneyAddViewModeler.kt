@@ -18,8 +18,9 @@ package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.highlander.highlander
 import com.pyamsoft.pydroid.core.ResultWrapper
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
@@ -39,6 +40,9 @@ protected constructor(
         initialId = initialId,
         interactor = interactor,
     ) {
+
+  private val submitRunner =
+      highlander<ResultWrapper<DbInsert.InsertResult<T>>, T> { interactor.submit(it) }
 
   final override fun registerSaveState(
       registry: SaveableStateRegistry
@@ -87,8 +91,7 @@ protected constructor(
     state.amount.value = amount
   }
 
-  fun handleReset(payload: ResetPayload? = null) {
-    onReset(payload)
+  fun handleReset(payload: T? = null) {
     if (payload == null) {
       state.name.value = ""
       state.note.value = ""
@@ -96,28 +99,9 @@ protected constructor(
       state.amount.value = 0L
       state.categories.value = emptyList()
       state.source.value = null
-    } else {
-      when (payload) {
-        is ResetPayload.Repeat -> {
-          val repeat = payload.repeat
-          state.name.value = repeat.transactionName
-          state.note.value = repeat.transactionNote
-          state.type.value = repeat.transactionType
-          state.amount.value = repeat.transactionAmountInCents
-          state.categories.value = repeat.transactionCategories
-          state.source.value = repeat.transactionSourceId
-        }
-        is ResetPayload.Transaction -> {
-          val transaction = payload.transaction
-          state.name.value = transaction.name
-          state.note.value = transaction.note
-          state.type.value = transaction.type
-          state.amount.value = transaction.amountInCents
-          state.categories.value = transaction.categories
-          state.source.value = transaction.sourceId
-        }
-      }
     }
+
+    onReset(payload)
   }
 
   fun handleSubmit(
@@ -137,7 +121,26 @@ protected constructor(
       }
 
       state.working.value = true
-      onSubmitResult()
+      val repeat = compile()
+      submitRunner
+          .call(repeat)
+          .onFailure { Timber.e(it, "Error occurred when submitting repeat $repeat") }
+          .onSuccess { res ->
+            when (res) {
+              is DbInsert.InsertResult.Insert -> Timber.d("New repeat: ${res.data}")
+              is DbInsert.InsertResult.Update -> Timber.d("Update repeat: ${res.data}")
+              is DbInsert.InsertResult.Fail -> {
+                Timber.e(res.error, "Failed to insert repeat: $repeat")
+
+                // Will be caught by onFailure below
+                throw res.error
+              }
+            }
+          }
+          .onFailure {
+            Timber.e(it, "Unable to process repeat: $repeat")
+            // TODO handle error in UI
+          }
           .onSuccess {
             handleReset()
 
@@ -148,20 +151,15 @@ protected constructor(
     }
   }
 
+  @CheckResult protected abstract fun compile(): T
+
   protected abstract fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
       registry: SaveableStateRegistry
   )
 
   protected abstract fun onConsumeRestoredState(registry: SaveableStateRegistry)
 
-  protected abstract fun onReset(payload: ResetPayload?)
-
-  @CheckResult protected abstract suspend fun onSubmitResult(): ResultWrapper<*>
-
-  sealed class ResetPayload {
-    data class Transaction(val transaction: DbTransaction) : ResetPayload()
-    data class Repeat(val repeat: DbRepeat) : ResetPayload()
-  }
+  protected abstract fun onReset(payload: T?)
 
   companion object {
     private const val KEY_NAME = "key_name"

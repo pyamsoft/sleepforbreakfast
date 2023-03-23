@@ -35,6 +35,10 @@ constructor(
     sourceQueryCache.invalidate()
   }
 
+  override suspend fun performClearCache(id: DbSource.Id) {
+    sourceQueryCache.invalidateById(id)
+  }
+
   override suspend fun performListenRealtime(onEvent: (SourceChangeEvent) -> Unit) {
     sourceRealtime.listenForChanges(onEvent)
   }

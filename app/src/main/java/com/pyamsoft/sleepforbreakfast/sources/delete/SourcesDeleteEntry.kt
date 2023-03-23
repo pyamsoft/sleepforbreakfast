@@ -47,7 +47,12 @@ internal constructor(
 private fun MountHooks(viewModel: SourcesDeleteViewModeler) {
   SaveStateDisposableEffect(viewModel)
 
-  LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
+  LaunchedEffect(viewModel) {
+    viewModel.bind(
+        scope = this,
+        force = false,
+    )
+  }
 }
 
 @Composable

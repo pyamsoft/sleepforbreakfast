@@ -35,6 +35,10 @@ constructor(
     repeatQueryCache.invalidate()
   }
 
+  override suspend fun performClearCache(id: DbRepeat.Id) {
+    repeatQueryCache.invalidateById(id)
+  }
+
   override suspend fun performListenRealtime(onEvent: (RepeatChangeEvent) -> Unit) {
     return repeatRealtime.listenForChanges(onEvent)
   }

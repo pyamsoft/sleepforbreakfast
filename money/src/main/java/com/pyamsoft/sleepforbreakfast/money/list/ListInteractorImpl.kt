@@ -36,9 +36,13 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
         return@withContext performListenRealtime(onEvent)
       }
 
-  final override suspend fun loadOne(id: I): ResultWrapper<T> =
+  final override suspend fun loadOne(force: Boolean, id: I): ResultWrapper<T> =
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
+
+        if (force) {
+          performClearCache(id)
+        }
 
         return@withContext try {
           when (val res = performQueryOne(id)) {
@@ -94,6 +98,8 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
   @CheckResult protected abstract suspend fun performQueryOne(id: I): Maybe<out T>
 
   @CheckResult protected abstract suspend fun performClearCache()
+
+  @CheckResult protected abstract suspend fun performClearCache(id: I)
 
   @CheckResult protected abstract suspend fun performListenRealtime(onEvent: (CE) -> Unit)
 }

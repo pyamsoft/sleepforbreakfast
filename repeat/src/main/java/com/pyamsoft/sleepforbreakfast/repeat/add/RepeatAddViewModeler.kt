@@ -16,11 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
-import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.highlander.highlander
-import com.pyamsoft.pydroid.core.ResultWrapper
-import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
@@ -30,7 +26,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import timber.log.Timber
 
 class RepeatAddViewModeler
 @Inject
@@ -46,34 +41,6 @@ internal constructor(
         interactor = interactor,
     ) {
 
-  private val submitRunner =
-      highlander<ResultWrapper<DbInsert.InsertResult<DbRepeat>>, DbRepeat> { repeat ->
-        interactor.submit(repeat)
-      }
-
-  @CheckResult
-  private fun compile(): DbRepeat {
-    return DbRepeat.create(clock, initialId)
-        .repeatType(state.repeatType.value)
-        .firstDay(state.repeatFirstDay.value)
-        .unarchive()
-        .activate()
-        .transactionName(state.name.value)
-        .transactionAmountInCents(state.amount.value)
-        .transactionNote(state.note.value)
-        .transactionType(state.type.value)
-        .run {
-          state.source.value.let { sid ->
-            if (sid == null) {
-              removeTransactionSourceId()
-            } else {
-              transactionSourceId(sid)
-            }
-          }
-        }
-        .replaceTransactionCategories(state.categories.value)
-  }
-
   override fun isIdEmpty(id: DbRepeat.Id): Boolean {
     return id.isEmpty
   }
@@ -85,7 +52,7 @@ internal constructor(
 
   override fun onDataLoaded(result: DbRepeat) {
     // But once we are loaded initialize everything
-    handleReset(ResetPayload.Repeat(result))
+    handleReset(result)
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
@@ -114,38 +81,43 @@ internal constructor(
     registry.registerProvider(KEY_REPEAT_TYPE) { state.repeatType.value.name }.also { add(it) }
   }
 
-  override fun onReset(payload: ResetPayload?) {
+  override fun onReset(payload: DbRepeat?) {
     if (payload == null) {
       state.repeatFirstDay.value = LocalDate.now(clock)
       state.repeatType.value = DbRepeat.Type.DAILY
-    } else if (payload is ResetPayload.Repeat) {
-      val repeat = payload.repeat
-      state.repeatFirstDay.value = repeat.firstDate
-      state.repeatType.value = repeat.repeatType
+    } else {
+      state.repeatFirstDay.value = payload.firstDate
+      state.repeatType.value = payload.repeatType
+
+      state.name.value = payload.transactionName
+      state.note.value = payload.transactionNote
+      state.type.value = payload.transactionType
+      state.amount.value = payload.transactionAmountInCents
+      state.categories.value = payload.transactionCategories
+      state.source.value = payload.transactionSourceId
     }
   }
 
-  override suspend fun onSubmitResult(): ResultWrapper<*> {
-    val repeat = compile()
-    return submitRunner
-        .call(repeat)
-        .onFailure { Timber.e(it, "Error occurred when submitting repeat $repeat") }
-        .onSuccess { res ->
-          when (res) {
-            is DbInsert.InsertResult.Insert -> Timber.d("New repeat: ${res.data}")
-            is DbInsert.InsertResult.Update -> Timber.d("Update repeat: ${res.data}")
-            is DbInsert.InsertResult.Fail -> {
-              Timber.e(res.error, "Failed to insert repeat: $repeat")
-
-              // Will be caught by onFailure below
-              throw res.error
+  override fun compile(): DbRepeat {
+    return DbRepeat.create(clock, initialId)
+        .repeatType(state.repeatType.value)
+        .firstDay(state.repeatFirstDay.value)
+        .unarchive()
+        .activate()
+        .transactionName(state.name.value)
+        .transactionAmountInCents(state.amount.value)
+        .transactionNote(state.note.value)
+        .transactionType(state.type.value)
+        .run {
+          state.source.value.let { sid ->
+            if (sid == null) {
+              removeTransactionSourceId()
+            } else {
+              transactionSourceId(sid)
             }
           }
         }
-        .onFailure {
-          Timber.e(it, "Unable to process repeat: $repeat")
-          // TODO handle error in UI
-        }
+        .replaceTransactionCategories(state.categories.value)
   }
 
   companion object {

@@ -6,7 +6,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 
 interface ListInteractor<I : Any, T : Any, CE : Any> {
 
-  @CheckResult suspend fun loadOne(id: I): ResultWrapper<T>
+  @CheckResult suspend fun loadOne(force: Boolean, id: I): ResultWrapper<T>
 
   @CheckResult suspend fun loadAll(force: Boolean): ResultWrapper<List<T>>
 

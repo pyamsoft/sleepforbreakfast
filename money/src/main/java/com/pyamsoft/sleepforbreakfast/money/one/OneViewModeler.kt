@@ -32,12 +32,12 @@ protected constructor(
     private val interactor: ListInteractor<I, T, *>,
 ) : AbstractViewModeler<S>(state) {
 
-  fun bind(scope: CoroutineScope) {
+  fun bind(scope: CoroutineScope, force: Boolean) {
     // Upon binding, load the existing
     if (!isIdEmpty(initialId)) {
       scope.launch(context = Dispatchers.Main) {
         interactor
-            .loadOne(initialId)
+            .loadOne(force, initialId)
             .onSuccess { result ->
               Timber.d("Loaded data: $result")
               onDataLoaded(result)

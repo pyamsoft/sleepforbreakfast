@@ -16,11 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
-import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.highlander.highlander
-import com.pyamsoft.pydroid.core.ResultWrapper
-import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
@@ -33,7 +29,6 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.update
-import timber.log.Timber
 
 class TransactionAddViewModeler
 @Inject
@@ -49,14 +44,7 @@ internal constructor(
         interactor = interactor,
     ) {
 
-  private val submitRunner =
-      highlander<ResultWrapper<DbInsert.InsertResult<DbTransaction>>, DbTransaction> { transaction
-        ->
-        interactor.submit(transaction)
-      }
-
-  @CheckResult
-  private fun compile(): DbTransaction {
+  override fun compile(): DbTransaction {
     return DbTransaction.create(clock, initialId)
         .name(state.name.value)
         .amountInCents(state.amount.value)
@@ -84,7 +72,7 @@ internal constructor(
   }
 
   override fun onDataLoaded(result: DbTransaction) {
-    handleReset(ResetPayload.Transaction(result))
+    handleReset(result)
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
@@ -119,11 +107,18 @@ internal constructor(
     registry.registerProvider(KEY_TIME_DIALOG) { state.isTimeDialogOpen.value }.also { add(it) }
   }
 
-  override fun onReset(payload: ResetPayload?) {
+  override fun onReset(payload: DbTransaction?) {
     if (payload == null) {
       state.date.value = LocalDateTime.now(clock)
-    } else if (payload is ResetPayload.Transaction) {
-      state.date.value = payload.transaction.date
+    } else {
+      state.date.value = payload.date
+
+      state.name.value = payload.name
+      state.note.value = payload.note
+      state.type.value = payload.type
+      state.amount.value = payload.amountInCents
+      state.categories.value = payload.categories
+      state.source.value = payload.sourceId
     }
 
     handleCloseDateDialog()
@@ -154,29 +149,6 @@ internal constructor(
 
   fun handleTimeChanged(time: LocalTime) {
     state.date.update { it.withHour(time.hour).withMinute(time.minute).withSecond(0).withNano(0) }
-  }
-
-  override suspend fun onSubmitResult(): ResultWrapper<*> {
-    val transaction = compile()
-    return submitRunner
-        .call(transaction)
-        .onFailure { Timber.e(it, "Error occurred when submitting transaction $transaction") }
-        .onSuccess { res ->
-          when (res) {
-            is DbInsert.InsertResult.Insert -> Timber.d("New transaction: ${res.data}")
-            is DbInsert.InsertResult.Update -> Timber.d("Update transaction: ${res.data}")
-            is DbInsert.InsertResult.Fail -> {
-              Timber.e(res.error, "Failed to insert transaction: $transaction")
-
-              // Will be caught by onFailure below
-              throw res.error
-            }
-          }
-        }
-        .onFailure {
-          Timber.e(it, "Unable to process transaction: $transaction")
-          // TODO handle error in UI
-        }
   }
 
   companion object {

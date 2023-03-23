@@ -37,6 +37,10 @@ constructor(
     transactionQueryCache.invalidate()
   }
 
+  override suspend fun performClearCache(id: DbTransaction.Id) {
+    transactionQueryCache.invalidateById(id)
+  }
+
   override suspend fun performListenRealtime(onEvent: (TransactionChangeEvent) -> Unit) {
     transactionRealtime.listenForChanges(onEvent)
   }
