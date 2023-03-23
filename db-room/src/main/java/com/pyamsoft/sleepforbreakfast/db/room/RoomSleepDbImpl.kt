@@ -38,12 +38,17 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 2,
+    version = 3,
     autoMigrations =
         [
             AutoMigration(
                 from = 1,
                 to = 2,
+            ),
+
+            AutoMigration(
+                from = 2,
+                to = 3,
             ),
         ],
     entities =

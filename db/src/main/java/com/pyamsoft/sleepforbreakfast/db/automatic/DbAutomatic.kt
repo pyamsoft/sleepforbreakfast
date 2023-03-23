@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
 import java.time.LocalDateTime
 
@@ -45,6 +46,8 @@ interface DbAutomatic {
 
   @get:CheckResult val notificationTitle: String
 
+  @get:CheckResult val notificationType: DbTransaction.Type
+
   @get:CheckResult val used: Boolean
 
   @CheckResult fun notificationId(id: Int): DbAutomatic
@@ -62,6 +65,8 @@ interface DbAutomatic {
   @CheckResult fun notificationAmountInCents(amount: Long): DbAutomatic
 
   @CheckResult fun notificationTitle(title: String): DbAutomatic
+
+  @CheckResult fun notificationType(type: DbTransaction.Type): DbAutomatic
 
   @CheckResult fun consume(): DbAutomatic
 
@@ -86,6 +91,7 @@ interface DbAutomatic {
       override val notificationAmountInCents: Long = 0,
       override val notificationMatchText: String = "",
       override val notificationTitle: String = "",
+      override val notificationType: DbTransaction.Type = DbTransaction.Type.SPEND,
       override val used: Boolean = false,
   ) : DbAutomatic {
 
@@ -119,6 +125,10 @@ interface DbAutomatic {
 
     override fun notificationTitle(title: String): DbAutomatic {
       return this.copy(notificationTitle = title)
+    }
+
+    override fun notificationType(type: DbTransaction.Type): DbAutomatic {
+      return this.copy(notificationType = type)
     }
 
     override fun consume(): DbAutomatic {

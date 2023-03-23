@@ -22,9 +22,10 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDateTime
 
-@Entity(tableName = RoomDbAutomatic.TABLE_NAME, indices = [])
+@Entity(tableName = RoomDbAutomatic.TABLE_NAME)
 internal data class RoomDbAutomatic
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbAutomatic.Id,
@@ -37,6 +38,13 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_MATCH_TEXT) val dbNotificationMatches: String,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_AMOUNT) val dbNotificationAmount: Long,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_TITLE) val dbNotificationTitle: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_NOTIFICATION_TYPE,
+        // TODO remove later
+        defaultValue = "SPEND",
+    )
+    val dbNotificationType: DbTransaction.Type,
     @JvmField @ColumnInfo(name = COLUMN_USED) val dbUsed: Boolean,
 ) : DbAutomatic {
 
@@ -59,6 +67,8 @@ internal constructor(
   @Ignore override val notificationAmountInCents = dbNotificationAmount
 
   @Ignore override val notificationTitle = dbNotificationTitle
+
+  @Ignore override val notificationType = dbNotificationType
 
   @Ignore override val used = dbUsed
 
@@ -98,6 +108,11 @@ internal constructor(
   }
 
   @Ignore
+  override fun notificationType(type: DbTransaction.Type): DbAutomatic {
+    return this.copy(dbNotificationType = type)
+  }
+
+  @Ignore
   override fun notificationTitle(title: String): DbAutomatic {
     return this.copy(dbNotificationTitle = title)
   }
@@ -131,6 +146,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_NOTIFICATION_TITLE = "notification_title"
 
+    @Ignore internal const val COLUMN_NOTIFICATION_TYPE = "notification_type"
+
     @Ignore internal const val COLUMN_USED = "used"
 
     @Ignore
@@ -150,6 +167,7 @@ internal constructor(
             item.notificationMatchText,
             item.notificationAmountInCents,
             item.notificationTitle,
+            item.notificationType,
             item.used,
         )
       }
