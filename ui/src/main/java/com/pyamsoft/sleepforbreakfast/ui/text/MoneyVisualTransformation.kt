@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.ui
+package com.pyamsoft.sleepforbreakfast.ui.text
 
 import androidx.annotation.CheckResult
 import androidx.compose.ui.text.AnnotatedString

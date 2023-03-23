@@ -3,6 +3,7 @@ package com.pyamsoft.sleepforbreakfast.repeat.base
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.helper.LoadExistingHandlerImpl
+import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +11,7 @@ import javax.inject.Singleton
 class RepeatLoadHandler
 @Inject
 internal constructor(
-    private val interactor: LoadRepeatInteractor,
+    private val interactor: RepeatInteractor,
 ) : LoadExistingHandlerImpl<DbRepeat.Id, DbRepeat>() {
 
   override fun isIdEmpty(id: DbRepeat.Id): Boolean {
@@ -18,6 +19,6 @@ internal constructor(
   }
 
   override suspend fun loadData(id: DbRepeat.Id): ResultWrapper<DbRepeat> {
-    return interactor.load(id)
+    return interactor.loadOne(id)
   }
 }

@@ -16,10 +16,10 @@
 
 package com.pyamsoft.sleepforbreakfast.sources
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.source.DbSource
+import com.pyamsoft.sleepforbreakfast.money.list.ListViewState
+import com.pyamsoft.sleepforbreakfast.money.list.MutableListViewState
 import com.pyamsoft.sleepforbreakfast.sources.add.SourcesAddParams
 import com.pyamsoft.sleepforbreakfast.sources.delete.SourcesDeleteParams
 import javax.inject.Inject
@@ -27,33 +27,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
-interface SourcesViewState : UiViewState {
-  val loadingState: StateFlow<LoadingState>
-  val sources: StateFlow<List<DbSource>>
-  val sourceError: StateFlow<Throwable?>
-
+interface SourcesViewState : ListViewState<DbSource> {
   val addParams: StateFlow<SourcesAddParams?>
   val deleteParams: StateFlow<SourcesDeleteParams?>
-
-  val recentlyDeleteSource: StateFlow<DbSource?>
-
-  @Stable
-  @Immutable
-  enum class LoadingState {
-    NONE,
-    LOADING,
-    DONE
-  }
 }
 
 @Stable
-class MutableSourcesViewState @Inject internal constructor() : SourcesViewState {
-  override val loadingState = MutableStateFlow(SourcesViewState.LoadingState.NONE)
-  override val sources = MutableStateFlow(emptyList<DbSource>())
-  override val sourceError = MutableStateFlow<Throwable?>(null)
-
+class MutableSourcesViewState @Inject internal constructor() :
+    SourcesViewState, MutableListViewState<DbSource>() {
   override val addParams = MutableStateFlow<SourcesAddParams?>(null)
   override val deleteParams = MutableStateFlow<SourcesDeleteParams?>(null)
-
-  override val recentlyDeleteSource = MutableStateFlow<DbSource?>(null)
 }

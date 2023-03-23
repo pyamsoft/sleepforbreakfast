@@ -11,20 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +22,7 @@ import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.ui.BasicListScreen
 import java.time.Month
 
 @Stable
@@ -89,24 +79,17 @@ fun TransactionScreen(
     onTransactionDeleteFinalized: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-  val scaffoldState = rememberScaffoldState()
-  val transactions = state.transactions.collectAsStateList()
+  val transactions = state.items.collectAsStateList()
   val list = rememberTransactionsWithHeaders(transactions)
+  val undoable by state.recentlyDeleted.collectAsState()
 
-  Scaffold(
+  BasicListScreen(
       modifier = modifier,
-      scaffoldState = scaffoldState,
-      floatingActionButtonPosition = FabPosition.End,
-      floatingActionButton = {
-        FloatingActionButton(
-            onClick = onAddNewTransaction,
-        ) {
-          Icon(
-              imageVector = Icons.Filled.Add,
-              contentDescription = "Add New Transaction",
-          )
-        }
-      },
+      recentlyDeletedItem = undoable,
+      deletedMessage = { "${it.name} Removed" },
+      onSnackbarDismissed = onTransactionDeleteFinalized,
+      onSnackbarAction = onTransactionRestored,
+      onActionButtonClicked = onAddNewTransaction,
   ) { pv ->
     Column {
       Surface(
@@ -174,43 +157,6 @@ fun TransactionScreen(
                       // Space to offset the FAB
                       .height(MaterialTheme.keylines.content * 4),
           )
-        }
-      }
-    }
-
-    TransactionSnackbar(
-        scaffoldState = scaffoldState,
-        state = state,
-        onSnackbarAction = onTransactionRestored,
-        onSnackbarDismissed = onTransactionDeleteFinalized,
-    )
-  }
-}
-
-@Composable
-private fun TransactionSnackbar(
-    scaffoldState: ScaffoldState,
-    state: TransactionViewState,
-    onSnackbarDismissed: () -> Unit,
-    onSnackbarAction: () -> Unit,
-) {
-  val undoable by state.recentlyDeleteTransaction.collectAsState()
-
-  undoable?.also { u ->
-    LaunchedEffect(u) {
-      val snackbarResult =
-          scaffoldState.snackbarHostState.showSnackbar(
-              message = "${u.name} Removed",
-              duration = SnackbarDuration.Short,
-              actionLabel = "Undo",
-          )
-
-      when (snackbarResult) {
-        SnackbarResult.Dismissed -> {
-          onSnackbarDismissed()
-        }
-        SnackbarResult.ActionPerformed -> {
-          onSnackbarAction()
         }
       }
     }

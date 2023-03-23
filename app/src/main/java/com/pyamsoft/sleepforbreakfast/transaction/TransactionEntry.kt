@@ -69,8 +69,8 @@ internal fun TransactionEntry(
       onAddNewTransaction = { viewModel.handleAddNewTransaction() },
       onEditTransaction = { viewModel.handleEditTransaction(it) },
       onDeleteTransaction = { viewModel.handleDeleteTransaction(it) },
-      onTransactionRestored = { viewModel.handleRestoreDeletedTransaction(scope = scope) },
-      onTransactionDeleteFinalized = { viewModel.handleTransactionDeleteFinal() },
+      onTransactionRestored = { viewModel.handleRestoreDeleted(scope = scope) },
+      onTransactionDeleteFinalized = { viewModel.handleDeleteFinalized() },
   )
 
   addParams?.also { p ->

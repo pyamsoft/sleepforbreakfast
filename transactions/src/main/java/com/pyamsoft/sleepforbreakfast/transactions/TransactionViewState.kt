@@ -16,10 +16,10 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.money.list.ListViewState
+import com.pyamsoft.sleepforbreakfast.money.list.MutableListViewState
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import javax.inject.Inject
@@ -27,33 +27,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
-interface TransactionViewState : UiViewState {
-  val loadingState: StateFlow<LoadingState>
-  val transactions: StateFlow<List<DbTransaction>>
-  val transactionError: StateFlow<Throwable?>
-
+interface TransactionViewState : ListViewState<DbTransaction> {
   val addParams: StateFlow<TransactionAddParams?>
   val deleteParams: StateFlow<TransactionDeleteParams?>
-
-  val recentlyDeleteTransaction: StateFlow<DbTransaction?>
-
-  @Stable
-  @Immutable
-  enum class LoadingState {
-    NONE,
-    LOADING,
-    DONE
-  }
 }
 
 @Stable
-class MutableTransactionViewState @Inject internal constructor() : TransactionViewState {
+class MutableTransactionViewState @Inject internal constructor() :
+    TransactionViewState, MutableListViewState<DbTransaction>() {
   override val addParams = MutableStateFlow<TransactionAddParams?>(null)
   override val deleteParams = MutableStateFlow<TransactionDeleteParams?>(null)
-
-  override val recentlyDeleteTransaction = MutableStateFlow<DbTransaction?>(null)
-
-  override val loadingState = MutableStateFlow(TransactionViewState.LoadingState.NONE)
-  override val transactions = MutableStateFlow(emptyList<DbTransaction>())
-  override val transactionError = MutableStateFlow<Throwable?>(null)
 }

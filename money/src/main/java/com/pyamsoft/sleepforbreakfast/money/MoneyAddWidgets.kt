@@ -35,7 +35,7 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.widget.MaterialCheckable
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
-import com.pyamsoft.sleepforbreakfast.ui.MoneyVisualTransformation
+import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import java.time.LocalDate
 import java.time.LocalTime

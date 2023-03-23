@@ -66,7 +66,7 @@ internal constructor(
 
       state.working.value = true
       interactor
-          .deleteTransaction(transaction)
+          .delete(transaction)
           .onFailure { Timber.e(it, "Failed to delete transaction: $transaction") }
           .onSuccess { deleted ->
             if (deleted) {

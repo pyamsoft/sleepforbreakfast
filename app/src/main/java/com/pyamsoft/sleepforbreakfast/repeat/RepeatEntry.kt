@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
@@ -45,6 +46,7 @@ internal fun RepeatEntry(
 ) {
   val component = rememberComposableInjector { RepeatInjector() }
   val viewModel = rememberNotNull(component.viewModel)
+  val scope = rememberCoroutineScope()
 
   val state = viewModel.state
   val addParams by state.addParams.collectAsState()
@@ -67,6 +69,10 @@ internal fun RepeatEntry(
           state = state,
           onDismiss = onDismiss,
           onAddNewRepeat = { viewModel.handleAddNewRepeat() },
+          onDeleteRepeat = { viewModel.handleDeleteRepeat(it) },
+          onEditRepeat = { viewModel.handleEditRepeat(it) },
+          onRepeatDeleteFinalized = { viewModel.handleDeleteFinalized() },
+          onRepeatRestored = { viewModel.handleRestoreDeleted(scope = scope) },
       )
     } else {
       RepeatAddEntry(

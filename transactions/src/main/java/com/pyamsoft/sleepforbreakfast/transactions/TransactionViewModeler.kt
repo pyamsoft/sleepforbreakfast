@@ -17,29 +17,30 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
-import com.pyamsoft.sleepforbreakfast.money.helper.DeleteRestoreHandler
+import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
+import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class TransactionViewModeler
 @Inject
 internal constructor(
-    override val state: MutableTransactionViewState,
-    private val interactor: TransactionInteractor,
+    state: MutableTransactionViewState,
+    interactor: TransactionInteractor,
+    addInteractor: TransactionAddInteractor,
     private val jsonParser: JsonParser,
-    private val deleteRestoreHandler: DeleteRestoreHandler<DbTransaction>,
-) : AbstractViewModeler<TransactionViewState>(state) {
+) :
+    ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
+        state = state,
+        interactor = interactor,
+        addInteractor = addInteractor,
+    ) {
 
   private fun handleAddParams(params: TransactionAddParams) {
     state.addParams.value = params
@@ -47,45 +48,6 @@ internal constructor(
 
   private fun handleDeleteParams(params: TransactionDeleteParams) {
     state.deleteParams.value = params
-  }
-
-  private fun listenForTransactions(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Main) {
-      interactor.listenToTransactions { event ->
-        when (event) {
-          is TransactionChangeEvent.Delete ->
-              // When actually deleted from the DB, offer undo ability
-              handleTransactionDeleted(event.transaction, offerUndo = true)
-          is TransactionChangeEvent.Insert -> handleTransactionInserted(event.transaction)
-          is TransactionChangeEvent.Update -> handleTransactionUpdated(event.transaction)
-        }
-      }
-    }
-  }
-
-  private fun handleTransactionDeleted(
-      transaction: DbTransaction,
-      offerUndo: Boolean,
-  ) {
-    val s = state
-    s.transactions.update { list ->
-      list.filterNot { it.id == transaction.id }.sortedByDescending { it.date }
-    }
-
-    if (offerUndo) {
-      Timber.d("Offer undo on transaction delete: $transaction")
-      s.recentlyDeleteTransaction.value = transaction
-    }
-  }
-
-  private fun handleTransactionUpdated(transaction: DbTransaction) {
-    state.transactions.update { list ->
-      list.map { if (it.id == transaction.id) transaction else it }.sortedByDescending { it.date }
-    }
-  }
-
-  private fun handleTransactionInserted(transaction: DbTransaction) {
-    state.transactions.update { list -> (list + transaction).sortedByDescending { it.date } }
   }
 
   override fun registerSaveState(
@@ -111,53 +73,31 @@ internal constructor(
         ?.let { it as String }
         ?.let { jsonParser.fromJson<TransactionAddParams.Json>(it) }
         ?.fromJson()
-        ?.let { state.addParams.value = it }
+        ?.let { handleAddParams(it) }
 
     registry
         .consumeRestored(KEY_DELETE_PARAMS)
         ?.let { it as String }
         ?.let { jsonParser.fromJson<TransactionDeleteParams.Json>(it) }
         ?.fromJson()
-        ?.let { state.deleteParams.value = it }
+        ?.let { handleDeleteParams(it) }
   }
 
-  fun bind(scope: CoroutineScope) {
-    handleRefresh(
-        scope = scope,
-        force = false,
-    )
-
-    listenForTransactions(scope = scope)
+  override fun CoroutineScope.onItemRealtimeEvent(event: TransactionChangeEvent) {
+    when (event) {
+      // Offer undo for realtime events
+      is TransactionChangeEvent.Delete -> handleItemDeleted(event.transaction, offerUndo = true)
+      is TransactionChangeEvent.Insert -> handleItemInserted(event.transaction)
+      is TransactionChangeEvent.Update -> handleItemUpdated(event.transaction)
+    }
   }
 
-  fun handleRefresh(scope: CoroutineScope, force: Boolean) {
-    if (state.loadingState.value == TransactionViewState.LoadingState.LOADING) {
-      Timber.w("Already loading transaction list")
-      return
-    }
+  override fun isEqual(o1: DbTransaction, o2: DbTransaction): Boolean {
+    return o1.id.raw == o2.id.raw
+  }
 
-    scope.launch(context = Dispatchers.Main) {
-      if (state.loadingState.value == TransactionViewState.LoadingState.LOADING) {
-        Timber.w("Already loading transaction list")
-        return@launch
-      }
-
-      state.loadingState.value = TransactionViewState.LoadingState.LOADING
-      interactor
-          .loadAll(force = force)
-          .map { list -> list.sortedByDescending { it.date } }
-          .onSuccess { Timber.d("Loaded transaction list: $it") }
-          .onSuccess { transactions ->
-            state.transactions.value = transactions
-            state.transactionError.value = null
-          }
-          .onFailure { Timber.e(it, "Error loading transactions") }
-          .onFailure { err ->
-            state.transactions.value = emptyList()
-            state.transactionError.value = err
-          }
-          .onFinally { state.loadingState.value = TransactionViewState.LoadingState.DONE }
-    }
+  override fun List<DbTransaction>.sort(): List<DbTransaction> {
+    return this.sortedByDescending { it.date }
   }
 
   fun handleEditTransaction(transaction: DbTransaction) {
@@ -180,22 +120,6 @@ internal constructor(
 
   fun handleCloseAddTransaction() {
     state.addParams.value = null
-  }
-
-  fun handleTransactionDeleteFinal() {
-    deleteRestoreHandler.handleDeleteFinal(state.recentlyDeleteTransaction) {
-      // Once finally deleted, don't offer undo
-      handleTransactionDeleted(it, offerUndo = false)
-    }
-  }
-
-  fun handleRestoreDeletedTransaction(scope: CoroutineScope) {
-    deleteRestoreHandler.handleRestoreDeleted(
-        scope = scope,
-        recentlyDeleted = state.recentlyDeleteTransaction,
-    ) {
-      interactor.restoreTransaction(it)
-    }
   }
 
   fun handleDeleteTransaction(transaction: DbTransaction) {

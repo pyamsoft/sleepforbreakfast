@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewState
-import com.pyamsoft.sleepforbreakfast.money.MutableMoneyViewState
+import com.pyamsoft.sleepforbreakfast.money.MutableMoneyAddViewState
 import java.time.Clock
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class MutableTransactionAddViewState
 @Inject
 internal constructor(
     clock: Clock,
-) : TransactionAddViewState, MutableMoneyViewState() {
+) : TransactionAddViewState, MutableMoneyAddViewState() {
 
   override val date = MutableStateFlow<LocalDateTime>(LocalDateTime.now(clock))
   override val isDateDialogOpen = MutableStateFlow(false)

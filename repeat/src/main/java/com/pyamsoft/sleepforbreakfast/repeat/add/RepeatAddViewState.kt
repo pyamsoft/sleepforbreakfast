@@ -19,7 +19,7 @@ package com.pyamsoft.sleepforbreakfast.repeat.add
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.MoneyViewState
-import com.pyamsoft.sleepforbreakfast.money.MutableMoneyViewState
+import com.pyamsoft.sleepforbreakfast.money.MutableMoneyAddViewState
 import java.time.Clock
 import java.time.LocalDate
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class MutableRepeatAddViewState
 @Inject
 internal constructor(
     clock: Clock,
-) : RepeatAddViewState, MutableMoneyViewState() {
+) : RepeatAddViewState, MutableMoneyAddViewState() {
   override val repeatFirstDay = MutableStateFlow(LocalDate.now(clock))
   override val repeatType = MutableStateFlow(DbRepeat.Type.DAILY)
 }

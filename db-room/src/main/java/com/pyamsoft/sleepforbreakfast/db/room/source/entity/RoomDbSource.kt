@@ -30,8 +30,20 @@ internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbSource.Id,
     @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
-    @JvmField @ColumnInfo(name = COLUMN_NOTE, defaultValue = "") val dbNote: String,
-    @JvmField @ColumnInfo(name = COLUMN_ACCOUNT, defaultValue = "") val dbAccount: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_NOTE,
+        // TODO remove later and revert back to a version 1 for the first release
+        defaultValue = "",
+    )
+    val dbNote: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_ACCOUNT,
+        // TODO remove later and revert back to a version 1 for the first release
+        defaultValue = "",
+    )
+    val dbAccount: String,
 ) : DbSource {
 
   @Ignore override val id: DbSource.Id = dbId

@@ -27,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-abstract class MoneyViewModeler<S : MutableMoneyViewState>
+abstract class MoneyViewModeler<S : MutableMoneyAddViewState>
 protected constructor(
     final override val state: S,
 ) : AbstractViewModeler<S>(state) {

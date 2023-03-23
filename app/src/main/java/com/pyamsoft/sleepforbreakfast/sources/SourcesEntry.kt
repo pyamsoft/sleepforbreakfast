@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
@@ -45,6 +46,7 @@ internal fun SourcesEntry(
 ) {
   val component = rememberComposableInjector { SourcesInjector() }
   val viewModel = rememberNotNull(component.viewModel)
+  val scope = rememberCoroutineScope()
 
   val state = viewModel.state
   val addParams by state.addParams.collectAsState()
@@ -66,13 +68,17 @@ internal fun SourcesEntry(
           modifier = modifier,
           state = state,
           onDismiss = onDismiss,
-          onAddNewSource = { viewModel.handleAddNewSources() },
+          onAddNewSources = { viewModel.handleAddNewSources() },
+          onDeleteSources = { viewModel.handleDeleteSource(it) },
+          onEditSources = { viewModel.handleEditSources(it) },
+          onSourcesDeleteFinalized = { viewModel.handleDeleteFinalized() },
+          onSourcesRestored = { viewModel.handleRestoreDeleted(scope = scope) },
       )
     } else {
       SourcesAddEntry(
           modifier = modifier,
           params = ap,
-          onDismiss = { viewModel.handleCloseAddSources() },
+          onDismiss = { viewModel.handleCloseDeleteSource() },
       )
     }
   }

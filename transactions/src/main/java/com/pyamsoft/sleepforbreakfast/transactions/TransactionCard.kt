@@ -25,7 +25,7 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.ui.MoneyVisualTransformation
+import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import java.time.Month
 import java.time.format.DateTimeFormatter

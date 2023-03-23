@@ -36,7 +36,7 @@ interface MoneyViewState : UiViewState {
 }
 
 @Stable
-abstract class MutableMoneyViewState protected constructor() : MoneyViewState {
+abstract class MutableMoneyAddViewState protected constructor() : MoneyViewState {
   final override val name = MutableStateFlow("")
   final override val source = MutableStateFlow<DbSource.Id?>(null)
   final override val categories = MutableStateFlow<List<DbCategory.Id>>(emptyList())

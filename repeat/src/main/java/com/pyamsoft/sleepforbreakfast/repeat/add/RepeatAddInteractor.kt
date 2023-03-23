@@ -1,11 +1,6 @@
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
-import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.ResultWrapper
-import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.money.list.ListAddInteractor
 
-internal interface RepeatAddInteractor {
-
-  @CheckResult suspend fun submit(repeat: DbRepeat): ResultWrapper<DbInsert.InsertResult<DbRepeat>>
-}
+internal interface RepeatAddInteractor : ListAddInteractor<DbRepeat>
