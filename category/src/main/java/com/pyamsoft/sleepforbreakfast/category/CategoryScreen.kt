@@ -26,12 +26,12 @@ fun CategoryScreen(
     onCategoryDeleteFinalized: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-  val category = state.items.collectAsStateList()
+  val categories = state.items.collectAsStateList()
   val undoable by state.recentlyDeleted.collectAsState()
 
   ListScreen(
       modifier = modifier,
-      items = category,
+      items = categories,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
       deletedMessage = { "${it.name} Removed" },
