@@ -29,6 +29,7 @@ import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatAppModule
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
+import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandlersAppModule
 import com.pyamsoft.sleepforbreakfast.spending.SpendingAppModule
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
@@ -47,14 +48,23 @@ import javax.inject.Singleton
     modules =
         [
             BreakfastComponent.Provider::class,
-            DbModule::class,
-            RoomModule::class,
+
+            // UI
             TransactionAppModule::class,
             UiAppModule::class,
-            SpendingAppModule::class,
-            WorkManagerAppModule::class,
             RepeatAppModule::class,
             CategoryAppModule::class,
+
+            // DB
+            DbModule::class,
+            RoomModule::class,
+
+            // Work
+            WorkManagerAppModule::class,
+
+            // Spending
+            SpendingAppModule::class,
+            AutomaticHandlersAppModule::class,
         ],
 )
 internal interface BreakfastComponent {

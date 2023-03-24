@@ -59,6 +59,12 @@ internal constructor(
         return@multiCachify realQueryDao.queryById(id)
       }
 
+  private val queryBySystemNameCache =
+      multiCachify<QueryBySystemNameKey, Maybe<out DbCategory>, String> { name ->
+        Enforcer.assertOffMainThread()
+        return@multiCachify realQueryDao.queryBySystemName(name)
+      }
+
   override val deleteDao: CategoryDeleteDao = this
 
   override val insertDao: CategoryInsertDao = this
@@ -86,6 +92,18 @@ internal constructor(
         queryByIdCache.key(key).clear()
       }
 
+  override suspend fun invalidateBySystemName(name: String) =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        val key =
+            QueryBySystemNameKey(
+                name = name,
+            )
+
+        queryBySystemNameCache.key(key).clear()
+      }
+
   override suspend fun listenForChanges(onChange: (event: CategoryChangeEvent) -> Unit) =
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
@@ -108,6 +126,18 @@ internal constructor(
             )
 
         return@withContext queryByIdCache.key(key).call(id)
+      }
+
+  override suspend fun queryBySystemName(name: String): Maybe<out DbCategory> =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        val key =
+            QueryBySystemNameKey(
+                name = name,
+            )
+
+        return@withContext queryBySystemNameCache.key(key).call(name)
       }
 
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
@@ -144,4 +174,6 @@ internal constructor(
   private data class QueryByIdKey(
       val categoryId: DbCategory.Id,
   )
+
+  private data class QueryBySystemNameKey(val name: String)
 }

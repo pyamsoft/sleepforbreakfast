@@ -24,8 +24,12 @@ interface CategoryQueryDao : DbQuery<DbCategory> {
 
   @CheckResult suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory>
 
+  @CheckResult suspend fun queryBySystemName(name: String): Maybe<out DbCategory>
+
   interface Cache : DbQuery.Cache {
 
     suspend fun invalidateById(id: DbCategory.Id)
+
+    suspend fun invalidateBySystemName(name: String)
   }
 }
