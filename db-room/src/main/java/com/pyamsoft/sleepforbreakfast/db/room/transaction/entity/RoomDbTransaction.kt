@@ -27,8 +27,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
-import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDateTime
 
@@ -52,14 +50,6 @@ import java.time.LocalDateTime
                 onDelete = ForeignKey.CASCADE,
             ),
 
-            // Link DbSource entries to the Transactions they create
-            ForeignKey(
-                entity = RoomDbSource::class,
-                parentColumns = [RoomDbSource.COLUMN_ID],
-                childColumns = [RoomDbTransaction.COLUMN_SOURCE_ID],
-                onDelete = ForeignKey.CASCADE,
-            ),
-
             // TODO Peter: How do we FK on many category IDs?
         ],
 )
@@ -67,7 +57,6 @@ internal data class RoomDbTransaction
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbTransaction.Id,
     @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
-    @JvmField @ColumnInfo(name = COLUMN_SOURCE_ID, index = true) val dbSourceId: DbSource.Id?,
     @JvmField @ColumnInfo(name = COLUMN_CATEGORY_ID) val dbCategories: List<DbCategory.Id>,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
     @JvmField @ColumnInfo(name = COLUMN_TYPE) val dbType: DbTransaction.Type,
@@ -84,8 +73,6 @@ internal constructor(
 
   @Ignore override val createdAt = dbCreatedAt
 
-  @Ignore override val sourceId = dbSourceId
-
   @Ignore override val categories = dbCategories
 
   @Ignore override val name = dbName
@@ -101,16 +88,6 @@ internal constructor(
   @Ignore override val repeatId = dbRepeatId
 
   @Ignore override val automaticId = dbAutomaticId
-
-  @Ignore
-  override fun sourceId(id: DbSource.Id): DbTransaction {
-    return this.copy(dbSourceId = id)
-  }
-
-  @Ignore
-  override fun removeSourceId(): DbTransaction {
-    return this.copy(dbSourceId = null)
-  }
 
   @Ignore
   override fun addCategory(id: DbCategory.Id): DbTransaction {
@@ -170,8 +147,6 @@ internal constructor(
 
     @Ignore internal const val COLUMN_CREATED_AT = "created_at"
 
-    @Ignore internal const val COLUMN_SOURCE_ID = "source_id"
-
     @Ignore internal const val COLUMN_CATEGORY_ID = "category_id"
 
     @Ignore internal const val COLUMN_NAME = "name"
@@ -197,7 +172,6 @@ internal constructor(
         RoomDbTransaction(
             item.id,
             item.createdAt,
-            item.sourceId,
             item.categories,
             item.name,
             item.type,

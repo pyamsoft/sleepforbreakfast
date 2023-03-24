@@ -14,9 +14,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceDeleteDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceInsertDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
@@ -97,28 +94,6 @@ abstract class RoomModule {
     @JvmStatic
     internal fun provideRoomCategoryDeleteDao(@InternalApi db: RoomSleepDb): CategoryDeleteDao {
       return db.roomCategoryDeleteDao
-    }
-
-    // DbSource
-    @DbApi
-    @Provides
-    @JvmStatic
-    internal fun provideRoomSourceQueryDao(@InternalApi db: RoomSleepDb): SourceQueryDao {
-      return db.roomSourceQueryDao
-    }
-
-    @DbApi
-    @Provides
-    @JvmStatic
-    internal fun provideRoomSourceInsertDao(@InternalApi db: RoomSleepDb): SourceInsertDao {
-      return db.roomSourceInsertDao
-    }
-
-    @DbApi
-    @Provides
-    @JvmStatic
-    internal fun provideRoomSourceDeleteDao(@InternalApi db: RoomSleepDb): SourceDeleteDao {
-      return db.roomSourceDeleteDao
     }
 
     // DbRepeat

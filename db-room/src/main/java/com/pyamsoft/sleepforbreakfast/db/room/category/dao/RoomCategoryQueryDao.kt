@@ -19,19 +19,37 @@ package com.pyamsoft.sleepforbreakfast.db.room.category.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
-import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
 
-  override suspend fun query(): List<DbCategory> =
+  final override suspend fun query(): List<DbCategory> =
       withContext(context = Dispatchers.IO) { daoQuery() }
 
   @CheckResult
   @Query("""SELECT * FROM ${RoomDbCategory.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbCategory>
+
+  final override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
+      withContext(context = Dispatchers.IO) {
+        when (val transaction = daoQueryById(id)) {
+          null -> Maybe.None
+          else -> Maybe.Data(transaction)
+        }
+      }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbCategory.TABLE_NAME}
+  WHERE ${RoomDbCategory.COLUMN_ID} = :id
+  LIMIT 1
+""")
+  internal abstract suspend fun daoQueryById(id: DbCategory.Id): RoomDbCategory?
 }

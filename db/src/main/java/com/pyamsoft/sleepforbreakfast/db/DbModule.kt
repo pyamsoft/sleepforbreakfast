@@ -19,12 +19,6 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatRealtime
-import com.pyamsoft.sleepforbreakfast.db.source.SourceDb
-import com.pyamsoft.sleepforbreakfast.db.source.SourceDbImpl
-import com.pyamsoft.sleepforbreakfast.db.source.SourceDeleteDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceInsertDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceRealtime
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDbImpl
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
@@ -48,8 +42,6 @@ abstract class DbModule {
 
   @Binds @CheckResult internal abstract fun provideCategoryDbImpl(impl: CategoryDbImpl): CategoryDb
 
-  @Binds @CheckResult internal abstract fun provideSourceDbImpl(impl: SourceDbImpl): SourceDb
-
   @Binds @CheckResult internal abstract fun provideRepeatDbImpl(impl: RepeatDbImpl): RepeatDb
 
   @Binds
@@ -64,10 +56,6 @@ abstract class DbModule {
   @Binds
   @CheckResult
   internal abstract fun provideCategoryCache(impl: CategoryDbImpl): CategoryQueryDao.Cache
-
-  @Binds
-  @CheckResult
-  internal abstract fun provideSourceCache(impl: SourceDbImpl): SourceQueryDao.Cache
 
   @Binds
   @CheckResult
@@ -153,43 +141,6 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideCategoryDeleteDao(@InternalApi db: CategoryDb): CategoryDeleteDao {
-      return db.deleteDao
-    }
-
-    // DbSource
-    @JvmStatic
-    @Provides
-    @CheckResult
-    @InternalApi
-    internal fun provideSourceDb(db: SleepDb): SourceDb {
-      return db.sources
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideSourceRealtimeDao(@InternalApi db: SourceDb): SourceRealtime {
-      return db.realtime
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideSourceQueryDao(@InternalApi db: SourceDb): SourceQueryDao {
-      return db.queryDao
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideSourceInsertDao(@InternalApi db: SourceDb): SourceInsertDao {
-      return db.insertDao
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideSourceDeleteDao(@InternalApi db: SourceDb): SourceDeleteDao {
       return db.deleteDao
     }
 

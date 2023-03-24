@@ -7,15 +7,15 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 internal object DbCategoryIdConverter {
 
   @JvmStatic
-  @CheckResult
   @TypeConverter
+  @CheckResult
   fun toId(id: String?): DbCategory.Id? {
     return id?.let { DbCategory.Id(it) }
   }
 
   @JvmStatic
-  @CheckResult
   @TypeConverter
+  @CheckResult
   fun fromId(id: DbCategory.Id?): String? {
     return id?.raw
   }

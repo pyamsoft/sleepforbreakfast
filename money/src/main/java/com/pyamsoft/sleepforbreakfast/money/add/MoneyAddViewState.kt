@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.money.add
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +26,6 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 interface MoneyAddViewState : UiViewState {
   val name: StateFlow<String>
-  val source: StateFlow<DbSource.Id?>
   val categories: StateFlow<List<DbCategory.Id>>
   val amount: StateFlow<Long>
   val type: StateFlow<DbTransaction.Type>
@@ -38,7 +36,6 @@ interface MoneyAddViewState : UiViewState {
 @Stable
 abstract class MutableMoneyAddViewState protected constructor() : MoneyAddViewState {
   final override val name = MutableStateFlow("")
-  final override val source = MutableStateFlow<DbSource.Id?>(null)
   final override val categories = MutableStateFlow<List<DbCategory.Id>>(emptyList())
   final override val amount = MutableStateFlow(0L)
   final override val type = MutableStateFlow(DbTransaction.Type.SPEND)

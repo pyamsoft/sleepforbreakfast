@@ -26,11 +26,10 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdCon
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
+import com.pyamsoft.sleepforbreakfast.db.room.devonly.AutoMigrate3To4
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
-import com.pyamsoft.sleepforbreakfast.db.room.source.converter.DbSourceIdConverter
-import com.pyamsoft.sleepforbreakfast.db.room.source.entity.RoomDbSource
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionCategoriesConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionTypeConverter
@@ -38,24 +37,27 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 3,
+    version = 4,
     autoMigrations =
         [
             AutoMigration(
                 from = 1,
                 to = 2,
             ),
-
             AutoMigration(
                 from = 2,
                 to = 3,
+            ),
+            AutoMigration(
+                from = 3,
+                to = 4,
+                spec = AutoMigrate3To4::class,
             ),
         ],
     entities =
         [
             RoomDbTransaction::class,
             RoomDbCategory::class,
-            RoomDbSource::class,
             RoomDbRepeat::class,
             RoomDbAutomatic::class,
         ],
@@ -66,7 +68,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
     DbTransactionTypeConverter::class,
     LocalDateTimeConverter::class,
     DbTransactionCategoriesConverter::class,
-    DbSourceIdConverter::class,
+    DbCategoryIdConverter::class,
     DbCategoryIdConverter::class,
     LocalDateConverter::class,
     DbRepeatIdConverter::class,

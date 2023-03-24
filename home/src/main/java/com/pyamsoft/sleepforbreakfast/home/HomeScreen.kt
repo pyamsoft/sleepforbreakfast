@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.home.repeats.HomeOpenRepeats
-import com.pyamsoft.sleepforbreakfast.home.sources.HomeOpenSources
+import com.pyamsoft.sleepforbreakfast.home.category.HomeOpenCategory
 import com.pyamsoft.sleepforbreakfast.home.transactions.HomeOpenTransactions
 
 @Composable
@@ -22,7 +22,7 @@ fun HomeScreen(
     onOpenNotificationListenerSettings: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onOpenSources: () -> Unit,
+    onOpenCategory: () -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -61,9 +61,9 @@ fun HomeScreen(
         )
       }
       item {
-        HomeOpenSources(
+        HomeOpenCategory(
             modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-            onOpen = onOpenSources,
+            onOpen = onOpenCategory,
         )
       }
     }

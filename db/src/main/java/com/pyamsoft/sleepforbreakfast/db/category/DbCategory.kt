@@ -18,6 +18,8 @@ package com.pyamsoft.sleepforbreakfast.db.category
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
+import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import java.time.Clock
 import java.time.LocalDateTime
 
 @Stable
@@ -29,7 +31,15 @@ interface DbCategory {
 
   @get:CheckResult val name: String
 
+  @get:CheckResult val note: String
+
+  @get:CheckResult val accountNumber: String
+
   @CheckResult fun name(name: String): DbCategory
+
+  @CheckResult fun note(note: String): DbCategory
+
+  @CheckResult fun accountNumber(accountNumber: String): DbCategory
 
   data class Id(@get:CheckResult val raw: String) {
 
@@ -38,6 +48,42 @@ interface DbCategory {
     companion object {
 
       @JvmField val EMPTY = Id("")
+    }
+  }
+
+  private data class Impl(
+      override val id: Id,
+      override val createdAt: LocalDateTime,
+      override val name: String = "",
+      override val note: String = "",
+      override val accountNumber: String = ""
+  ) : DbCategory {
+
+    override fun name(name: String): DbCategory {
+      return this.copy(name = name)
+    }
+
+    override fun note(note: String): DbCategory {
+      return this.copy(note = note)
+    }
+
+    override fun accountNumber(accountNumber: String): DbCategory {
+      return this.copy(accountNumber = accountNumber)
+    }
+  }
+
+  companion object {
+
+    @JvmStatic
+    @CheckResult
+    fun create(
+        clock: Clock,
+        id: Id,
+    ): DbCategory {
+      return Impl(
+          id = if (id.isEmpty) Id(IdGenerator.generate()) else id,
+          createdAt = LocalDateTime.now(clock),
+      )
     }
   }
 }

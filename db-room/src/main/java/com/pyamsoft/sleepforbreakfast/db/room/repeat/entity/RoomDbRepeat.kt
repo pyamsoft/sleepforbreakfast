@@ -23,7 +23,6 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -33,9 +32,6 @@ internal data class RoomDbRepeat
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbRepeat.Id,
     @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
-    @JvmField
-    @ColumnInfo(name = COLUMN_TRANSACTION_SOURCE_ID)
-    val dbTransactionSourceId: DbSource.Id?,
     @JvmField
     @ColumnInfo(name = COLUMN_TRANSACTION_CATEGORY_ID)
     val dbTransactionCategories: List<DbCategory.Id>,
@@ -55,8 +51,6 @@ internal constructor(
 
   @Ignore override val createdAt = dbCreatedAt
 
-  @Ignore override val transactionSourceId = dbTransactionSourceId
-
   @Ignore override val transactionCategories = dbTransactionCategories
 
   @Ignore override val transactionName = dbTransactionName
@@ -74,16 +68,6 @@ internal constructor(
   @Ignore override val active = dbActive
 
   @Ignore override val archived = dbArchived
-
-  @Ignore
-  override fun transactionSourceId(id: DbSource.Id): DbRepeat {
-    return this.copy(dbTransactionSourceId = id)
-  }
-
-  @Ignore
-  override fun removeTransactionSourceId(): DbRepeat {
-    return this.copy(dbTransactionSourceId = null)
-  }
 
   @Ignore
   override fun addTransactionCategory(id: DbCategory.Id): DbRepeat {
@@ -158,8 +142,6 @@ internal constructor(
 
     @Ignore internal const val COLUMN_CREATED_AT = "created_at"
 
-    @Ignore internal const val COLUMN_TRANSACTION_SOURCE_ID = "transaction_source_id"
-
     @Ignore internal const val COLUMN_TRANSACTION_CATEGORY_ID = "transaction_category_id"
 
     @Ignore internal const val COLUMN_TRANSACTION_NAME = "transaction_name"
@@ -178,10 +160,6 @@ internal constructor(
 
     @Ignore internal const val COLUMN_ARCHIVED = "archived"
 
-    @Ignore internal const val V2_COLUMN_REPEAT_DATE = "repeat_date"
-
-    @Ignore internal const val V3_COLUMN_REPEAT_TIME = "repeat_time"
-
     @Ignore
     @JvmStatic
     @CheckResult
@@ -191,7 +169,6 @@ internal constructor(
         RoomDbRepeat(
             item.id,
             item.createdAt,
-            item.transactionSourceId,
             item.transactionCategories,
             item.transactionName,
             item.transactionType,

@@ -24,9 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
-import com.pyamsoft.sleepforbreakfast.sources.SourcesEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 
 @Composable
@@ -39,7 +39,7 @@ fun MainScreen(
     onClosePage: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onOpenSources: () -> Unit,
+    onOpenCategory: () -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsState()
   val page by state.page.collectAsState()
@@ -57,7 +57,7 @@ fun MainScreen(
             onOpenTransactions = onOpenTransactions,
             onOpenRepeats = onOpenRepeats,
             onOpenSettings = onOpenSettings,
-            onOpenSources = onOpenSources,
+            onOpenCategory = onOpenCategory,
         )
       } else {
         when (p) {
@@ -73,8 +73,8 @@ fun MainScreen(
                 onDismiss = onClosePage,
             )
           }
-          MainPage.SOURCES -> {
-            SourcesEntry(
+          MainPage.CATEGORY -> {
+            CategoryEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 onDismiss = onClosePage,
             )

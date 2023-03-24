@@ -72,8 +72,8 @@ internal constructor(
     state.page.value = MainPage.REPEAT
   }
 
-  fun handleOpenSources() {
-    state.page.value = MainPage.SOURCES
+  fun handleOpenCategory() {
+    state.page.value = MainPage.CATEGORY
   }
 
   companion object {

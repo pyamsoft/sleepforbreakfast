@@ -26,9 +26,6 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatQueryDao
-import com.pyamsoft.sleepforbreakfast.db.room.source.dao.RoomSourceDeleteDao
-import com.pyamsoft.sleepforbreakfast.db.room.source.dao.RoomSourceInsertDao
-import com.pyamsoft.sleepforbreakfast.db.room.source.dao.RoomSourceQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionQueryDao
@@ -44,11 +41,6 @@ internal interface RoomSleepDb {
   @get:CheckResult val roomCategoryQueryDao: RoomCategoryQueryDao
   @get:CheckResult val roomCategoryInsertDao: RoomCategoryInsertDao
   @get:CheckResult val roomCategoryDeleteDao: RoomCategoryDeleteDao
-
-  // Source
-  @get:CheckResult val roomSourceQueryDao: RoomSourceQueryDao
-  @get:CheckResult val roomSourceInsertDao: RoomSourceInsertDao
-  @get:CheckResult val roomSourceDeleteDao: RoomSourceDeleteDao
 
   // Repeat
   @get:CheckResult val roomRepeatQueryDao: RoomRepeatQueryDao

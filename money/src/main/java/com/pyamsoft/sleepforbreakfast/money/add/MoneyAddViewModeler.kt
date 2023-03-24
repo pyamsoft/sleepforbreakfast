@@ -98,7 +98,6 @@ protected constructor(
       state.type.value = DbTransaction.Type.SPEND
       state.amount.value = 0L
       state.categories.value = emptyList()
-      state.source.value = null
     }
 
     onReset(payload)

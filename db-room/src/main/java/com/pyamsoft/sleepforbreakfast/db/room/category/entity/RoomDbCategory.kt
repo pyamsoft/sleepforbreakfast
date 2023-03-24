@@ -30,6 +30,20 @@ internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbCategory.Id,
     @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_NOTE,
+        // TODO remove later and revert back to a version 1 for the first release
+        defaultValue = "",
+    )
+    val dbNote: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_ACCOUNT,
+        // TODO remove later and revert back to a version 1 for the first release
+        defaultValue = "",
+    )
+    val dbAccount: String,
 ) : DbCategory {
 
   @Ignore override val id: DbCategory.Id = dbId
@@ -38,20 +52,38 @@ internal constructor(
 
   @Ignore override val name: String = dbName
 
+  @Ignore override val note = dbNote
+
+  @Ignore override val accountNumber = dbAccount
+
   @Ignore
   override fun name(name: String): DbCategory {
     return this.copy(dbName = name)
   }
 
+  @Ignore
+  override fun note(note: String): DbCategory {
+    return this.copy(dbNote = note)
+  }
+
+  @Ignore
+  override fun accountNumber(accountNumber: String): DbCategory {
+    return this.copy(dbAccount = accountNumber)
+  }
+
   companion object {
 
-    @Ignore internal const val TABLE_NAME = "room_categories_table"
+    @Ignore internal const val TABLE_NAME = "room_category_table"
 
     @Ignore internal const val COLUMN_ID = "_id"
 
     @Ignore internal const val COLUMN_CREATED_AT = "created_at"
 
     @Ignore internal const val COLUMN_NAME = "name"
+
+    @Ignore internal const val COLUMN_NOTE = "note"
+
+    @Ignore internal const val COLUMN_ACCOUNT = "account"
 
     @Ignore
     @JvmStatic
@@ -63,6 +95,8 @@ internal constructor(
             item.id,
             item.createdAt,
             item.name,
+            item.note,
+            item.accountNumber,
         )
       }
     }

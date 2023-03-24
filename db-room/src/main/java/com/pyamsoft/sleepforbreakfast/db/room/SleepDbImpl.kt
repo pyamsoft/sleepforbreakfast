@@ -22,8 +22,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryDb
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDb
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
-import com.pyamsoft.sleepforbreakfast.db.source.SourceDb
-import com.pyamsoft.sleepforbreakfast.db.source.SourceQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import javax.inject.Inject
@@ -36,14 +34,12 @@ internal constructor(
     // DB
     override val transactions: TransactionDb,
     override val categories: CategoryDb,
-    override val sources: SourceDb,
     override val repeats: RepeatDb,
     override val automatics: AutomaticDb,
 
     // Caches
     private val transactionCache: TransactionQueryDao.Cache,
     private val categoryCache: CategoryQueryDao.Cache,
-    private val sourceCache: SourceQueryDao.Cache,
     private val repeatCache: RepeatQueryDao.Cache,
     private val automaticCache: AutomaticQueryDao.Cache
 ) : SleepDb {
@@ -51,7 +47,6 @@ internal constructor(
   override suspend fun invalidate() {
     transactionCache.invalidate()
     categoryCache.invalidate()
-    sourceCache.invalidate()
     repeatCache.invalidate()
     automaticCache.invalidate()
   }

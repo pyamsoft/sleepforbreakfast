@@ -22,7 +22,6 @@ import com.pyamsoft.sleepforbreakfast.core.IdGenerator
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import java.time.Clock
 import java.time.LocalDateTime
 
@@ -32,8 +31,6 @@ interface DbTransaction {
   @get:CheckResult val id: Id
 
   @get:CheckResult val createdAt: LocalDateTime
-
-  @get:CheckResult val sourceId: DbSource.Id?
 
   @get:CheckResult val categories: List<DbCategory.Id>
 
@@ -50,10 +47,6 @@ interface DbTransaction {
   @get:CheckResult val repeatId: DbRepeat.Id?
 
   @get:CheckResult val automaticId: DbAutomatic.Id?
-
-  @CheckResult fun sourceId(id: DbSource.Id): DbTransaction
-
-  @CheckResult fun removeSourceId(): DbTransaction
 
   @CheckResult fun addCategory(id: DbCategory.Id): DbTransaction
 
@@ -94,7 +87,6 @@ interface DbTransaction {
       override val id: Id,
       override val createdAt: LocalDateTime,
       override val date: LocalDateTime,
-      override val sourceId: DbSource.Id? = null,
       override val categories: List<DbCategory.Id> = emptyList(),
       override val name: String = "",
       override val amountInCents: Long = 0,
@@ -103,13 +95,6 @@ interface DbTransaction {
       override val repeatId: DbRepeat.Id? = null,
       override val automaticId: DbAutomatic.Id? = null,
   ) : DbTransaction {
-    override fun sourceId(id: DbSource.Id): DbTransaction {
-      return this.copy(sourceId = id)
-    }
-
-    override fun removeSourceId(): DbTransaction {
-      return this.copy(sourceId = null)
-    }
 
     override fun addCategory(id: DbCategory.Id): DbTransaction {
       return this.copy(categories = this.categories + id)

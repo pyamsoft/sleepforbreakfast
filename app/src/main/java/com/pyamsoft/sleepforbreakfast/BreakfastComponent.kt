@@ -22,13 +22,13 @@ import android.content.Context
 import androidx.annotation.CheckResult
 import coil.ImageLoader
 import com.pyamsoft.pydroid.ui.theme.Theming
+import com.pyamsoft.sleepforbreakfast.category.CategoryAppModule
 import com.pyamsoft.sleepforbreakfast.db.DbModule
 import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
 import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatAppModule
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
-import com.pyamsoft.sleepforbreakfast.sources.SourcesAppModule
 import com.pyamsoft.sleepforbreakfast.spending.SpendingAppModule
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
@@ -54,7 +54,7 @@ import javax.inject.Singleton
             SpendingAppModule::class,
             WorkManagerAppModule::class,
             RepeatAppModule::class,
-            SourcesAppModule::class,
+            CategoryAppModule::class,
         ],
 )
 internal interface BreakfastComponent {

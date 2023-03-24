@@ -20,7 +20,6 @@ import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDb
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDb
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDb
-import com.pyamsoft.sleepforbreakfast.db.source.SourceDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 
 interface SleepDb {
@@ -28,8 +27,6 @@ interface SleepDb {
   @get:CheckResult val transactions: TransactionDb
 
   @get:CheckResult val categories: CategoryDb
-
-  @get:CheckResult val sources: SourceDb
 
   @get:CheckResult val repeats: RepeatDb
 

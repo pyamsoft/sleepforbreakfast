@@ -8,6 +8,7 @@ pluginManagement {
 
 rootProject.name = "SleepForBreakfast"
 include ':app'
+include ':category'
 include ':core'
 include ':db'
 include ':db-room'
@@ -20,4 +21,3 @@ include ':worker'
 include ':worker-workmanager'
 include ':repeat'
 include ':money'
-include ':sources'

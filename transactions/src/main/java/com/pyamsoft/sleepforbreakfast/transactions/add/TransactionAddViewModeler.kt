@@ -51,15 +51,6 @@ internal constructor(
         .date(state.date.value)
         .note(state.note.value)
         .type(state.type.value)
-        .run {
-          state.source.value.let { sid ->
-            if (sid == null) {
-              removeSourceId()
-            } else {
-              sourceId(sid)
-            }
-          }
-        }
         .replaceCategories(state.categories.value)
   }
 
@@ -118,7 +109,6 @@ internal constructor(
       state.type.value = payload.type
       state.amount.value = payload.amountInCents
       state.categories.value = payload.categories
-      state.source.value = payload.sourceId
     }
 
     handleCloseDateDialog()

@@ -38,14 +38,6 @@ internal constructor(
         .date(date.atTime(LocalTime.now(clock)))
         .amountInCents(repeat.transactionAmountInCents)
         .replaceCategories(repeat.transactionCategories)
-        .run {
-          val srcId = repeat.transactionSourceId
-          if (srcId == null) {
-            removeSourceId()
-          } else {
-            sourceId(srcId)
-          }
-        }
   }
 
   private suspend fun insertNewTransaction(

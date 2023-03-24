@@ -17,7 +17,9 @@
 package com.pyamsoft.sleepforbreakfast.db.category
 
 import com.pyamsoft.cachify.cachify
+import com.pyamsoft.cachify.multiCachify
 import com.pyamsoft.pydroid.core.Enforcer
+import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -51,6 +53,12 @@ internal constructor(
         return@cachify realQueryDao.query()
       }
 
+  private val queryByIdCache =
+      multiCachify<QueryByIdKey, Maybe<out DbCategory>, DbCategory.Id> { id ->
+        Enforcer.assertOffMainThread()
+        return@multiCachify realQueryDao.queryById(id)
+      }
+
   override val deleteDao: CategoryDeleteDao = this
 
   override val insertDao: CategoryInsertDao = this
@@ -63,6 +71,19 @@ internal constructor(
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
         queryCache.clear()
+        queryByIdCache.clear()
+      }
+
+  override suspend fun invalidateById(id: DbCategory.Id) =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        val key =
+            QueryByIdKey(
+                categoryId = id,
+            )
+
+        queryByIdCache.key(key).clear()
       }
 
   override suspend fun listenForChanges(onChange: (event: CategoryChangeEvent) -> Unit) =
@@ -75,6 +96,18 @@ internal constructor(
       withContext(context = Dispatchers.IO) {
         Enforcer.assertOffMainThread()
         return@withContext queryCache.call()
+      }
+
+  override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
+      withContext(context = Dispatchers.IO) {
+        Enforcer.assertOffMainThread()
+
+        val key =
+            QueryByIdKey(
+                categoryId = id,
+            )
+
+        return@withContext queryByIdCache.key(key).call(id)
       }
 
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
@@ -107,4 +140,8 @@ internal constructor(
           }
         }
       }
+
+  private data class QueryByIdKey(
+      val categoryId: DbCategory.Id,
+  )
 }

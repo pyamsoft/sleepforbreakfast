@@ -20,7 +20,6 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.source.DbSource
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
 import java.time.LocalDate
@@ -32,8 +31,6 @@ interface DbRepeat {
   @get:CheckResult val id: Id
 
   @get:CheckResult val createdAt: LocalDateTime
-
-  @get:CheckResult val transactionSourceId: DbSource.Id?
 
   @get:CheckResult val transactionCategories: List<DbCategory.Id>
 
@@ -52,10 +49,6 @@ interface DbRepeat {
   @get:CheckResult val active: Boolean
 
   @get:CheckResult val archived: Boolean
-
-  @CheckResult fun transactionSourceId(id: DbSource.Id): DbRepeat
-
-  @CheckResult fun removeTransactionSourceId(): DbRepeat
 
   @CheckResult fun addTransactionCategory(id: DbCategory.Id): DbRepeat
 
@@ -111,7 +104,6 @@ interface DbRepeat {
       override val id: Id,
       override val createdAt: LocalDateTime,
       override val firstDate: LocalDate,
-      override val transactionSourceId: DbSource.Id? = null,
       override val transactionCategories: List<DbCategory.Id> = emptyList(),
       override val transactionName: String = "",
       override val transactionAmountInCents: Long = 0,
@@ -121,14 +113,6 @@ interface DbRepeat {
       override val active: Boolean = true,
       override val archived: Boolean = false,
   ) : DbRepeat {
-
-    override fun transactionSourceId(id: DbSource.Id): DbRepeat {
-      return this.copy(transactionSourceId = id)
-    }
-
-    override fun removeTransactionSourceId(): DbRepeat {
-      return this.copy(transactionSourceId = null)
-    }
 
     override fun addTransactionCategory(id: DbCategory.Id): DbRepeat {
       return this.copy(transactionCategories = this.transactionCategories + id)

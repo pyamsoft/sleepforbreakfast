@@ -94,7 +94,6 @@ internal constructor(
       state.type.value = payload.transactionType
       state.amount.value = payload.transactionAmountInCents
       state.categories.value = payload.transactionCategories
-      state.source.value = payload.transactionSourceId
     }
   }
 
@@ -108,15 +107,6 @@ internal constructor(
         .transactionAmountInCents(state.amount.value)
         .transactionNote(state.note.value)
         .transactionType(state.type.value)
-        .run {
-          state.source.value.let { sid ->
-            if (sid == null) {
-              removeTransactionSourceId()
-            } else {
-              transactionSourceId(sid)
-            }
-          }
-        }
         .replaceTransactionCategories(state.categories.value)
   }
 

@@ -49,5 +49,5 @@ internal fun MainEntry(
       onClosePage = { viewModel.handleClosePage() },
       onOpenTransactions = { viewModel.handleOpenTransactions() },
       onOpenRepeats = { viewModel.handleOpenRepeats() },
-      onOpenSources = { viewModel.handleOpenSources() })
+      onOpenCategory = { viewModel.handleOpenCategory() })
 }
