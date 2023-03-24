@@ -94,7 +94,6 @@ internal fun CategoryAddEntry(
           onDismiss = { handleDismiss() },
           onNameChanged = { viewModel.handleNameChanged(it) },
           onNoteChanged = { viewModel.handleNoteChanged(it) },
-          onAccountNumberChanged = { viewModel.handleAccountNumberChanged(it) },
           onReset = { viewModel.handleReset() },
           onSubmit = { handleSubmit() },
       )

@@ -37,13 +37,7 @@ internal constructor(
         defaultValue = "",
     )
     val dbNote: String,
-    @JvmField
-    @ColumnInfo(
-        name = COLUMN_ACCOUNT,
-        // TODO remove later and revert back to a version 1 for the first release
-        defaultValue = "",
-    )
-    val dbAccount: String,
+    val dbSystem: Boolean,
 ) : DbCategory {
 
   @Ignore override val id: DbCategory.Id = dbId
@@ -54,7 +48,7 @@ internal constructor(
 
   @Ignore override val note = dbNote
 
-  @Ignore override val accountNumber = dbAccount
+  @Ignore override val system = dbSystem
 
   @Ignore
   override fun name(name: String): DbCategory {
@@ -67,8 +61,8 @@ internal constructor(
   }
 
   @Ignore
-  override fun accountNumber(accountNumber: String): DbCategory {
-    return this.copy(dbAccount = accountNumber)
+  override fun systemLevel(): DbCategory {
+    return this.copy(dbSystem = true)
   }
 
   companion object {
@@ -83,7 +77,7 @@ internal constructor(
 
     @Ignore internal const val COLUMN_NOTE = "note"
 
-    @Ignore internal const val COLUMN_ACCOUNT = "account"
+    @Ignore internal const val COLUMN_SYSTEM = "system"
 
     @Ignore
     @JvmStatic
@@ -96,7 +90,7 @@ internal constructor(
             item.createdAt,
             item.name,
             item.note,
-            item.accountNumber,
+            item.system,
         )
       }
     }

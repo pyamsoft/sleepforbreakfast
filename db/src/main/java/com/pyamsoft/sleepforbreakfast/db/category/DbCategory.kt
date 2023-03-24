@@ -33,13 +33,13 @@ interface DbCategory {
 
   @get:CheckResult val note: String
 
-  @get:CheckResult val accountNumber: String
+  @get:CheckResult val system: Boolean
 
   @CheckResult fun name(name: String): DbCategory
 
   @CheckResult fun note(note: String): DbCategory
 
-  @CheckResult fun accountNumber(accountNumber: String): DbCategory
+  @CheckResult fun systemLevel(): DbCategory
 
   data class Id(@get:CheckResult val raw: String) {
 
@@ -56,7 +56,7 @@ interface DbCategory {
       override val createdAt: LocalDateTime,
       override val name: String = "",
       override val note: String = "",
-      override val accountNumber: String = ""
+      override val system: Boolean = false,
   ) : DbCategory {
 
     override fun name(name: String): DbCategory {
@@ -67,8 +67,8 @@ interface DbCategory {
       return this.copy(note = note)
     }
 
-    override fun accountNumber(accountNumber: String): DbCategory {
-      return this.copy(accountNumber = accountNumber)
+    override fun systemLevel(): DbCategory {
+      return this.copy(system = true)
     }
   }
 

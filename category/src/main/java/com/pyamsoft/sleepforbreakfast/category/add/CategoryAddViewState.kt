@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 interface CategoryAddViewState : UiViewState {
   val name: StateFlow<String>
-  val accountNumber: StateFlow<String>
   val note: StateFlow<String>
   val working: StateFlow<Boolean>
 }
@@ -33,7 +32,6 @@ interface CategoryAddViewState : UiViewState {
 @Stable
 class MutableCategoryAddViewState @Inject internal constructor() : CategoryAddViewState {
   override val name = MutableStateFlow("")
-  override val accountNumber = MutableStateFlow("")
   override val note = MutableStateFlow("")
   override val working = MutableStateFlow(false)
 }

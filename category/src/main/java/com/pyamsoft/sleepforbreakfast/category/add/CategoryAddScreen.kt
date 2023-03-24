@@ -9,7 +9,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -17,13 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.sleepforbreakfast.core.REGEX_FILTER_ONLY_DIGITS
 import com.pyamsoft.sleepforbreakfast.money.add.AddName
 import com.pyamsoft.sleepforbreakfast.money.add.AddNote
 import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
@@ -34,7 +30,6 @@ fun CategoryAddScreen(
     state: CategoryAddViewState,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
-    onAccountNumberChanged: (String) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
@@ -81,14 +76,6 @@ fun CategoryAddScreen(
       }
 
       item {
-        AccountNumber(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            state = state,
-            onAccountNumberChanged = onAccountNumberChanged,
-        )
-      }
-
-      item {
         AddNote(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             note = note,
@@ -111,39 +98,4 @@ fun CategoryAddScreen(
       }
     }
   }
-}
-
-@Composable
-private fun AccountNumber(
-    modifier: Modifier = Modifier,
-    state: CategoryAddViewState,
-    onAccountNumberChanged: (String) -> Unit,
-) {
-  val accountNumber by state.accountNumber.collectAsState()
-
-  val keyboardNumberOptions = remember {
-    KeyboardOptions(
-        capitalization = KeyboardCapitalization.None,
-        keyboardType = KeyboardType.Number,
-        imeAction = ImeAction.Next,
-    )
-  }
-
-  val handleAccountChanged by rememberUpdatedState { text: String ->
-    // Ignore anything not a number when parsing to number
-    val nums = text.trim().replace(REGEX_FILTER_ONLY_DIGITS, "")
-    onAccountNumberChanged(nums)
-  }
-
-  TextField(
-      modifier = modifier,
-      value = accountNumber,
-      onValueChange = { handleAccountChanged(it) },
-      keyboardOptions = keyboardNumberOptions,
-      label = {
-        Text(
-            text = "Last 4 digits",
-        )
-      },
-  )
 }

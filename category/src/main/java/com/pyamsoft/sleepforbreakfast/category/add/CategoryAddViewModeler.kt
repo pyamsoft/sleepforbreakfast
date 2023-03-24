@@ -53,7 +53,6 @@ internal constructor(
   private fun compile(): DbCategory {
     return DbCategory.create(clock, initialId)
         .name(state.name.value)
-        .accountNumber(state.accountNumber.value)
         .note(state.note.value)
   }
   override fun onBind(scope: CoroutineScope) {
@@ -71,11 +70,9 @@ internal constructor(
   fun handleReset(s: DbCategory? = null) {
     if (s == null) {
       state.name.value = ""
-      state.accountNumber.value = ""
       state.note.value = ""
     } else {
       state.name.value = s.name
-      state.accountNumber.value = s.accountNumber
       state.note.value = s.note
     }
   }
@@ -86,10 +83,6 @@ internal constructor(
 
   fun handleNoteChanged(note: String) {
     state.note.value = note
-  }
-
-  fun handleAccountNumberChanged(num: String) {
-    state.accountNumber.value = num
   }
 
   fun handleSubmit(
