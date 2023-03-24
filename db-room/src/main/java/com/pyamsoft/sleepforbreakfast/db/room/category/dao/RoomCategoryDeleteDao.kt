@@ -19,9 +19,9 @@ package com.pyamsoft.sleepforbreakfast.db.room.category.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Delete
-import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

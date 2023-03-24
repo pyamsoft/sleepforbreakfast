@@ -16,9 +16,9 @@
 
 package com.pyamsoft.sleepforbreakfast.category.delete
 
+import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteViewModeler
-import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
 import javax.inject.Inject
 
 class CategoryDeleteViewModeler

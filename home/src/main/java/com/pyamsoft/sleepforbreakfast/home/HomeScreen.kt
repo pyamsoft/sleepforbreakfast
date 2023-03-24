@@ -9,8 +9,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.sleepforbreakfast.home.repeats.HomeOpenRepeats
 import com.pyamsoft.sleepforbreakfast.home.category.HomeOpenCategory
+import com.pyamsoft.sleepforbreakfast.home.repeats.HomeOpenRepeats
 import com.pyamsoft.sleepforbreakfast.home.transactions.HomeOpenTransactions
 
 @Composable
