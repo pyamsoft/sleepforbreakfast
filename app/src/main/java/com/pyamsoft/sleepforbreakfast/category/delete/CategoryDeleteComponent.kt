@@ -29,7 +29,7 @@ import dagger.Subcomponent
 )
 internal interface CategoryDeleteComponent {
 
-  fun inject(injector: SourcesDeleteInjector)
+  fun inject(injector: CategoryDeleteInjector)
 
   @Subcomponent.Factory
   interface Factory {

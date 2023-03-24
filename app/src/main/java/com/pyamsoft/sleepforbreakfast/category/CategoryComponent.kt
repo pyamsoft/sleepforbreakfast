@@ -28,7 +28,7 @@ import dagger.Subcomponent
 )
 internal interface CategoryComponent {
 
-  fun inject(injector: SourcesInjector)
+  fun inject(injector: CategoryInjector)
 
   @Subcomponent.Factory
   interface Factory {
