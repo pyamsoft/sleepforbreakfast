@@ -44,7 +44,7 @@ internal constructor(
         interactor = interactor,
     ) {
 
-  override fun compile(): DbTransaction {
+  override suspend fun compile(): DbTransaction {
     return DbTransaction.create(clock, initialId)
         .name(state.name.value)
         .amountInCents(state.amount.value)

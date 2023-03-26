@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic.venmo
 
 import com.pyamsoft.sleepforbreakfast.core.RAW_STRING_DOLLAR_PRICE
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.EarnAutomaticHandler
 import javax.inject.Inject
@@ -40,8 +41,8 @@ internal constructor(
   }
 
   override suspend fun getCategories(): List<DbCategory.Id> {
-    val venmo = systemCategories.categoryByName(SystemCategories.Categories.VENMO)
-    val venmoPay = systemCategories.categoryByName(SystemCategories.Categories.VENMO_REQUESTS)
+    val venmo = systemCategories.categoryByName(RequiredCategories.VENMO)
+    val venmoPay = systemCategories.categoryByName(RequiredCategories.VENMO_REQUESTS)
 
     val result = mutableListOf<DbCategory.Id>()
     if (venmo != null) {

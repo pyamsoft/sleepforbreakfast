@@ -40,27 +40,28 @@ internal constructor(
 ) : SystemCategories {
 
   @CheckResult
-  private fun noteForName(category: SystemCategories.Categories): String {
+  private fun noteForName(category: RequiredCategories): String {
     val what =
         when (category) {
-          SystemCategories.Categories.VENMO -> "Venmo related transactions"
-          SystemCategories.Categories.VENMO_PAY -> "Venmo payments"
-          SystemCategories.Categories.VENMO_REQUESTS -> "Venmo requests"
-          SystemCategories.Categories.GOOGLE_WALLET -> "Google Wallet spending notifications"
+          RequiredCategories.VENMO -> "Venmo related transactions"
+          RequiredCategories.VENMO_PAY -> "Venmo payments"
+          RequiredCategories.VENMO_REQUESTS -> "Venmo requests"
+          RequiredCategories.GOOGLE_WALLET -> "Google Wallet spending notifications"
+          RequiredCategories.REPEATING -> "Repeating Transactions"
         }
 
     return "System Category for $what"
   }
 
   @CheckResult
-  private fun createSystemCategory(category: SystemCategories.Categories): DbCategory {
+  private fun createSystemCategory(category: RequiredCategories): DbCategory {
     return DbCategory.create(clock, id = DbCategory.Id(IdGenerator.generate()))
         .systemLevel()
         .name(category.displayName)
         .note(noteForName(category))
   }
 
-  override suspend fun categoryByName(category: SystemCategories.Categories): DbCategory? =
+  override suspend fun categoryByName(category: RequiredCategories): DbCategory? =
       withContext(context = Dispatchers.IO) {
         when (val existing = categoryQueryDao.queryBySystemName(category.displayName)) {
           is Maybe.Data -> existing.data
@@ -80,6 +81,17 @@ internal constructor(
                 Timber.d("Updated existing system category: $db")
                 return@withContext result.data
               }
+            }
+          }
+        }
+      }
+
+  override suspend fun ensure() =
+      withContext(context = Dispatchers.IO) {
+        for (cat in RequiredCategories.values()) {
+          categoryByName(cat).also { c ->
+            if (c == null) {
+              Timber.w("Failed to ensure creation of system category: $cat")
             }
           }
         }

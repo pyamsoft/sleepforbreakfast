@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic.googlewallet
 
 import com.pyamsoft.sleepforbreakfast.core.RAW_STRING_DOLLAR_PRICE
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
@@ -41,7 +42,7 @@ internal constructor(
 
   override suspend fun getCategories(): List<DbCategory.Id> {
     val google =
-        systemCategories.categoryByName(SystemCategories.Categories.GOOGLE_WALLET)
+        systemCategories.categoryByName(RequiredCategories.GOOGLE_WALLET)
             ?: return emptyList()
 
     return listOf(google.id)

@@ -17,6 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
@@ -26,6 +28,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import timber.log.Timber
 
 class RepeatAddViewModeler
 @Inject
@@ -33,6 +36,7 @@ internal constructor(
     state: MutableRepeatAddViewState,
     interactor: RepeatInteractor,
     params: RepeatAddParams,
+    private val systemCategories: SystemCategories,
     private val clock: Clock,
 ) :
     MoneyAddViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
@@ -97,7 +101,8 @@ internal constructor(
     }
   }
 
-  override fun compile(): DbRepeat {
+  override suspend fun compile(): DbRepeat {
+    val systemCategory = systemCategories.categoryByName(RequiredCategories.REPEATING)
     return DbRepeat.create(clock, initialId)
         .repeatType(state.repeatType.value)
         .firstDay(state.repeatFirstDay.value)
@@ -108,6 +113,14 @@ internal constructor(
         .transactionNote(state.note.value)
         .transactionType(state.type.value)
         .replaceTransactionCategories(state.categories.value)
+        .run {
+          if (systemCategory == null) {
+            Timber.w("Failed to add system category to repeat")
+            this
+          } else {
+            addTransactionCategory(systemCategory.id)
+          }
+        }
   }
 
   companion object {

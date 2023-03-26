@@ -150,7 +150,7 @@ protected constructor(
     }
   }
 
-  @CheckResult protected abstract fun compile(): T
+  @CheckResult protected abstract suspend fun compile(): T
 
   protected abstract fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
       registry: SaveableStateRegistry

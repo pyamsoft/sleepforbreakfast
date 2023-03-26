@@ -16,12 +16,10 @@
 
 package com.pyamsoft.sleepforbreakfast.db.category.system
 
-import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-
-interface SystemCategories {
-
-  @CheckResult suspend fun categoryByName(category: RequiredCategories): DbCategory?
-
-  @CheckResult suspend fun ensure()
+enum class RequiredCategories(val displayName: String) {
+  VENMO("Venmo"),
+  VENMO_PAY("Venmo Payments"),
+  VENMO_REQUESTS("Venmo Requests"),
+  GOOGLE_WALLET("Google Wallet"),
+  REPEATING("Repeating Transactions"),
 }
