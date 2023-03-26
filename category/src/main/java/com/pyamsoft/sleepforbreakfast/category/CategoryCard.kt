@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.category
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,10 +46,10 @@ internal fun CategoryCard(
       elevation = CardDefaults.Elevation,
   ) {
     Column(
-        modifier = contentModifier,
+        modifier = contentModifier.padding(MaterialTheme.keylines.content),
     ) {
       Text(
-          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.baseline),
+          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
           text = category.name,
           style =
               MaterialTheme.typography.h6.copy(
@@ -59,12 +60,32 @@ internal fun CategoryCard(
               ),
       )
 
-      if (hasNote) {
+      if (category.system) {
         Text(
-            modifier = Modifier.padding(top = MaterialTheme.keylines.content),
-            text = note,
+            modifier =
+                Modifier.padding(bottom = MaterialTheme.keylines.content)
+                    .background(
+                        color = MaterialTheme.colors.secondary,
+                        shape = MaterialTheme.shapes.small,
+                    )
+                    .padding(horizontal = MaterialTheme.keylines.baseline)
+                    .padding(vertical = MaterialTheme.keylines.typography),
+            text = "System",
             style =
                 MaterialTheme.typography.caption.copy(
+                    color =
+                        MaterialTheme.colors.onSecondary.copy(
+                            alpha = ContentAlpha.high,
+                        ),
+                ),
+        )
+      }
+
+      if (hasNote) {
+        Text(
+            text = note,
+            style =
+                MaterialTheme.typography.body2.copy(
                     color =
                         MaterialTheme.colors.onSurface.copy(
                             alpha = ContentAlpha.medium,

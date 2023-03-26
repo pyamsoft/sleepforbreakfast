@@ -24,9 +24,11 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 internal class CategoryInteractorImpl
@@ -37,9 +39,33 @@ constructor(
     private val categoryRealtime: CategoryRealtime,
     private val categoryQueryDao: CategoryQueryDao,
     private val categoryQueryCache: CategoryQueryDao.Cache,
+    private val systemCategories: SystemCategories,
 ) : CategoryInteractor, ListInteractorImpl<DbCategory.Id, DbCategory, CategoryChangeEvent>() {
 
+  private suspend fun ensureSystemCategory(category: SystemCategories.Categories) {
+    try {
+      if (systemCategories.categoryByName(category) == null) {
+        Timber.w("Failed to create system category $category")
+      }
+    } catch (e: Throwable) {
+      Timber.e(e, "Error creating system category $category")
+    }
+  }
+
+  private suspend fun ensureSystemCategoriesExist() {
+    // Venmo
+    ensureSystemCategory(SystemCategories.Categories.VENMO)
+    ensureSystemCategory(SystemCategories.Categories.VENMO_PAY)
+    ensureSystemCategory(SystemCategories.Categories.VENMO_REQUESTS)
+
+    // Google wallet
+    ensureSystemCategory(SystemCategories.Categories.GOOGLE_WALLET)
+  }
+
   override suspend fun performQueryAll(): List<DbCategory> {
+    // This is bad since it constantly queries each time, but its what we've got for now
+    ensureSystemCategoriesExist()
+
     return categoryQueryDao.query()
   }
 

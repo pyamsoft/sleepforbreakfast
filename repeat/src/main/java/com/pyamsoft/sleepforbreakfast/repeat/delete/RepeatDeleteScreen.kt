@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.repeat.delete
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
@@ -38,6 +39,12 @@ fun RepeatDeleteScreen(
       onDismiss = onDismiss,
       onConfirm = onConfirm,
   ) { repeat ->
+    Text(
+        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+        text = "Are you sure you want to remove this repeating transaction?",
+        style = MaterialTheme.typography.body1,
+    )
+
     RepeatCard(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
         repeat = repeat,

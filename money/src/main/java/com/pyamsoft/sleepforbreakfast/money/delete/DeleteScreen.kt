@@ -41,6 +41,7 @@ import com.pyamsoft.pydroid.theme.keylines
 fun <T : Any> DeleteScreen(
     modifier: Modifier = Modifier,
     state: DeleteViewState<T>,
+    canDelete: Boolean = true,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     content: @Composable (T) -> Unit,
@@ -85,16 +86,12 @@ fun <T : Any> DeleteScreen(
         }
       } else {
         Column {
-          Text(
-              modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-              text = "Are you sure you want to remove this transaction?")
-
           content(data)
 
           Button(
               modifier = Modifier.fillMaxWidth(),
               onClick = onConfirm,
-              enabled = !working,
+              enabled = !working && canDelete,
           ) {
             Crossfade(
                 targetState = working,

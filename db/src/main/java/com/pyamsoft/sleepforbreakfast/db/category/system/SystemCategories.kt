@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending.db
+package com.pyamsoft.sleepforbreakfast.db.category.system
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
-internal interface SystemCategories {
+interface SystemCategories {
 
   @CheckResult suspend fun categoryByName(category: Categories): DbCategory?
 
