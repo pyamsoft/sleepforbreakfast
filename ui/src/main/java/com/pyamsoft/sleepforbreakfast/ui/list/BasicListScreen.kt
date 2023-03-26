@@ -97,7 +97,8 @@ fun <T : Any> ListScreen(
   ) { pv ->
     Column {
       Spacer(
-          modifier = Modifier.padding(pv).statusBarsPadding(),
+          modifier =
+              Modifier.padding(pv).statusBarsPadding().height(MaterialTheme.keylines.content),
       )
 
       LazyColumn {
