@@ -37,6 +37,12 @@ internal constructor(
         defaultValue = "",
     )
     val dbNote: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_SYSTEM,
+        // TODO remove later and revert back to a version 1 for the first release
+        defaultValue = "FALSE",
+    )
     val dbSystem: Boolean,
 ) : DbCategory {
 

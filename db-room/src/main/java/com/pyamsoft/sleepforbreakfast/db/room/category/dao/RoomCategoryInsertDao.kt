@@ -35,8 +35,9 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomCategoryInsertDao : CategoryInsertDao {
 
+  // Transaction methods cannot be final
   @Transaction
-  override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
+  /* final */ override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
       withContext(context = Dispatchers.IO) {
         val roomCategory = RoomDbCategory.create(o)
         return@withContext if (daoQuery(roomCategory.id) == null) {

@@ -35,6 +35,7 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomAutomaticInsertDao : AutomaticInsertDao {
 
+  // Transaction methods cannot be final
   @Transaction
   override suspend fun insert(o: DbAutomatic): DbInsert.InsertResult<DbAutomatic> =
       withContext(context = Dispatchers.IO) {

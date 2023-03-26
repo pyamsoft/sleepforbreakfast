@@ -26,9 +26,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -58,21 +55,6 @@ internal fun CategoryCard(
                   color =
                       MaterialTheme.colors.onSurface.copy(
                           alpha = ContentAlpha.high,
-                      ),
-              ),
-      )
-
-      Text(
-          modifier = Modifier.fillMaxWidth(),
-          textAlign = TextAlign.End,
-          text = category.accountNumber,
-          fontWeight = FontWeight.W700,
-          fontFamily = FontFamily.Monospace,
-          style =
-              MaterialTheme.typography.body2.copy(
-                  color =
-                      MaterialTheme.colors.onSurface.copy(
-                          alpha = ContentAlpha.medium,
                       ),
               ),
       )

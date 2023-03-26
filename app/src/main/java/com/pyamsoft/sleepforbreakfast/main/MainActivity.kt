@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
           provider =
               object : ChangeLogProvider {
 
-                override val applicationIcon = R.mipmap.ic_launcher
+                override val applicationIcon = R.mipmap.ic_launcher_round
 
                 override val changelog: ChangeLogBuilder = buildChangeLog {}
               },
