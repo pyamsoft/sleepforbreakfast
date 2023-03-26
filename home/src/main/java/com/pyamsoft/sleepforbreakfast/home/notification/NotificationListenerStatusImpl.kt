@@ -24,7 +24,6 @@ import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.pyamsoft.pydroid.core.Enforcer
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -94,8 +93,6 @@ internal constructor(
 
   override suspend fun activateNotificationListener() =
       withContext(context = Dispatchers.Main) {
-        Enforcer.assertOnMainThread()
-
         val action = Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS
         if (openSettingsPageIntent(action)) {
           Timber.w("Failed to open settings page: $action")

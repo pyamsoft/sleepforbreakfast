@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.db.transaction
 
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
-import com.pyamsoft.pydroid.core.Enforcer
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
@@ -35,6 +35,7 @@ import timber.log.Timber
 internal class TransactionDbImpl
 @Inject
 internal constructor(
+    private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: TransactionQueryDao,
     @DbApi private val realInsertDao: TransactionInsertDao,
     @DbApi private val realDeleteDao: TransactionDeleteDao,
@@ -51,26 +52,26 @@ internal constructor(
 
   private val queryCache =
       cachify<List<DbTransaction>> {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@cachify realQueryDao.query()
       }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbTransaction>, DbTransaction.Id> { id ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryById(id)
       }
 
   private val queryByRepeat =
       multiCachify<QueryByRepeat, List<DbTransaction>, DbRepeat.Id> { id ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryByRepeat(id)
       }
 
   private val queryByRepeatOnDate =
       multiCachify<QueryByRepeatOnDate, Maybe<out DbTransaction>, DbRepeat.Id, LocalDate> { id, date
         ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryByRepeatOnDate(id, date)
       }
 
@@ -84,7 +85,6 @@ internal constructor(
 
   override suspend fun invalidate() =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
         queryCache.clear()
         queryByIdCache.clear()
         queryByRepeat.clear()
@@ -93,8 +93,6 @@ internal constructor(
 
   override suspend fun invalidateById(id: DbTransaction.Id) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByIdKey(
                 transactionId = id,
@@ -105,8 +103,6 @@ internal constructor(
 
   override suspend fun invalidateByRepeat(id: DbRepeat.Id) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByRepeat(
                 repeatId = id,
@@ -120,8 +116,6 @@ internal constructor(
       date: LocalDate,
   ) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByRepeatOnDate(
                 repeatId = id,
@@ -132,21 +126,13 @@ internal constructor(
       }
 
   override suspend fun listenForChanges(onChange: (event: TransactionChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        onEvent(onChange)
-      }
+      withContext(context = Dispatchers.IO) { onEvent(onChange) }
 
   override suspend fun query(): List<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext queryCache.call()
-      }
+      withContext(context = Dispatchers.IO) { queryCache.call() }
 
   override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByIdKey(
                 transactionId = id,
@@ -157,8 +143,6 @@ internal constructor(
 
   override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByRepeat(
                 repeatId = id,
@@ -172,8 +156,6 @@ internal constructor(
       date: LocalDate
   ): Maybe<out DbTransaction> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByRepeatOnDate(
                 repeatId = id,
@@ -185,9 +167,7 @@ internal constructor(
 
   override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext realInsertDao.insert(o).also { result ->
+        realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
               invalidate()
@@ -205,8 +185,7 @@ internal constructor(
 
   override suspend fun delete(o: DbTransaction): Boolean =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext realDeleteDao.delete(o).also { deleted ->
+        realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
             publish(TransactionChangeEvent.Delete(o))

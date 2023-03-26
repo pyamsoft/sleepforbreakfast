@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.db.repeat
 
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
-import com.pyamsoft.pydroid.core.Enforcer
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
@@ -33,6 +33,7 @@ import timber.log.Timber
 internal class RepeatDbImpl
 @Inject
 internal constructor(
+    private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: RepeatQueryDao,
     @DbApi private val realInsertDao: RepeatInsertDao,
     @DbApi private val realDeleteDao: RepeatDeleteDao,
@@ -49,19 +50,19 @@ internal constructor(
 
   private val queryCache =
       cachify<List<DbRepeat>> {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@cachify realQueryDao.query()
       }
 
   private val queryActiveCache =
       cachify<List<DbRepeat>> {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@cachify realQueryDao.queryActive()
       }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbRepeat>, DbRepeat.Id> { id ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryById(id)
       }
 
@@ -75,23 +76,16 @@ internal constructor(
 
   override suspend fun invalidate() =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
         queryCache.clear()
         queryByIdCache.clear()
         queryActiveCache.clear()
       }
 
   override suspend fun invalidateActive() =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        queryActiveCache.clear()
-      }
+      withContext(context = Dispatchers.IO) { queryActiveCache.clear() }
 
   override suspend fun invalidateById(id: DbRepeat.Id) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByIdKey(
                 repeatId = id,
@@ -101,28 +95,16 @@ internal constructor(
       }
 
   override suspend fun listenForChanges(onChange: (event: RepeatChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        onEvent(onChange)
-      }
+      withContext(context = Dispatchers.IO) { onEvent(onChange) }
 
   override suspend fun query(): List<DbRepeat> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext queryCache.call()
-      }
+      withContext(context = Dispatchers.IO) { queryCache.call() }
 
   override suspend fun queryActive(): List<DbRepeat> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext queryActiveCache.call()
-      }
+      withContext(context = Dispatchers.IO) { queryActiveCache.call() }
 
   override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByIdKey(
                 repeatId = id,
@@ -133,9 +115,7 @@ internal constructor(
 
   override suspend fun insert(o: DbRepeat): DbInsert.InsertResult<DbRepeat> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext realInsertDao.insert(o).also { result ->
+        realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
               invalidate()
@@ -153,8 +133,7 @@ internal constructor(
 
   override suspend fun delete(o: DbRepeat): Boolean =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext realDeleteDao.delete(o).also { deleted ->
+        realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
             publish(RepeatChangeEvent.Delete(o))

@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.db.category
 
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
-import com.pyamsoft.pydroid.core.Enforcer
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
@@ -33,6 +33,7 @@ import timber.log.Timber
 internal class CategoryDbImpl
 @Inject
 internal constructor(
+    private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: CategoryQueryDao,
     @DbApi private val realInsertDao: CategoryInsertDao,
     @DbApi private val realDeleteDao: CategoryDeleteDao,
@@ -49,19 +50,19 @@ internal constructor(
 
   private val queryCache =
       cachify<List<DbCategory>> {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@cachify realQueryDao.query()
       }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbCategory>, DbCategory.Id> { id ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryById(id)
       }
 
   private val queryBySystemNameCache =
       multiCachify<QueryBySystemNameKey, Maybe<out DbCategory>, String> { name ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryBySystemName(name)
       }
 
@@ -75,15 +76,12 @@ internal constructor(
 
   override suspend fun invalidate() =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
         queryCache.clear()
         queryByIdCache.clear()
       }
 
   override suspend fun invalidateById(id: DbCategory.Id) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByIdKey(
                 categoryId = id,
@@ -94,8 +92,6 @@ internal constructor(
 
   override suspend fun invalidateBySystemName(name: String) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryBySystemNameKey(
                 name = name,
@@ -105,21 +101,13 @@ internal constructor(
       }
 
   override suspend fun listenForChanges(onChange: (event: CategoryChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        onEvent(onChange)
-      }
+      withContext(context = Dispatchers.IO) { onEvent(onChange) }
 
   override suspend fun query(): List<DbCategory> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext queryCache.call()
-      }
+      withContext(context = Dispatchers.IO) { queryCache.call() }
 
   override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByIdKey(
                 categoryId = id,
@@ -130,8 +118,6 @@ internal constructor(
 
   override suspend fun queryBySystemName(name: String): Maybe<out DbCategory> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryBySystemNameKey(
                 name = name,
@@ -142,9 +128,7 @@ internal constructor(
 
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext realInsertDao.insert(o).also { result ->
+        realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
               invalidate()
@@ -162,8 +146,7 @@ internal constructor(
 
   override suspend fun delete(o: DbCategory): Boolean =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext realDeleteDao.delete(o).also { deleted ->
+        realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
             publish(CategoryChangeEvent.Delete(o))

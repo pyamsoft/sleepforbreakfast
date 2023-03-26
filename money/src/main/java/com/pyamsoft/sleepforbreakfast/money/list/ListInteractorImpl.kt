@@ -17,7 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.Enforcer
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Maybe
@@ -31,8 +30,6 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
 
   final override suspend fun loadAll(force: Boolean): ResultWrapper<List<T>> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         if (force) {
           performClearCache()
         }
@@ -46,16 +43,10 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
       }
 
   final override suspend fun listenForItemChanges(onEvent: (CE) -> Unit) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext performListenRealtime(onEvent)
-      }
+      withContext(context = Dispatchers.IO) { performListenRealtime(onEvent) }
 
   final override suspend fun loadOne(force: Boolean, id: I): ResultWrapper<T> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         if (force) {
           performClearCache(id)
         }
@@ -79,9 +70,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
 
   final override suspend fun delete(item: T): ResultWrapper<Boolean> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext try {
+        try {
           ResultWrapper.success(performDelete(item))
         } catch (e: Throwable) {
           e.ifNotCancellation {
@@ -93,9 +82,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
 
   final override suspend fun submit(item: T): ResultWrapper<DbInsert.InsertResult<T>> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext try {
+        try {
           ResultWrapper.success(performInsert(item))
         } catch (e: Throwable) {
           e.ifNotCancellation {

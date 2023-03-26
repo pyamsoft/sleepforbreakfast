@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
-import com.pyamsoft.pydroid.core.Enforcer
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
@@ -33,6 +33,7 @@ import timber.log.Timber
 internal class AutomaticDbImpl
 @Inject
 internal constructor(
+    private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: AutomaticQueryDao,
     @DbApi private val realInsertDao: AutomaticInsertDao,
     @DbApi private val realDeleteDao: AutomaticDeleteDao,
@@ -49,13 +50,13 @@ internal constructor(
 
   private val queryCache =
       cachify<List<DbAutomatic>> {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@cachify realQueryDao.query()
       }
 
   private val queryUnusedCache =
       cachify<List<DbAutomatic>> {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@cachify realQueryDao.queryUnused()
       }
 
@@ -67,7 +68,7 @@ internal constructor(
           group,
           packageName,
           time ->
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryByNotification(
             notificationId = id,
             notificationGroup = group,
@@ -87,7 +88,7 @@ internal constructor(
 
   override suspend fun invalidate() =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
+        enforcer.assertOffMainThread()
         queryCache.clear()
         queryByNotificationCache.clear()
         queryUnusedCache.clear()
@@ -101,8 +102,6 @@ internal constructor(
       notificationPostTime: Long
   ) =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByNotificationKey(
                 notificationId = notificationId,
@@ -116,22 +115,13 @@ internal constructor(
       }
 
   override suspend fun listenForChanges(onChange: (event: AutomaticChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        onEvent(onChange)
-      }
+      withContext(context = Dispatchers.IO) { onEvent(onChange) }
 
   override suspend fun query(): List<DbAutomatic> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext queryCache.call()
-      }
+      withContext(context = Dispatchers.IO) { queryCache.call() }
 
   override suspend fun queryUnused(): List<DbAutomatic> =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext queryUnusedCache.call()
-      }
+      withContext(context = Dispatchers.IO) { queryUnusedCache.call() }
 
   override suspend fun queryByNotification(
       notificationId: Int,
@@ -141,8 +131,6 @@ internal constructor(
       notificationPostTime: Long
   ): Maybe<out DbAutomatic> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
         val key =
             QueryByNotificationKey(
                 notificationId = notificationId,
@@ -165,9 +153,7 @@ internal constructor(
 
   override suspend fun insert(o: DbAutomatic): DbInsert.InsertResult<DbAutomatic> =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-
-        return@withContext realInsertDao.insert(o).also { result ->
+        realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
               invalidate()
@@ -185,8 +171,7 @@ internal constructor(
 
   override suspend fun delete(o: DbAutomatic): Boolean =
       withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext realDeleteDao.delete(o).also { deleted ->
+        realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
             publish(AutomaticChangeEvent.Delete(o))

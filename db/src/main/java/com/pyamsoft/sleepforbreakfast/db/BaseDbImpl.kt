@@ -17,7 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.db
 
 import com.pyamsoft.pydroid.bus.EventBus
-import com.pyamsoft.pydroid.core.Enforcer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,14 +31,8 @@ internal abstract class BaseDbImpl<
   private val bus = EventBus.create<ChangeEvent>()
 
   protected suspend fun onEvent(onEvent: (event: ChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        return@withContext bus.onEvent { onEvent(it) }
-      }
+      withContext(context = Dispatchers.IO) { bus.onEvent { onEvent(it) } }
 
   protected suspend fun publish(event: ChangeEvent) =
-      withContext(context = Dispatchers.IO) {
-        Enforcer.assertOffMainThread()
-        bus.send(event)
-      }
+      withContext(context = Dispatchers.IO) { bus.send(event) }
 }

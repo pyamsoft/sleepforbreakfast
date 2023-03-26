@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.preference
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import com.pyamsoft.pydroid.core.Enforcer
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,10 +27,11 @@ internal class PreferencesImpl
 @Inject
 internal constructor(
     private val context: Context,
+    private val enforcer: ThreadEnforcer,
 ) {
 
   private val preferences by lazy {
-    Enforcer.assertOffMainThread()
+    enforcer.assertOffMainThread()
     PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
   }
 }

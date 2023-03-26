@@ -18,7 +18,6 @@ package com.pyamsoft.sleepforbreakfast.service
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.pyamsoft.pydroid.core.Enforcer
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
 import javax.inject.Inject
@@ -65,8 +64,6 @@ class SpendingTrackerService : NotificationListenerService() {
   }
 
   private suspend fun processNotification(sbn: StatusBarNotification) {
-    Enforcer.assertOffMainThread()
-
     ensureInjected()
 
     val notif = sbn.notification
