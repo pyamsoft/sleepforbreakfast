@@ -24,6 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.automatic.queryByAutomaticNotification
+import com.pyamsoft.sleepforbreakfast.db.automatic.replaceCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.AutomaticManager
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
@@ -66,6 +67,7 @@ internal constructor(
             .notificationMatchText(automaticPayment.text)
             .notificationAmountInCents(automaticPayment.amount)
             .notificationType(automaticPayment.type)
+            .replaceCategories(automaticPayment.categories)
 
     when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {
       is Maybe.Data -> {

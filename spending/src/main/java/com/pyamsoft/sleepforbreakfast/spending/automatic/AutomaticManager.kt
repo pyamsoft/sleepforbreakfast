@@ -23,7 +23,7 @@ import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
 internal interface AutomaticManager {
 
   @CheckResult
-  fun extractPayment(
+  suspend fun extractPayment(
       packageName: String,
       bundle: Bundle,
   ): PaymentNotification?

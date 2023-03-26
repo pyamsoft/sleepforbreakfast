@@ -21,6 +21,7 @@ import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
 import com.pyamsoft.sleepforbreakfast.core.REGEX_DOLLAR_PRICE
 import com.pyamsoft.sleepforbreakfast.core.REGEX_FILTER_ONLY_DIGITS
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
 import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
@@ -28,7 +29,7 @@ import timber.log.Timber
 
 internal abstract class BaseAutomaticHandler protected constructor() : AutomaticHandler {
 
-  final override fun extract(bundle: Bundle): PaymentNotification? {
+  final override suspend fun extract(bundle: Bundle): PaymentNotification? {
     val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
     val bigText = bundle.getCharSequence(NotificationCompat.EXTRA_BIG_TEXT, "")
     val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
@@ -74,6 +75,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
         text = payText.toString(),
         amount = justPrice,
         type = getType(),
+        categories = getCategories(),
     )
   }
 
@@ -95,6 +97,8 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
   @CheckResult protected abstract fun getRegex(): Regex
 
   @CheckResult protected abstract fun getType(): DbTransaction.Type
+
+  @CheckResult protected abstract suspend fun getCategories(): List<DbCategory.Id>
 
   companion object {
     private const val DEFAULT_TITLE = "Automatic Spend Transaction"

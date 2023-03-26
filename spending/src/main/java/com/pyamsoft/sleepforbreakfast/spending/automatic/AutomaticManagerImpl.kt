@@ -31,7 +31,7 @@ internal constructor(
     @SpendingApi private val handlers: MutableSet<AutomaticHandler>,
 ) : AutomaticManager {
 
-  override fun extractPayment(
+  override suspend fun extractPayment(
       packageName: String,
       bundle: Bundle,
   ): PaymentNotification? {

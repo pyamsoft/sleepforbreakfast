@@ -17,13 +17,19 @@
 package com.pyamsoft.sleepforbreakfast.spending.automatic.googlewallet
 
 import com.pyamsoft.sleepforbreakfast.core.RAW_STRING_DOLLAR_PRICE
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Google wallet notifications come from Google Play Services */
 @Singleton
-internal class GoogleWalletAutomaticHandler @Inject internal constructor() : SpendAutomaticHandler() {
+internal class GoogleWalletAutomaticHandler
+@Inject
+internal constructor(
+    private val systemCategories: SystemCategories,
+) : SpendAutomaticHandler() {
 
   override fun getRegex(): Regex {
     return GOOGLE_WALLET_REGEX
@@ -31,6 +37,14 @@ internal class GoogleWalletAutomaticHandler @Inject internal constructor() : Spe
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.google.android.gms"
+  }
+
+  override suspend fun getCategories(): List<DbCategory.Id> {
+    val google =
+        systemCategories.categoryByName(SystemCategories.Categories.GOOGLE_WALLET)
+            ?: return emptyList()
+
+    return listOf(google.id)
   }
 
   companion object {

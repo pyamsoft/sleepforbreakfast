@@ -20,7 +20,6 @@ import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
@@ -62,14 +61,11 @@ Group: ${auto.notificationGroup}
 """
             .trimIndent()
 
-    // TODO make categories for Automatic
-    val categories: List<DbCategory.Id> = emptyList()
-
     val transaction =
         DbTransaction.create(clock, DbTransaction.Id.EMPTY)
             // Tie to this automatic
             .automaticId(auto.id)
-            .replaceCategories(categories)
+            .replaceCategories(auto.categories)
             .amountInCents(auto.notificationAmountInCents)
             .type(auto.notificationType)
             .date(getNotificationPostTime(auto))

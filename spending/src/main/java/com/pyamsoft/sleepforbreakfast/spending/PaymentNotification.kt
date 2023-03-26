@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.spending
 
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 
 internal data class PaymentNotification(
@@ -23,4 +24,5 @@ internal data class PaymentNotification(
     val text: String,
     val amount: Long,
     val type: DbTransaction.Type,
+    val categories: List<DbCategory.Id>
 )

@@ -17,13 +17,19 @@
 package com.pyamsoft.sleepforbreakfast.spending.automatic.venmo
 
 import com.pyamsoft.sleepforbreakfast.core.RAW_STRING_DOLLAR_PRICE
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /** When you pay someone on Venmo but they request you to */
 @Singleton
-internal class VenmoPayRequestedAutomaticHandler @Inject internal constructor() : SpendAutomaticHandler() {
+internal class VenmoPayRequestedAutomaticHandler
+@Inject
+internal constructor(
+    private val systemCategories: SystemCategories,
+) : SpendAutomaticHandler() {
 
   override fun getRegex(): Regex {
     return VENMO_WALLET_REGEX
@@ -31,6 +37,21 @@ internal class VenmoPayRequestedAutomaticHandler @Inject internal constructor() 
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.venmo"
+  }
+
+  override suspend fun getCategories(): List<DbCategory.Id> {
+    val venmo = systemCategories.categoryByName(SystemCategories.Categories.VENMO)
+    val venmoPay = systemCategories.categoryByName(SystemCategories.Categories.VENMO_PAY)
+
+    val result = mutableListOf<DbCategory.Id>()
+    if (venmo != null) {
+      result.add(venmo.id)
+    }
+    if (venmoPay != null) {
+      result.add(venmoPay.id)
+    }
+
+    return result
   }
 
   companion object {
