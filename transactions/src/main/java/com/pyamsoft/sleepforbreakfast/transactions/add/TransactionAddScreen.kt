@@ -42,9 +42,11 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
+import com.pyamsoft.sleepforbreakfast.money.add.MoneyCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
@@ -67,6 +69,8 @@ fun TransactionAddScreen(
     onTimeChanged: (LocalTime) -> Unit,
     onOpenTimeDialog: () -> Unit,
     onCloseTimeDialog: () -> Unit,
+    onCategoryAdded: (DbCategory) -> Unit,
+    onCategoryRemoved: (DbCategory) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
@@ -153,6 +157,21 @@ fun TransactionAddScreen(
             onTimeChanged = onTimeChanged,
             onCloseTimeDialog = onCloseTimeDialog,
             onOpenTimeDialog = onOpenTimeDialog,
+        )
+      }
+
+      item {
+        val allCategories by state.allCategories.collectAsState()
+
+        MoneyCategories(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.keylines.content)
+                    .padding(bottom = MaterialTheme.keylines.content),
+            state = state,
+            allCategories = allCategories,
+            onCategoryAdded = onCategoryAdded,
+            onCategoryRemoved = onCategoryRemoved,
         )
       }
 

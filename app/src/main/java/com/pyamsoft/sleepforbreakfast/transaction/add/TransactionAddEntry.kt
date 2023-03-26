@@ -121,6 +121,8 @@ internal fun TransactionAddEntry(
           onOpenDateDialog = { viewModel.handleOpenDateDialog() },
           onCloseDateDialog = { viewModel.handleCloseDateDialog() },
           onDateChanged = { viewModel.handleDateChanged(it) },
+          onCategoryAdded = { viewModel.handleCategoryAdded(it) },
+          onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
           onReset = { viewModel.handleReset() },
           onSubmit = { handleSubmit() },
       )

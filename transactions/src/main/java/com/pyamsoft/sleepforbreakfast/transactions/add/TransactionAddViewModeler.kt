@@ -16,7 +16,9 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
+import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
@@ -28,14 +30,17 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class TransactionAddViewModeler
 @Inject
 internal constructor(
     state: MutableTransactionAddViewState,
-    interactor: TransactionInteractor,
     params: TransactionAddParams,
+    private val interactor: TransactionInteractor,
     private val clock: Clock,
 ) :
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
@@ -44,6 +49,42 @@ internal constructor(
         interactor = interactor,
     ) {
 
+  private suspend fun loadCategories() {
+    interactor
+        .categories()
+        .onSuccess { Timber.d("Loaded categories: $it") }
+        .onSuccess { state.allCategories.value = it }
+        .onFailure { Timber.e(it, "Error loading all categories") }
+        .onFailure { state.allCategories.value = emptyList() }
+  }
+
+  @CheckResult
+  private fun getOnlyExistingCategories(): List<DbCategory.Id> {
+    var cleaned = emptyList<DbCategory.Id>()
+    val currentCategories = state.categories.value
+    val allCategories = state.allCategories.value
+    if (allCategories.isEmpty()) {
+      Timber.w("Could not load allCategories, do not change categories for compile()")
+      cleaned = currentCategories
+    } else {
+      // For each category currently added
+      for (cat in currentCategories) {
+        // Check that it still exists in the DB
+        val exists = allCategories.firstOrNull { it.id == cat }
+
+        // If it does great, use it
+        if (exists != null) {
+          cleaned = cleaned + cat
+        } else {
+          // Otherwise this "was" a category but it has been deleted
+          Timber.w("Category was selected but no longer exists: $cat")
+        }
+      }
+    }
+
+    return cleaned
+  }
+
   override suspend fun compile(): DbTransaction {
     return DbTransaction.create(clock, initialId)
         .name(state.name.value)
@@ -51,7 +92,7 @@ internal constructor(
         .date(state.date.value)
         .note(state.note.value)
         .type(state.type.value)
-        .replaceCategories(state.categories.value)
+        .replaceCategories(getOnlyExistingCategories())
   }
 
   override fun isIdEmpty(id: DbTransaction.Id): Boolean {
@@ -60,6 +101,8 @@ internal constructor(
 
   override fun onBind(scope: CoroutineScope) {
     handleReset()
+
+    scope.launch(context = Dispatchers.Main) { loadCategories() }
   }
 
   override fun onDataLoaded(result: DbTransaction) {
@@ -139,6 +182,20 @@ internal constructor(
 
   fun handleTimeChanged(time: LocalTime) {
     state.date.update { it.withHour(time.hour).withMinute(time.minute).withSecond(0).withNano(0) }
+  }
+
+  fun handleCategoryAdded(category: DbCategory) {
+    state.categories.update { list ->
+      if (!list.contains(category.id)) {
+        list + category.id
+      } else {
+        list
+      }
+    }
+  }
+
+  fun handleCategoryRemoved(category: DbCategory) {
+    state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
   companion object {

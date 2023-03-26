@@ -32,6 +32,31 @@ import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
 @Composable
+private fun Tag(
+    modifier: Modifier = Modifier,
+    text: String,
+) {
+  Text(
+      modifier =
+          modifier
+              .background(
+                  color = MaterialTheme.colors.secondary,
+                  shape = MaterialTheme.shapes.small,
+              )
+              .padding(horizontal = MaterialTheme.keylines.baseline)
+              .padding(vertical = MaterialTheme.keylines.typography),
+      text = text,
+      style =
+          MaterialTheme.typography.caption.copy(
+              color =
+                  MaterialTheme.colors.onSecondary.copy(
+                      alpha = ContentAlpha.high,
+                  ),
+          ),
+  )
+}
+
+@Composable
 internal fun CategoryCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
@@ -61,23 +86,9 @@ internal fun CategoryCard(
       )
 
       if (category.system) {
-        Text(
-            modifier =
-                Modifier.padding(bottom = MaterialTheme.keylines.content)
-                    .background(
-                        color = MaterialTheme.colors.secondary,
-                        shape = MaterialTheme.shapes.small,
-                    )
-                    .padding(horizontal = MaterialTheme.keylines.baseline)
-                    .padding(vertical = MaterialTheme.keylines.typography),
+        Tag(
+            modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
             text = "System",
-            style =
-                MaterialTheme.typography.caption.copy(
-                    color =
-                        MaterialTheme.colors.onSecondary.copy(
-                            alpha = ContentAlpha.high,
-                        ),
-                ),
         )
       }
 

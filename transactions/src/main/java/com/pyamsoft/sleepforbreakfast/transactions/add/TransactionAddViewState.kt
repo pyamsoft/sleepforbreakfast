@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewState
 import com.pyamsoft.sleepforbreakfast.money.add.MutableMoneyAddViewState
 import java.time.Clock
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface TransactionAddViewState : MoneyAddViewState {
+  val allCategories: StateFlow<List<DbCategory>>
   val date: StateFlow<LocalDateTime>
   val isDateDialogOpen: StateFlow<Boolean>
   val isTimeDialogOpen: StateFlow<Boolean>
@@ -39,6 +41,7 @@ internal constructor(
     clock: Clock,
 ) : TransactionAddViewState, MutableMoneyAddViewState() {
 
+  override val allCategories = MutableStateFlow<List<DbCategory>>(emptyList())
   override val date = MutableStateFlow<LocalDateTime>(LocalDateTime.now(clock))
   override val isDateDialogOpen = MutableStateFlow(false)
   override val isTimeDialogOpen = MutableStateFlow(false)

@@ -16,8 +16,12 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
+import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
@@ -27,6 +31,9 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @Singleton
 internal class TransactionInteractorImpl
@@ -37,9 +44,22 @@ constructor(
     private val transactionDeleteDao: TransactionDeleteDao,
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
+    private val categoryQueryDao: CategoryQueryDao,
 ) :
     TransactionInteractor,
     ListInteractorImpl<DbTransaction.Id, DbTransaction, TransactionChangeEvent>() {
+
+  override suspend fun categories(): ResultWrapper<List<DbCategory>> =
+      withContext(context = Dispatchers.IO) {
+        try {
+          ResultWrapper.success(categoryQueryDao.query())
+        } catch (e: Throwable) {
+          e.ifNotCancellation {
+            Timber.e(e, "Error getting Categories")
+            ResultWrapper.failure(e)
+          }
+        }
+      }
 
   override suspend fun performQueryAll(): List<DbTransaction> {
     return transactionQueryDao.query()

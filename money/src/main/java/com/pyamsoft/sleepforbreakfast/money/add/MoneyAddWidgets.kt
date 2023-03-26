@@ -17,9 +17,11 @@
 package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,6 +29,9 @@ import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -38,6 +43,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -46,9 +52,11 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.widget.MaterialCheckable
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
@@ -393,4 +401,118 @@ fun AddNote(
       maxLines = 4,
       label = label,
   )
+}
+
+@Composable
+private fun Category(
+    modifier: Modifier = Modifier,
+    category: DbCategory,
+) {
+  Text(
+      modifier =
+          modifier
+              .background(
+                  color = MaterialTheme.colors.secondary,
+                  shape = MaterialTheme.shapes.small,
+              )
+              .padding(horizontal = MaterialTheme.keylines.baseline)
+              .padding(vertical = MaterialTheme.keylines.typography),
+      text = category.name,
+      style =
+          MaterialTheme.typography.caption.copy(
+              color =
+                  MaterialTheme.colors.onSecondary.copy(
+                      alpha = ContentAlpha.high,
+                  ),
+          ),
+  )
+}
+
+@Composable
+fun MoneyCategories(
+    modifier: Modifier = Modifier,
+    state: MoneyAddViewState,
+    allCategories: List<DbCategory>,
+    onCategoryAdded: (DbCategory) -> Unit,
+    onCategoryRemoved: (DbCategory) -> Unit,
+) {
+  val categories by state.categories.collectAsState()
+  AddCategories(
+      modifier = modifier,
+      selectedCategories = categories,
+      allCategories = allCategories,
+      onCategoryAdded = onCategoryAdded,
+      onCategoryRemoved = onCategoryRemoved,
+  )
+}
+
+@Composable
+fun AddCategories(
+    modifier: Modifier = Modifier,
+    selectedCategories: List<DbCategory.Id>,
+    allCategories: List<DbCategory>,
+    onCategoryAdded: (DbCategory) -> Unit,
+    onCategoryRemoved: (DbCategory) -> Unit,
+) {
+  val (show, setShow) = remember { mutableStateOf(false) }
+
+  Row(
+      modifier = modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically,
+  ) {
+    for (id in selectedCategories) {
+      // If a category is delete but still "attached" to the Transaction or Repeat, it will be nully
+      // here as it won't be in the allCategories, so hide it
+      val maybeCategory =
+          remember(
+              id,
+              allCategories,
+          ) {
+            allCategories.firstOrNull { it.id == id }
+          }
+              ?: continue
+
+      Category(
+          modifier = Modifier.padding(end = MaterialTheme.keylines.baseline),
+          category = maybeCategory,
+      )
+    }
+  }
+
+  DropdownMenu(
+      properties = remember { PopupProperties(focusable = true) },
+      expanded = show,
+      onDismissRequest = { setShow(false) },
+  ) {
+    for (cat in allCategories) {
+      // If this category is selected
+      val isSelected =
+          remember(
+              cat,
+              selectedCategories,
+          ) {
+            selectedCategories.firstOrNull { it == cat.id } != null
+          }
+
+      DropdownMenuItem(
+          onClick = {
+            if (isSelected) {
+              onCategoryRemoved(cat)
+            } else {
+              onCategoryAdded(cat)
+            }
+          },
+      ) {
+        if (isSelected) {
+          Category(
+              category = cat,
+          )
+        } else {
+          Text(
+              text = cat.name,
+          )
+        }
+      }
+    }
+  }
 }
