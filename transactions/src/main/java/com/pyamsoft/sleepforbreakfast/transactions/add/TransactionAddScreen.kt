@@ -161,6 +161,19 @@ fun TransactionAddScreen(
       }
 
       item {
+        MoneyNote(
+            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+            state = state,
+            onNoteChanged = onNoteChanged,
+            label = {
+              Text(
+                  text = "Note about this Transaction",
+              )
+            },
+        )
+      }
+
+      item {
         val allCategories by state.allCategories.collectAsState()
 
         MoneyCategories(
@@ -172,19 +185,6 @@ fun TransactionAddScreen(
             allCategories = allCategories,
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,
-        )
-      }
-
-      item {
-        MoneyNote(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            state = state,
-            onNoteChanged = onNoteChanged,
-            label = {
-              Text(
-                  text = "Note about this Transaction",
-              )
-            },
         )
       }
 

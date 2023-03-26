@@ -95,7 +95,7 @@ internal constructor(
   }
 
   override fun List<DbCategory>.sort(): List<DbCategory> {
-    return this.sortedByDescending { it.createdAt }
+    return this.sortedBy { it.name }
   }
 
   fun handleEditCategory(category: DbCategory) {

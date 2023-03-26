@@ -51,9 +51,7 @@ internal constructor(
 
   @CheckResult
   private fun compile(): DbCategory {
-    return DbCategory.create(clock, initialId)
-        .name(state.name.value)
-        .note(state.note.value)
+    return DbCategory.create(clock, initialId).name(state.name.value).note(state.note.value)
   }
   override fun onBind(scope: CoroutineScope) {
     handleReset()
@@ -85,10 +83,7 @@ internal constructor(
     state.note.value = note
   }
 
-  fun handleSubmit(
-      scope: CoroutineScope,
-      onSubmit: () -> Unit,
-  ) {
+  fun handleSubmit(scope: CoroutineScope) {
     Timber.d("Attempt new submission")
     if (state.working.value) {
       Timber.w("Already working")
@@ -118,15 +113,10 @@ internal constructor(
               }
             }
           }
+          .onSuccess { handleReset() }
           .onFailure {
             Timber.e(it, "Unable to process category: $category")
             // TODO handle error in UI
-          }
-          .onSuccess {
-            handleReset()
-
-            // Run on the UI
-            scope.launch(context = Dispatchers.Main) { onSubmit() }
           }
           .onFinally { state.working.value = false }
     }

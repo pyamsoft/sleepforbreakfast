@@ -19,6 +19,8 @@ package com.pyamsoft.sleepforbreakfast.money.add
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,7 +50,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -406,13 +410,14 @@ fun AddNote(
 @Composable
 private fun Category(
     modifier: Modifier = Modifier,
+    color: Color,
     category: DbCategory,
 ) {
   Text(
       modifier =
           modifier
               .background(
-                  color = MaterialTheme.colors.secondary,
+                  color = color,
                   shape = MaterialTheme.shapes.small,
               )
               .padding(horizontal = MaterialTheme.keylines.baseline)
@@ -447,6 +452,7 @@ fun MoneyCategories(
 }
 
 @Composable
+@OptIn(ExperimentalLayoutApi::class)
 fun AddCategories(
     modifier: Modifier = Modifier,
     selectedCategories: List<DbCategory.Id>,
@@ -456,10 +462,32 @@ fun AddCategories(
 ) {
   val (show, setShow) = remember { mutableStateOf(false) }
 
-  Row(
+  val handleShow by rememberUpdatedState { setShow(true) }
+
+  Text(
+      modifier =
+          Modifier.padding(horizontal = MaterialTheme.keylines.content)
+              .padding(bottom = MaterialTheme.keylines.baseline),
+      text = "Categories",
+      fontWeight = FontWeight.W700,
+      color =
+          MaterialTheme.colors.onSurface.copy(
+              alpha = ContentAlpha.disabled,
+          ),
+      style = MaterialTheme.typography.caption,
+  )
+
+  FlowRow(
       modifier = modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
   ) {
+    Icon(
+        modifier =
+            Modifier.padding(end = MaterialTheme.keylines.content).clickable { handleShow() },
+        imageVector = Icons.Filled.Add,
+        contentDescription = "Categories",
+    )
+
     for (id in selectedCategories) {
       // If a category is delete but still "attached" to the Transaction or Repeat, it will be nully
       // here as it won't be in the allCategories, so hide it
@@ -473,7 +501,11 @@ fun AddCategories(
               ?: continue
 
       Category(
-          modifier = Modifier.padding(end = MaterialTheme.keylines.baseline),
+          modifier =
+              Modifier.padding(end = MaterialTheme.keylines.baseline)
+                  .padding(bottom = MaterialTheme.keylines.baseline)
+                  .clickable { handleShow() },
+          color = MaterialTheme.colors.secondary,
           category = maybeCategory,
       )
     }
@@ -503,15 +535,10 @@ fun AddCategories(
             }
           },
       ) {
-        if (isSelected) {
-          Category(
-              category = cat,
-          )
-        } else {
-          Text(
-              text = cat.name,
-          )
-        }
+        Category(
+            category = cat,
+            color = if (isSelected) MaterialTheme.colors.secondary else Color.Unspecified,
+        )
       }
     }
   }

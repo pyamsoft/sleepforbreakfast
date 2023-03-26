@@ -86,11 +86,7 @@ internal fun CategoryAddEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 
-  val handleDismiss by rememberUpdatedState(onDismiss)
-
-  val handleSubmit by rememberUpdatedState {
-    viewModel.handleSubmit(scope = scope) { handleDismiss() }
-  }
+  val handleSubmit by rememberUpdatedState { viewModel.handleSubmit(scope = scope) }
 
   MountHooks(
       viewModel = viewModel,
@@ -98,7 +94,7 @@ internal fun CategoryAddEntry(
 
   Dialog(
       properties = rememberDialogProperties(),
-      onDismissRequest = { handleDismiss() },
+      onDismissRequest = onDismiss,
   ) {
     Surface(
         modifier = modifier.padding(MaterialTheme.keylines.content),
@@ -107,7 +103,7 @@ internal fun CategoryAddEntry(
     ) {
       CategoryAddScreen(
           state = viewModel.state,
-          onDismiss = { handleDismiss() },
+          onDismiss = onDismiss,
           onNameChanged = { viewModel.handleNameChanged(it) },
           onNoteChanged = { viewModel.handleNoteChanged(it) },
           onReset = { viewModel.handleReset() },

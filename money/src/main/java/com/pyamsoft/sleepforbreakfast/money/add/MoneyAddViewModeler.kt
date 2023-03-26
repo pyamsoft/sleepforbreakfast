@@ -103,10 +103,7 @@ protected constructor(
     onReset(payload)
   }
 
-  fun handleSubmit(
-      scope: CoroutineScope,
-      onSubmit: () -> Unit,
-  ) {
+  fun handleSubmit(scope: CoroutineScope) {
     Timber.d("Attempt new submission")
     if (state.working.value) {
       Timber.w("Already working")
@@ -136,15 +133,10 @@ protected constructor(
               }
             }
           }
+          .onSuccess { handleReset() }
           .onFailure {
             Timber.e(it, "Unable to process repeat: $repeat")
             // TODO handle error in UI
-          }
-          .onSuccess {
-            handleReset()
-
-            // Run on the UI
-            scope.launch(context = Dispatchers.Main) { onSubmit() }
           }
           .onFinally { state.working.value = false }
     }
