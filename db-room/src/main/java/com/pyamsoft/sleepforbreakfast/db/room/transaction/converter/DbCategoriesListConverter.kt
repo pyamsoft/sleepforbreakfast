@@ -33,6 +33,6 @@ internal object DbCategoriesListConverter {
   @CheckResult
   @TypeConverter
   fun fromCategories(categories: List<DbCategory.Id>): String {
-    return categories.joinToString("|")
+    return categories.joinToString("|") { it.raw }
   }
 }

@@ -21,6 +21,7 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.highlander.highlander
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
@@ -56,6 +57,12 @@ protected constructor(
 
         registry.registerProvider(KEY_AMOUNT) { state.amount.value }.also { add(it) }
 
+        registry
+            .registerProvider(KEY_CATEGORIES) {
+              state.categories.value.joinToString("|") { it.raw }
+            }
+            .also { add(it) }
+
         onRegisterSaveState(registry)
       }
 
@@ -65,6 +72,13 @@ protected constructor(
     registry.consumeRestored(KEY_NOTE)?.let { it as String }?.also { state.note.value = it }
 
     registry.consumeRestored(KEY_AMOUNT)?.let { it as Long }?.also { state.amount.value = it }
+
+    registry
+        .consumeRestored(KEY_CATEGORIES)
+        ?.let { it as String }
+        ?.split("|")
+        ?.map { DbCategory.Id(it) }
+        ?.also { state.categories.value = it }
 
     registry
         .consumeRestored(KEY_TYPE)
@@ -157,5 +171,6 @@ protected constructor(
     private const val KEY_NOTE = "key_note"
     private const val KEY_TYPE = "key_type"
     private const val KEY_AMOUNT = "key_amount"
+    private const val KEY_CATEGORIES = "key_categories"
   }
 }

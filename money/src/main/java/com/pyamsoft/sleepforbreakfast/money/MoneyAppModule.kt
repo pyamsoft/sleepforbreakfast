@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.money
 
-import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
-import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
+import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoaderImpl
+import dagger.Binds
+import dagger.Module
 
-internal interface TransactionInteractor :
-    ListInteractor<DbTransaction.Id, DbTransaction, TransactionChangeEvent>
+@Module
+abstract class MoneyAppModule {
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindCategoryLoader(impl: CategoryLoaderImpl): CategoryLoader
+}

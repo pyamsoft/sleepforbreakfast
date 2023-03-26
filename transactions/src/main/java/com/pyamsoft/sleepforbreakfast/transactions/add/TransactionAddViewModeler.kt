@@ -22,6 +22,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
 import java.time.Clock
 import java.time.LocalDate
@@ -40,7 +41,8 @@ class TransactionAddViewModeler
 internal constructor(
     state: MutableTransactionAddViewState,
     params: TransactionAddParams,
-    private val interactor: TransactionInteractor,
+    interactor: TransactionInteractor,
+    private val categoryLoader: CategoryLoader,
     private val clock: Clock,
 ) :
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
@@ -50,8 +52,8 @@ internal constructor(
     ) {
 
   private suspend fun loadCategories() {
-    interactor
-        .categories()
+    categoryLoader
+        .queryAllResult()
         .onSuccess { Timber.d("Loaded categories: $it") }
         .onSuccess { state.allCategories.value = it }
         .onFailure { Timber.e(it, "Error loading all categories") }

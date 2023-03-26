@@ -108,6 +108,8 @@ internal fun RepeatAddEntry(
           onNoteChanged = { viewModel.handleNoteChanged(it) },
           onAmountChanged = { viewModel.handleAmountChanged(it) },
           onTypeChanged = { viewModel.handleTypeChanged(it) },
+          onCategoryAdded = { viewModel.handleCategoryAdded(it) },
+          onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
           onReset = { viewModel.handleReset() },
           onSubmit = { handleSubmit() },
       )

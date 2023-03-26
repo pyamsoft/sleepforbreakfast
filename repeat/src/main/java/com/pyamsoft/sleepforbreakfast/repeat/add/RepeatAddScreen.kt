@@ -29,14 +29,18 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
+import com.pyamsoft.sleepforbreakfast.money.add.MoneyCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
@@ -50,6 +54,8 @@ fun RepeatAddScreen(
     onNoteChanged: (String) -> Unit,
     onAmountChanged: (Long) -> Unit,
     onTypeChanged: (DbTransaction.Type) -> Unit,
+    onCategoryAdded: (DbCategory) -> Unit,
+    onCategoryRemoved: (DbCategory) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
@@ -132,6 +138,21 @@ fun RepeatAddScreen(
                   text = "Note about this Repeating Transaction",
               )
             },
+        )
+      }
+
+      item {
+        val allCategories by state.allCategories.collectAsState()
+
+        MoneyCategories(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.keylines.content)
+                    .padding(bottom = MaterialTheme.keylines.content),
+            state = state,
+            allCategories = allCategories,
+            onCategoryAdded = onCategoryAdded,
+            onCategoryRemoved = onCategoryRemoved,
         )
       }
 

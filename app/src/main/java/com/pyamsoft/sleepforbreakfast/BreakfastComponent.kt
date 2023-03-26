@@ -28,6 +28,7 @@ import com.pyamsoft.sleepforbreakfast.db.DbModule
 import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
 import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
+import com.pyamsoft.sleepforbreakfast.money.MoneyAppModule
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatAppModule
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandlersAppModule
@@ -55,6 +56,7 @@ import javax.inject.Singleton
             UiAppModule::class,
             RepeatAppModule::class,
             CategoryAppModule::class,
+            MoneyAppModule::class,
 
             // DB
             DbModule::class,

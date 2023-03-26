@@ -17,17 +17,22 @@
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
 import java.time.Clock
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class RepeatAddViewModeler
@@ -38,12 +43,22 @@ internal constructor(
     params: RepeatAddParams,
     private val systemCategories: SystemCategories,
     private val clock: Clock,
+    private val categoryLoader: CategoryLoader,
 ) :
     MoneyAddViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
         state = state,
         initialId = params.repeatId,
         interactor = interactor,
     ) {
+
+  private suspend fun loadCategories() {
+    categoryLoader
+        .queryAllResult()
+        .onSuccess { Timber.d("Loaded categories: $it") }
+        .onSuccess { state.allCategories.value = it }
+        .onFailure { Timber.e(it, "Error loading all categories") }
+        .onFailure { state.allCategories.value = emptyList() }
+  }
 
   override fun isIdEmpty(id: DbRepeat.Id): Boolean {
     return id.isEmpty
@@ -52,6 +67,8 @@ internal constructor(
   override fun onBind(scope: CoroutineScope) {
     // Clear everything
     handleReset()
+
+    scope.launch(context = Dispatchers.Main) { loadCategories() }
   }
 
   override fun onDataLoaded(result: DbRepeat) {
@@ -121,6 +138,20 @@ internal constructor(
             addTransactionCategory(systemCategory.id)
           }
         }
+  }
+
+  fun handleCategoryAdded(category: DbCategory) {
+    state.categories.update { list ->
+      if (!list.contains(category.id)) {
+        list + category.id
+      } else {
+        list
+      }
+    }
+  }
+
+  fun handleCategoryRemoved(category: DbCategory) {
+    state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
   companion object {

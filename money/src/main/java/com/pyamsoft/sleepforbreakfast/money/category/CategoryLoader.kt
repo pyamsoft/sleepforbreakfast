@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.money.category
 
-import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
-import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
+import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
-internal interface TransactionInteractor :
-    ListInteractor<DbTransaction.Id, DbTransaction, TransactionChangeEvent>
+interface CategoryLoader {
+
+  @CheckResult suspend fun queryAll(): List<DbCategory>
+
+  @CheckResult suspend fun queryAllResult(): ResultWrapper<List<DbCategory>>
+}

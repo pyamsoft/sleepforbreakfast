@@ -25,6 +25,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,14 +39,11 @@ constructor(
     private val categoryRealtime: CategoryRealtime,
     private val categoryQueryDao: CategoryQueryDao,
     private val categoryQueryCache: CategoryQueryDao.Cache,
-    private val systemCategories: SystemCategories,
+    private val categoryLoader: CategoryLoader,
 ) : CategoryInteractor, ListInteractorImpl<DbCategory.Id, DbCategory, CategoryChangeEvent>() {
 
   override suspend fun performQueryAll(): List<DbCategory> {
-    // This is bad since it constantly queries each time, but its what we've got for now
-    systemCategories.ensure()
-
-    return categoryQueryDao.query()
+      return categoryLoader.queryAll()
   }
 
   override suspend fun performQueryOne(id: DbCategory.Id): Maybe<out DbCategory> {
