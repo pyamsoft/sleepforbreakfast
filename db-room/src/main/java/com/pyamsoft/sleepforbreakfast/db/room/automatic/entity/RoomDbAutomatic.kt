@@ -22,6 +22,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDateTime
 
@@ -30,6 +31,7 @@ internal data class RoomDbAutomatic
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbAutomatic.Id,
     @JvmField @ColumnInfo(name = COLUMN_CREATED_AT) val dbCreatedAt: LocalDateTime,
+    @JvmField @ColumnInfo(name = COLUMN_CATEGORY_ID) val dbCategories: List<DbCategory.Id>,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_ID) val dbNotificationId: Int,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_KEY) val dbNotificationKey: String,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_GROUP) val dbNotificationGroup: String,
@@ -39,11 +41,7 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_AMOUNT) val dbNotificationAmount: Long,
     @JvmField @ColumnInfo(name = COLUMN_NOTIFICATION_TITLE) val dbNotificationTitle: String,
     @JvmField
-    @ColumnInfo(
-        name = COLUMN_NOTIFICATION_TYPE,
-        // TODO remove later
-        defaultValue = "SPEND",
-    )
+    @ColumnInfo(name = COLUMN_NOTIFICATION_TYPE)
     val dbNotificationType: DbTransaction.Type,
     @JvmField @ColumnInfo(name = COLUMN_USED) val dbUsed: Boolean,
 ) : DbAutomatic {
@@ -51,6 +49,8 @@ internal constructor(
   @Ignore override val id = dbId
 
   @Ignore override val createdAt = dbCreatedAt
+
+  @Ignore override val categories = dbCategories
 
   @Ignore override val notificationId = dbNotificationId
 
@@ -71,6 +71,21 @@ internal constructor(
   @Ignore override val notificationType = dbNotificationType
 
   @Ignore override val used = dbUsed
+
+  @Ignore
+  override fun addCategory(id: DbCategory.Id): DbAutomatic {
+    return this.copy(dbCategories = this.dbCategories + id)
+  }
+
+  @Ignore
+  override fun removeCategory(id: DbCategory.Id): DbAutomatic {
+    return this.copy(dbCategories = this.dbCategories.filterNot { it == id })
+  }
+
+  @Ignore
+  override fun clearCategories(): DbAutomatic {
+    return this.copy(dbCategories = emptyList())
+  }
 
   @Ignore
   override fun notificationId(id: Int): DbAutomatic {
@@ -130,6 +145,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_ID = "_id"
 
+    @Ignore internal const val COLUMN_CATEGORY_ID = "category_id"
+
     @Ignore internal const val COLUMN_NOTIFICATION_ID = "notification_id"
 
     @Ignore internal const val COLUMN_NOTIFICATION_KEY = "notification_key"
@@ -159,6 +176,7 @@ internal constructor(
         RoomDbAutomatic(
             item.id,
             item.createdAt,
+            item.categories,
             item.notificationId,
             item.notificationKey,
             item.notificationGroup,

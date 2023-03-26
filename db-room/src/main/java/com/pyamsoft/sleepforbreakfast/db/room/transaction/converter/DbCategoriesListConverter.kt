@@ -20,7 +20,7 @@ import androidx.annotation.CheckResult
 import androidx.room.TypeConverter
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
-internal object DbTransactionCategoriesConverter {
+internal object DbCategoriesListConverter {
 
   @JvmStatic
   @CheckResult

@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
 import java.time.LocalDateTime
@@ -29,6 +30,8 @@ interface DbAutomatic {
   @get:CheckResult val id: Id
 
   @get:CheckResult val createdAt: LocalDateTime
+
+  @get:CheckResult val categories: List<DbCategory.Id>
 
   @get:CheckResult val notificationId: Int
 
@@ -49,6 +52,12 @@ interface DbAutomatic {
   @get:CheckResult val notificationType: DbTransaction.Type
 
   @get:CheckResult val used: Boolean
+
+  @CheckResult fun addCategory(id: DbCategory.Id): DbAutomatic
+
+  @CheckResult fun removeCategory(id: DbCategory.Id): DbAutomatic
+
+  @CheckResult fun clearCategories(): DbAutomatic
 
   @CheckResult fun notificationId(id: Int): DbAutomatic
 
@@ -83,6 +92,7 @@ interface DbAutomatic {
   private data class Impl(
       override val id: Id,
       override val createdAt: LocalDateTime,
+      override val categories: List<DbCategory.Id> = emptyList(),
       override val notificationId: Int = 0,
       override val notificationKey: String = "",
       override val notificationGroup: String = "",
@@ -94,6 +104,18 @@ interface DbAutomatic {
       override val notificationType: DbTransaction.Type = DbTransaction.Type.SPEND,
       override val used: Boolean = false,
   ) : DbAutomatic {
+
+    override fun addCategory(id: DbCategory.Id): DbAutomatic {
+      return this.copy(categories = this.categories + id)
+    }
+
+    override fun removeCategory(id: DbCategory.Id): DbAutomatic {
+      return this.copy(categories = this.categories.filterNot { it == id })
+    }
+
+    override fun clearCategories(): DbAutomatic {
+      return this.copy(categories = emptyList())
+    }
 
     override fun notificationId(id: Int): DbAutomatic {
       return this.copy(notificationId = id)
@@ -147,4 +169,25 @@ interface DbAutomatic {
       )
     }
   }
+}
+
+@CheckResult
+fun DbAutomatic.addCategory(category: DbCategory): DbAutomatic {
+  return this.addCategory(id = category.id)
+}
+
+@CheckResult
+fun DbAutomatic.removeCategory(category: DbCategory): DbAutomatic {
+  return this.removeCategory(id = category.id)
+}
+
+@CheckResult
+fun DbAutomatic.replaceCategories(categories: List<DbCategory.Id>): DbAutomatic {
+  var self = this.clearCategories()
+
+  for (cat in categories) {
+    self = self.addCategory(cat)
+  }
+
+  return self
 }

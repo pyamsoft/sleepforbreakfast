@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.db.room
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -26,40 +25,17 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdCon
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
-import com.pyamsoft.sleepforbreakfast.db.room.devonly.AutoMigrate3To4
-import com.pyamsoft.sleepforbreakfast.db.room.devonly.AutoMigrate4To5
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
-import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionCategoriesConverter
+import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbCategoriesListConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionTypeConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 
 @Database(
     exportSchema = true,
-    version = 5,
-    autoMigrations =
-        [
-            AutoMigration(
-                from = 1,
-                to = 2,
-            ),
-            AutoMigration(
-                from = 2,
-                to = 3,
-            ),
-            AutoMigration(
-                from = 3,
-                to = 4,
-                spec = AutoMigrate3To4::class,
-            ),
-            AutoMigration(
-                from = 4,
-                to = 5,
-                spec = AutoMigrate4To5::class,
-            ),
-        ],
+    version = 1,
     entities =
         [
             RoomDbTransaction::class,
@@ -70,15 +46,14 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 )
 @TypeConverters(
     // Version 1
+    DbCategoriesListConverter::class,
+    LocalDateTimeConverter::class,
+    LocalDateConverter::class,
     DbTransactionIdConverter::class,
     DbTransactionTypeConverter::class,
-    LocalDateTimeConverter::class,
-    DbTransactionCategoriesConverter::class,
     DbCategoryIdConverter::class,
-    DbCategoryIdConverter::class,
-    LocalDateConverter::class,
+    DbAutomaticIdConverter::class,
     DbRepeatIdConverter::class,
     DbRepeatTypeConverter::class,
-    DbAutomaticIdConverter::class,
 )
 internal abstract class RoomSleepDbImpl internal constructor() : RoomDatabase(), RoomSleepDb
