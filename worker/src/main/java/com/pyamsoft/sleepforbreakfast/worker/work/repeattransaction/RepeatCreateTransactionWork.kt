@@ -45,7 +45,7 @@ internal constructor(
     for (rep in allRepeats) {
 
       // Don't do anything if we haven't "started" yet
-      if (rep.firstDate < today) {
+      if (rep.firstDay > today) {
         continue
       }
 

@@ -64,7 +64,7 @@ internal constructor(
 
   @Ignore override val repeatType = dbRepeatType
 
-  @Ignore override val firstDate = dbFirstDay
+  @Ignore override val firstDay = dbFirstDay
 
   @Ignore override val active = dbActive
 
@@ -185,7 +185,7 @@ internal constructor(
             item.transactionAmountInCents,
             item.transactionNote,
             item.repeatType,
-            item.firstDate,
+            item.firstDay,
             item.active,
             item.archived,
             item.lastRunDay,

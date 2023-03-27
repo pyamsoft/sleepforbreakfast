@@ -115,7 +115,7 @@ internal constructor(
       state.repeatFirstDay.value = LocalDate.now(clock)
       state.repeatType.value = DbRepeat.Type.DAILY
     } else {
-      state.repeatFirstDay.value = payload.firstDate
+      state.repeatFirstDay.value = payload.firstDay
       state.repeatType.value = payload.repeatType
 
       state.name.value = payload.transactionName

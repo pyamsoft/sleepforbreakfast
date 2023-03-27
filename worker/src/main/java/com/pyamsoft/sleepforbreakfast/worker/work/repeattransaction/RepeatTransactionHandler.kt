@@ -22,7 +22,6 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
-import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import java.time.Clock
 import java.time.LocalDate
@@ -30,8 +29,9 @@ import java.time.LocalTime
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Singleton
@@ -39,7 +39,6 @@ internal class RepeatTransactionHandler
 @Inject
 internal constructor(
     private val repeatInsertDao: RepeatInsertDao,
-    private val transactionQueryDao: TransactionQueryDao,
     private val transactionInsertDao: TransactionInsertDao,
     private val clock: Clock,
 ) {
@@ -92,7 +91,15 @@ internal constructor(
       today: LocalDate,
   ) {
     // Make a new transaction and put it into the table
-    val transaction = createTransaction(repeat, today)
+    val transaction =
+        createTransaction(
+            repeat = repeat,
+
+            // If we have no previous attempt, use the "first day" otherwise use today
+            // This is only ran when "filling in", where a repeat is created AFTER the date it
+            // is meant to repeat on and we are missing the first one.
+            date = if (repeat.lastRunDay == null) repeat.firstDay else today,
+        )
 
     when (val res = transactionInsertDao.insert(transaction)) {
       is DbInsert.InsertResult.Fail -> {
@@ -122,8 +129,10 @@ internal constructor(
 
   private suspend fun executeRepeat(repeat: DbRepeat, today: LocalDate) = coroutineScope {
     // Launch these to run them in parallel
-    launch(context = Dispatchers.Default) { insertNewTransaction(repeat, today) }
-    launch(context = Dispatchers.Default) { markRepeatUsed(repeat, today) }
+    awaitAll<Any>(
+        async(context = Dispatchers.Default) { insertNewTransaction(repeat, today) },
+        async(context = Dispatchers.Default) { markRepeatUsed(repeat, today) },
+    )
   }
 
   private suspend fun createTransactionFromDailyRepeat(
@@ -138,15 +147,23 @@ internal constructor(
     // else
     //
     // The most recent date is the same before today, we may be able to
-    val canCreate = if (mostRecentCreated == null) true else mostRecentCreated < today
-
-    if (!canCreate) {
-      Timber.d("Not asked to create new daily transaction, no good")
-      return
+    var canCreate = false
+    if (mostRecentCreated == null) {
+      canCreate = true
+    } else if (mostRecentCreated < today) {
+      val previousWasYesterday = mostRecentCreated.dayOfYear < today.dayOfYear
+      if (previousWasYesterday) {
+        canCreate = true
+      } else {
+        Timber.w(
+            "Not running repeat, days don't match up ${mapOf(
+                "today" to today,
+                "firstDay" to repeat.firstDay,
+            )}")
+      }
     }
 
-    // Make sure we have "started"
-    if (today >= repeat.firstDate) {
+    if (canCreate) {
       executeRepeat(repeat, today)
     }
   }
@@ -163,16 +180,26 @@ internal constructor(
     // else
     //
     // The most recent date is the same before today, we may be able to
-    val canCreate = if (mostRecentCreated == null) true else mostRecentCreated < today
-
-    if (!canCreate) {
-      Timber.d("Not asked to create new weekly transaction, no good")
-      return
+    var canCreate = false
+    if (mostRecentCreated == null) {
+      canCreate = true
+    } else if (mostRecentCreated < today) {
+      val previousWasLastWeek = mostRecentCreated.dayOfMonth < today.dayOfMonth
+      val isCurrentDay = today.dayOfWeek == repeat.firstDay.dayOfWeek
+      if (previousWasLastWeek && isCurrentDay) {
+        canCreate = true
+      } else {
+        Timber.w(
+            "Not running repeat, days don't match up ${mapOf(
+                "previousWasLastWeek" to previousWasLastWeek,
+                "today" to today,
+                "firstDay" to repeat.firstDay,
+                "dayOfWeek" to repeat.firstDay.dayOfWeek
+            )}")
+      }
     }
 
-    // Make sure the day of the week matches the requested,
-    // then this should be the "next" week, so make it again
-    if (today >= repeat.firstDate && today.dayOfWeek == repeat.firstDate.dayOfWeek) {
+    if (canCreate) {
       executeRepeat(repeat, today)
     }
   }
@@ -189,22 +216,23 @@ internal constructor(
     if (mostRecentCreated == null) {
       canCreate = true
     } else if (mostRecentCreated < today) {
-      // If the most recently created date is before today, maybe
-
-      // The month is last month
-      if (mostRecentCreated.month < today.month) {
+      val previousWasLastMonth = mostRecentCreated.month < today.month
+      val isCurrentDay = today.dayOfMonth == repeat.firstDay.dayOfMonth
+      if (previousWasLastMonth && isCurrentDay) {
         canCreate = true
+      } else {
+        Timber.w(
+            "Not running repeat, days don't match up ${mapOf(
+                  "previousWasLastMonth" to previousWasLastMonth,
+                  "isCurrentDay" to isCurrentDay,
+                  "today" to today,
+                  "firstDay" to repeat.firstDay,
+                  "dayOfMonth" to repeat.firstDay.dayOfMonth
+              )}")
       }
     }
 
-    if (!canCreate) {
-      Timber.d("Not asked to create new monthly transaction, no good")
-      return
-    }
-
-    // Make sure the day of the month matches the requested,
-    // then this should be the "next" month, so make it again
-    if (today >= repeat.firstDate && today.dayOfMonth == repeat.firstDate.dayOfMonth) {
+    if (canCreate) {
       executeRepeat(repeat, today)
     }
   }
@@ -224,19 +252,23 @@ internal constructor(
       // If the most recently created date is before today, maybe
 
       // The month is last month
-      if (mostRecentCreated.year < today.year) {
+      val previousWasLastYear = mostRecentCreated.year < today.year
+      val isCurrentDay = today.dayOfYear == repeat.firstDay.dayOfYear
+      if (previousWasLastYear && isCurrentDay) {
         canCreate = true
+      } else {
+        Timber.w(
+            "Not running repeat, days don't match up ${mapOf(
+              "previousWasLastYear" to previousWasLastYear,
+              "isCurrentDay" to isCurrentDay,
+              "today" to today,
+              "firstDay" to repeat.firstDay,
+              "dayOfYear" to repeat.firstDay.dayOfYear
+          )}")
       }
     }
 
-    if (!canCreate) {
-      Timber.d("Not asked to create new yearly transaction, no good")
-      return
-    }
-
-    // Make sure the day of the year matches the requested,
-    // then this should be the "next" month, so make it again
-    if (today >= repeat.firstDate && today.dayOfYear == repeat.firstDate.dayOfYear) {
+    if (canCreate) {
       executeRepeat(repeat, today)
     }
   }
@@ -261,6 +293,16 @@ internal constructor(
       return
     }
 
+    if (today < repeat.firstDay) {
+      Timber.w(
+          "Cannot process repeat not started yet: ${mapOf(
+              "firstDay" to repeat.firstDay,
+              "today" to today
+          )}")
+      return
+    }
+
+    // Lock a global mutex so that DB operations only happen once
     try {
       when (repeat.repeatType) {
         DbRepeat.Type.DAILY -> createTransactionFromDailyRepeat(repeat, today)

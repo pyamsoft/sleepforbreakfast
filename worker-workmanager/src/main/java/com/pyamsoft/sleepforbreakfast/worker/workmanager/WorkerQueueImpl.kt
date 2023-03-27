@@ -21,6 +21,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
+import androidx.work.await
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.AutomaticSpendingWorker
@@ -59,7 +60,11 @@ internal constructor(
         Timber.d("Enqueue work: $type")
 
         // Resolve the WorkManager instance
-        WorkManager.getInstance(context).enqueue(work)
+        try {
+          WorkManager.getInstance(context).enqueue(work).await()
+        } catch (e: Throwable) {
+          Timber.e(e, "Error queueing work: $type")
+        }
 
         // No return
         return@withContext
@@ -70,7 +75,11 @@ internal constructor(
 
         // Resolve the WorkManager instance
         Timber.d("Cancel work by tag: $type")
-        WorkManager.getInstance(context).cancelAllWorkByTag(type.name)
+        try {
+          WorkManager.getInstance(context).cancelAllWorkByTag(type.name).await()
+        } catch (e: Throwable) {
+          Timber.e(e, "Error cancelling work: $type")
+        }
 
         // No return
         return@withContext

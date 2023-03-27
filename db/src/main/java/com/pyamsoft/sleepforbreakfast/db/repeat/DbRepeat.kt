@@ -43,7 +43,7 @@ interface DbRepeat : ActivateModel<DbRepeat> {
 
   @get:CheckResult val transactionNote: String
 
-  @get:CheckResult val firstDate: LocalDate
+  @get:CheckResult val firstDay: LocalDate
 
   @get:CheckResult val repeatType: Type
 
@@ -94,18 +94,18 @@ interface DbRepeat : ActivateModel<DbRepeat> {
   }
 
   private data class Impl(
-      override val id: Id,
-      override val createdAt: LocalDateTime,
-      override val firstDate: LocalDate,
-      override val transactionCategories: List<DbCategory.Id> = emptyList(),
-      override val transactionName: String = "",
-      override val transactionAmountInCents: Long = 0,
-      override val transactionType: DbTransaction.Type = DbTransaction.Type.SPEND,
-      override val transactionNote: String = "",
-      override val repeatType: Type = Type.DAILY,
-      override val active: Boolean = true,
-      override val archived: Boolean = false,
-      override val lastRunDay: LocalDate? = null,
+    override val id: Id,
+    override val createdAt: LocalDateTime,
+    override val firstDay: LocalDate,
+    override val transactionCategories: List<DbCategory.Id> = emptyList(),
+    override val transactionName: String = "",
+    override val transactionAmountInCents: Long = 0,
+    override val transactionType: DbTransaction.Type = DbTransaction.Type.SPEND,
+    override val transactionNote: String = "",
+    override val repeatType: Type = Type.DAILY,
+    override val active: Boolean = true,
+    override val archived: Boolean = false,
+    override val lastRunDay: LocalDate? = null,
   ) : DbRepeat {
 
     override fun lastRunDay(date: LocalDate): DbRepeat {
@@ -145,7 +145,7 @@ interface DbRepeat : ActivateModel<DbRepeat> {
     }
 
     override fun firstDay(date: LocalDate): DbRepeat {
-      return this.copy(firstDate = date)
+      return this.copy(firstDay = date)
     }
 
     override fun activate(): DbRepeat {
@@ -176,7 +176,7 @@ interface DbRepeat : ActivateModel<DbRepeat> {
       return Impl(
           id = if (id.isEmpty) Id(IdGenerator.generate()) else id,
           createdAt = LocalDateTime.now(clock),
-          firstDate = LocalDate.now(clock),
+          firstDay = LocalDate.now(clock),
       )
     }
   }
