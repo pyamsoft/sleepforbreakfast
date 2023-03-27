@@ -45,7 +45,8 @@ internal fun RepeatCard(
       elevation = CardDefaults.Elevation,
   ) {
     Column(
-        modifier = contentModifier,
+        modifier =
+            Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
     ) {
       Text(
           modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.baseline),

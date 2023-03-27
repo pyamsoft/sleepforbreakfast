@@ -43,6 +43,7 @@ internal constructor(
 
   override val allCategories = MutableStateFlow<List<DbCategory>>(emptyList())
   override val date = MutableStateFlow<LocalDateTime>(LocalDateTime.now(clock))
+
   override val isDateDialogOpen = MutableStateFlow(false)
   override val isTimeDialogOpen = MutableStateFlow(false)
 }

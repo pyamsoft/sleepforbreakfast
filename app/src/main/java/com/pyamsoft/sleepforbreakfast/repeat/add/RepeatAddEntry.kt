@@ -110,6 +110,10 @@ internal fun RepeatAddEntry(
           onTypeChanged = { viewModel.handleTypeChanged(it) },
           onCategoryAdded = { viewModel.handleCategoryAdded(it) },
           onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
+          onDateChanged = { viewModel.handleDateChanged(it) },
+          onOpenDateDialog = { viewModel.handleOpenDateDialog() },
+          onCloseDateDialog = { viewModel.handleCloseDateDialog() },
+          onRepeatTypeChanged = { viewModel.handleRepeatTypeChanged(it) },
           onReset = { viewModel.handleReset() },
           onSubmit = { handleSubmit() },
       )

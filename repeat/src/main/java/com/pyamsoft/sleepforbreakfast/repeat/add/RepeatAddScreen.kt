@@ -16,11 +16,17 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -31,20 +37,28 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.window.PopupProperties
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyType
+import java.time.LocalDate
 
 @Composable
 fun RepeatAddScreen(
@@ -53,7 +67,11 @@ fun RepeatAddScreen(
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
     onAmountChanged: (Long) -> Unit,
+    onDateChanged: (LocalDate) -> Unit,
+    onOpenDateDialog: () -> Unit,
+    onCloseDateDialog: () -> Unit,
     onTypeChanged: (DbTransaction.Type) -> Unit,
+    onRepeatTypeChanged: (DbRepeat.Type) -> Unit,
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
     onReset: () -> Unit,
@@ -129,6 +147,35 @@ fun RepeatAddScreen(
       }
 
       item {
+        val firstDate by state.repeatFirstDay.collectAsState()
+        val showDateDialog by state.isDateDialogOpen.collectAsState()
+
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+          DatePicker(
+              modifier = Modifier.weight(1F),
+              date = firstDate,
+              isOpen = showDateDialog,
+              onDateChanged = onDateChanged,
+              onCloseDateDialog = onCloseDateDialog,
+              onOpenDateDialog = onOpenDateDialog,
+          )
+
+          Spacer(
+              modifier = Modifier.width(MaterialTheme.keylines.content),
+          )
+
+          RepeatType(
+              modifier = Modifier.weight(1F),
+              state = state,
+              onTypeChanged = onRepeatTypeChanged,
+          )
+        }
+      }
+
+      item {
         MoneyNote(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
@@ -162,6 +209,56 @@ fun RepeatAddScreen(
             state = state,
             onReset = onReset,
             onSubmit = onSubmit,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun RepeatType(
+    modifier: Modifier = Modifier,
+    state: RepeatAddViewState,
+    onTypeChanged: (DbRepeat.Type) -> Unit,
+) {
+  val repeatType by state.repeatType.collectAsState()
+
+  // TODO move into VM
+  val (show, setShow) = rememberSaveable { mutableStateOf(false) }
+
+  val handleShow by rememberUpdatedState { setShow(true) }
+  val allPossible = remember { DbRepeat.Type.values() }
+
+  Text(
+      modifier = modifier.clickable { handleShow() },
+      text = repeatType.displayName,
+      style = MaterialTheme.typography.body1,
+  )
+
+  DropdownMenu(
+      properties = remember { PopupProperties(focusable = true) },
+      expanded = show,
+      onDismissRequest = { setShow(false) },
+  ) {
+    for (type in allPossible) {
+      // If this category is selected
+      val isSelected =
+          remember(
+              repeatType,
+              type,
+          ) {
+            repeatType == type
+          }
+
+      DropdownMenuItem(
+          onClick = {
+            if (!isSelected) {
+              onTypeChanged(type)
+            }
+          },
+      ) {
+        Text(
+            text = type.displayName,
         )
       }
     }

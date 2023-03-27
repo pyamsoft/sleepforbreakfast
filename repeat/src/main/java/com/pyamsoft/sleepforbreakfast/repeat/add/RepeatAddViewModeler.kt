@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
+import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
@@ -88,6 +89,11 @@ internal constructor(
         ?.let { it as String }
         ?.let { DbRepeat.Type.valueOf(it) }
         ?.also { state.repeatType.value = it }
+
+    registry
+        .consumeRestored(KEY_DATE_DIALOG)
+        ?.let { it as Boolean }
+        ?.also { state.isDateDialogOpen.value = it }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
@@ -100,6 +106,8 @@ internal constructor(
         .also { add(it) }
 
     registry.registerProvider(KEY_REPEAT_TYPE) { state.repeatType.value.name }.also { add(it) }
+
+    registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }
   }
 
   override fun onReset(payload: DbRepeat?) {
@@ -116,10 +124,27 @@ internal constructor(
       state.amount.value = payload.transactionAmountInCents
       state.categories.value = payload.transactionCategories
     }
+
+    handleCloseDateDialog()
+  }
+
+  @CheckResult
+  private suspend fun getCategories(): List<DbCategory.Id> {
+    val systemCategory = systemCategories.categoryByName(RequiredCategories.REPEATING)
+    val cleanCategories = mutableSetOf<DbCategory.Id>()
+    if (systemCategory != null) {
+      cleanCategories.add(systemCategory.id)
+    } else {
+      Timber.w("Failed to add system category to repeat")
+    }
+    for (c in state.categories.value) {
+      cleanCategories.add(c)
+    }
+
+    return cleanCategories.toList()
   }
 
   override suspend fun compile(): DbRepeat {
-    val systemCategory = systemCategories.categoryByName(RequiredCategories.REPEATING)
     return DbRepeat.create(clock, initialId)
         .repeatType(state.repeatType.value)
         .firstDay(state.repeatFirstDay.value)
@@ -129,15 +154,7 @@ internal constructor(
         .transactionAmountInCents(state.amount.value)
         .transactionNote(state.note.value)
         .transactionType(state.type.value)
-        .replaceTransactionCategories(state.categories.value)
-        .run {
-          if (systemCategory == null) {
-            Timber.w("Failed to add system category to repeat")
-            this
-          } else {
-            addTransactionCategory(systemCategory.id)
-          }
-        }
+        .replaceTransactionCategories(getCategories())
   }
 
   fun handleCategoryAdded(category: DbCategory) {
@@ -154,7 +171,26 @@ internal constructor(
     state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
+  fun handleOpenDateDialog() {
+    state.isDateDialogOpen.value = true
+  }
+
+  fun handleCloseDateDialog() {
+    state.isDateDialogOpen.value = false
+  }
+
+  fun handleRepeatTypeChanged(type: DbRepeat.Type) {
+    state.repeatType.value = type
+  }
+
+  fun handleDateChanged(date: LocalDate) {
+    state.repeatFirstDay.update {
+      it.withYear(date.year).withMonth(date.monthValue).withDayOfMonth(date.dayOfMonth)
+    }
+  }
+
   companion object {
+    private const val KEY_DATE_DIALOG = "key_date_dialog"
     private const val KEY_FIRST_DAY = "key_repeat_first_date"
     private const val KEY_REPEAT_TYPE = "key_repeat_type"
   }

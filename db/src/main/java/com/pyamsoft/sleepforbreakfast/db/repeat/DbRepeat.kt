@@ -76,18 +76,18 @@ interface DbRepeat {
 
   @CheckResult fun unarchive(): DbRepeat
 
-  enum class Type {
+  enum class Type(val displayName: String) {
     /** Repeats every day at the given time T */
-    DAILY,
+    DAILY("Daily"),
 
     /** Repeats each week on the given day D at given time T */
-    WEEKLY_ON_DAY,
+    WEEKLY_ON_DAY("Once a Week"),
 
     /** Repeats each month on the given day D at given time T */
-    MONTHLY_ON_DAY,
+    MONTHLY_ON_DAY("Once a Month"),
 
     /** Repeats each month on the given day D at given time T */
-    YEARLY_ON_DAY
+    YEARLY_ON_DAY("Once a Year")
   }
 
   data class Id(@get:CheckResult val raw: String) {

@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -460,7 +461,8 @@ fun AddCategories(
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
 ) {
-  val (show, setShow) = remember { mutableStateOf(false) }
+  // TODO move into VM
+  val (show, setShow) = rememberSaveable { mutableStateOf(false) }
 
   val handleShow by rememberUpdatedState { setShow(true) }
 
