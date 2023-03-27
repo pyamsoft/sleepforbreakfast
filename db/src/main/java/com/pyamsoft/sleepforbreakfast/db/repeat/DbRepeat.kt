@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.repeat
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.db.ActivateModel
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
@@ -26,7 +27,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Stable
-interface DbRepeat {
+interface DbRepeat : ActivateModel<DbRepeat> {
 
   @get:CheckResult val id: Id
 
@@ -45,10 +46,6 @@ interface DbRepeat {
   @get:CheckResult val firstDate: LocalDate
 
   @get:CheckResult val repeatType: Type
-
-  @get:CheckResult val active: Boolean
-
-  @get:CheckResult val archived: Boolean
 
   @get:CheckResult val lastRunDay: LocalDate?
 
@@ -69,14 +66,6 @@ interface DbRepeat {
   @CheckResult fun repeatType(type: Type): DbRepeat
 
   @CheckResult fun firstDay(date: LocalDate): DbRepeat
-
-  @CheckResult fun activate(): DbRepeat
-
-  @CheckResult fun deactivate(): DbRepeat
-
-  @CheckResult fun archive(): DbRepeat
-
-  @CheckResult fun unarchive(): DbRepeat
 
   @CheckResult fun lastRunDay(date: LocalDate): DbRepeat
 

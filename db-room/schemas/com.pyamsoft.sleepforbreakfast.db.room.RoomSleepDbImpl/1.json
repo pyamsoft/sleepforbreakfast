@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "38176dff3996ee8c7d24dabc50dec252",
+    "identityHash": "9c839a77305e5f1a076fd20eb8a6192c",
     "entities": [
       {
         "tableName": "room_transactions_table",
@@ -122,7 +122,7 @@
       },
       {
         "tableName": "room_category_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `created_at` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT NOT NULL, `system` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `created_at` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT NOT NULL, `system` INTEGER NOT NULL, `active` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -151,6 +151,18 @@
           {
             "fieldPath": "dbSystem",
             "columnName": "system",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbActive",
+            "columnName": "active",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbArchived",
+            "columnName": "archived",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -346,7 +358,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38176dff3996ee8c7d24dabc50dec252')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c839a77305e5f1a076fd20eb8a6192c')"
     ]
   }
 }

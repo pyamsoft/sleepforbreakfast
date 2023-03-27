@@ -19,11 +19,13 @@ package com.pyamsoft.sleepforbreakfast.db.category
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.db.ActivateModel
 import java.time.Clock
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Stable
-interface DbCategory {
+interface DbCategory : ActivateModel<DbCategory> {
 
   @get:CheckResult val id: Id
 
@@ -57,6 +59,8 @@ interface DbCategory {
       override val name: String = "",
       override val note: String = "",
       override val system: Boolean = false,
+      override val active: Boolean = true,
+      override val archived: Boolean = false,
   ) : DbCategory {
 
     override fun name(name: String): DbCategory {
@@ -69,6 +73,22 @@ interface DbCategory {
 
     override fun systemLevel(): DbCategory {
       return this.copy(system = true)
+    }
+
+    override fun activate(): DbCategory {
+      return this.copy(active = true)
+    }
+
+    override fun archive(): DbCategory {
+      return this.copy(archived = true)
+    }
+
+    override fun deactivate(): DbCategory {
+      return this.copy(active = false)
+    }
+
+    override fun unarchive(): DbCategory {
+      return this.copy(archived = false)
     }
   }
 

@@ -32,6 +32,8 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
     @JvmField @ColumnInfo(name = COLUMN_NOTE) val dbNote: String,
     @JvmField @ColumnInfo(name = COLUMN_SYSTEM) val dbSystem: Boolean,
+    @JvmField @ColumnInfo(name = COLUMN_ACTIVE) val dbActive: Boolean,
+    @JvmField @ColumnInfo(name = COLUMN_ARCHIVED) val dbArchived: Boolean,
 ) : DbCategory {
 
   @Ignore override val id: DbCategory.Id = dbId
@@ -43,6 +45,10 @@ internal constructor(
   @Ignore override val note = dbNote
 
   @Ignore override val system = dbSystem
+
+  @Ignore override val active = dbActive
+
+  @Ignore override val archived = dbArchived
 
   @Ignore
   override fun name(name: String): DbCategory {
@@ -59,6 +65,26 @@ internal constructor(
     return this.copy(dbSystem = true)
   }
 
+  @Ignore
+  override fun activate(): DbCategory {
+    return this.copy(dbActive = true)
+  }
+
+  @Ignore
+  override fun deactivate(): DbCategory {
+    return this.copy(dbActive = false)
+  }
+
+  @Ignore
+  override fun archive(): DbCategory {
+    return this.copy(dbArchived = true)
+  }
+
+  @Ignore
+  override fun unarchive(): DbCategory {
+    return this.copy(dbArchived = false)
+  }
+
   companion object {
 
     @Ignore internal const val TABLE_NAME = "room_category_table"
@@ -73,6 +99,10 @@ internal constructor(
 
     @Ignore internal const val COLUMN_SYSTEM = "system"
 
+    @Ignore internal const val COLUMN_ACTIVE = "active"
+
+    @Ignore internal const val COLUMN_ARCHIVED = "archived"
+
     @Ignore
     @JvmStatic
     @CheckResult
@@ -85,6 +115,8 @@ internal constructor(
             item.name,
             item.note,
             item.system,
+            item.active,
+            item.archived,
         )
       }
     }
