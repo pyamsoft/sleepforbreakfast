@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.repeat
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,10 +39,10 @@ fun RepeatScreen(
     state: RepeatViewState,
     onActionButtonClicked: () -> Unit,
     onRepeatClicked: (DbRepeat) -> Unit,
-    onRepeatLongClicked: (DbRepeat) -> Unit,
     onRepeatRestored: () -> Unit,
     onRepeatDeleteFinalized: () -> Unit,
-    onDismiss: () -> Unit,
+    topBar: @Composable () -> Unit = {},
+    onRepeatLongClicked: ((DbRepeat) -> Unit)? = null,
 ) {
   val sources = state.items.collectAsStateList()
   val undoable by state.recentlyDeleted.collectAsState()
@@ -49,6 +50,7 @@ fun RepeatScreen(
   ListScreen(
       modifier = modifier,
       showActionButton = showActionButton,
+      topBar = topBar,
       items = sources,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
@@ -63,10 +65,16 @@ fun RepeatScreen(
                 .padding(horizontal = MaterialTheme.keylines.content)
                 .padding(bottom = MaterialTheme.keylines.content),
         contentModifier =
-            Modifier.combinedClickable(
-                onClick = { onRepeatClicked(repeat) },
-                onLongClick = { onRepeatLongClicked(repeat) },
-            ),
+            onRepeatLongClicked.let { longClick ->
+              if (longClick == null) {
+                Modifier.clickable { onRepeatClicked(repeat) }
+              } else {
+                Modifier.combinedClickable(
+                    onClick = { onRepeatClicked(repeat) },
+                    onLongClick = { longClick(repeat) },
+                )
+              }
+            },
         repeat = repeat,
     )
   }

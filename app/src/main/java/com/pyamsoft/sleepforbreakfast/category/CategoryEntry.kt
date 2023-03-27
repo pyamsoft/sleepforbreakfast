@@ -85,7 +85,6 @@ internal fun CategoryEntry(
           modifier = modifier,
           showActionButton = true,
           state = state,
-          onDismiss = onDismiss,
           onActionButtonClicked = { viewModel.handleAddNewCategory() },
           onCategoryClicked = { viewModel.handleEditCategory(it) },
           onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },

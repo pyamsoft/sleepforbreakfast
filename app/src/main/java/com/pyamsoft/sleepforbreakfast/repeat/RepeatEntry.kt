@@ -85,7 +85,6 @@ internal fun RepeatEntry(
           modifier = modifier,
           showActionButton = true,
           state = state,
-          onDismiss = onDismiss,
           onActionButtonClicked = { viewModel.handleAddNewRepeat() },
           onRepeatClicked = { viewModel.handleEditRepeat(it) },
           onRepeatLongClicked = { viewModel.handleDeleteRepeat(it) },

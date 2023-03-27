@@ -122,6 +122,7 @@ fun TransactionScreen(
       TransactionTotal(
           modifier = Modifier.fillMaxWidth().padding(pv),
           transactions = transactions,
+          onDismiss = onDismiss,
       )
 
       LazyColumn {

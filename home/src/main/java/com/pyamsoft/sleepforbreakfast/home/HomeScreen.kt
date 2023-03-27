@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -44,10 +43,7 @@ fun HomeScreen(
       modifier = modifier,
   ) {
     HomeHeader(
-        modifier =
-            Modifier.fillMaxWidth()
-                .padding(horizontal = MaterialTheme.keylines.content)
-                .statusBarsPadding(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
         appName = appName,
         onOpenSettings = onOpenSettings,
     )

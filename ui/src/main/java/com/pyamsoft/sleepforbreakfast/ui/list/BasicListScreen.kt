@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.FabPosition
@@ -46,6 +45,7 @@ fun <T : Any> BasicListScreen(
     onSnackbarDismissed: () -> Unit,
     onSnackbarAction: () -> Unit,
     deletedMessage: (T) -> String,
+    topBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
   val scaffoldState = rememberScaffoldState()
@@ -53,6 +53,7 @@ fun <T : Any> BasicListScreen(
   Scaffold(
       modifier = modifier,
       scaffoldState = scaffoldState,
+      topBar = topBar,
       floatingActionButtonPosition = FabPosition.End,
       floatingActionButton = {
         if (showActionButton) {
@@ -90,11 +91,13 @@ fun <T : Any> ListScreen(
     onSnackbarAction: () -> Unit,
     itemKey: (T) -> String,
     deletedMessage: (T) -> String,
+    topBar: @Composable () -> Unit = {},
     item: @Composable (T) -> Unit,
 ) {
   BasicListScreen(
       modifier = modifier,
       showActionButton = showActionButton,
+      topBar = topBar,
       recentlyDeletedItem = recentlyDeletedItem,
       onActionButtonClicked = onActionButtonClicked,
       onSnackbarDismissed = onSnackbarDismissed,
@@ -103,8 +106,7 @@ fun <T : Any> ListScreen(
   ) { pv ->
     Column {
       Spacer(
-          modifier =
-              Modifier.padding(pv).statusBarsPadding().height(MaterialTheme.keylines.content),
+          modifier = Modifier.padding(pv).height(MaterialTheme.keylines.content),
       )
 
       LazyColumn {

@@ -17,16 +17,22 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -123,6 +129,7 @@ internal fun TransactionCard(
 internal fun TransactionTotal(
     modifier: Modifier = Modifier,
     transactions: SnapshotStateList<DbTransaction>,
+    onDismiss: () -> Unit,
 ) {
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
   val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
@@ -150,6 +157,20 @@ internal fun TransactionTotal(
       priceStyle = MaterialTheme.typography.h4,
       note = totalRangeNote,
       noteStyle = MaterialTheme.typography.body2,
+      navigationIcon = {
+        IconButton(
+            modifier = Modifier.padding(end = MaterialTheme.keylines.content),
+            onClick = onDismiss,
+        ) {
+          Icon(
+              imageVector = Icons.Filled.ArrowBack,
+              contentDescription = "Back",
+              tint =
+                  MaterialTheme.colors.onPrimary.copy(
+                      alpha = ContentAlpha.medium,
+                  ))
+        }
+      },
   )
 }
 
@@ -160,6 +181,7 @@ private fun TransactionCard(
     color: Color = MaterialTheme.colors.surface,
     shape: Shape = MaterialTheme.shapes.medium,
     elevation: Dp = CardDefaults.Elevation,
+    navigationIcon: @Composable () -> Unit = {},
     title: String,
     titleStyle: TextStyle,
     date: String,
@@ -218,17 +240,23 @@ private fun TransactionCard(
         )
       }
 
-      Text(
+      Row(
           modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.baseline),
-          text = title,
-          style =
-              titleStyle.copy(
-                  color =
-                      MaterialTheme.colors.onSurface.copy(
-                          alpha = ContentAlpha.medium,
-                      ),
-              ),
-      )
+          verticalAlignment = Alignment.CenterVertically,
+      ) {
+        navigationIcon()
+
+        Text(
+            text = title,
+            style =
+                titleStyle.copy(
+                    color =
+                        MaterialTheme.colors.onSurface.copy(
+                            alpha = ContentAlpha.medium,
+                        ),
+                ),
+        )
+      }
 
       Text(
           modifier = Modifier.fillMaxWidth(),
