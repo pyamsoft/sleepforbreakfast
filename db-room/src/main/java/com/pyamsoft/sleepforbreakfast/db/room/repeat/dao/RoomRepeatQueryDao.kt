@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.room.repeat.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
@@ -33,6 +34,7 @@ internal abstract class RoomRepeatQueryDao : RepeatQueryDao {
       withContext(context = Dispatchers.IO) { daoQuery() }
 
   @CheckResult
+  @Transaction
   @Query("""SELECT * FROM ${RoomDbRepeat.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbRepeat>
 
@@ -57,6 +59,7 @@ SELECT * FROM ${RoomDbRepeat.TABLE_NAME}
       withContext(context = Dispatchers.IO) { daoQueryActive() }
 
   @CheckResult
+  @Transaction
   @Query(
       """
 SELECT * FROM ${RoomDbRepeat.TABLE_NAME}

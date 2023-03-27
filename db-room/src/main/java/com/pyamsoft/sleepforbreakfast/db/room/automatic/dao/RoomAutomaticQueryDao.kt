@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.room.automatic.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
@@ -29,14 +30,15 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
 
-  override suspend fun query(): List<DbAutomatic> =
+  final override suspend fun query(): List<DbAutomatic> =
       withContext(context = Dispatchers.IO) { daoQuery() }
 
   @CheckResult
+  @Transaction
   @Query("""SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}""")
   internal abstract suspend fun daoQuery(): List<RoomDbAutomatic>
 
-  override suspend fun queryByNotification(
+  final override suspend fun queryByNotification(
       notificationId: Int,
       notificationKey: String,
       notificationGroup: String,
@@ -76,10 +78,11 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
       postTime: Long
   ): RoomDbAutomatic?
 
-  override suspend fun queryUnused(): List<DbAutomatic> =
+  final override suspend fun queryUnused(): List<DbAutomatic> =
       withContext(context = Dispatchers.IO) { daoQueryUnused() }
 
   @CheckResult
+  @Transaction
   @Query(
       """
 SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_USED}

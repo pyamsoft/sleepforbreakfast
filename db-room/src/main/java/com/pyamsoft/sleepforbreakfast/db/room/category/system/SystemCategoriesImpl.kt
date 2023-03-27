@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.category.system
+package com.pyamsoft.sleepforbreakfast.db.room.category.system
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
-import com.pyamsoft.sleepforbreakfast.core.Maybe
-import com.pyamsoft.sleepforbreakfast.db.DbInsert
-import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
-import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
+import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import java.time.Clock
-import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,10 +30,10 @@ import timber.log.Timber
 
 @Singleton
 internal class SystemCategoriesImpl
-@Inject
 internal constructor(
-    private val categoryQueryDao: CategoryQueryDao,
-    private val categoryInsertDao: CategoryInsertDao,
+    // Provided by Dagger in RoomModule
+    private val systemCategories: RoomSystemCategories,
+    // Provided by Dagger from BreakfastComponent
     private val clock: Clock,
 ) : SystemCategories {
 
@@ -54,36 +52,21 @@ internal constructor(
   }
 
   @CheckResult
-  private fun createSystemCategory(category: RequiredCategories): DbCategory {
-    return DbCategory.create(clock, id = DbCategory.Id(IdGenerator.generate()))
-        .systemLevel()
-        .name(category.displayName)
-        .note(noteForName(category))
+  private fun createSystemCategory(category: RequiredCategories): RoomDbCategory {
+    val raw =
+        DbCategory.create(
+                clock,
+                id = DbCategory.Id(IdGenerator.generate()),
+            )
+            .systemLevel()
+            .name(category.displayName)
+            .note(noteForName(category))
+    return RoomDbCategory.create(raw)
   }
 
   override suspend fun categoryByName(category: RequiredCategories): DbCategory? =
       withContext(context = Dispatchers.IO) {
-        when (val existing = categoryQueryDao.queryBySystemName(category.displayName)) {
-          is Maybe.Data -> existing.data
-          is Maybe.None -> {
-            val db = createSystemCategory(category)
-            when (val result = categoryInsertDao.insert(db)) {
-              is DbInsert.InsertResult.Fail -> {
-                Timber.e(result.error, "Failed to insert system category: $db")
-                return@withContext null
-              }
-              is DbInsert.InsertResult.Insert -> {
-                Timber.d("Inserted new system category: $db")
-                return@withContext result.data
-              }
-              is DbInsert.InsertResult.Update -> {
-                // Should this happen
-                Timber.d("Updated existing system category: $db")
-                return@withContext result.data
-              }
-            }
-          }
-        }
+        systemCategories.categoryByName(category) { createSystemCategory(it) }
       }
 
   override suspend fun ensure() =

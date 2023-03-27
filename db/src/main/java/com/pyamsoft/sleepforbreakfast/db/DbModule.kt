@@ -29,8 +29,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
-import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
-import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategoriesImpl
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDb
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDbImpl
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
@@ -52,11 +50,6 @@ import javax.inject.Qualifier
 
 @Module
 abstract class DbModule {
-
-  // Helpers
-  @Binds
-  @CheckResult
-  internal abstract fun bindSystemCategories(impl: SystemCategoriesImpl): SystemCategories
 
   // DB
   @Binds

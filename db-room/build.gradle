@@ -55,7 +55,8 @@ dependencies {
 
   // Room
   // Need this format for variable resolution for AGP cache plugin fix
-  implementation "androidx.room:room-runtime:${rootProject.ext.room}"
+  // Need API for Dagger
+  api "androidx.room:room-runtime:${rootProject.ext.room}"
   implementation "androidx.room:room-ktx:${rootProject.ext.room}"
   kapt "androidx.room:room-compiler:${rootProject.ext.room}"
 

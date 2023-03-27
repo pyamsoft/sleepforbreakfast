@@ -23,6 +23,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticQueryDa
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.room.category.system.RoomSystemCategories
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.dao.RoomRepeatQueryDao
@@ -51,4 +52,7 @@ internal interface RoomSleepDb {
   @get:CheckResult val roomAutomaticQueryDao: RoomAutomaticQueryDao
   @get:CheckResult val roomAutomaticInsertDao: RoomAutomaticInsertDao
   @get:CheckResult val roomAutomaticDeleteDao: RoomAutomaticDeleteDao
+
+  // System Categories
+  @get:CheckResult val roomSystemCategories: RoomSystemCategories
 }
