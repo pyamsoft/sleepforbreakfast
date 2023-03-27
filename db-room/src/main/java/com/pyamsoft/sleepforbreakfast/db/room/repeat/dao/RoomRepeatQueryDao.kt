@@ -35,7 +35,11 @@ internal abstract class RoomRepeatQueryDao : RepeatQueryDao {
 
   @CheckResult
   @Transaction
-  @Query("""SELECT * FROM ${RoomDbRepeat.TABLE_NAME}""")
+  @Query(
+      """
+      SELECT * FROM ${RoomDbRepeat.TABLE_NAME}
+      WHERE ${RoomDbRepeat.COLUMN_ARCHIVED} = FALSE
+      """)
   internal abstract suspend fun daoQuery(): List<RoomDbRepeat>
 
   final override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =

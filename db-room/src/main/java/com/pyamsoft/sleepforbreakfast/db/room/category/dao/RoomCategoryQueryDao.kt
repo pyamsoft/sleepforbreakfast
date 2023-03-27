@@ -35,7 +35,11 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
 
   @CheckResult
   @Transaction
-  @Query("""SELECT * FROM ${RoomDbCategory.TABLE_NAME}""")
+  @Query(
+      """
+      SELECT * FROM ${RoomDbCategory.TABLE_NAME}
+      WHERE ${RoomDbCategory.COLUMN_ARCHIVED} = FALSE
+      """)
   internal abstract suspend fun daoQuery(): List<RoomDbCategory>
 
   final override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
