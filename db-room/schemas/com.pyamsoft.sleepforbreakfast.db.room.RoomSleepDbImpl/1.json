@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "af86f064f6eb464e441fd46c17ceb28c",
+    "identityHash": "38176dff3996ee8c7d24dabc50dec252",
     "entities": [
       {
         "tableName": "room_transactions_table",
@@ -166,7 +166,7 @@
       },
       {
         "tableName": "room_repeats_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `created_at` TEXT NOT NULL, `transaction_category_id` TEXT NOT NULL, `transaction_name` TEXT NOT NULL, `transaction_type` TEXT NOT NULL, `transaction_amount_in_cents` INTEGER NOT NULL, `transaction_note` TEXT NOT NULL, `repeat_type` TEXT NOT NULL, `first_day` TEXT NOT NULL, `active` INTEGER NOT NULL, `archived` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `created_at` TEXT NOT NULL, `transaction_category_id` TEXT NOT NULL, `transaction_name` TEXT NOT NULL, `transaction_type` TEXT NOT NULL, `transaction_amount_in_cents` INTEGER NOT NULL, `transaction_note` TEXT NOT NULL, `repeat_type` TEXT NOT NULL, `first_day` TEXT NOT NULL, `active` INTEGER NOT NULL, `archived` INTEGER NOT NULL, `last_run_day` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -233,6 +233,12 @@
             "columnName": "archived",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "dbLastRunDay",
+            "columnName": "last_run_day",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -340,7 +346,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'af86f064f6eb464e441fd46c17ceb28c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '38176dff3996ee8c7d24dabc50dec252')"
     ]
   }
 }
