@@ -23,16 +23,24 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 internal object DbAutomaticIdConverter {
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
+  @TypeConverter
   fun toId(id: String?): DbAutomatic.Id? {
-    return id?.let { DbAutomatic.Id(it) }
+    if (id == null) {
+      return null
+    }
+
+    return id.let { DbAutomatic.Id(it) }
   }
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
+  @TypeConverter
   fun fromId(id: DbAutomatic.Id?): String? {
-    return id?.raw
+    if (id == null) {
+      return null
+    }
+
+    return id.raw
   }
 }

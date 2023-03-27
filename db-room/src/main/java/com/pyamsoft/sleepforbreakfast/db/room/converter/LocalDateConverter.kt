@@ -26,14 +26,22 @@ internal object LocalDateConverter {
   @JvmStatic
   @CheckResult
   @TypeConverter
-  fun toDate(date: String): LocalDate {
+  fun toDate(date: String?): LocalDate? {
+    if (date == null) {
+      return null
+    }
+
     return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE)
   }
 
   @JvmStatic
   @CheckResult
   @TypeConverter
-  fun fromDate(date: LocalDate): String {
+  fun fromDate(date: LocalDate?): String? {
+    if (date == null) {
+      return null
+    }
+
     return DateTimeFormatter.ISO_LOCAL_DATE.format(date)
   }
 }

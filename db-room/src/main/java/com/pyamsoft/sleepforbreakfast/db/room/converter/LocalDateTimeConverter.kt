@@ -24,16 +24,24 @@ import java.time.format.DateTimeFormatter
 internal object LocalDateTimeConverter {
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
-  fun toDate(date: String): LocalDateTime {
+  @TypeConverter
+  fun toDate(date: String?): LocalDateTime? {
+    if (date == null) {
+      return null
+    }
+
     return LocalDateTime.parse(date, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
   }
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
-  fun fromDate(date: LocalDateTime): String {
+  @TypeConverter
+  fun fromDate(date: LocalDateTime?): String? {
+    if (date == null) {
+      return null
+    }
+
     return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(date)
   }
 }

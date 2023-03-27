@@ -23,16 +23,24 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 internal object DbTransactionIdConverter {
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
-  fun toId(id: String): DbTransaction.Id {
+  @TypeConverter
+  fun toId(id: String?): DbTransaction.Id? {
+    if (id == null) {
+      return null
+    }
+
     return DbTransaction.Id(id)
   }
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
-  fun fromId(id: DbTransaction.Id): String {
+  @TypeConverter
+  fun fromId(id: DbTransaction.Id?): String? {
+    if (id == null) {
+      return null
+    }
+
     return id.raw
   }
 }

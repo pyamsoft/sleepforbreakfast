@@ -25,14 +25,21 @@ internal object DbRepeatTypeConverter {
   @JvmStatic
   @CheckResult
   @TypeConverter
-  fun toType(type: String): DbRepeat.Type {
+  fun toType(type: String?): DbRepeat.Type? {
+    if (type == null) {
+      return null
+    }
+
     return type.let { DbRepeat.Type.valueOf(it) }
   }
 
   @JvmStatic
   @CheckResult
   @TypeConverter
-  fun fromType(type: DbRepeat.Type): String {
+  fun fromType(type: DbRepeat.Type?): String? {
+    if (type == null) {
+      return null
+    }
     return type.name
   }
 }

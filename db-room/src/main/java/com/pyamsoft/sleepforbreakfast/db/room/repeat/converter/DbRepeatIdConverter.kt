@@ -23,16 +23,24 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 internal object DbRepeatIdConverter {
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
+  @TypeConverter
   fun toId(id: String?): DbRepeat.Id? {
-    return id?.let { DbRepeat.Id(it) }
+    if (id == null) {
+      return null
+    }
+
+    return id.let { DbRepeat.Id(it) }
   }
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
+  @TypeConverter
   fun fromId(id: DbRepeat.Id?): String? {
-    return id?.raw
+    if (id == null) {
+      return null
+    }
+
+    return id.raw
   }
 }

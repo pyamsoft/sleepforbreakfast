@@ -23,16 +23,24 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 internal object DbTransactionTypeConverter {
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
-  fun toType(type: String): DbTransaction.Type {
+  @TypeConverter
+  fun toType(type: String?): DbTransaction.Type? {
+    if (type == null) {
+      return null
+    }
+
     return DbTransaction.Type.valueOf(type)
   }
 
   @JvmStatic
-  @TypeConverter
   @CheckResult
-  fun fromType(type: DbTransaction.Type): String {
+  @TypeConverter
+  fun fromType(type: DbTransaction.Type?): String? {
+    if (type == null) {
+      return null
+    }
+
     return type.name
   }
 }

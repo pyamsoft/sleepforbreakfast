@@ -25,14 +25,22 @@ internal object DbCategoriesListConverter {
   @JvmStatic
   @CheckResult
   @TypeConverter
-  fun toCategories(categories: String): List<DbCategory.Id> {
+  fun toCategories(categories: String?): List<DbCategory.Id>? {
+    if (categories == null) {
+      return null
+    }
+
     return categories.split("|").map { DbCategory.Id(it) }
   }
 
   @JvmStatic
   @CheckResult
   @TypeConverter
-  fun fromCategories(categories: List<DbCategory.Id>): String {
+  fun fromCategories(categories: List<DbCategory.Id>?): String? {
+    if (categories == null) {
+      return null
+    }
+
     return categories.joinToString("|") { it.raw }
   }
 }
