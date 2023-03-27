@@ -27,18 +27,15 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
-import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
-import com.pyamsoft.sleepforbreakfast.db.room.category.system.SystemCategoriesImpl
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import java.time.Clock
 import javax.inject.Qualifier
 
 @Qualifier @Retention(AnnotationRetention.BINARY) private annotation class InternalApi
@@ -65,17 +62,6 @@ abstract class RoomModule {
     internal fun provideRoom(context: Context): RoomSleepDbImpl {
       val appContext = context.applicationContext
       return Room.databaseBuilder(appContext, RoomSleepDbImpl::class.java, DB_NAME).build()
-    }
-
-    // System Categories
-    @Provides
-    @JvmStatic
-    internal fun provideSystemCategories(@InternalApi db: RoomSleepDb, clock: Clock,
-    ): SystemCategories {
-      return SystemCategoriesImpl(
-        systemCategories = db.roomSystemCategories,
-        clock = clock,
-      )
     }
 
     // DbTransaction

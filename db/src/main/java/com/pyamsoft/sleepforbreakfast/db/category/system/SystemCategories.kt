@@ -18,10 +18,23 @@ package com.pyamsoft.sleepforbreakfast.db.category.system
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 interface SystemCategories {
 
   @CheckResult suspend fun categoryByName(category: RequiredCategories): DbCategory?
-
-  @CheckResult suspend fun ensure()
 }
+
+@CheckResult
+suspend fun SystemCategories.ensure() =
+    withContext(context = Dispatchers.IO) {
+      for (cat in RequiredCategories.values()) {
+        categoryByName(cat).also { c ->
+          if (c == null) {
+            Timber.w("Failed to ensure creation of system category: $cat")
+          }
+        }
+      }
+    }

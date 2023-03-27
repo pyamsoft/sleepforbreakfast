@@ -29,6 +29,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
+import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategoriesImpl
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDb
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDbImpl
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
@@ -51,35 +53,38 @@ import javax.inject.Qualifier
 @Module
 abstract class DbModule {
 
+  // System
+  @Binds
+  @CheckResult
+  internal abstract fun provideSystemCategories(impl: SystemCategoriesImpl): SystemCategories
+
   // DB
   @Binds
   @CheckResult
-  internal abstract fun provideTransactionDbImpl(impl: TransactionDbImpl): TransactionDb
+  internal abstract fun bindTransactionDb(impl: TransactionDbImpl): TransactionDb
 
-  @Binds @CheckResult internal abstract fun provideCategoryDbImpl(impl: CategoryDbImpl): CategoryDb
+  @Binds @CheckResult internal abstract fun bindCategoryDb(impl: CategoryDbImpl): CategoryDb
 
-  @Binds @CheckResult internal abstract fun provideRepeatDbImpl(impl: RepeatDbImpl): RepeatDb
+  @Binds @CheckResult internal abstract fun bindRepeatDb(impl: RepeatDbImpl): RepeatDb
 
-  @Binds
-  @CheckResult
-  internal abstract fun provideAutomaticDbImpl(impl: AutomaticDbImpl): AutomaticDb
+  @Binds @CheckResult internal abstract fun bindAutomaticDb(impl: AutomaticDbImpl): AutomaticDb
 
   // Caches
   @Binds
   @CheckResult
-  internal abstract fun provideTransactionCache(impl: TransactionDbImpl): TransactionQueryDao.Cache
+  internal abstract fun bindTransactionCache(impl: TransactionDbImpl): TransactionQueryDao.Cache
 
   @Binds
   @CheckResult
-  internal abstract fun provideCategoryCache(impl: CategoryDbImpl): CategoryQueryDao.Cache
+  internal abstract fun bindCategoryCache(impl: CategoryDbImpl): CategoryQueryDao.Cache
 
   @Binds
   @CheckResult
-  internal abstract fun provideRepeatCache(impl: RepeatDbImpl): RepeatQueryDao.Cache
+  internal abstract fun bindRepeatCache(impl: RepeatDbImpl): RepeatQueryDao.Cache
 
   @Binds
   @CheckResult
-  internal abstract fun provideAutomaticCache(impl: AutomaticDbImpl): AutomaticQueryDao.Cache
+  internal abstract fun bindutomaticCache(impl: AutomaticDbImpl): AutomaticQueryDao.Cache
 
   @Module
   companion object {

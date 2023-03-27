@@ -43,13 +43,11 @@ internal constructor(
     val allRepeats = repeatQueryDao.queryActive()
 
     for (rep in allRepeats) {
-
-      // Don't do anything if we haven't "started" yet
-      if (rep.firstDay > today) {
-        continue
-      }
-
-      handler.process(rep, today)
+      // Pass just the ID instead of the full object
+      // Because this operation may mutate a repeat object, we must be sure
+      // that the repeat object has not been used in between the time when it is
+      // retrieved above in a list and the time it is processed
+      handler.process(rep.id, today)
     }
   }
 

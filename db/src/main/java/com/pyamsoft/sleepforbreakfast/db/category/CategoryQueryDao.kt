@@ -19,13 +19,19 @@ package com.pyamsoft.sleepforbreakfast.db.category
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
+import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 
 interface CategoryQueryDao : DbQuery<DbCategory> {
 
   @CheckResult suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory>
 
+  @CheckResult
+  suspend fun queryBySystemCategory(category: RequiredCategories): Maybe<out DbCategory>
+
   interface Cache : DbQuery.Cache {
 
     suspend fun invalidateById(id: DbCategory.Id)
+
+    suspend fun invalidateBySystemCategory(category: RequiredCategories)
   }
 }

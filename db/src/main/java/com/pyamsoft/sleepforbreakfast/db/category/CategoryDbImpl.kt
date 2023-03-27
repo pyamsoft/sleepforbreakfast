@@ -23,6 +23,7 @@ import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +61,13 @@ internal constructor(
         return@multiCachify realQueryDao.queryById(id)
       }
 
+  private val queryBySystemCategoryCache =
+      multiCachify<QueryBySystemCategoryKey, Maybe<out DbCategory>, RequiredCategories> { category
+        ->
+        enforcer.assertOffMainThread()
+        return@multiCachify realQueryDao.queryBySystemCategory(category)
+      }
+
   override val deleteDao: CategoryDeleteDao = this
 
   override val insertDao: CategoryInsertDao = this
@@ -84,6 +92,16 @@ internal constructor(
         queryByIdCache.key(key).clear()
       }
 
+  override suspend fun invalidateBySystemCategory(category: RequiredCategories) =
+      withContext(context = Dispatchers.IO) {
+        val key =
+            QueryBySystemCategoryKey(
+                category = category,
+            )
+
+        queryBySystemCategoryCache.key(key).clear()
+      }
+
   override suspend fun listenForChanges(onChange: (event: CategoryChangeEvent) -> Unit) =
       withContext(context = Dispatchers.IO) { onEvent(onChange) }
 
@@ -98,6 +116,16 @@ internal constructor(
             )
 
         return@withContext queryByIdCache.key(key).call(id)
+      }
+
+  override suspend fun queryBySystemCategory(category: RequiredCategories): Maybe<out DbCategory> =
+      withContext(context = Dispatchers.IO) {
+        val key =
+            QueryBySystemCategoryKey(
+                category = category,
+            )
+
+        return@withContext queryBySystemCategoryCache.key(key).call(category)
       }
 
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
@@ -131,4 +159,6 @@ internal constructor(
   private data class QueryByIdKey(
       val categoryId: DbCategory.Id,
   )
+
+  private data class QueryBySystemCategoryKey(val category: RequiredCategories)
 }
