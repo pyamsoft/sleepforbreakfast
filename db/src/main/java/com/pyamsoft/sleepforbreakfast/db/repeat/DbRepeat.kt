@@ -50,6 +50,8 @@ interface DbRepeat {
 
   @get:CheckResult val archived: Boolean
 
+  @get:CheckResult val lastRunDay: LocalDate?
+
   @CheckResult fun addTransactionCategory(id: DbCategory.Id): DbRepeat
 
   @CheckResult fun removeTransactionCategory(id: DbCategory.Id): DbRepeat
@@ -75,6 +77,8 @@ interface DbRepeat {
   @CheckResult fun archive(): DbRepeat
 
   @CheckResult fun unarchive(): DbRepeat
+
+  @CheckResult fun lastRunDay(date: LocalDate): DbRepeat
 
   enum class Type(val displayName: String) {
     /** Repeats every day at the given time T */
@@ -112,7 +116,12 @@ interface DbRepeat {
       override val repeatType: Type = Type.DAILY,
       override val active: Boolean = true,
       override val archived: Boolean = false,
+      override val lastRunDay: LocalDate? = null,
   ) : DbRepeat {
+
+    override fun lastRunDay(date: LocalDate): DbRepeat {
+      return this.copy(lastRunDay = date)
+    }
 
     override fun addTransactionCategory(id: DbCategory.Id): DbRepeat {
       return this.copy(transactionCategories = this.transactionCategories + id)

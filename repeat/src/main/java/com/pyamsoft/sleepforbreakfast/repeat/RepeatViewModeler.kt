@@ -82,9 +82,10 @@ internal constructor(
 
   override fun CoroutineScope.onItemRealtimeEvent(event: RepeatChangeEvent) {
     when (event) {
-      is RepeatChangeEvent.Delete ->
-          // Offer undo for DB deletes
-          handleItemDeleted(event.repeat, offerUndo = true)
+      is RepeatChangeEvent.Delete -> {
+        // Do not offer an undo since I do not know how to roll back the entire Cascade action
+        handleItemDeleted(event.repeat, offerUndo = false)
+      }
       is RepeatChangeEvent.Insert -> handleItemInserted(event.repeat)
       is RepeatChangeEvent.Update -> handleItemUpdated(event.repeat)
     }

@@ -82,9 +82,10 @@ internal constructor(
 
   override fun CoroutineScope.onItemRealtimeEvent(event: CategoryChangeEvent) {
     when (event) {
-      is CategoryChangeEvent.Delete ->
-          // When actually deleted from the DB, offer undo ability
-          handleItemDeleted(event.category, offerUndo = true)
+      is CategoryChangeEvent.Delete -> {
+        // Do not offer an undo since I do not know how to roll back the entire Cascade action
+        handleItemDeleted(event.category, offerUndo = false)
+      }
       is CategoryChangeEvent.Insert -> handleItemInserted(event.category)
       is CategoryChangeEvent.Update -> handleItemUpdated(event.category)
     }

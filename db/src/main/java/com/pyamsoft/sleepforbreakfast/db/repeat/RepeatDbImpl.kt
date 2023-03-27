@@ -23,6 +23,7 @@ import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,9 @@ internal constructor(
     @DbApi realQueryDao: RepeatQueryDao,
     @DbApi private val realInsertDao: RepeatInsertDao,
     @DbApi private val realDeleteDao: RepeatDeleteDao,
+
+    // When we delete DbRepeats, invalidate the DbTransaction table so it can re-fetch information
+    private val transactionQueryCache: TransactionQueryDao.Cache,
 ) :
     RepeatDb,
     RepeatQueryDao.Cache,
@@ -136,6 +140,10 @@ internal constructor(
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()
+
+            // Also clear the TransactionQueryCache (in case a delete cascades)
+            transactionQueryCache.invalidate()
+
             publish(RepeatChangeEvent.Delete(o))
           }
         }

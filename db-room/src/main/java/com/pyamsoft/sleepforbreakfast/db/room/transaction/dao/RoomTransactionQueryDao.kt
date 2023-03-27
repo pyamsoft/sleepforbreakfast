@@ -21,11 +21,9 @@ import androidx.room.Dao
 import androidx.room.Query
 import com.pyamsoft.sleepforbreakfast.core.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
-import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -55,38 +53,6 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   LIMIT 1
 """)
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
-
-  final override suspend fun queryByRepeatOnDate(
-      id: DbRepeat.Id,
-      date: LocalDate
-  ): Maybe<out DbTransaction> =
-      withContext(context = Dispatchers.IO) {
-        val stringified = LocalDateConverter.fromDate(date)
-
-        // This should only hunt for dates that look like it:
-        //
-        // dateString => 2023-01-04T%
-        // createdAt => 2023-01-04T12:03:05:30
-        val dateString = "${stringified}T%"
-
-        when (val transaction = daoQueryByRepeatOnDate(id, dateString)) {
-          null -> Maybe.None
-          else -> Maybe.Data(transaction)
-        }
-      }
-
-  @CheckResult
-  @Query(
-      """
-SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
-  WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
-  AND ${RoomDbTransaction.COLUMN_CREATED_AT} LIKE :dateString
-  LIMIT 1
-""")
-  internal abstract suspend fun daoQueryByRepeatOnDate(
-      id: DbRepeat.Id,
-      dateString: String
-  ): RoomDbTransaction?
 
   final override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
       withContext(context = Dispatchers.IO) { daoQueryByRepeat(id) }

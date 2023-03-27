@@ -45,6 +45,7 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_FIRST_DAY) val dbFirstDay: LocalDate,
     @JvmField @ColumnInfo(name = COLUMN_ACTIVE) val dbActive: Boolean,
     @JvmField @ColumnInfo(name = COLUMN_ARCHIVED) val dbArchived: Boolean,
+    @JvmField @ColumnInfo(name = COLUMN_LAST_RUN_DAY) val dbLastRunDay: LocalDate?,
 ) : DbRepeat {
 
   @Ignore override val id = dbId
@@ -68,6 +69,13 @@ internal constructor(
   @Ignore override val active = dbActive
 
   @Ignore override val archived = dbArchived
+
+  @Ignore override val lastRunDay = dbLastRunDay
+
+  @Ignore
+  override fun lastRunDay(date: LocalDate): DbRepeat {
+    return this.copy(dbLastRunDay = date)
+  }
 
   @Ignore
   override fun addTransactionCategory(id: DbCategory.Id): DbRepeat {
@@ -160,6 +168,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_ARCHIVED = "archived"
 
+    @Ignore internal const val COLUMN_LAST_RUN_DAY = "last_run_day"
+
     @Ignore
     @JvmStatic
     @CheckResult
@@ -178,6 +188,7 @@ internal constructor(
             item.firstDate,
             item.active,
             item.archived,
+            item.lastRunDay,
         )
       }
     }
