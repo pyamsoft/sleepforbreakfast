@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.transactions
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -29,12 +30,6 @@ private val DATE_RANGE_FORMATTER =
         return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
       }
     }
-
-internal enum class SpendDirection {
-  NONE,
-  LOSS,
-  GAIN
-}
 
 @CheckResult
 internal fun List<DbTransaction>.calculateTotalTransactionAmount(): Long {
@@ -62,13 +57,6 @@ internal fun Long.calculateTotalTransactionDirection(): SpendDirection {
     SpendDirection.GAIN
   }
 }
-
-@CheckResult
-internal fun DbTransaction.Type.asDirection(): SpendDirection =
-    when (this) {
-      DbTransaction.Type.SPEND -> SpendDirection.LOSS
-      DbTransaction.Type.EARN -> SpendDirection.GAIN
-    }
 
 @CheckResult
 internal fun List<DbTransaction>.calculateTotalTransactionRange(): String {

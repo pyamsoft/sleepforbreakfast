@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.repeat
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
@@ -25,10 +26,29 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
+import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
+import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
+private val REPEAT_FORMATTER =
+    object : ThreadLocal<DateTimeFormatter>() {
+
+      override fun initialValue(): DateTimeFormatter {
+        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+      }
+    }
 
 @Composable
 internal fun RepeatCard(
@@ -38,6 +58,38 @@ internal fun RepeatCard(
 ) {
   val note = repeat.transactionNote
   val hasNote = remember(note) { note.isNotBlank() }
+  val transactionType = repeat.transactionType
+  val spendDirection = remember(transactionType) { transactionType.asDirection() }
+
+  val amount = repeat.transactionAmountInCents
+  val priceString =
+      remember(amount) { if (amount <= 0) "$0.00" else MoneyVisualTransformation.format(amount) }
+
+  val defaultColor = MaterialTheme.colors.onSurface
+  val priceColor =
+      remember(
+          spendDirection,
+          defaultColor,
+      ) {
+        when (spendDirection) {
+          SpendDirection.NONE -> defaultColor
+          SpendDirection.LOSS -> Color.Red
+          SpendDirection.GAIN -> Color.Green
+        }
+      }
+
+  val pricePrefix =
+      remember(spendDirection) {
+        when (spendDirection) {
+          SpendDirection.NONE -> " "
+          SpendDirection.LOSS -> "-"
+          SpendDirection.GAIN -> "+"
+        }
+      }
+
+  val startDate = repeat.firstDay
+  val startDateString =
+      remember(startDate) { REPEAT_FORMATTER.get().requireNotNull().format(startDate) }
 
   Card(
       modifier = modifier,
@@ -45,14 +97,13 @@ internal fun RepeatCard(
       elevation = CardDefaults.Elevation,
   ) {
     Column(
-        modifier =
-            Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
+        Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
     ) {
       Text(
           modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.baseline),
           text = repeat.transactionName,
           style =
-              MaterialTheme.typography.body1.copy(
+              MaterialTheme.typography.h5.copy(
                   color =
                       MaterialTheme.colors.onSurface.copy(
                           alpha = ContentAlpha.high,
@@ -60,9 +111,52 @@ internal fun RepeatCard(
               ),
       )
 
+      Row(
+          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.baseline),
+          verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Text(
+            modifier = Modifier.weight(1F),
+            text = repeat.repeatType.displayName,
+            fontWeight = FontWeight.W700,
+            style =
+                MaterialTheme.typography.body2.copy(
+                    color =
+                        MaterialTheme.colors.onSurface.copy(
+                            alpha = ContentAlpha.medium,
+                        ),
+                ),
+        )
+
+        Text(
+            textAlign = TextAlign.End,
+            text = "$pricePrefix$priceString",
+            fontWeight = FontWeight.W700,
+            fontFamily = FontFamily.Monospace,
+            style =
+                MaterialTheme.typography.h6.copy(
+                    color =
+                        priceColor.copy(
+                            alpha = ContentAlpha.high,
+                        ),
+                ),
+        )
+      }
+
+      Text(
+          text = "Starting on $startDateString",
+          style =
+              MaterialTheme.typography.body2.copy(
+                  color =
+                      MaterialTheme.colors.onSurface.copy(
+                          alpha = ContentAlpha.medium,
+                      ),
+              ),
+      )
+
       if (hasNote) {
         Text(
-            modifier = Modifier.padding(top = MaterialTheme.keylines.content),
+            modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
             text = note,
             style =
                 MaterialTheme.typography.caption.copy(

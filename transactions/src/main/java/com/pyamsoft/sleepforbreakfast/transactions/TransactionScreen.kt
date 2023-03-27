@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
@@ -113,6 +114,7 @@ fun TransactionScreen(
       Surface(
           modifier = Modifier.fillMaxWidth(),
           color = MaterialTheme.colors.primary,
+          elevation = ZeroElevation,
       ) {
         Spacer(
             modifier = Modifier.fillMaxWidth().statusBarsPadding(),

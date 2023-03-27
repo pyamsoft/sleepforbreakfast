@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.ui.list
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -104,27 +103,27 @@ fun <T : Any> ListScreen(
       onSnackbarAction = onSnackbarAction,
       deletedMessage = deletedMessage,
   ) { pv ->
-    Column {
-      Spacer(
-          modifier = Modifier.padding(pv).height(MaterialTheme.keylines.content),
-      )
+    LazyColumn {
+      item {
+        Spacer(
+            modifier = Modifier.padding(pv).height(MaterialTheme.keylines.content),
+        )
+      }
 
-      LazyColumn {
-        items(
-            items = items,
-            key = itemKey,
-        ) {
-          item(it)
-        }
+      items(
+          items = items,
+          key = itemKey,
+      ) {
+        item(it)
+      }
 
-        item {
-          Spacer(
-              modifier =
-                  Modifier.padding(pv)
-                      // Space to offset the FAB
-                      .height(MaterialTheme.keylines.content * 4),
-          )
-        }
+      item {
+        Spacer(
+            modifier =
+                Modifier.padding(pv)
+                    // Space to offset the FAB
+                    .height(MaterialTheme.keylines.content * 4),
+        )
       }
     }
   }

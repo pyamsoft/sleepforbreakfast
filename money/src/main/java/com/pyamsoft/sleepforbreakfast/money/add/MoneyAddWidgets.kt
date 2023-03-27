@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.add
 
+import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,6 +54,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -513,7 +516,21 @@ fun AddCategories(
     }
   }
 
+  val configuration = LocalConfiguration.current
+  val dropdownMaxHeight =
+      remember(configuration) {
+        val h =
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+              configuration.screenHeightDp / 3
+            } else {
+              configuration.screenHeightDp / 2
+            }
+
+        return@remember h.dp
+      }
+
   DropdownMenu(
+      modifier = Modifier.heightIn(max = dropdownMaxHeight),
       properties = remember { PopupProperties(focusable = true) },
       expanded = show,
       onDismissRequest = { setShow(false) },

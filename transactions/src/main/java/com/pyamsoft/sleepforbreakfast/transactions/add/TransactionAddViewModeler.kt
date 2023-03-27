@@ -55,7 +55,7 @@ internal constructor(
     categoryLoader
         .queryAllResult()
         .onSuccess { Timber.d("Loaded categories: $it") }
-        .onSuccess { state.allCategories.value = it }
+        .onSuccess { cats -> state.allCategories.value = cats.sortedBy { it.name } }
         .onFailure { Timber.e(it, "Error loading all categories") }
         .onFailure { state.allCategories.value = emptyList() }
   }
