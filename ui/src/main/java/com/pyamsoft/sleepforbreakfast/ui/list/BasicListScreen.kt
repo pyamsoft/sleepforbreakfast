@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.ui
+package com.pyamsoft.sleepforbreakfast.ui.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -35,10 +35,12 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.sleepforbreakfast.ui.DeletedSnackbar
 
 @Composable
 fun <T : Any> BasicListScreen(
     modifier: Modifier = Modifier,
+    showActionButton: Boolean,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
     onSnackbarDismissed: () -> Unit,
@@ -53,13 +55,15 @@ fun <T : Any> BasicListScreen(
       scaffoldState = scaffoldState,
       floatingActionButtonPosition = FabPosition.End,
       floatingActionButton = {
-        FloatingActionButton(
-            onClick = onActionButtonClicked,
-        ) {
-          Icon(
-              imageVector = Icons.Filled.Add,
-              contentDescription = "Add New",
-          )
+        if (showActionButton) {
+          FloatingActionButton(
+              onClick = onActionButtonClicked,
+          ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Add New",
+            )
+          }
         }
       },
   ) { pv ->
@@ -79,6 +83,7 @@ fun <T : Any> BasicListScreen(
 fun <T : Any> ListScreen(
     modifier: Modifier = Modifier,
     items: List<T>,
+    showActionButton: Boolean,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
     onSnackbarDismissed: () -> Unit,
@@ -89,6 +94,7 @@ fun <T : Any> ListScreen(
 ) {
   BasicListScreen(
       modifier = modifier,
+      showActionButton = showActionButton,
       recentlyDeletedItem = recentlyDeletedItem,
       onActionButtonClicked = onActionButtonClicked,
       onSnackbarDismissed = onSnackbarDismissed,

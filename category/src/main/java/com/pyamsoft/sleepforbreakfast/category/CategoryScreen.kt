@@ -28,16 +28,17 @@ import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.ui.ListScreen
+import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun CategoryScreen(
     modifier: Modifier = Modifier,
     state: CategoryViewState,
-    onAddNewCategory: () -> Unit,
-    onEditCategory: (DbCategory) -> Unit,
-    onDeleteCategory: (DbCategory) -> Unit,
+    showActionButton: Boolean,
+    onActionButtonClicked: () -> Unit,
+    onCategoryClicked: (DbCategory) -> Unit,
+    onCategoryLongClicked: (DbCategory) -> Unit,
     onCategoryRestored: () -> Unit,
     onCategoryDeleteFinalized: () -> Unit,
     onDismiss: () -> Unit,
@@ -47,11 +48,12 @@ fun CategoryScreen(
 
   ListScreen(
       modifier = modifier,
+      showActionButton = showActionButton,
       items = categories,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
       deletedMessage = { "${it.name} Removed" },
-      onActionButtonClicked = onAddNewCategory,
+      onActionButtonClicked = onActionButtonClicked,
       onSnackbarAction = onCategoryRestored,
       onSnackbarDismissed = onCategoryDeleteFinalized,
   ) { category ->
@@ -62,8 +64,8 @@ fun CategoryScreen(
                 .padding(bottom = MaterialTheme.keylines.content),
         contentModifier =
             Modifier.combinedClickable(
-                onClick = { onEditCategory(category) },
-                onLongClick = { onDeleteCategory(category) },
+                onClick = { onCategoryClicked(category) },
+                onLongClick = { onCategoryLongClicked(category) },
             ),
         category = category,
     )

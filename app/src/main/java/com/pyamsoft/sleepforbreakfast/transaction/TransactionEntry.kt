@@ -80,11 +80,12 @@ internal fun TransactionEntry(
 
   TransactionScreen(
       modifier = modifier,
+      showActionButton = true,
       state = state,
       onDismiss = onDismiss,
-      onAddNewTransaction = { viewModel.handleAddNewTransaction() },
-      onEditTransaction = { viewModel.handleEditTransaction(it) },
-      onDeleteTransaction = { viewModel.handleDeleteTransaction(it) },
+      onActionButtonClicked = { viewModel.handleAddNewTransaction() },
+      onTransactionClicked = { viewModel.handleEditTransaction(it) },
+      onTransactionLongClicked = { viewModel.handleDeleteTransaction(it) },
       onTransactionRestored = { viewModel.handleRestoreDeleted(scope = scope) },
       onTransactionDeleteFinalized = { viewModel.handleDeleteFinalized() },
   )

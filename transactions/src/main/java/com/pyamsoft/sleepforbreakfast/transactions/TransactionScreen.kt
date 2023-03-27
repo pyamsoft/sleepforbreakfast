@@ -37,9 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.ui.BasicListScreen
+import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
 import java.time.Month
 
 @Stable
@@ -88,10 +87,11 @@ private fun rememberTransactionsWithHeaders(
 @OptIn(ExperimentalFoundationApi::class)
 fun TransactionScreen(
     modifier: Modifier = Modifier,
+    showActionButton: Boolean,
     state: TransactionViewState,
-    onAddNewTransaction: () -> Unit,
-    onEditTransaction: (DbTransaction) -> Unit,
-    onDeleteTransaction: (DbTransaction) -> Unit,
+    onActionButtonClicked: () -> Unit,
+    onTransactionClicked: (DbTransaction) -> Unit,
+    onTransactionLongClicked: (DbTransaction) -> Unit,
     onTransactionRestored: () -> Unit,
     onTransactionDeleteFinalized: () -> Unit,
     onDismiss: () -> Unit,
@@ -102,11 +102,12 @@ fun TransactionScreen(
 
   BasicListScreen(
       modifier = modifier,
+      showActionButton = showActionButton,
       recentlyDeletedItem = undoable,
       deletedMessage = { "${it.name} Removed" },
       onSnackbarDismissed = onTransactionDeleteFinalized,
       onSnackbarAction = onTransactionRestored,
-      onActionButtonClicked = onAddNewTransaction,
+      onActionButtonClicked = onActionButtonClicked,
   ) { pv ->
     Column {
       Surface(
@@ -157,8 +158,8 @@ fun TransactionScreen(
                             .padding(bottom = MaterialTheme.keylines.content),
                     contentModifier =
                         Modifier.combinedClickable(
-                            onClick = { onEditTransaction(transaction) },
-                            onLongClick = { onDeleteTransaction(transaction) },
+                            onClick = { onTransactionClicked(transaction) },
+                            onLongClick = { onTransactionLongClicked(transaction) },
                         ),
                     transaction = transaction,
                 )

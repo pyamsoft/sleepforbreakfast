@@ -28,16 +28,17 @@ import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.ui.ListScreen
+import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun RepeatScreen(
     modifier: Modifier = Modifier,
+    showActionButton: Boolean,
     state: RepeatViewState,
-    onAddNewRepeat: () -> Unit,
-    onEditRepeat: (DbRepeat) -> Unit,
-    onDeleteRepeat: (DbRepeat) -> Unit,
+    onActionButtonClicked: () -> Unit,
+    onRepeatClicked: (DbRepeat) -> Unit,
+    onRepeatLongClicked: (DbRepeat) -> Unit,
     onRepeatRestored: () -> Unit,
     onRepeatDeleteFinalized: () -> Unit,
     onDismiss: () -> Unit,
@@ -47,11 +48,12 @@ fun RepeatScreen(
 
   ListScreen(
       modifier = modifier,
+      showActionButton = showActionButton,
       items = sources,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
       deletedMessage = { "${it.transactionName} Removed" },
-      onActionButtonClicked = onAddNewRepeat,
+      onActionButtonClicked = onActionButtonClicked,
       onSnackbarAction = onRepeatRestored,
       onSnackbarDismissed = onRepeatDeleteFinalized,
   ) { repeat ->
@@ -62,8 +64,8 @@ fun RepeatScreen(
                 .padding(bottom = MaterialTheme.keylines.content),
         contentModifier =
             Modifier.combinedClickable(
-                onClick = { onEditRepeat(repeat) },
-                onLongClick = { onDeleteRepeat(repeat) },
+                onClick = { onRepeatClicked(repeat) },
+                onLongClick = { onRepeatLongClicked(repeat) },
             ),
         repeat = repeat,
     )

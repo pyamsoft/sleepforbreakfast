@@ -83,11 +83,12 @@ internal fun RepeatEntry(
 
       RepeatScreen(
           modifier = modifier,
+          showActionButton = true,
           state = state,
           onDismiss = onDismiss,
-          onAddNewRepeat = { viewModel.handleAddNewRepeat() },
-          onDeleteRepeat = { viewModel.handleDeleteRepeat(it) },
-          onEditRepeat = { viewModel.handleEditRepeat(it) },
+          onActionButtonClicked = { viewModel.handleAddNewRepeat() },
+          onRepeatClicked = { viewModel.handleEditRepeat(it) },
+          onRepeatLongClicked = { viewModel.handleDeleteRepeat(it) },
           onRepeatDeleteFinalized = { viewModel.handleDeleteFinalized() },
           onRepeatRestored = { viewModel.handleRestoreDeleted(scope = scope) },
       )

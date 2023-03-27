@@ -83,11 +83,12 @@ internal fun CategoryEntry(
 
       CategoryScreen(
           modifier = modifier,
+          showActionButton = true,
           state = state,
           onDismiss = onDismiss,
-          onAddNewCategory = { viewModel.handleAddNewCategory() },
-          onDeleteCategory = { viewModel.handleDeleteCategory(it) },
-          onEditCategory = { viewModel.handleEditCategory(it) },
+          onActionButtonClicked = { viewModel.handleAddNewCategory() },
+          onCategoryClicked = { viewModel.handleEditCategory(it) },
+          onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },
           onCategoryDeleteFinalized = { viewModel.handleDeleteFinalized() },
           onCategoryRestored = { viewModel.handleRestoreDeleted(scope = scope) },
       )
