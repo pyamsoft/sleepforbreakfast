@@ -64,21 +64,21 @@ internal constructor(
         .replaceCategories(repeat.transactionCategories)
   }
 
-  private suspend fun markRepeatUsed(repeat: DbRepeat, today: LocalDate) {
-    when (val res = repeatInsertDao.insert(repeat.lastRunDay(today))) {
+  private suspend fun markRepeatUsed(repeat: DbRepeat, date: LocalDate) {
+    when (val res = repeatInsertDao.insert(repeat.lastRunDay(date))) {
       is DbInsert.InsertResult.Fail -> {
         Timber.e(
             res.error,
             "Failed updating Repeat to lastUsed: ${mapOf(
                       "repeat" to repeat,
-                      "date" to today,
+                      "date" to date,
                   )}")
       }
       is DbInsert.InsertResult.Insert -> {
         Timber.d(
             "Inserted new repeat, should this happen?: ${mapOf(
                       "repeat" to repeat,
-                      "date" to today,
+                      "date" to date,
                   )}")
       }
       is DbInsert.InsertResult.Update -> {
@@ -93,17 +93,13 @@ internal constructor(
 
   private suspend fun insertNewTransaction(
       repeat: DbRepeat,
-      today: LocalDate,
+      date: LocalDate,
   ) {
     // Make a new transaction and put it into the table
     val transaction =
         createTransaction(
             repeat = repeat,
-
-            // If we have no previous attempt, use the "first day" otherwise use today
-            // This is only ran when "filling in", where a repeat is created AFTER the date it
-            // is meant to repeat on and we are missing the first one.
-            date = if (repeat.lastRunDay == null) repeat.firstDay else today,
+            date = date,
         )
 
     when (val res = transactionInsertDao.insert(transaction)) {
@@ -132,7 +128,10 @@ internal constructor(
     }
   }
 
-  private suspend fun executeRepeat(repeat: DbRepeat, today: LocalDate) = coroutineScope {
+  private suspend fun executeRepeat(
+      repeat: DbRepeat,
+      today: LocalDate,
+  ) = coroutineScope {
     // Launch these to run them in parallel
     awaitAll<Any>(
         async(context = Dispatchers.Default) { insertNewTransaction(repeat, today) },

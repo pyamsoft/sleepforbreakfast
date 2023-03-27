@@ -131,16 +131,22 @@ protected constructor(
       }
 
       state.working.value = true
-      val repeat = compile()
+      val data = compile()
       submitRunner
-          .call(repeat)
-          .onFailure { Timber.e(it, "Error occurred when submitting repeat $repeat") }
+          .call(data)
+          .onFailure { Timber.e(it, "Error occurred when submitting data $data") }
           .onSuccess { res ->
             when (res) {
-              is DbInsert.InsertResult.Insert -> Timber.d("New repeat: ${res.data}")
-              is DbInsert.InsertResult.Update -> Timber.d("Update repeat: ${res.data}")
+              is DbInsert.InsertResult.Insert -> {
+                Timber.d("New data: ${res.data}")
+                onNewCreated(res.data)
+              }
+              is DbInsert.InsertResult.Update -> {
+                Timber.d("Update data: ${res.data}")
+                onNewCreated(res.data)
+              }
               is DbInsert.InsertResult.Fail -> {
-                Timber.e(res.error, "Failed to insert repeat: $repeat")
+                Timber.e(res.error, "Failed to insert data: $data")
 
                 // Will be caught by onFailure below
                 throw res.error
@@ -149,7 +155,7 @@ protected constructor(
           }
           .onSuccess { handleReset() }
           .onFailure {
-            Timber.e(it, "Unable to process repeat: $repeat")
+            Timber.e(it, "Unable to process repeat: $data")
             // TODO handle error in UI
           }
           .onFinally { state.working.value = false }
@@ -157,6 +163,8 @@ protected constructor(
   }
 
   @CheckResult protected abstract suspend fun compile(): T
+
+  protected open suspend fun onNewCreated(data: T) {}
 
   protected abstract fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
       registry: SaveableStateRegistry

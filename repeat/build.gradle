@@ -63,4 +63,5 @@ dependencies {
   implementation project(':db')
   implementation project(':money')
   implementation project(':ui')
+  implementation project(':worker')
 }

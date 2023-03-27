@@ -26,6 +26,8 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
+import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
+import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import java.time.Clock
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -45,6 +47,7 @@ internal constructor(
     private val systemCategories: SystemCategories,
     private val clock: Clock,
     private val categoryLoader: CategoryLoader,
+    private val workerQueue: WorkerQueue,
 ) :
     MoneyAddViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
         state = state,
@@ -155,6 +158,10 @@ internal constructor(
         .transactionNote(state.note.value)
         .transactionType(state.type.value)
         .replaceTransactionCategories(getCategories())
+  }
+
+  override suspend fun onNewCreated(data: DbRepeat) {
+    workerQueue.enqueue(type = WorkJobType.ONESHOT_CREATE_TRANSACTIONS)
   }
 
   fun handleCategoryAdded(category: DbCategory) {
