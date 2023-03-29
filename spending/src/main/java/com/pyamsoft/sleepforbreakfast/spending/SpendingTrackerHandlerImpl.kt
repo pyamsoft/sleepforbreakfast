@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.spending
 
 import android.os.Bundle
 import android.service.notification.StatusBarNotification
-import com.pyamsoft.sleepforbreakfast.core.Maybe
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao

@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.db.transaction
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.core.Maybe
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 

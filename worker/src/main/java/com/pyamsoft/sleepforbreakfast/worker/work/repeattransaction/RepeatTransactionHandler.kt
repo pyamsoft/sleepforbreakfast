@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.worker.work.repeattransaction
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.core.Maybe
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao

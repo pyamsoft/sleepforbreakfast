@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.core
+package com.pyamsoft.sleepforbreakfast.db
 
 /**
  * Easy optional data type for use with Cachify amonst other things
