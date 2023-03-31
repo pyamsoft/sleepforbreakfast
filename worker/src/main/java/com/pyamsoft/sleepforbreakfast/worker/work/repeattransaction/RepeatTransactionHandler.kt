@@ -17,8 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.worker.work.repeattransaction
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
@@ -152,180 +152,71 @@ internal constructor(
   private fun createTransactionFromDailyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> {
-    val mostRecentCreated = repeat.lastRunDay
-
-    val dates = mutableListOf<LocalDate>()
-    // If we have no previous runs, this is brand new
-    if (mostRecentCreated == null) {
-      // Fill in the dates we missed from first date until today
-      var cursorDate = repeat.firstDay
-      while (cursorDate < today) {
-        dates.add(cursorDate)
-        Timber.d(
-            "Fill-in DAILY repeat: ${mapOf(
-              "cursor" to cursorDate,
-              "today" to today,
-          )}")
-        cursorDate = cursorDate.plusDays(1)
-      }
-    } else {
-      // Otherwise, we check that
-      // The most recently created date was yesterday
-      val previousWasYesterday = mostRecentCreated.dayOfYear < today.dayOfYear
-      if (previousWasYesterday) {
-        Timber.d("Create new DAILY repeat for today: $today")
-        dates.add(today)
-      } else {
-        Timber.w(
-            "Not running DAILY repeat, days don't match up ${mapOf(
-                "today" to today,
-                "firstDay" to repeat.firstDay,
-                "mostRecent" to mostRecentCreated,
-            )}")
-      }
-    }
-
-    return dates
-  }
+  ): List<LocalDate> =
+      createTransactionsList(
+          repeat = repeat,
+          today = today,
+          canCreate = { _, _ ->
+            // Daily repeat has no other conditions
+            true
+          },
+          adjustCursor = { it.plusDays(1) },
+      )
 
   @CheckResult
   private fun createTransactionFromWeeklyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> {
-    val mostRecentCreated = repeat.lastRunDay
-
-    val dates = mutableListOf<LocalDate>()
-    // If we have no previous runs, this is brand new
-    if (mostRecentCreated == null) {
-      // Fill in the dates we missed from first date until today
-      var cursorDate = repeat.firstDay
-      while (cursorDate < today && cursorDate.dayOfWeek == today.dayOfWeek) {
-        dates.add(cursorDate)
-        Timber.d(
-            "Fill-in WEEKLY repeat: ${mapOf(
-                "cursor" to cursorDate,
-                "today" to today,
-            )}")
-        cursorDate = cursorDate.plusWeeks(1)
-      }
-    } else {
-      // Otherwise, we check that
-      // The most recently created date was last week
-      // and the date today matches the "loop" date
-      val previousWasLastWeek = mostRecentCreated.dayOfMonth < today.dayOfMonth
-      val isCurrentDay = today.dayOfWeek == repeat.firstDay.dayOfWeek
-      if (previousWasLastWeek && isCurrentDay) {
-        Timber.d("Create new WEEKLY repeat for today: $today")
-        dates.add(today)
-      } else {
-        Timber.w(
-            "Not running WEEKLY repeat, days don't match up ${mapOf(
-                "previousWasLastWeek" to previousWasLastWeek,
-                "today" to today,
-                "firstDay" to repeat.firstDay,
-                "dayOfWeek" to repeat.firstDay.dayOfWeek,
-                "mostRecent" to mostRecentCreated,
-            )}")
-      }
-    }
-
-    return dates
-  }
+  ): List<LocalDate> =
+      createTransactionsList(
+          repeat = repeat,
+          today = today,
+          canCreate = { d, now -> d.dayOfWeek == now.dayOfWeek },
+          adjustCursor = { it.plusWeeks(1) },
+      )
 
   @CheckResult
   private fun createTransactionFromMonthlyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> {
-    val mostRecentCreated = repeat.lastRunDay
-
-    val dates = mutableListOf<LocalDate>()
-    // If we have no previous runs, this is brand new
-    if (mostRecentCreated == null) {
-      // Fill in the dates we missed from first date until today
-      var cursorDate = repeat.firstDay
-      while (cursorDate < today && cursorDate.dayOfMonth == today.dayOfMonth) {
-        dates.add(cursorDate)
-        Timber.d(
-            "Fill-in MONTHLY repeat: ${mapOf(
-                    "cursor" to cursorDate,
-                    "today" to today,
-                )}")
-        cursorDate = cursorDate.plusMonths(1)
-      }
-    } else {
-      // Otherwise, we check that
-      // The most recently created date was last month
-      // and the date today matches the "loop" date
-      val previousWasLastMonth = mostRecentCreated.month < today.month
-      val isCurrentDay = today.dayOfMonth == repeat.firstDay.dayOfMonth
-      if (previousWasLastMonth && isCurrentDay) {
-        Timber.d("Create new MONTHLY repeat for today: $today")
-        dates.add(today)
-      } else {
-        Timber.w(
-            "Not running MONTHLY repeat, days don't match up ${mapOf(
-                  "previousWasLastMonth" to previousWasLastMonth,
-                  "isCurrentDay" to isCurrentDay,
-                  "today" to today,
-                  "firstDay" to repeat.firstDay,
-                  "dayOfMonth" to repeat.firstDay.dayOfMonth,
-                "mostRecent" to mostRecentCreated,
-              )}")
-      }
-    }
-
-    return dates
-  }
+  ): List<LocalDate> =
+      createTransactionsList(
+          repeat = repeat,
+          today = today,
+          canCreate = { d, now -> d.dayOfMonth == now.dayOfMonth },
+          adjustCursor = { it.plusMonths(1) },
+      )
 
   @CheckResult
   private fun createTransactionFromYearlyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
+  ): List<LocalDate> =
+      createTransactionsList(
+          repeat = repeat,
+          today = today,
+          canCreate = { d, now -> d.dayOfYear == now.dayOfYear },
+          adjustCursor = { it.plusYears(1) },
+      )
+
+  @CheckResult
+  private inline fun createTransactionsList(
+      repeat: DbRepeat,
+      today: LocalDate,
+      canCreate: (LocalDate, LocalDate) -> Boolean,
+      adjustCursor: (LocalDate) -> LocalDate,
   ): List<LocalDate> {
-    val mostRecentCreated = repeat.lastRunDay
+    // We start from the last date used, or the programmed first repeat date
+    var cursorDate = repeat.lastRunDay ?: repeat.firstDay
 
     // If we have no recent transaction we can create if the day matches
     val dates = mutableListOf<LocalDate>()
-
-    // If we have no previous runs, this is brand new
-    if (mostRecentCreated == null) {
-      // Fill in the dates we missed from first date until today
-      var cursorDate = repeat.firstDay
-      while (cursorDate < today && cursorDate.dayOfYear == today.dayOfYear) {
-        dates.add(cursorDate)
-        Timber.d(
-            "Fill-in YEAR repeat: ${mapOf(
-                    "cursor" to cursorDate,
-                    "today" to today,
-                )}")
-        cursorDate = cursorDate.plusYears(1)
-      }
-    } else {
-      // Otherwise, we check that
-      // The most recently created date was last year
-      // and the date today matches the "loop" date
-      val previousWasLastYear = mostRecentCreated.year < today.year
-      val isCurrentDay = today.dayOfYear == repeat.firstDay.dayOfYear
-      if (previousWasLastYear && isCurrentDay) {
-        Timber.d("Create new YEARLY repeat for today: $today")
-        dates.add(today)
-      } else {
-        Timber.w(
-            "Not running YEARLY repeat, days don't match up ${mapOf(
-              "previousWasLastYear" to previousWasLastYear,
-              "isCurrentDay" to isCurrentDay,
-              "today" to today,
-              "firstDay" to repeat.firstDay,
-              "dayOfYear" to repeat.firstDay.dayOfYear,
-              "mostRecent" to mostRecentCreated,
-          )}")
-      }
+    while (cursorDate <= today && canCreate(cursorDate, today)) {
+      dates.add(cursorDate)
+      cursorDate = adjustCursor(cursorDate)
     }
 
-    return emptyList()
+    return dates
   }
 
   suspend fun process(
