@@ -17,8 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.db.automatic
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 
 interface AutomaticQueryDao : DbQuery<DbAutomatic> {
 

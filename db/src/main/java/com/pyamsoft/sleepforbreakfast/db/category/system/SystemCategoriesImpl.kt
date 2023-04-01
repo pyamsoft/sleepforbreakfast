@@ -18,8 +18,8 @@ package com.pyamsoft.sleepforbreakfast.db.category.system
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
-import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory

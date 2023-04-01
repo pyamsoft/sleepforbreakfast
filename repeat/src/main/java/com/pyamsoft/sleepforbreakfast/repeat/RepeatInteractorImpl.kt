@@ -16,8 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat
 
-import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao

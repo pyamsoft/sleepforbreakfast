@@ -16,8 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.category
 
-import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
@@ -42,7 +42,7 @@ constructor(
 ) : CategoryInteractor, ListInteractorImpl<DbCategory.Id, DbCategory, CategoryChangeEvent>() {
 
   override suspend fun performQueryAll(): List<DbCategory> {
-      return categoryLoader.queryAll()
+    return categoryLoader.queryAll()
   }
 
   override suspend fun performQueryOne(id: DbCategory.Id): Maybe<out DbCategory> {

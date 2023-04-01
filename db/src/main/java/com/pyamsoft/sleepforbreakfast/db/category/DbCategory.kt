@@ -21,7 +21,6 @@ import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
 import com.pyamsoft.sleepforbreakfast.db.ActivateModel
 import java.time.Clock
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Stable

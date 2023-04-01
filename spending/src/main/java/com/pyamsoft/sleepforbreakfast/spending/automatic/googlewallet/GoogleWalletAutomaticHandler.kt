@@ -42,8 +42,7 @@ internal constructor(
 
   override suspend fun getCategories(): List<DbCategory.Id> {
     val google =
-        systemCategories.categoryByName(RequiredCategories.GOOGLE_WALLET)
-            ?: return emptyList()
+        systemCategories.categoryByName(RequiredCategories.GOOGLE_WALLET) ?: return emptyList()
 
     return listOf(google.id)
   }
