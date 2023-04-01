@@ -24,6 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import java.time.Clock
 import java.time.LocalDate
@@ -45,6 +46,7 @@ internal class RepeatTransactionHandler
 internal constructor(
     private val repeatQueryDao: RepeatQueryDao,
     private val repeatInsertDao: RepeatInsertDao,
+    private val transactionQueryDao: TransactionQueryDao,
     private val transactionInsertDao: TransactionInsertDao,
     private val clock: Clock,
 ) {
@@ -57,6 +59,7 @@ internal constructor(
     return DbTransaction.create(clock, DbTransaction.Id.EMPTY)
         // Link to this Repeat instance
         .repeatId(repeat.id)
+        .repeatCreatedDate(date)
         .type(repeat.transactionType)
         .name(repeat.transactionName)
         .note(repeat.transactionNote)
@@ -84,7 +87,7 @@ internal constructor(
       }
       is DbInsert.InsertResult.Update -> {
         Timber.d(
-            "Updated existing transaction for repeat. Should this happen? ${mapOf(
+            "Updated existing transaction for repeat ${mapOf(
                       "repeat" to repeat,
                       "transaction" to res.data,
                   )}")
@@ -114,14 +117,14 @@ internal constructor(
       }
       is DbInsert.InsertResult.Insert -> {
         Timber.d(
-            "Inserted new transaction for repeat: ${mapOf(
+            "Inserted new transaction made by repeat: ${mapOf(
               "repeat" to repeat,
               "transaction" to res.data,
           )}")
       }
       is DbInsert.InsertResult.Update -> {
         Timber.d(
-            "Updated existing transaction for repeat. Should this happen? ${mapOf(
+            "Updated existing transaction made by repeat. Should this happen? ${mapOf(
                   "repeat" to repeat,
                   "transaction" to res.data,
               )}")
@@ -131,7 +134,7 @@ internal constructor(
 
   private suspend fun executeRepeat(
       repeat: DbRepeat,
-      dates: List<LocalDate>,
+      dates: Collection<LocalDate>,
       lastUsed: LocalDate,
   ) = coroutineScope {
     val jobs =
@@ -149,74 +152,93 @@ internal constructor(
   }
 
   @CheckResult
-  private fun createTransactionFromDailyRepeat(
+  private suspend fun createTransactionFromDailyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> =
+  ): Collection<LocalDate> =
       createTransactionsList(
           repeat = repeat,
           today = today,
-          canCreate = { _, _ ->
-            // Daily repeat has no other conditions
-            true
-          },
-          adjustCursor = { it.plusDays(1) },
-      )
+      ) {
+        it.plusDays(1)
+      }
 
   @CheckResult
-  private fun createTransactionFromWeeklyRepeat(
+  private suspend fun createTransactionFromWeeklyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> =
+  ): Collection<LocalDate> =
       createTransactionsList(
           repeat = repeat,
           today = today,
-          canCreate = { d, now -> d.dayOfWeek == now.dayOfWeek },
-          adjustCursor = { it.plusWeeks(1) },
-      )
+      ) {
+        it.plusWeeks(1)
+      }
 
   @CheckResult
-  private fun createTransactionFromMonthlyRepeat(
+  private suspend fun createTransactionFromMonthlyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> =
+  ): Collection<LocalDate> =
       createTransactionsList(
           repeat = repeat,
           today = today,
-          canCreate = { d, now -> d.dayOfMonth == now.dayOfMonth },
-          adjustCursor = { it.plusMonths(1) },
-      )
+      ) {
+        it.plusMonths(1)
+      }
 
   @CheckResult
-  private fun createTransactionFromYearlyRepeat(
+  private suspend fun createTransactionFromYearlyRepeat(
       repeat: DbRepeat,
       today: LocalDate,
-  ): List<LocalDate> =
+  ): Collection<LocalDate> =
       createTransactionsList(
           repeat = repeat,
           today = today,
-          canCreate = { d, now -> d.dayOfYear == now.dayOfYear },
-          adjustCursor = { it.plusYears(1) },
-      )
+      ) {
+        it.plusYears(1)
+      }
 
   @CheckResult
-  private inline fun createTransactionsList(
+  private suspend inline fun createTransactionsList(
       repeat: DbRepeat,
       today: LocalDate,
-      canCreate: (LocalDate, LocalDate) -> Boolean,
       adjustCursor: (LocalDate) -> LocalDate,
-  ): List<LocalDate> {
+  ): Collection<LocalDate> {
     // We start from the last date used, or the programmed first repeat date
-    var cursorDate = repeat.lastRunDay ?: repeat.firstDay
+    var cursorDate = repeat.firstDay
 
     // If we have no recent transaction we can create if the day matches
-    val dates = mutableListOf<LocalDate>()
-    while (cursorDate <= today && canCreate(cursorDate, today)) {
-      dates.add(cursorDate)
+    val possibleDates = mutableSetOf<LocalDate>()
+
+    // pass repeat.firstDay here to canCreate instead of cursorDate
+    // because if the cursorDate is the lastRunDay, it can be any date,
+    // but we expect to run based on the "template" set by the firstDay
+    // (day or week or month or year)
+    while (cursorDate <= today) {
+      possibleDates.add(cursorDate)
       cursorDate = adjustCursor(cursorDate)
     }
 
-    return dates
+    val existingTransactions =
+        transactionQueryDao.queryByRepeatOnDates(
+            id = repeat.id,
+            dates = possibleDates,
+        )
+
+    Timber.d("Existing transactions: $repeat $existingTransactions")
+    val emptyDates = mutableSetOf<LocalDate>()
+    for (d in possibleDates) {
+      val existing = existingTransactions.firstOrNull { it.createdAt.toLocalDate() == d }
+      if (existing == null) {
+        Timber.d("No transaction exists yet for $d")
+        emptyDates.add(d)
+      }
+    }
+
+    Timber.d("New transactions: $repeat $emptyDates")
+
+    return emptyDates
   }
 
   suspend fun process(

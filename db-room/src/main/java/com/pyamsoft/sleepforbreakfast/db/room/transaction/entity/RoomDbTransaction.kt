@@ -28,6 +28,7 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity(
@@ -64,9 +65,13 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_DATE) val dbDate: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NOTE) val dbNote: String,
     @JvmField @ColumnInfo(name = COLUMN_REPEAT_ID, index = true) val dbRepeatId: DbRepeat.Id?,
+    @JvmField @ColumnInfo(name = COLUMN_REPEAT_DATE, index = true) val dbRepeatDate: LocalDate?,
     @JvmField
     @ColumnInfo(name = COLUMN_AUTOMATIC_ID, index = true)
     val dbAutomaticId: DbAutomatic.Id?,
+    @JvmField
+    @ColumnInfo(name = COLUMN_AUTOMATIC_DATE, index = true)
+    val dbAutomaticDate: LocalDate?,
 ) : DbTransaction {
 
   @Ignore override val id = dbId
@@ -87,7 +92,11 @@ internal constructor(
 
   @Ignore override val repeatId = dbRepeatId
 
+  @Ignore override val repeatCreatedDate = dbRepeatDate
+
   @Ignore override val automaticId = dbAutomaticId
+
+  @Ignore override val automaticCreatedDate = dbAutomaticDate
 
   @Ignore
   override fun addCategory(id: DbCategory.Id): DbTransaction {
@@ -135,8 +144,18 @@ internal constructor(
   }
 
   @Ignore
+  override fun repeatCreatedDate(date: LocalDate): DbTransaction {
+    return this.copy(dbRepeatDate = date)
+  }
+
+  @Ignore
   override fun automaticId(id: DbAutomatic.Id): DbTransaction {
     return this.copy(dbAutomaticId = id)
+  }
+
+  @Ignore
+  override fun automaticCreatedDate(date: LocalDate): DbTransaction {
+    return this.copy(dbAutomaticDate = date)
   }
 
   companion object {
@@ -161,7 +180,11 @@ internal constructor(
 
     @Ignore internal const val COLUMN_REPEAT_ID = "repeat_id"
 
+    @Ignore internal const val COLUMN_REPEAT_DATE = "repeat_date"
+
     @Ignore internal const val COLUMN_AUTOMATIC_ID = "automatic_id"
+
+    @Ignore internal const val COLUMN_AUTOMATIC_DATE = "automatic_date"
 
     @Ignore
     @JvmStatic
@@ -179,7 +202,9 @@ internal constructor(
             item.date,
             item.note,
             item.repeatId,
+            item.repeatCreatedDate,
             item.automaticId,
+            item.automaticCreatedDate,
         )
       }
     }

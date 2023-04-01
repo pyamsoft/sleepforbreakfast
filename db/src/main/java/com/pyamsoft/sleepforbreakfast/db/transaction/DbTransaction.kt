@@ -23,6 +23,7 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import java.time.Clock
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Stable
@@ -46,7 +47,11 @@ interface DbTransaction {
 
   @get:CheckResult val repeatId: DbRepeat.Id?
 
+  @get:CheckResult val repeatCreatedDate: LocalDate?
+
   @get:CheckResult val automaticId: DbAutomatic.Id?
+
+  @get:CheckResult val automaticCreatedDate: LocalDate?
 
   @CheckResult fun addCategory(id: DbCategory.Id): DbTransaction
 
@@ -66,7 +71,11 @@ interface DbTransaction {
 
   @CheckResult fun repeatId(id: DbRepeat.Id): DbTransaction
 
+  @CheckResult fun repeatCreatedDate(date: LocalDate): DbTransaction
+
   @CheckResult fun automaticId(id: DbAutomatic.Id): DbTransaction
+
+  @CheckResult fun automaticCreatedDate(date: LocalDate): DbTransaction
 
   enum class Type {
     SPEND,
@@ -93,7 +102,9 @@ interface DbTransaction {
       override val type: Type = Type.SPEND,
       override val note: String = "",
       override val repeatId: DbRepeat.Id? = null,
+      override val repeatCreatedDate: LocalDate? = null,
       override val automaticId: DbAutomatic.Id? = null,
+      override val automaticCreatedDate: LocalDate? = null,
   ) : DbTransaction {
 
     override fun addCategory(id: DbCategory.Id): DbTransaction {
@@ -132,8 +143,16 @@ interface DbTransaction {
       return this.copy(repeatId = id)
     }
 
+    override fun repeatCreatedDate(date: LocalDate): DbTransaction {
+      return this.copy(repeatCreatedDate = date)
+    }
+
     override fun automaticId(id: DbAutomatic.Id): DbTransaction {
       return this.copy(automaticId = id)
+    }
+
+    override fun automaticCreatedDate(date: LocalDate): DbTransaction {
+      return this.copy(automaticCreatedDate = date)
     }
   }
 
