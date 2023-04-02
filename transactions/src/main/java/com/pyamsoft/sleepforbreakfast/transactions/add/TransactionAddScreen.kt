@@ -31,6 +31,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,7 +45,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
@@ -54,6 +54,8 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyType
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
+import com.pyamsoft.sleepforbreakfast.transactions.ExistingAuto
+import com.pyamsoft.sleepforbreakfast.transactions.ExistingRepeat
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -73,7 +75,8 @@ fun TransactionAddScreen(
     onCloseTimeDialog: () -> Unit,
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
-    onRepeatInfoOpen: (DbRepeat.Id, LocalDate) -> Unit,
+    onRepeatInfoOpen: (ExistingRepeat) -> Unit,
+    onAutoOpen: (ExistingAuto) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
@@ -193,16 +196,29 @@ fun TransactionAddScreen(
 
       item {
         val existingRepeat by state.existingRepeat.collectAsState()
-        existingRepeat?.also { e ->
-          Row(
-              modifier =
-                  Modifier.fillMaxWidth()
-                      .padding(horizontal = MaterialTheme.keylines.content)
-                      .padding(bottom = MaterialTheme.keylines.content),
-              verticalAlignment = Alignment.CenterVertically,
-          ) {
+        val existingAuto by state.existingAuto.collectAsState()
+
+        Row(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.keylines.content)
+                    .padding(bottom = MaterialTheme.keylines.content),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+          existingAuto?.also { e ->
             IconButton(
-                onClick = { onRepeatInfoOpen(e.id, e.date) },
+                onClick = { onAutoOpen(e) },
+            ) {
+              Icon(
+                  imageVector = Icons.Filled.Call,
+                  contentDescription = "View Automatic Info",
+              )
+            }
+          }
+
+          existingRepeat?.also { e ->
+            IconButton(
+                onClick = { onRepeatInfoOpen(e) },
             ) {
               Icon(
                   imageVector = Icons.Filled.AccountBox,

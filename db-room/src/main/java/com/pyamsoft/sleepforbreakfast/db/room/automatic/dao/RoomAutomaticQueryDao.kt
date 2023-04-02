@@ -88,4 +88,21 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
 SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_USED}
 """)
   internal abstract suspend fun daoQueryUnused(): List<RoomDbAutomatic>
+
+  final override suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic> =
+      withContext(context = Dispatchers.IO) {
+        when (val transaction = daoQueryById(id)) {
+          null -> Maybe.None
+          else -> Maybe.Data(transaction)
+        }
+      }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
+  WHERE ${RoomDbAutomatic.COLUMN_ID} = :id
+  LIMIT 1
+""")
+  internal abstract suspend fun daoQueryById(id: DbAutomatic.Id): RoomDbAutomatic?
 }

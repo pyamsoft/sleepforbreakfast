@@ -18,12 +18,13 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewState
 import com.pyamsoft.sleepforbreakfast.money.add.MutableMoneyAddViewState
+import com.pyamsoft.sleepforbreakfast.transactions.ExistingAuto
+import com.pyamsoft.sleepforbreakfast.transactions.ExistingRepeat
+import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoParams
 import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoParams
 import java.time.Clock
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,11 +40,8 @@ interface TransactionAddViewState : MoneyAddViewState {
   val existingRepeat: StateFlow<ExistingRepeat?>
   val repeatInfoParams: StateFlow<TransactionRepeatInfoParams?>
 
-  @Stable
-  data class ExistingRepeat(
-      val id: DbRepeat.Id,
-      val date: LocalDate,
-  )
+  val existingAuto: StateFlow<ExistingAuto?>
+  val autoParams: StateFlow<TransactionAutoParams?>
 }
 
 @Stable
@@ -59,6 +57,9 @@ internal constructor(
   override val isDateDialogOpen = MutableStateFlow(false)
   override val isTimeDialogOpen = MutableStateFlow(false)
 
-  override val existingRepeat = MutableStateFlow<TransactionAddViewState.ExistingRepeat?>(null)
+  override val existingRepeat = MutableStateFlow<ExistingRepeat?>(null)
   override val repeatInfoParams = MutableStateFlow<TransactionRepeatInfoParams?>(null)
+
+  override val existingAuto = MutableStateFlow<ExistingAuto?>(null)
+  override val autoParams = MutableStateFlow<TransactionAutoParams?>(null)
 }

@@ -59,6 +59,12 @@ internal constructor(
         return@cachify realQueryDao.query()
       }
 
+  private val queryByIdCache =
+      multiCachify<QueryByIdKey, Maybe<out DbAutomatic>, DbAutomatic.Id> { id ->
+        enforcer.assertOffMainThread()
+        return@multiCachify realQueryDao.queryById(id)
+      }
+
   private val queryUnusedCache =
       cachify<List<DbAutomatic>> {
         enforcer.assertOffMainThread()
@@ -97,6 +103,7 @@ internal constructor(
         queryCache.clear()
         queryByNotificationCache.clear()
         queryUnusedCache.clear()
+        queryByIdCache.clear()
       }
 
   override suspend fun invalidateByNotification(
@@ -117,6 +124,16 @@ internal constructor(
             )
 
         queryByNotificationCache.key(key).clear()
+      }
+
+  override suspend fun invalidateById(id: DbAutomatic.Id) =
+      withContext(context = Dispatchers.IO) {
+        val key =
+            QueryByIdKey(
+                id = id,
+            )
+
+        queryByIdCache.key(key).clear()
       }
 
   override suspend fun listenForChanges(onChange: (event: AutomaticChangeEvent) -> Unit) =
@@ -156,6 +173,16 @@ internal constructor(
             )
       }
 
+  override suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic> =
+      withContext(context = Dispatchers.IO) {
+        val key =
+            QueryByIdKey(
+                id = id,
+            )
+
+        return@withContext queryByIdCache.key(key).call(id)
+      }
+
   override suspend fun insert(o: DbAutomatic): DbInsert.InsertResult<DbAutomatic> =
       withContext(context = Dispatchers.IO) {
         realInsertDao.insert(o).also { result ->
@@ -187,6 +214,10 @@ internal constructor(
           }
         }
       }
+
+  private data class QueryByIdKey(
+      val id: DbAutomatic.Id,
+  )
 
   private data class QueryByNotificationKey(
       val notificationId: Int,

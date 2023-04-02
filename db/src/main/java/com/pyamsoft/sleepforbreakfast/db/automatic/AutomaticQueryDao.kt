@@ -22,6 +22,8 @@ import com.pyamsoft.sleepforbreakfast.db.Maybe
 
 interface AutomaticQueryDao : DbQuery<DbAutomatic> {
 
+  @CheckResult suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic>
+
   @CheckResult suspend fun queryUnused(): List<DbAutomatic>
 
   @CheckResult
@@ -34,6 +36,8 @@ interface AutomaticQueryDao : DbQuery<DbAutomatic> {
   ): Maybe<out DbAutomatic>
 
   interface Cache : DbQuery.Cache {
+
+    suspend fun invalidateById(id: DbAutomatic.Id)
 
     suspend fun invalidateByNotification(
         notificationId: Int,

@@ -17,6 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoInteractor
+import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoInteractorImpl
 import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractor
 import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractorImpl
 import dagger.Binds
@@ -34,4 +36,10 @@ abstract class TransactionAppModule {
   internal abstract fun bindRepeatInteractor(
       impl: TransactionRepeatInteractorImpl
   ): TransactionRepeatInteractor
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindAutoInteractor(
+      impl: TransactionAutoInteractorImpl
+  ): TransactionAutoInteractor
 }
