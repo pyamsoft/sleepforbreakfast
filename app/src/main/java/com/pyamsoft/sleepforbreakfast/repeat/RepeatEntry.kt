@@ -41,6 +41,7 @@ import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddEntry
@@ -140,7 +141,7 @@ internal fun RepeatEntry(
       )
     } else {
       RepeatAddEntry(
-          modifier = modifier,
+          modifier = Modifier.fullScreenDialog(),
           params = ap,
           onDismiss = { viewModel.handleCloseAddRepeat() },
       )
@@ -149,6 +150,7 @@ internal fun RepeatEntry(
 
   deleteParams?.also { p ->
     RepeatDeleteEntry(
+        modifier = Modifier.fullScreenDialog(),
         params = p,
         onDismiss = { viewModel.handleCloseDeleteRepeat() },
     )

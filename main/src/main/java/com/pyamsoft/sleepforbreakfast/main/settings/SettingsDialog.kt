@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.main
+package com.pyamsoft.sleepforbreakfast.main.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

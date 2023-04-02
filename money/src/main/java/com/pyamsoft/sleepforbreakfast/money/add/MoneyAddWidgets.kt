@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.money.add
 
-import android.content.res.Configuration
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -63,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.pydroid.ui.widget.MaterialCheckable
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -520,10 +520,9 @@ fun AddCategories(
   val dropdownMaxHeight =
       remember(configuration) {
         val h =
-            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-              configuration.screenHeightDp / 3
-            } else {
-              configuration.screenHeightDp / 2
+            configuration.run {
+              val size = if (isPortrait) screenHeightDp else screenWidthDp
+              return@run size / 3
             }
 
         return@remember h.dp

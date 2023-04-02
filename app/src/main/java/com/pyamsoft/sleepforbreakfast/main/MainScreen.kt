@@ -24,8 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
+import com.pyamsoft.sleepforbreakfast.main.settings.SettingsDialog
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 
@@ -85,7 +87,7 @@ fun MainScreen(
 
     if (isSettingsOpen) {
       SettingsDialog(
-          modifier = Modifier.fillMaxSize(),
+          modifier = Modifier.fullScreenDialog(),
           onDismiss = onCloseSettings,
       )
     }

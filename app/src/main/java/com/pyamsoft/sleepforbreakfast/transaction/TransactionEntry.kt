@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
+import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
@@ -92,7 +93,7 @@ internal fun TransactionEntry(
 
   addParams?.also { p ->
     TransactionAddEntry(
-        modifier = modifier,
+        modifier = Modifier.fullScreenDialog(),
         params = p,
         onDismiss = { viewModel.handleCloseAddTransaction() },
     )
@@ -100,6 +101,7 @@ internal fun TransactionEntry(
 
   deleteParams?.also { p ->
     TransactionDeleteEntry(
+        modifier = Modifier.fullScreenDialog(),
         params = p,
         onDismiss = { viewModel.handleCloseDeleteTransaction() },
     )

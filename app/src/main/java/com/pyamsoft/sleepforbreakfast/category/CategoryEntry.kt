@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
+import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddEntry
@@ -93,7 +94,7 @@ internal fun CategoryEntry(
       )
     } else {
       CategoryAddEntry(
-          modifier = modifier,
+          modifier = Modifier.fullScreenDialog(),
           params = ap,
           onDismiss = { viewModel.handleCloseAddCategory() },
       )
@@ -102,6 +103,7 @@ internal fun CategoryEntry(
 
   deleteParams?.also { p ->
     CategoryDeleteEntry(
+        modifier = Modifier.fullScreenDialog(),
         params = p,
         onDismiss = { viewModel.handleCloseDeleteCategory() },
     )
