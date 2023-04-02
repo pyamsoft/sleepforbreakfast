@@ -19,11 +19,15 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
+import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoParams
+import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
+import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -42,6 +46,7 @@ internal constructor(
     state: MutableTransactionAddViewState,
     params: TransactionAddParams,
     interactor: TransactionInteractor,
+    private val jsonParser: JsonParser,
     private val categoryLoader: CategoryLoader,
     private val clock: Clock,
 ) :
@@ -50,6 +55,10 @@ internal constructor(
         initialId = params.transactionId,
         interactor = interactor,
     ) {
+
+  private fun handleRepeatInfoParams(params: TransactionRepeatInfoParams) {
+    state.repeatInfoParams.value = params
+  }
 
   private suspend fun loadCategories() {
     categoryLoader
@@ -127,6 +136,13 @@ internal constructor(
         .consumeRestored(KEY_TIME_DIALOG)
         ?.let { it as Boolean }
         ?.also { state.isTimeDialogOpen.value = it }
+
+    registry
+        .consumeRestored(KEY_REPEAT_PARAMS)
+        ?.let { it as String }
+        ?.let { jsonParser.fromJson<TransactionRepeatInfoParams.Json>(it) }
+        ?.fromJson()
+        ?.let { handleRepeatInfoParams(it) }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
@@ -141,21 +157,40 @@ internal constructor(
     registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }
 
     registry.registerProvider(KEY_TIME_DIALOG) { state.isTimeDialogOpen.value }.also { add(it) }
+
+    registry
+        .registerProvider(KEY_REPEAT_PARAMS) {
+          state.repeatInfoParams.value?.let { jsonParser.toJson(it.toJson()) }
+        }
+        .also { add(it) }
   }
 
   override fun onReset(payload: DbTransaction?) {
     if (payload == null) {
       state.date.value = LocalDateTime.now(clock)
+      state.existingRepeat.value = null
     } else {
-      state.date.value = payload.date
-
       state.name.value = payload.name
       state.note.value = payload.note
       state.type.value = payload.type
       state.amount.value = payload.amountInCents
       state.categories.value = payload.categories
+
+      val r = payload.repeatId
+      val d = payload.repeatCreatedDate
+      if (r != null && d != null) {
+        state.existingRepeat.value =
+            TransactionAddViewState.ExistingRepeat(
+                id = r,
+                date = d,
+            )
+      } else {
+        state.existingRepeat.value = null
+      }
+      state.date.value = payload.date
     }
 
+    handleCloseRepeatInfoTransaction()
     handleCloseDateDialog()
     handleCloseTimeDialog()
   }
@@ -200,9 +235,28 @@ internal constructor(
     state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
+  fun handleRepeatInfoTransaction(
+      repeatId: DbRepeat.Id,
+      date: LocalDate,
+  ) {
+    handleRepeatInfoParams(
+        params =
+            TransactionRepeatInfoParams(
+                repeatId = repeatId,
+                transactionRepeatDate = date,
+            ),
+    )
+  }
+
+  fun handleCloseRepeatInfoTransaction() {
+    state.repeatInfoParams.value = null
+  }
+
   companion object {
     private const val KEY_DATE_DIALOG = "key_date_dialog"
     private const val KEY_TIME_DIALOG = "key_time_dialog"
+    private const val KEY_REPEAT_PARAMS = "key_repeat_params"
+
     private const val KEY_DATE = "key_date"
   }
 }

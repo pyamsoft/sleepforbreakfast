@@ -21,9 +21,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.fragment.app.FragmentActivity
@@ -33,8 +33,10 @@ import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
 import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
+import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.transaction.repeat.TransactionRepeatEntry
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddScreen
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddViewModeler
@@ -87,9 +89,11 @@ internal fun TransactionAddEntry(
   }
 
   val viewModel = rememberNotNull(component.viewModel)
-  val scope = rememberCoroutineScope()
+  val state = viewModel.state
 
-  val handleSubmit by rememberUpdatedState { viewModel.handleSubmit(scope = scope) }
+  val repeatInfoParams by state.repeatInfoParams.collectAsState()
+
+  val scope = rememberCoroutineScope()
 
   MountHooks(
       viewModel = viewModel,
@@ -105,7 +109,7 @@ internal fun TransactionAddEntry(
         shape = MaterialTheme.shapes.medium,
     ) {
       TransactionAddScreen(
-          state = viewModel.state,
+          state = state,
           onDismiss = onDismiss,
           onNameChanged = { viewModel.handleNameChanged(it) },
           onNoteChanged = { viewModel.handleNoteChanged(it) },
@@ -120,7 +124,21 @@ internal fun TransactionAddEntry(
           onCategoryAdded = { viewModel.handleCategoryAdded(it) },
           onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
           onReset = { viewModel.handleReset() },
-          onSubmit = { handleSubmit() },
+          onSubmit = { viewModel.handleSubmit(scope = scope) },
+          onRepeatInfoOpen = { id, date ->
+            viewModel.handleRepeatInfoTransaction(
+                id,
+                date,
+            )
+          },
+      )
+    }
+
+    repeatInfoParams?.also { p ->
+      TransactionRepeatEntry(
+          modifier = Modifier.fullScreenDialog(),
+          params = p,
+          onDismiss = { viewModel.handleCloseRepeatInfoTransaction() },
       )
     }
   }

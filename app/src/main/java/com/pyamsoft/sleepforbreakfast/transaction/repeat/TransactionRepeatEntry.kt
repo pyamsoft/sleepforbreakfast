@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transaction.delete
+package com.pyamsoft.sleepforbreakfast.transaction.repeat
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
 import androidx.fragment.app.FragmentActivity
@@ -35,22 +32,22 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
-import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
-import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler
+import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoParams
+import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoScreen
+import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatViewModeler
 import javax.inject.Inject
 
-internal class TransactionDeleteInjector
+internal class TransactionRepeatInjector
 @Inject
 internal constructor(
-    private val params: TransactionDeleteParams,
+    private val params: TransactionRepeatInfoParams,
 ) : ComposableInjector() {
 
-  @JvmField @Inject internal var viewModel: TransactionDeleteViewModeler? = null
+  @JvmField @Inject internal var viewModel: TransactionRepeatViewModeler? = null
 
   override fun onInject(activity: FragmentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
-        .plusDeleteTransactions()
+        .plusRepeatTransactions()
         .create(
             params = params,
         )
@@ -63,37 +60,25 @@ internal constructor(
 }
 
 @Composable
-private fun MountHooks(viewModel: TransactionDeleteViewModeler) {
+private fun MountHooks(viewModel: TransactionRepeatViewModeler) {
   SaveStateDisposableEffect(viewModel)
 
-  LaunchedEffect(viewModel) {
-    viewModel.bind(
-        scope = this,
-        force = false,
-    )
-  }
+  LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
 }
 
 @Composable
-internal fun TransactionDeleteEntry(
+internal fun TransactionRepeatEntry(
     modifier: Modifier = Modifier,
-    params: TransactionDeleteParams,
+    params: TransactionRepeatInfoParams,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
-    TransactionDeleteInjector(
+    TransactionRepeatInjector(
         params = params,
     )
   }
 
   val viewModel = rememberNotNull(component.viewModel)
-  val scope = rememberCoroutineScope()
-
-  val handleDismiss by rememberUpdatedState(onDismiss)
-
-  val handleSubmit by rememberUpdatedState {
-    viewModel.handleDelete(scope = scope) { handleDismiss() }
-  }
 
   MountHooks(
       viewModel = viewModel,
@@ -101,17 +86,17 @@ internal fun TransactionDeleteEntry(
 
   Dialog(
       properties = rememberDialogProperties(),
-      onDismissRequest = { handleDismiss() },
+      onDismissRequest = onDismiss,
   ) {
     Surface(
         modifier = modifier.padding(MaterialTheme.keylines.content),
         shape = MaterialTheme.shapes.medium,
         elevation = DialogDefaults.Elevation,
     ) {
-      TransactionDeleteScreen(
+      TransactionRepeatInfoScreen(
           state = viewModel.state,
-          onDismiss = { handleDismiss() },
-          onConfirm = { handleSubmit() },
+          transactionCreatedDate = params.transactionRepeatDate,
+          onDismiss = onDismiss,
       )
     }
   }

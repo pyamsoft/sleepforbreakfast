@@ -30,6 +30,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,6 +44,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
@@ -71,6 +73,7 @@ fun TransactionAddScreen(
     onCloseTimeDialog: () -> Unit,
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
+    onRepeatInfoOpen: (DbRepeat.Id, LocalDate) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
@@ -186,6 +189,28 @@ fun TransactionAddScreen(
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,
         )
+      }
+
+      item {
+        val existingRepeat by state.existingRepeat.collectAsState()
+        existingRepeat?.also { e ->
+          Row(
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = MaterialTheme.keylines.content)
+                      .padding(bottom = MaterialTheme.keylines.content),
+              verticalAlignment = Alignment.CenterVertically,
+          ) {
+            IconButton(
+                onClick = { onRepeatInfoOpen(e.id, e.date) },
+            ) {
+              Icon(
+                  imageVector = Icons.Filled.AccountBox,
+                  contentDescription = "View Repeat Info",
+              )
+            }
+          }
+        }
       }
 
       item {

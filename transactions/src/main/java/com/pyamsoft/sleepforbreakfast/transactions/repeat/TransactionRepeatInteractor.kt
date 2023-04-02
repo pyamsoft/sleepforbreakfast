@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.transactions.repeat
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractor
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractorImpl
-import dagger.Binds
-import dagger.Module
+import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 
-@Module
-abstract class TransactionAppModule {
+internal interface TransactionRepeatInteractor {
 
-  @Binds
-  @CheckResult
-  internal abstract fun bindInteractor(impl: TransactionInteractorImpl): TransactionInteractor
-
-  @Binds
-  @CheckResult
-  internal abstract fun bindRepeatInteractor(
-      impl: TransactionRepeatInteractorImpl
-  ): TransactionRepeatInteractor
+  @CheckResult suspend fun getById(id: DbRepeat.Id): ResultWrapper<DbRepeat>
 }

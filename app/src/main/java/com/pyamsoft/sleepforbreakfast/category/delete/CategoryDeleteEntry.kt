@@ -101,12 +101,11 @@ internal fun CategoryDeleteEntry(
       onDismissRequest = { handleDismiss() },
   ) {
     Surface(
-        modifier = Modifier.padding(MaterialTheme.keylines.content),
+        modifier = modifier.padding(MaterialTheme.keylines.content),
         shape = MaterialTheme.shapes.medium,
         elevation = DialogDefaults.Elevation,
     ) {
       CategoryDeleteScreen(
-          modifier = modifier,
           state = viewModel.state,
           onDismiss = { handleDismiss() },
           onConfirm = { handleSubmit() },

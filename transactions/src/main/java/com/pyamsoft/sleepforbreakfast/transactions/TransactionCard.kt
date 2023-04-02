@@ -52,21 +52,8 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Month
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.time.format.TextStyle as MonthTextStyle
 import kotlin.math.abs
-
-private val TRANSACTION_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedDateTime(
-            FormatStyle.LONG,
-            FormatStyle.SHORT,
-        )
-      }
-    }
 
 @Composable
 internal fun TransactionHeader(modifier: Modifier, month: Month) {

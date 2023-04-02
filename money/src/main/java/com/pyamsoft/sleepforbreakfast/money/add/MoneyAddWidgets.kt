@@ -66,13 +66,13 @@ import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.pydroid.ui.widget.MaterialCheckable
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 // This is basically longer than any expected money amount.
 private const val MAX_ALLOWED_AMOUNT_LENGTH = 18
@@ -194,22 +194,6 @@ fun MoneyType(
     )
   }
 }
-
-private val DATE_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-      }
-    }
-
-private val TIME_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-      }
-    }
 
 @Composable
 fun DatePicker(

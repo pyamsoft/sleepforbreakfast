@@ -14,24 +14,32 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.transaction.repeat
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractor
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractorImpl
-import dagger.Binds
+import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoParams
+import dagger.BindsInstance
 import dagger.Module
+import dagger.Subcomponent
 
-@Module
-abstract class TransactionAppModule {
+@Subcomponent(
+    modules =
+        [
+            TransactionRepeatComponent.TransactionModule::class,
+        ],
+)
+internal interface TransactionRepeatComponent {
 
-  @Binds
-  @CheckResult
-  internal abstract fun bindInteractor(impl: TransactionInteractorImpl): TransactionInteractor
+  fun inject(injector: TransactionRepeatInjector)
 
-  @Binds
-  @CheckResult
-  internal abstract fun bindRepeatInteractor(
-      impl: TransactionRepeatInteractorImpl
-  ): TransactionRepeatInteractor
+  @Subcomponent.Factory
+  interface Factory {
+
+    @CheckResult
+    fun create(
+        @BindsInstance params: TransactionRepeatInfoParams,
+    ): TransactionRepeatComponent
+  }
+
+  @Module abstract class TransactionModule
 }

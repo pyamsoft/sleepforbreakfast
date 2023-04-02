@@ -16,22 +16,17 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
-import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractor
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInteractorImpl
-import dagger.Binds
-import dagger.Module
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
-@Module
-abstract class TransactionAppModule {
+@JvmField
+internal val TRANSACTION_FORMATTER =
+    object : ThreadLocal<DateTimeFormatter>() {
 
-  @Binds
-  @CheckResult
-  internal abstract fun bindInteractor(impl: TransactionInteractorImpl): TransactionInteractor
-
-  @Binds
-  @CheckResult
-  internal abstract fun bindRepeatInteractor(
-      impl: TransactionRepeatInteractorImpl
-  ): TransactionRepeatInteractor
-}
+      override fun initialValue(): DateTimeFormatter {
+        return DateTimeFormatter.ofLocalizedDateTime(
+            FormatStyle.LONG,
+            FormatStyle.SHORT,
+        )
+      }
+    }
