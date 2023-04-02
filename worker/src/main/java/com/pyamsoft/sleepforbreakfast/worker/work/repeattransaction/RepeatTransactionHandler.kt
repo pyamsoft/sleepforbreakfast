@@ -229,7 +229,10 @@ internal constructor(
     Timber.d("Existing transactions: $repeat $existingTransactions")
     val emptyDates = mutableSetOf<LocalDate>()
     for (d in possibleDates) {
-      val existing = existingTransactions.firstOrNull { it.createdAt.toLocalDate() == d }
+      val existing =
+          existingTransactions.firstOrNull {
+            it.repeatCreatedDate != null && it.repeatCreatedDate == d
+          }
       if (existing == null) {
         Timber.d("No transaction exists yet for $d")
         emptyDates.add(d)
