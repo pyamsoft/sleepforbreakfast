@@ -65,8 +65,8 @@ ${auto.notificationMatchText}
             .replaceCategories(auto.categories)
             .amountInCents(auto.notificationAmountInCents)
             .type(auto.notificationType)
-            .date(getNotificationPostTime(auto))
             .name(auto.notificationTitle)
+            .date(getNotificationPostTime(auto))
             .note(note)
 
     return when (val result = transactionInsertDao.insert(transaction)) {

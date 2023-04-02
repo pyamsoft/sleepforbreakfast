@@ -28,7 +28,6 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
 import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.settings.SettingsPage
-import com.pyamsoft.sleepforbreakfast.main.settings.SettingsToolbar
 
 @Composable
 fun SettingsDialog(
