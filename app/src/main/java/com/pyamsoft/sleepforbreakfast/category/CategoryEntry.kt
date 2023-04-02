@@ -17,7 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.category
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -74,31 +73,27 @@ internal fun CategoryEntry(
       viewModel = viewModel,
   )
 
-  Crossfade(
-      targetState = addParams,
-  ) { ap ->
-    if (ap == null) {
-      BackHandler(
-          onBack = onDismiss,
-      )
+  BackHandler(
+      onBack = onDismiss,
+  )
 
-      CategoryScreen(
-          modifier = modifier,
-          showActionButton = true,
-          state = state,
-          onActionButtonClicked = { viewModel.handleAddNewCategory() },
-          onCategoryClicked = { viewModel.handleEditCategory(it) },
-          onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },
-          onCategoryDeleteFinalized = { viewModel.handleDeleteFinalized() },
-          onCategoryRestored = { viewModel.handleRestoreDeleted(scope = scope) },
-      )
-    } else {
-      CategoryAddEntry(
-          modifier = Modifier.fullScreenDialog(),
-          params = ap,
-          onDismiss = { viewModel.handleCloseAddCategory() },
-      )
-    }
+  CategoryScreen(
+      modifier = modifier,
+      showActionButton = true,
+      state = state,
+      onActionButtonClicked = { viewModel.handleAddNewCategory() },
+      onCategoryClicked = { viewModel.handleEditCategory(it) },
+      onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },
+      onCategoryDeleteFinalized = { viewModel.handleDeleteFinalized() },
+      onCategoryRestored = { viewModel.handleRestoreDeleted(scope = scope) },
+  )
+
+  addParams?.also { p ->
+    CategoryAddEntry(
+        modifier = Modifier.fullScreenDialog(),
+        params = p,
+        onDismiss = { viewModel.handleCloseAddCategory() },
+    )
   }
 
   deleteParams?.also { p ->

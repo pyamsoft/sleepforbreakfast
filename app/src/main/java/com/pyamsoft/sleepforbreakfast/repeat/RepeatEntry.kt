@@ -17,7 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.repeat
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -87,65 +86,61 @@ internal fun RepeatEntry(
       viewModel = viewModel,
   )
 
-  Crossfade(
-      targetState = addParams,
-  ) { ap ->
-    if (ap == null) {
-      BackHandler(
-          onBack = onDismiss,
-      )
+  BackHandler(
+      onBack = onDismiss,
+  )
 
-      RepeatScreen(
-          modifier = modifier,
-          showActionButton = true,
-          state = state,
-          topBar = {
-            Column {
-              Surface(
-                  modifier = Modifier.fillMaxWidth(),
-                  color = MaterialTheme.colors.primary,
-              ) {
-                Spacer(
-                    modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+  RepeatScreen(
+      modifier = modifier,
+      showActionButton = true,
+      state = state,
+      topBar = {
+        Column {
+          Surface(
+              modifier = Modifier.fillMaxWidth(),
+              color = MaterialTheme.colors.primary,
+          ) {
+            Spacer(
+                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+            )
+          }
+
+          TopAppBar(
+              modifier = Modifier.fillMaxWidth(),
+              elevation = ZeroElevation,
+              contentColor = MaterialTheme.colors.onPrimary,
+              backgroundColor = MaterialTheme.colors.primary,
+              navigationIcon = {
+                IconButton(
+                    onClick = onDismiss,
+                ) {
+                  Icon(
+                      imageVector = Icons.Filled.ArrowBack,
+                      contentDescription = "Back",
+                  )
+                }
+              },
+              title = {
+                Text(
+                    text = "Repeating Transactions",
                 )
-              }
+              },
+          )
+        }
+      },
+      onActionButtonClicked = { viewModel.handleAddNewRepeat() },
+      onRepeatClicked = { viewModel.handleEditRepeat(it) },
+      onRepeatLongClicked = { viewModel.handleDeleteRepeat(it) },
+      onRepeatDeleteFinalized = { viewModel.handleDeleteFinalized() },
+      onRepeatRestored = { viewModel.handleRestoreDeleted(scope = scope) },
+  )
 
-              TopAppBar(
-                  modifier = Modifier.fillMaxWidth(),
-                  elevation = ZeroElevation,
-                  contentColor = MaterialTheme.colors.onPrimary,
-                  backgroundColor = MaterialTheme.colors.primary,
-                  navigationIcon = {
-                    IconButton(
-                        onClick = onDismiss,
-                    ) {
-                      Icon(
-                          imageVector = Icons.Filled.ArrowBack,
-                          contentDescription = "Back",
-                      )
-                    }
-                  },
-                  title = {
-                    Text(
-                        text = "Repeating Transactions",
-                    )
-                  },
-              )
-            }
-          },
-          onActionButtonClicked = { viewModel.handleAddNewRepeat() },
-          onRepeatClicked = { viewModel.handleEditRepeat(it) },
-          onRepeatLongClicked = { viewModel.handleDeleteRepeat(it) },
-          onRepeatDeleteFinalized = { viewModel.handleDeleteFinalized() },
-          onRepeatRestored = { viewModel.handleRestoreDeleted(scope = scope) },
-      )
-    } else {
-      RepeatAddEntry(
-          modifier = Modifier.fullScreenDialog(),
-          params = ap,
-          onDismiss = { viewModel.handleCloseAddRepeat() },
-      )
-    }
+  addParams?.also { p ->
+    RepeatAddEntry(
+        modifier = Modifier.fullScreenDialog(),
+        params = p,
+        onDismiss = { viewModel.handleCloseAddRepeat() },
+    )
   }
 
   deleteParams?.also { p ->
