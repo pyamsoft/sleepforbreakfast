@@ -25,6 +25,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import java.time.Clock
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.TimeZone
 import javax.inject.Inject
@@ -53,11 +54,6 @@ internal constructor(
 Automatically created from Notification
 
 ${auto.notificationMatchText}
-
-Package: ${auto.notificationPackageName}
-ID: ${auto.notificationId}
-Key: ${auto.notificationKey}
-Group: ${auto.notificationGroup}
 """
             .trimIndent()
 
@@ -65,6 +61,7 @@ Group: ${auto.notificationGroup}
         DbTransaction.create(clock, DbTransaction.Id.EMPTY)
             // Tie to this automatic
             .automaticId(auto.id)
+            .automaticCreatedDate(LocalDate.now(clock))
             .replaceCategories(auto.categories)
             .amountInCents(auto.notificationAmountInCents)
             .type(auto.notificationType)
