@@ -95,38 +95,9 @@ internal fun RepeatEntry(
       showActionButton = true,
       state = state,
       topBar = {
-        Column {
-          Surface(
-              modifier = Modifier.fillMaxWidth(),
-              color = MaterialTheme.colors.primary,
-          ) {
-            Spacer(
-                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
-            )
-          }
-
-          TopAppBar(
-              modifier = Modifier.fillMaxWidth(),
-              elevation = ZeroElevation,
-              contentColor = MaterialTheme.colors.onPrimary,
-              backgroundColor = MaterialTheme.colors.primary,
-              navigationIcon = {
-                IconButton(
-                    onClick = onDismiss,
-                ) {
-                  Icon(
-                      imageVector = Icons.Filled.ArrowBack,
-                      contentDescription = "Back",
-                  )
-                }
-              },
-              title = {
-                Text(
-                    text = "Repeating Transactions",
-                )
-              },
-          )
-        }
+        AppBar(
+            onDismiss = onDismiss,
+        )
       },
       onActionButtonClicked = { viewModel.handleAddNewRepeat() },
       onRepeatClicked = { viewModel.handleEditRepeat(it) },
@@ -148,6 +119,47 @@ internal fun RepeatEntry(
         modifier = Modifier.fullScreenDialog(),
         params = p,
         onDismiss = { viewModel.handleCloseDeleteRepeat() },
+    )
+  }
+}
+
+@Composable
+private fun AppBar(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+) {
+  Column(
+      modifier = modifier,
+  ) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colors.primary,
+    ) {
+      Spacer(
+          modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+      )
+    }
+
+    TopAppBar(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = ZeroElevation,
+        contentColor = MaterialTheme.colors.onPrimary,
+        backgroundColor = MaterialTheme.colors.primary,
+        navigationIcon = {
+          IconButton(
+              onClick = onDismiss,
+          ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+            )
+          }
+        },
+        title = {
+          Text(
+              text = "Repeating Transactions",
+          )
+        },
     )
   }
 }

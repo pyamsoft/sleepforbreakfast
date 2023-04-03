@@ -17,6 +17,18 @@
 package com.pyamsoft.sleepforbreakfast.category
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,6 +39,7 @@ import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
+import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
@@ -81,6 +94,11 @@ internal fun CategoryEntry(
       modifier = modifier,
       showActionButton = true,
       state = state,
+      topBar = {
+        AppBar(
+            onDismiss = onDismiss,
+        )
+      },
       onActionButtonClicked = { viewModel.handleAddNewCategory() },
       onCategoryClicked = { viewModel.handleEditCategory(it) },
       onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },
@@ -101,6 +119,47 @@ internal fun CategoryEntry(
         modifier = Modifier.fullScreenDialog(),
         params = p,
         onDismiss = { viewModel.handleCloseDeleteCategory() },
+    )
+  }
+}
+
+@Composable
+private fun AppBar(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+) {
+  Column(
+      modifier = modifier,
+  ) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colors.primary,
+    ) {
+      Spacer(
+          modifier = Modifier.fillMaxWidth().statusBarsPadding(),
+      )
+    }
+
+    TopAppBar(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = ZeroElevation,
+        contentColor = MaterialTheme.colors.onPrimary,
+        backgroundColor = MaterialTheme.colors.primary,
+        navigationIcon = {
+          IconButton(
+              onClick = onDismiss,
+          ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+            )
+          }
+        },
+        title = {
+          Text(
+              text = "All Categories",
+          )
+        },
     )
   }
 }

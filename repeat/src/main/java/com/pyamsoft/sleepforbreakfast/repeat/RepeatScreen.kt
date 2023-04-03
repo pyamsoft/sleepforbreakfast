@@ -41,7 +41,7 @@ fun RepeatScreen(
     onRepeatClicked: (DbRepeat) -> Unit,
     onRepeatRestored: () -> Unit,
     onRepeatDeleteFinalized: () -> Unit,
-    topBar: @Composable () -> Unit = {},
+    topBar: @Composable () -> Unit,
     onRepeatLongClicked: ((DbRepeat) -> Unit)? = null,
 ) {
   val sources = state.items.collectAsStateList()

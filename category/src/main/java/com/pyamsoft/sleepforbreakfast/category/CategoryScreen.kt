@@ -41,7 +41,7 @@ fun CategoryScreen(
     onCategoryClicked: (DbCategory) -> Unit,
     onCategoryRestored: () -> Unit,
     onCategoryDeleteFinalized: () -> Unit,
-    topBar: @Composable () -> Unit = {},
+    topBar: @Composable () -> Unit,
     onCategoryLongClicked: ((DbCategory) -> Unit)? = null,
 ) {
   val categories = state.items.collectAsStateList()

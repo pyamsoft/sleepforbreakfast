@@ -18,24 +18,19 @@ package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -45,7 +40,6 @@ import androidx.compose.ui.unit.Dp
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
@@ -53,7 +47,6 @@ import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Month
 import java.time.format.TextStyle as MonthTextStyle
-import kotlin.math.abs
 
 @Composable
 internal fun TransactionHeader(modifier: Modifier, month: Month) {
@@ -115,62 +108,14 @@ internal fun TransactionCard(
 }
 
 @Composable
-internal fun TransactionTotal(
-    modifier: Modifier = Modifier,
-    transactions: SnapshotStateList<DbTransaction>,
-    onDismiss: () -> Unit,
-) {
-  val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
-  val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
-  val totalRangeNote = remember(transactions) { transactions.calculateTotalTransactionRange() }
-  val totalPrice =
-      remember(
-          transactions,
-          totalAmount,
-      ) {
-        if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
-      }
-
-  TransactionCard(
-      modifier = modifier,
-      contentModifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-      color = MaterialTheme.colors.primary,
-      shape = RectangleShape,
-      elevation = ZeroElevation,
-      title = "Total",
-      titleStyle = MaterialTheme.typography.h6,
-      date = "",
-      dateStyle = MaterialTheme.typography.caption,
-      price = totalPrice,
-      priceDirection = totalDirection,
-      priceStyle = MaterialTheme.typography.h4,
-      note = totalRangeNote,
-      noteStyle = MaterialTheme.typography.body2,
-      navigationIcon = {
-        IconButton(
-            modifier = Modifier.padding(end = MaterialTheme.keylines.content),
-            onClick = onDismiss,
-        ) {
-          Icon(
-              imageVector = Icons.Filled.ArrowBack,
-              contentDescription = "Back",
-              tint =
-                  MaterialTheme.colors.onPrimary.copy(
-                      alpha = ContentAlpha.medium,
-                  ))
-        }
-      },
-  )
-}
-
-@Composable
-private fun TransactionCard(
+internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.surface,
     shape: Shape = MaterialTheme.shapes.medium,
     elevation: Dp = CardDefaults.Elevation,
     navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     title: String,
     titleStyle: TextStyle,
     date: String,
@@ -229,6 +174,8 @@ private fun TransactionCard(
         )
       }
 
+      // This is the Name on cards and the title on the header
+      // Don't use TopAppBar
       Row(
           modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.baseline),
           verticalAlignment = Alignment.CenterVertically,
@@ -245,6 +192,8 @@ private fun TransactionCard(
                         ),
                 ),
         )
+
+        actions()
       }
 
       Text(
