@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -65,10 +64,7 @@ internal fun TransactionTotal(
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint =
-                    MaterialTheme.colors.onPrimary.copy(
-                        alpha = ContentAlpha.medium,
-                    ),
+                tint = MaterialTheme.colors.onPrimary,
             )
           }
         },

@@ -96,14 +96,32 @@ internal fun TransactionCard(
       contentModifier =
           Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
       title = transaction.name,
-      titleStyle = MaterialTheme.typography.h6,
+      titleStyle =
+          MaterialTheme.typography.h6.copy(
+              color =
+                  MaterialTheme.colors.onSurface.copy(
+                      alpha = ContentAlpha.medium,
+                  ),
+          ),
       date = dateString,
-      dateStyle = MaterialTheme.typography.caption,
+      dateStyle =
+          MaterialTheme.typography.caption.copy(
+              color =
+                  MaterialTheme.colors.onSurface.copy(
+                      alpha = ContentAlpha.disabled,
+                  ),
+          ),
       price = priceString,
       priceDirection = spendDirection,
       priceStyle = MaterialTheme.typography.h5,
       note = transaction.note,
-      noteStyle = MaterialTheme.typography.body2,
+      noteStyle =
+          MaterialTheme.typography.body2.copy(
+              color =
+                  MaterialTheme.colors.onSurface.copy(
+                      alpha = ContentAlpha.medium,
+                  ),
+          ),
   )
 }
 
@@ -164,13 +182,7 @@ internal fun TransactionCard(
         Text(
             modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
             text = date,
-            style =
-                dateStyle.copy(
-                    color =
-                        MaterialTheme.colors.onSurface.copy(
-                            alpha = ContentAlpha.disabled,
-                        ),
-                ),
+            style = dateStyle,
         )
       }
 
@@ -184,13 +196,7 @@ internal fun TransactionCard(
 
         Text(
             text = title,
-            style =
-                titleStyle.copy(
-                    color =
-                        MaterialTheme.colors.onSurface.copy(
-                            alpha = ContentAlpha.medium,
-                        ),
-                ),
+            style = titleStyle,
         )
 
         actions()
@@ -215,13 +221,7 @@ internal fun TransactionCard(
         Text(
             modifier = Modifier.padding(top = MaterialTheme.keylines.content),
             text = note,
-            style =
-                noteStyle.copy(
-                    color =
-                        MaterialTheme.colors.onSurface.copy(
-                            alpha = ContentAlpha.medium,
-                        ),
-                ),
+            style = noteStyle,
         )
       }
     }
