@@ -13,7 +13,20 @@ import kotlinx.coroutines.delay
 @Composable
 fun debouncedOnTextChange(
     value: String,
-    delay: Long = 300L,
+    onChange: (String) -> Unit,
+): MutableState<String> {
+  return debouncedOnTextChange(
+      value = value,
+      delay = 300L,
+      onChange = onChange,
+  )
+}
+
+/** Do this so that we can debounce typing events */
+@Composable
+fun debouncedOnTextChange(
+    value: String,
+    delay: Long,
     onChange: (String) -> Unit,
 ): MutableState<String> {
   val handleChange by rememberUpdatedState(onChange)
