@@ -45,6 +45,8 @@ import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddEntry
 import com.pyamsoft.sleepforbreakfast.repeat.delete.RepeatDeleteEntry
+import com.pyamsoft.sleepforbreakfast.money.list.Search
+import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import javax.inject.Inject
 
 internal class RepeatInjector @Inject internal constructor() : ComposableInjector() {
@@ -96,7 +98,10 @@ internal fun RepeatEntry(
       state = state,
       topBar = {
         AppBar(
+            state = state,
             onDismiss = onDismiss,
+            onSearchToggled = { viewModel.handleToggleSearch() },
+            onSearchUpdated = { viewModel.handleSearchUpdated(it) },
         )
       },
       onActionButtonClicked = { viewModel.handleAddNewRepeat() },
@@ -126,7 +131,12 @@ internal fun RepeatEntry(
 @Composable
 private fun AppBar(
     modifier: Modifier = Modifier,
+    state: RepeatViewState,
     onDismiss: () -> Unit,
+
+    // Search
+    onSearchToggled: () -> Unit,
+    onSearchUpdated: (String) -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -160,6 +170,18 @@ private fun AppBar(
               text = "Repeating Transactions",
           )
         },
+        actions = {
+          Search(
+              state = state,
+              onSearchToggled = onSearchToggled,
+          )
+        },
+    )
+
+    SearchBar(
+        state = state,
+        onSearchToggled = onSearchToggled,
+        onSearchUpdated = onSearchUpdated,
     )
   }
 }

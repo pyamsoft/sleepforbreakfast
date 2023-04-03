@@ -45,6 +45,8 @@ import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddEntry
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteEntry
+import com.pyamsoft.sleepforbreakfast.money.list.Search
+import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import javax.inject.Inject
 
 internal class CategoryInjector @Inject internal constructor() : ComposableInjector() {
@@ -97,6 +99,9 @@ internal fun CategoryEntry(
       topBar = {
         AppBar(
             onDismiss = onDismiss,
+            state = state,
+            onSearchToggled = { viewModel.handleToggleSearch() },
+            onSearchUpdated = { viewModel.handleSearchUpdated(it) },
         )
       },
       onActionButtonClicked = { viewModel.handleAddNewCategory() },
@@ -126,7 +131,12 @@ internal fun CategoryEntry(
 @Composable
 private fun AppBar(
     modifier: Modifier = Modifier,
+    state: CategoryViewState,
     onDismiss: () -> Unit,
+
+    // Search
+    onSearchToggled: () -> Unit,
+    onSearchUpdated: (String) -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -160,6 +170,18 @@ private fun AppBar(
               text = "All Categories",
           )
         },
+        actions = {
+          Search(
+              state = state,
+              onSearchToggled = onSearchToggled,
+          )
+        },
+    )
+
+    SearchBar(
+        state = state,
+        onSearchToggled = onSearchToggled,
+        onSearchUpdated = onSearchUpdated,
     )
   }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
+import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import kotlin.math.abs
 
@@ -35,6 +36,11 @@ internal fun TransactionTotal(
         state = state,
         onDismiss = onDismiss,
         onSearchToggled = onSearchToggled,
+    )
+
+    SearchBar(
+        state = state,
+        onSearchToggled = onSearchToggled,
         onSearchUpdated = onSearchUpdated,
     )
   }
@@ -48,7 +54,6 @@ private fun Totals(
 
     // Search
     onSearchToggled: () -> Unit,
-    onSearchUpdated: (String) -> Unit,
 ) {
   val transactions = state.items.collectAsStateList()
 
@@ -94,7 +99,6 @@ private fun Totals(
             modifier = Modifier.weight(1F),
             state = state,
             onSearchToggled = onSearchToggled,
-            onSearchUpdated = onSearchUpdated,
         )
       },
   )
