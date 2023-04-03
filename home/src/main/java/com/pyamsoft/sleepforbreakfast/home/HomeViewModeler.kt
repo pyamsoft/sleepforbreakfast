@@ -21,7 +21,6 @@ import com.pyamsoft.sleepforbreakfast.home.notification.NotificationListenerStat
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeViewModeler
@@ -33,7 +32,7 @@ internal constructor(
 
   fun bind(scope: CoroutineScope) {
     scope.launch(context = Dispatchers.Main) {
-      listenerStatus.isNotificationListenerActive().collectLatest {
+      listenerStatus.isNotificationListenerActive().collect {
         state.isNotificationListenerEnabled.value = it
       }
     }

@@ -29,11 +29,18 @@ interface ListViewState<T : Any> : UiViewState {
   val itemError: StateFlow<Throwable?>
 
   val recentlyDeleted: StateFlow<T?>
+
+  val isSearchOpen: StateFlow<Boolean>
+  val search: StateFlow<String>
 }
 
 abstract class MutableListViewState<T : Any> protected constructor() : ListViewState<T> {
   final override val loadingState = MutableStateFlow(LoadingState.NONE)
   final override val items = MutableStateFlow(emptyList<T>())
   final override val itemError = MutableStateFlow<Throwable?>(null)
+
   final override val recentlyDeleted = MutableStateFlow<T?>(null)
+
+  final override val isSearchOpen = MutableStateFlow(false)
+  final override val search = MutableStateFlow("")
 }

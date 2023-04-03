@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface TransactionViewState : ListViewState<DbTransaction> {
   val addParams: StateFlow<TransactionAddParams?>
   val deleteParams: StateFlow<TransactionDeleteParams?>
+
 }
 
 @Stable

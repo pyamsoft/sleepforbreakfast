@@ -47,24 +47,23 @@ internal constructor(
     state.deleteParams.value = params
   }
 
-  override fun registerSaveState(
+  override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
       registry: SaveableStateRegistry
-  ): List<SaveableStateRegistry.Entry> =
-      mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry
-            .registerProvider(KEY_ADD_PARAMS) {
-              state.addParams.value?.let { jsonParser.toJson(it.toJson()) }
-            }
-            .also { add(it) }
+  ) {
+    registry
+        .registerProvider(KEY_ADD_PARAMS) {
+          state.addParams.value?.let { jsonParser.toJson(it.toJson()) }
+        }
+        .also { add(it) }
 
-        registry
-            .registerProvider(KEY_DELETE_PARAMS) {
-              state.deleteParams.value?.let { jsonParser.toJson(it.toJson()) }
-            }
-            .also { add(it) }
-      }
+    registry
+        .registerProvider(KEY_DELETE_PARAMS) {
+          state.deleteParams.value?.let { jsonParser.toJson(it.toJson()) }
+        }
+        .also { add(it) }
+  }
 
-  override fun consumeRestoredState(registry: SaveableStateRegistry) {
+  override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
         .consumeRestored(KEY_ADD_PARAMS)
         ?.let { it as String }
@@ -89,6 +88,10 @@ internal constructor(
       is CategoryChangeEvent.Insert -> handleItemInserted(event.category)
       is CategoryChangeEvent.Update -> handleItemUpdated(event.category)
     }
+  }
+
+  override fun isMatchingSearch(item: DbCategory, search: String): Boolean {
+    return item.name.contains(search, ignoreCase = true)
   }
 
   override fun isEqual(o1: DbCategory, o2: DbCategory): Boolean {

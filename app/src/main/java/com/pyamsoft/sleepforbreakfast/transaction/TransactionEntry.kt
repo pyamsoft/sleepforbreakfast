@@ -81,14 +81,21 @@ internal fun TransactionEntry(
 
   TransactionScreen(
       modifier = modifier,
-      showActionButton = true,
       state = state,
       onDismiss = onDismiss,
+      // Action
+      showActionButton = true,
       onActionButtonClicked = { viewModel.handleAddNewTransaction() },
+
+      // Items
       onTransactionClicked = { viewModel.handleEditTransaction(it) },
       onTransactionLongClicked = { viewModel.handleDeleteTransaction(it) },
       onTransactionRestored = { viewModel.handleRestoreDeleted(scope = scope) },
       onTransactionDeleteFinalized = { viewModel.handleDeleteFinalized() },
+
+      // Search
+      onSearchToggled = { viewModel.handleToggleSearch() },
+      onSearchUpdated = { viewModel.handleSearchUpdated(it) },
   )
 
   addParams?.also { p ->

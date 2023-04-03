@@ -88,14 +88,22 @@ private fun rememberTransactionsWithHeaders(
 @OptIn(ExperimentalFoundationApi::class)
 fun TransactionScreen(
     modifier: Modifier = Modifier,
-    showActionButton: Boolean,
     state: TransactionViewState,
+    onDismiss: () -> Unit,
+
+    // Action
+    showActionButton: Boolean,
     onActionButtonClicked: () -> Unit,
+
+    // Items
     onTransactionClicked: (DbTransaction) -> Unit,
     onTransactionLongClicked: (DbTransaction) -> Unit,
     onTransactionRestored: () -> Unit,
     onTransactionDeleteFinalized: () -> Unit,
-    onDismiss: () -> Unit,
+
+    // Search
+    onSearchToggled: () -> Unit,
+    onSearchUpdated: (String) -> Unit,
 ) {
   val transactions = state.items.collectAsStateList()
   val list = rememberTransactionsWithHeaders(transactions)
@@ -123,8 +131,10 @@ fun TransactionScreen(
 
       TransactionTotal(
           modifier = Modifier.fillMaxWidth().padding(pv),
-          transactions = transactions,
+          state = state,
           onDismiss = onDismiss,
+          onSearchToggled = onSearchToggled,
+          onSearchUpdated = onSearchUpdated,
       )
 
       LazyColumn {

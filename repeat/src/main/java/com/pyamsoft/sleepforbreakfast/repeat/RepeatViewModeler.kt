@@ -47,24 +47,18 @@ internal constructor(
     state.deleteParams.value = params
   }
 
-  override fun registerSaveState(
-      registry: SaveableStateRegistry
-  ): List<SaveableStateRegistry.Entry> =
-      mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry
-            .registerProvider(KEY_ADD_PARAMS) {
-              state.addParams.value?.let { jsonParser.toJson(it.toJson()) }
-            }
-            .also { add(it) }
-
-        registry
-            .registerProvider(KEY_DELETE_PARAMS) {
-              state.deleteParams.value?.let { jsonParser.toJson(it.toJson()) }
-            }
-            .also { add(it) }
+  override fun CoroutineScope.onItemRealtimeEvent(event: RepeatChangeEvent) {
+    when (event) {
+      is RepeatChangeEvent.Delete -> {
+        // Do not offer an undo since I do not know how to roll back the entire Cascade action
+        handleItemDeleted(event.repeat, offerUndo = false)
       }
+      is RepeatChangeEvent.Insert -> handleItemInserted(event.repeat)
+      is RepeatChangeEvent.Update -> handleItemUpdated(event.repeat)
+    }
+  }
 
-  override fun consumeRestoredState(registry: SaveableStateRegistry) {
+  override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
         .consumeRestored(KEY_ADD_PARAMS)
         ?.let { it as String }
@@ -80,15 +74,24 @@ internal constructor(
         ?.let { handleDeleteParams(it) }
   }
 
-  override fun CoroutineScope.onItemRealtimeEvent(event: RepeatChangeEvent) {
-    when (event) {
-      is RepeatChangeEvent.Delete -> {
-        // Do not offer an undo since I do not know how to roll back the entire Cascade action
-        handleItemDeleted(event.repeat, offerUndo = false)
-      }
-      is RepeatChangeEvent.Insert -> handleItemInserted(event.repeat)
-      is RepeatChangeEvent.Update -> handleItemUpdated(event.repeat)
-    }
+  override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
+      registry: SaveableStateRegistry
+  ) {
+    registry
+        .registerProvider(KEY_ADD_PARAMS) {
+          state.addParams.value?.let { jsonParser.toJson(it.toJson()) }
+        }
+        .also { add(it) }
+
+    registry
+        .registerProvider(KEY_DELETE_PARAMS) {
+          state.deleteParams.value?.let { jsonParser.toJson(it.toJson()) }
+        }
+        .also { add(it) }
+  }
+
+  override fun isMatchingSearch(item: DbRepeat, search: String): Boolean {
+    return item.transactionName.contains(search, ignoreCase = true)
   }
 
   override fun isEqual(o1: DbRepeat, o2: DbRepeat): Boolean {
