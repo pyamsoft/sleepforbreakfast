@@ -16,25 +16,19 @@
 
 package com.pyamsoft.sleepforbreakfast.category.delete
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Dialog
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
-import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
 internal class CategoryDeleteInjector
@@ -96,20 +90,14 @@ internal fun CategoryDeleteEntry(
       viewModel = viewModel,
   )
 
-  Dialog(
-      properties = rememberDialogProperties(),
-      onDismissRequest = { handleDismiss() },
+  SurfaceDialog(
+      modifier = modifier,
+      onDismiss = onDismiss,
   ) {
-    Surface(
-        modifier = modifier.padding(MaterialTheme.keylines.content),
-        shape = MaterialTheme.shapes.medium,
-        elevation = DialogDefaults.Elevation,
-    ) {
-      CategoryDeleteScreen(
-          state = viewModel.state,
-          onDismiss = { handleDismiss() },
-          onConfirm = { handleSubmit() },
-      )
-    }
+    CategoryDeleteScreen(
+        state = viewModel.state,
+        onDismiss = onDismiss,
+        onConfirm = { handleSubmit() },
+    )
   }
 }

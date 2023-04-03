@@ -16,31 +16,20 @@
 
 package com.pyamsoft.sleepforbreakfast.transaction.add
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Dialog
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
-import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
-import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.transaction.auto.TransactionAutoEntry
-import com.pyamsoft.sleepforbreakfast.transaction.repeat.TransactionRepeatEntry
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddScreen
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddViewModeler
+import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
 internal class TransactionAddInjector
@@ -91,8 +80,6 @@ internal fun TransactionAddEntry(
 
   val viewModel = rememberNotNull(component.viewModel)
   val state = viewModel.state
-  val repeatInfoParams by state.repeatInfoParams.collectAsState()
-  val autoParams by state.autoParams.collectAsState()
 
   val scope = rememberCoroutineScope()
 
@@ -100,51 +87,31 @@ internal fun TransactionAddEntry(
       viewModel = viewModel,
   )
 
-  Dialog(
-      properties = rememberDialogProperties(),
-      onDismissRequest = onDismiss,
+  SurfaceDialog(
+      modifier = modifier,
+      onDismiss = onDismiss,
   ) {
-    Surface(
-        modifier = modifier.padding(MaterialTheme.keylines.content),
-        elevation = DialogDefaults.Elevation,
-        shape = MaterialTheme.shapes.medium,
-    ) {
-      TransactionAddScreen(
-          state = state,
-          onDismiss = onDismiss,
-          onNameChanged = { viewModel.handleNameChanged(it) },
-          onNoteChanged = { viewModel.handleNoteChanged(it) },
-          onAmountChanged = { viewModel.handleAmountChanged(it) },
-          onTypeChanged = { viewModel.handleTypeChanged(it) },
-          onOpenTimeDialog = { viewModel.handleOpenTimeDialog() },
-          onCloseTimeDialog = { viewModel.handleCloseTimeDialog() },
-          onTimeChanged = { viewModel.handleTimeChanged(it) },
-          onOpenDateDialog = { viewModel.handleOpenDateDialog() },
-          onCloseDateDialog = { viewModel.handleCloseDateDialog() },
-          onDateChanged = { viewModel.handleDateChanged(it) },
-          onCategoryAdded = { viewModel.handleCategoryAdded(it) },
-          onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
-          onReset = { viewModel.handleReset() },
-          onSubmit = { viewModel.handleSubmit(scope = scope) },
-          onRepeatInfoOpen = { viewModel.handleRepeatInfoTransaction(it) },
-          onAutoOpen = { viewModel.handleAutoTransaction(it) },
-      )
-    }
-
-    repeatInfoParams?.also { p ->
-      TransactionRepeatEntry(
-          modifier = Modifier.fullScreenDialog(),
-          params = p,
-          onDismiss = { viewModel.handleCloseRepeatInfoTransaction() },
-      )
-    }
-
-    autoParams?.also { p ->
-      TransactionAutoEntry(
-          modifier = Modifier.fullScreenDialog(),
-          params = p,
-          onDismiss = { viewModel.handleCloseAutoTransaction() },
-      )
-    }
+    TransactionAddScreen(
+        state = state,
+        onDismiss = onDismiss,
+        onNameChanged = { viewModel.handleNameChanged(it) },
+        onNoteChanged = { viewModel.handleNoteChanged(it) },
+        onAmountChanged = { viewModel.handleAmountChanged(it) },
+        onTypeChanged = { viewModel.handleTypeChanged(it) },
+        onOpenTimeDialog = { viewModel.handleOpenTimeDialog() },
+        onCloseTimeDialog = { viewModel.handleCloseTimeDialog() },
+        onTimeChanged = { viewModel.handleTimeChanged(it) },
+        onOpenDateDialog = { viewModel.handleOpenDateDialog() },
+        onCloseDateDialog = { viewModel.handleCloseDateDialog() },
+        onDateChanged = { viewModel.handleDateChanged(it) },
+        onCategoryAdded = { viewModel.handleCategoryAdded(it) },
+        onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
+        onReset = { viewModel.handleReset() },
+        onSubmit = { viewModel.handleSubmit(scope = scope) },
+        onRepeatInfoOpen = { viewModel.handleOpenRepeatInfo() },
+        onRepeatInfoClosed = { viewModel.handleCloseRepeatInfo() },
+        onAutoInfoOpen = { viewModel.handleOpenAutoInfo() },
+        onAutoInfoClosed = { viewModel.handleCloseAutoInfo() },
+    )
   }
 }

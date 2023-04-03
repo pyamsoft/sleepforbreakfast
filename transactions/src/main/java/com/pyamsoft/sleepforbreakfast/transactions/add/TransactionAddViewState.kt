@@ -17,13 +17,13 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewState
 import com.pyamsoft.sleepforbreakfast.money.add.MutableMoneyAddViewState
-import com.pyamsoft.sleepforbreakfast.transactions.ExistingAuto
-import com.pyamsoft.sleepforbreakfast.transactions.ExistingRepeat
-import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoParams
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoParams
+import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.Clock
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -37,11 +37,15 @@ interface TransactionAddViewState : MoneyAddViewState {
   val isDateDialogOpen: StateFlow<Boolean>
   val isTimeDialogOpen: StateFlow<Boolean>
 
-  val existingRepeat: StateFlow<ExistingRepeat?>
-  val repeatInfoParams: StateFlow<TransactionRepeatInfoParams?>
+  val existingTransaction: StateFlow<DbTransaction?>
 
-  val existingAuto: StateFlow<ExistingAuto?>
-  val autoParams: StateFlow<TransactionAutoParams?>
+  val loadingRepeat: StateFlow<LoadingState>
+  val existingRepeat: StateFlow<DbRepeat?>
+  val isRepeatOpen: StateFlow<Boolean>
+
+  val loadingAuto: StateFlow<LoadingState>
+  val existingAuto: StateFlow<DbAutomatic?>
+  val isAutoOpen: StateFlow<Boolean>
 }
 
 @Stable
@@ -57,9 +61,13 @@ internal constructor(
   override val isDateDialogOpen = MutableStateFlow(false)
   override val isTimeDialogOpen = MutableStateFlow(false)
 
-  override val existingRepeat = MutableStateFlow<ExistingRepeat?>(null)
-  override val repeatInfoParams = MutableStateFlow<TransactionRepeatInfoParams?>(null)
+  override val existingTransaction = MutableStateFlow<DbTransaction?>(null)
 
-  override val existingAuto = MutableStateFlow<ExistingAuto?>(null)
-  override val autoParams = MutableStateFlow<TransactionAutoParams?>(null)
+  override val loadingRepeat = MutableStateFlow(LoadingState.NONE)
+  override val existingRepeat = MutableStateFlow<DbRepeat?>(null)
+  override val isRepeatOpen = MutableStateFlow(false)
+
+  override val loadingAuto = MutableStateFlow(LoadingState.NONE)
+  override val existingAuto = MutableStateFlow<DbAutomatic?>(null)
+  override val isAutoOpen = MutableStateFlow(false)
 }

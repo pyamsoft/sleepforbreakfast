@@ -18,18 +18,14 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
-import com.pyamsoft.sleepforbreakfast.transactions.ExistingAuto
-import com.pyamsoft.sleepforbreakfast.transactions.ExistingRepeat
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
-import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoParams
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoParams
-import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
-import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
+import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -47,8 +43,7 @@ class TransactionAddViewModeler
 internal constructor(
     state: MutableTransactionAddViewState,
     params: TransactionAddParams,
-    interactor: TransactionInteractor,
-    private val jsonParser: JsonParser,
+    private val interactor: TransactionInteractor,
     private val categoryLoader: CategoryLoader,
     private val clock: Clock,
 ) :
@@ -57,14 +52,6 @@ internal constructor(
         initialId = params.transactionId,
         interactor = interactor,
     ) {
-
-  private fun handleRepeatInfoParams(params: TransactionRepeatInfoParams) {
-    state.repeatInfoParams.value = params
-  }
-
-  private fun handleAutoParams(params: TransactionAutoParams) {
-    state.autoParams.value = params
-  }
 
   private suspend fun loadCategories() {
     categoryLoader
@@ -102,6 +89,31 @@ internal constructor(
     return cleaned
   }
 
+  private suspend fun loadRepeat(transaction: DbTransaction) {
+    if (transaction.repeatId == null) {
+      state.existingRepeat.value = null
+      state.loadingRepeat.value = LoadingState.DONE
+      return
+    }
+
+    state.loadingRepeat.value = LoadingState.LOADING
+    interactor
+        .loadRepeat(transaction)
+        .onSuccess {
+          when (it) {
+            is Maybe.Data -> {
+              state.existingRepeat.value = it.data
+            }
+            is Maybe.None -> {
+              state.existingRepeat.value = null
+            }
+          }
+        }
+        .onFailure { Timber.e(it, "Error getting repeat data") }
+        .onFailure { state.existingRepeat.value = null }
+        .onFinally { state.loadingRepeat.value = LoadingState.DONE }
+  }
+
   override suspend fun compile(): DbTransaction {
     return DbTransaction.create(clock, initialId)
         .name(state.name.value)
@@ -122,8 +134,12 @@ internal constructor(
     scope.launch(context = Dispatchers.Main) { loadCategories() }
   }
 
-  override fun onDataLoaded(result: DbTransaction) {
+  override fun CoroutineScope.onDataLoaded(result: DbTransaction) {
+    state.existingTransaction.value = result
+
     handleReset(result)
+
+    launch(context = Dispatchers.Main) { loadRepeat(result) }
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
@@ -144,18 +160,14 @@ internal constructor(
         ?.also { state.isTimeDialogOpen.value = it }
 
     registry
-        .consumeRestored(KEY_REPEAT_PARAMS)
-        ?.let { it as String }
-        ?.let { jsonParser.fromJson<TransactionRepeatInfoParams.Json>(it) }
-        ?.fromJson()
-        ?.let { handleRepeatInfoParams(it) }
+        .consumeRestored(KEY_IS_REPEAT_OPEN)
+        ?.let { it as Boolean }
+        ?.also { state.isRepeatOpen.value = it }
 
     registry
-        .consumeRestored(KEY_AUTO_PARAMS)
-        ?.let { it as String }
-        ?.let { jsonParser.fromJson<TransactionAutoParams.Json>(it) }
-        ?.fromJson()
-        ?.let { handleAutoParams(it) }
+        .consumeRestored(KEY_IS_AUTO_OPEN)
+        ?.let { it as Boolean }
+        ?.also { state.isAutoOpen.value = it }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
@@ -171,17 +183,9 @@ internal constructor(
 
     registry.registerProvider(KEY_TIME_DIALOG) { state.isTimeDialogOpen.value }.also { add(it) }
 
-    registry
-        .registerProvider(KEY_REPEAT_PARAMS) {
-          state.repeatInfoParams.value?.let { jsonParser.toJson(it.toJson()) }
-        }
-        .also { add(it) }
+    registry.registerProvider(KEY_IS_REPEAT_OPEN) { state.isRepeatOpen.value }.also { add(it) }
 
-    registry
-        .registerProvider(KEY_AUTO_PARAMS) {
-          state.autoParams.value?.let { jsonParser.toJson(it.toJson()) }
-        }
-        .also { add(it) }
+    registry.registerProvider(KEY_IS_AUTO_OPEN) { state.isAutoOpen.value }.also { add(it) }
   }
 
   override fun onReset(payload: DbTransaction?) {
@@ -195,21 +199,11 @@ internal constructor(
       state.amount.value = payload.amountInCents
       state.categories.value = payload.categories
 
-      val r = payload.repeatId
-      val d = payload.repeatCreatedDate
-      if (r != null && d != null) {
-        state.existingRepeat.value =
-            ExistingRepeat(
-                id = r,
-                date = d,
-            )
-      } else {
-        state.existingRepeat.value = null
-      }
       state.date.value = payload.date
     }
 
-    handleCloseRepeatInfoTransaction()
+    handleCloseRepeatInfo()
+    handleCloseAutoInfo()
     handleCloseDateDialog()
     handleCloseTimeDialog()
   }
@@ -254,39 +248,27 @@ internal constructor(
     state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
-  fun handleRepeatInfoTransaction(existing: ExistingRepeat) {
-    handleRepeatInfoParams(
-        params =
-            TransactionRepeatInfoParams(
-                repeatId = existing.id,
-                transactionRepeatDate = existing.date,
-            ),
-    )
+  fun handleOpenRepeatInfo() {
+    state.isRepeatOpen.value = true
   }
 
-  fun handleCloseRepeatInfoTransaction() {
-    state.repeatInfoParams.value = null
+  fun handleCloseRepeatInfo() {
+    state.isRepeatOpen.value = false
   }
 
-  fun handleAutoTransaction(existing: ExistingAuto) {
-    handleAutoParams(
-        params =
-            TransactionAutoParams(
-                autoId = existing.id,
-                autoDate = existing.date,
-            ),
-    )
+  fun handleOpenAutoInfo() {
+    state.isAutoOpen.value = true
   }
 
-  fun handleCloseAutoTransaction() {
-    state.autoParams.value = null
+  fun handleCloseAutoInfo() {
+    state.isAutoOpen.value = false
   }
 
   companion object {
     private const val KEY_DATE_DIALOG = "key_date_dialog"
     private const val KEY_TIME_DIALOG = "key_time_dialog"
-    private const val KEY_REPEAT_PARAMS = "key_repeat_params"
-    private const val KEY_AUTO_PARAMS = "key_auto_params"
+    private const val KEY_IS_REPEAT_OPEN = "key_is_repeat_open"
+    private const val KEY_IS_AUTO_OPEN = "key_is_auto_open"
 
     private const val KEY_DATE = "key_date"
   }

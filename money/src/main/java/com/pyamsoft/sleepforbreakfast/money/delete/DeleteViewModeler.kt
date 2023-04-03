@@ -41,7 +41,7 @@ protected constructor(
 
   final override fun onBind(scope: CoroutineScope) {}
 
-  final override fun onDataLoaded(result: T) {
+  final override fun CoroutineScope.onDataLoaded(result: T) {
     state.item.value = result
   }
 

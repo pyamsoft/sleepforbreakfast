@@ -61,7 +61,7 @@ internal constructor(
     return id.isEmpty
   }
 
-  override fun onDataLoaded(result: DbCategory) {
+  override fun CoroutineScope.onDataLoaded(result: DbCategory) {
     handleReset(result)
   }
 

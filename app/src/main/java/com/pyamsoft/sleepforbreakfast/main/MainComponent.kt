@@ -27,9 +27,7 @@ import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddComponent
 import com.pyamsoft.sleepforbreakfast.repeat.delete.RepeatDeleteComponent
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionComponent
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddComponent
-import com.pyamsoft.sleepforbreakfast.transaction.auto.TransactionAutoComponent
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteComponent
-import com.pyamsoft.sleepforbreakfast.transaction.repeat.TransactionRepeatComponent
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Subcomponent
@@ -64,8 +62,6 @@ internal interface MainComponent {
   @CheckResult fun plusTransactions(): TransactionComponent.Factory
   @CheckResult fun plusAddTransactions(): TransactionAddComponent.Factory
   @CheckResult fun plusDeleteTransactions(): TransactionDeleteComponent.Factory
-  @CheckResult fun plusRepeatTransactions(): TransactionRepeatComponent.Factory
-  @CheckResult fun plusAutoTransactions(): TransactionAutoComponent.Factory
 
   @Subcomponent.Factory
   interface Factory {

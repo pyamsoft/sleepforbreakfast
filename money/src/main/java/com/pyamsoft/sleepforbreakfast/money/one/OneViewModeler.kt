@@ -51,7 +51,7 @@ protected constructor(
 
   protected abstract fun onBind(scope: CoroutineScope)
 
-  protected abstract fun onDataLoaded(result: T)
+  protected abstract fun CoroutineScope.onDataLoaded(result: T)
 
   @CheckResult protected abstract fun isIdEmpty(id: I): Boolean
 }

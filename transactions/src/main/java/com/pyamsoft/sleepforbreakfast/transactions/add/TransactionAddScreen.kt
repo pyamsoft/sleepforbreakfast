@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.pydroid.ui.util.fullScreenDialog
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
@@ -54,8 +56,9 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyType
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
-import com.pyamsoft.sleepforbreakfast.transactions.ExistingAuto
-import com.pyamsoft.sleepforbreakfast.transactions.ExistingRepeat
+import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoScreen
+import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoScreen
+import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -75,8 +78,10 @@ fun TransactionAddScreen(
     onCloseTimeDialog: () -> Unit,
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
-    onRepeatInfoOpen: (ExistingRepeat) -> Unit,
-    onAutoOpen: (ExistingAuto) -> Unit,
+    onRepeatInfoOpen: () -> Unit,
+    onRepeatInfoClosed: () -> Unit,
+    onAutoInfoOpen: () -> Unit,
+    onAutoInfoClosed: () -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
@@ -195,9 +200,6 @@ fun TransactionAddScreen(
       }
 
       item {
-        val existingRepeat by state.existingRepeat.collectAsState()
-        val existingAuto by state.existingAuto.collectAsState()
-
         Row(
             modifier =
                 Modifier.fillMaxWidth()
@@ -205,27 +207,17 @@ fun TransactionAddScreen(
                     .padding(bottom = MaterialTheme.keylines.content),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-          existingAuto?.also { e ->
-            IconButton(
-                onClick = { onAutoOpen(e) },
-            ) {
-              Icon(
-                  imageVector = Icons.Filled.Call,
-                  contentDescription = "View Automatic Info",
-              )
-            }
-          }
+          RepeatInfo(
+              state = state,
+              onRepeatInfoOpen = onRepeatInfoOpen,
+              onDismiss = onRepeatInfoClosed,
+          )
 
-          existingRepeat?.also { e ->
-            IconButton(
-                onClick = { onRepeatInfoOpen(e) },
-            ) {
-              Icon(
-                  imageVector = Icons.Filled.AccountBox,
-                  contentDescription = "View Repeat Info",
-              )
-            }
-          }
+          AutoInfo(
+              state = state,
+              onAutoInfoOpen = onAutoInfoOpen,
+              onDismiss = onAutoInfoClosed,
+          )
         }
       }
 
@@ -237,6 +229,114 @@ fun TransactionAddScreen(
             onSubmit = onSubmit,
         )
       }
+    }
+  }
+}
+
+@Composable
+private fun RepeatInfo(
+    modifier: Modifier = Modifier,
+    state: TransactionAddViewState,
+    onRepeatInfoOpen: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+  val existing by state.existingTransaction.collectAsState()
+  val loading by state.loadingRepeat.collectAsState()
+  val isOpen by state.isRepeatOpen.collectAsState()
+  val repeat by state.existingRepeat.collectAsState()
+
+  Crossfade(
+      targetState = existing,
+  ) { e ->
+    if (e == null) {
+      return@Crossfade
+    }
+
+    if (e.repeatId == null) {
+      Text(
+          modifier = modifier,
+          text = "No Repeat Info",
+          style = MaterialTheme.typography.body1,
+      )
+    } else {
+      IconButton(
+          modifier = modifier,
+          onClick = onRepeatInfoOpen,
+      ) {
+        Icon(
+            imageVector = Icons.Filled.AccountBox,
+            contentDescription = "View Repeat Info",
+        )
+      }
+    }
+  }
+
+  val date = existing?.repeatCreatedDate
+  if (isOpen && date != null) {
+    SurfaceDialog(
+        modifier = Modifier.fullScreenDialog(),
+        onDismiss = onDismiss,
+    ) {
+      TransactionRepeatInfoScreen(
+          repeat = repeat,
+          loading = loading,
+          date = date,
+          onDismiss = onDismiss,
+      )
+    }
+  }
+}
+
+@Composable
+private fun AutoInfo(
+    modifier: Modifier = Modifier,
+    state: TransactionAddViewState,
+    onAutoInfoOpen: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+  val existing by state.existingTransaction.collectAsState()
+  val loading by state.loadingAuto.collectAsState()
+  val isOpen by state.isAutoOpen.collectAsState()
+  val auto by state.existingAuto.collectAsState()
+
+  Crossfade(
+      targetState = existing,
+  ) { e ->
+    if (e == null) {
+      return@Crossfade
+    }
+
+    if (e.automaticId == null) {
+      Text(
+          modifier = modifier,
+          text = "No Auto Info",
+          style = MaterialTheme.typography.body1,
+      )
+    } else {
+      IconButton(
+          modifier = modifier,
+          onClick = onAutoInfoOpen,
+      ) {
+        Icon(
+            imageVector = Icons.Filled.AddCircle,
+            contentDescription = "View Auto Info",
+        )
+      }
+    }
+  }
+
+  val date = existing?.repeatCreatedDate
+  if (isOpen && date != null) {
+    SurfaceDialog(
+        modifier = Modifier.fullScreenDialog(),
+        onDismiss = onDismiss,
+    ) {
+      TransactionAutoScreen(
+          auto = auto,
+          loading = loading,
+          date = date,
+          onDismiss = onDismiss,
+      )
     }
   }
 }

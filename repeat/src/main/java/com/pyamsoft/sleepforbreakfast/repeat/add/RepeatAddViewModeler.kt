@@ -75,7 +75,7 @@ internal constructor(
     scope.launch(context = Dispatchers.Main) { loadCategories() }
   }
 
-  override fun onDataLoaded(result: DbRepeat) {
+  override fun CoroutineScope.onDataLoaded(result: DbRepeat) {
     // But once we are loaded initialize everything
     handleReset(result)
   }

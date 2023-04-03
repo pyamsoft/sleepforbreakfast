@@ -16,8 +16,11 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
+import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
+import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
+import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
@@ -27,6 +30,9 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @Singleton
 internal class TransactionInteractorImpl
@@ -37,9 +43,26 @@ constructor(
     private val transactionDeleteDao: TransactionDeleteDao,
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
+    private val repeatQueryDao: RepeatQueryDao,
 ) :
     TransactionInteractor,
     ListInteractorImpl<DbTransaction.Id, DbTransaction, TransactionChangeEvent>() {
+
+  override suspend fun loadRepeat(transaction: DbTransaction): ResultWrapper<Maybe<out DbRepeat>> =
+      withContext(context = Dispatchers.IO) {
+        val r = transaction.repeatId
+        if (r == null) {
+          Timber.w("Transaction has no repeat data: $transaction")
+          return@withContext ResultWrapper.success(Maybe.None)
+        }
+
+        try {
+          ResultWrapper.success(repeatQueryDao.queryById(r))
+        } catch (e: Throwable) {
+          Timber.e(e, "Error loading Repeat from transaction: $transaction")
+          ResultWrapper.failure(e)
+        }
+      }
 
   override suspend fun performQueryAll(): List<DbTransaction> {
     return transactionQueryDao.query()

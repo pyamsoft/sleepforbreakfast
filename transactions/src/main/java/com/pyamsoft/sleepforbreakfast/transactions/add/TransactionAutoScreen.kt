@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions.repeat
+package com.pyamsoft.sleepforbreakfast.transactions.auto
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
@@ -32,8 +32,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,20 +40,20 @@ import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
+import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
 
 @Composable
-fun TransactionRepeatInfoScreen(
+fun TransactionAutoScreen(
     modifier: Modifier = Modifier,
-    state: TransactionRepeatViewState,
-    transactionCreatedDate: LocalDate,
+    loading: LoadingState,
+    auto: DbAutomatic?,
+    date: LocalDate,
     onDismiss: () -> Unit,
 ) {
-  val loading by state.loading.collectAsState()
-  val repeat by state.repeat.collectAsState()
-
   Column(
       modifier = modifier,
   ) {
@@ -76,7 +74,7 @@ fun TransactionRepeatInfoScreen(
         },
         title = {
           Text(
-              text = "Repeat Source",
+              text = "Automatic Transaction",
           )
         },
     )
@@ -95,9 +93,9 @@ fun TransactionRepeatInfoScreen(
       }
       LoadingState.DONE -> {
         Crossfade(
-            targetState = repeat,
-        ) { r ->
-          if (r == null) {
+            targetState = auto,
+        ) { a ->
+          if (a == null) {
             Box(
                 modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
                 contentAlignment = Alignment.Center,
@@ -115,7 +113,7 @@ fun TransactionRepeatInfoScreen(
               item {
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-                    text = "Name: ${r.transactionName}",
+                    text = "Notification: ${a.notificationTitle}",
                     style = MaterialTheme.typography.body1,
                 )
               }
@@ -126,15 +124,63 @@ fun TransactionRepeatInfoScreen(
                         Modifier.fillMaxWidth()
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
-                    text = "Type: ${r.repeatType.displayName}",
+                    text = "Matched: ${a.notificationMatchText}",
+                    style = MaterialTheme.typography.body1,
+                )
+              }
+
+              item {
+                val money =
+                    remember(a.notificationAmountInCents) {
+                      MoneyVisualTransformation.format(a.notificationAmountInCents)
+                    }
+                Text(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.keylines.content)
+                            .padding(bottom = MaterialTheme.keylines.content * 2),
+                    text = "Amount: $money",
+                    style = MaterialTheme.typography.body1,
+                )
+              }
+
+              item {
+                Text(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.keylines.content)
+                            .padding(bottom = MaterialTheme.keylines.content),
+                    text = "Package: ${a.notificationPackageName}",
+                    style = MaterialTheme.typography.body1,
+                )
+              }
+
+              item {
+                Text(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.keylines.content)
+                            .padding(bottom = MaterialTheme.keylines.content),
+                    text = "Key: ${a.notificationKey}",
+                    style = MaterialTheme.typography.body1,
+                )
+              }
+
+              item {
+                Text(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.keylines.content)
+                            .padding(bottom = MaterialTheme.keylines.content),
+                    text = "Group: ${a.notificationGroup}",
                     style = MaterialTheme.typography.body1,
                 )
               }
 
               item {
                 val dateString =
-                    remember(transactionCreatedDate) {
-                      DATE_FORMATTER.get().requireNotNull().format(transactionCreatedDate)
+                    remember(date) {
+                      DATE_FORMATTER.get().requireNotNull().format(date)
                     }
                 Text(
                     modifier =
