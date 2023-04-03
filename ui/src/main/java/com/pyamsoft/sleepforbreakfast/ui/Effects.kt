@@ -15,14 +15,14 @@ fun debouncedOnTextChange(
     value: String,
     onChange: (String) -> Unit,
 ): MutableState<String> {
-  val handleSearchUpdated by rememberUpdatedState(onChange)
+  val handleChange by rememberUpdatedState(onChange)
 
   val ret = remember { mutableStateOf(value) }
-  val (search, setSearch) = ret
+  val current = ret.value
 
-  LaunchedEffect(search) {
+  LaunchedEffect(current) {
     delay(300L)
-    handleSearchUpdated(search)
+    handleChange(current)
   }
 
   return ret
