@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun debouncedOnTextChange(
     value: String,
+    delay: Long = 300L,
     onChange: (String) -> Unit,
 ): MutableState<String> {
   val handleChange by rememberUpdatedState(onChange)
@@ -20,8 +21,11 @@ fun debouncedOnTextChange(
   val ret = remember { mutableStateOf(value) }
   val current = ret.value
 
-  LaunchedEffect(current) {
-    delay(300L)
+  LaunchedEffect(
+      current,
+      delay,
+  ) {
+    delay(delay)
     handleChange(current)
   }
 
