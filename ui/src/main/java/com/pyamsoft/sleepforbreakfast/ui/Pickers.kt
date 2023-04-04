@@ -43,8 +43,8 @@ fun DatePickerDialog(
       onDismiss = onDismiss,
   ) {
     AndroidView(
-        factory = {
-          DatePicker(it).apply {
+        factory = { ctx ->
+          DatePicker(ctx).apply {
             init(
                 initialDate.year,
                 // Month is 1indexed, but we expect 0
@@ -78,8 +78,8 @@ fun TimePickerDialog(
       onDismiss = onDismiss,
   ) {
     AndroidView(
-        factory = {
-          TimePicker(it).apply {
+        factory = { ctx ->
+          TimePicker(ctx).apply {
             setIs24HourView(is24Hours)
             minute = initialTime.minute
             hour = initialTime.hour

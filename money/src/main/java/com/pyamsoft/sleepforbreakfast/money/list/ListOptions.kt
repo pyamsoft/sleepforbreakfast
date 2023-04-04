@@ -1,13 +1,13 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,13 +37,13 @@ import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
 fun Search(
     modifier: Modifier = Modifier,
     state: ListViewState<*>,
-    onSearchToggled: () -> Unit,
+    onToggle: () -> Unit,
 ) {
   val isOpen by state.isSearchOpen.collectAsState()
 
   IconButton(
       modifier = modifier,
-      onClick = onSearchToggled,
+      onClick = onToggle,
   ) {
     Icon(
         imageVector = Icons.Filled.Search,
@@ -59,20 +60,60 @@ fun Search(
 fun SearchBar(
     modifier: Modifier = Modifier,
     state: ListViewState<*>,
-    onSearchToggled: () -> Unit,
-    onSearchUpdated: (String) -> Unit,
+    onToggle: () -> Unit,
+    onChange: (String) -> Unit,
 ) {
   val initialSearch by state.search.collectAsState()
   val isOpen by state.isSearchOpen.collectAsState()
 
   // Do this so that we can debounce typing events
-  val (search, setSearch) = debouncedOnTextChange(initialSearch, onSearchUpdated)
+  val (search, setSearch) = debouncedOnTextChange(initialSearch, onChange)
 
-  BackHandler(
-      enabled = isOpen,
-      onBack = onSearchToggled,
-  )
+  KnobBar(
+      modifier = modifier,
+      isOpen = isOpen,
+      onToggle = onToggle,
+  ) {
+    TextField(
+        modifier = Modifier.weight(1F),
+        value = search,
+        onValueChange = { setSearch(it) },
+        keyboardOptions =
+            remember {
+              KeyboardOptions(
+                  autoCorrect = true,
+                  imeAction = ImeAction.Search,
+              )
+            },
+        leadingIcon = {
+          Icon(
+              imageVector = Icons.Filled.Search,
+              contentDescription = "Search",
+          )
+        },
+        trailingIcon = {
+          Icon(
+              modifier = Modifier.clickable { setSearch("") },
+              imageVector = Icons.Filled.Clear,
+              contentDescription = "Clear",
+          )
+        },
+        label = {
+          Text(
+              text = "Search",
+          )
+        },
+    )
+  }
+}
 
+@Composable
+fun KnobBar(
+    modifier: Modifier = Modifier,
+    isOpen: Boolean,
+    onToggle: () -> Unit,
+    content: @Composable RowScope.() -> Unit,
+) {
   AnimatedVisibility(
       visible = isOpen,
       enter = fadeIn() + slideInHorizontally(),
@@ -82,40 +123,22 @@ fun SearchBar(
         modifier = modifier,
         elevation = CardDefaults.Elevation,
     ) {
-      Box(
+      Row(
           modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-          contentAlignment = Alignment.Center,
+          verticalAlignment = Alignment.CenterVertically,
       ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = search,
-            onValueChange = { setSearch(it) },
-            keyboardOptions =
-                remember {
-                  KeyboardOptions(
-                      autoCorrect = true,
-                      imeAction = ImeAction.Search,
-                  )
-                },
-            leadingIcon = {
-              Icon(
-                  imageVector = Icons.Filled.Search,
-                  contentDescription = "Search",
-              )
-            },
-            trailingIcon = {
-              Icon(
-                  modifier = Modifier.clickable { setSearch("") },
-                  imageVector = Icons.Filled.Clear,
-                  contentDescription = "Clear",
-              )
-            },
-            label = {
-              Text(
-                  text = "Search",
-              )
-            },
-        )
+        content()
+
+        IconButton(
+            modifier = Modifier.padding(start = MaterialTheme.keylines.content),
+            onClick = onToggle,
+        ) {
+          Icon(
+              imageVector = Icons.Filled.Close,
+              contentDescription = "Close",
+              tint = MaterialTheme.colors.error,
+          )
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.transactions.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +16,10 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
+import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
+import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionAmount
+import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionDirection
+import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionRange
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import kotlin.math.abs
 
@@ -26,8 +30,12 @@ internal fun TransactionTotal(
     onDismiss: () -> Unit,
 
     // Search
-    onSearchToggled: () -> Unit,
-    onSearchUpdated: (String) -> Unit,
+    onSearchToggle: () -> Unit,
+    onSearchChange: (String) -> Unit,
+
+    // Breakdown
+    onBreakdownToggle: () -> Unit,
+    onBreakdownChange: (BreakdownRange) -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -35,14 +43,21 @@ internal fun TransactionTotal(
     Totals(
         state = state,
         onDismiss = onDismiss,
-        onSearchToggled = onSearchToggled,
+        onSearchToggle = onSearchToggle,
+        onBreakdownToggle = onBreakdownToggle,
     )
 
     SearchBar(
         state = state,
-        onSearchToggled = onSearchToggled,
-        onSearchUpdated = onSearchUpdated,
+        onToggle = onSearchToggle,
+        onChange = onSearchChange,
     )
+
+      PeriodBreakdownBar(
+          state = state,
+          onToggle = onBreakdownToggle,
+          onChange = onBreakdownChange,
+      )
   }
 }
 
@@ -53,7 +68,10 @@ private fun Totals(
     onDismiss: () -> Unit,
 
     // Search
-    onSearchToggled: () -> Unit,
+    onSearchToggle: () -> Unit,
+
+    // Breakdown
+    onBreakdownToggle: () -> Unit,
 ) {
   val transactions = state.items.collectAsStateList()
 
@@ -98,7 +116,8 @@ private fun Totals(
         HeaderKnobs(
             modifier = Modifier.weight(1F),
             state = state,
-            onSearchToggled = onSearchToggled,
+            onSearchToggle = onSearchToggle,
+            onBreakdownToggle = onBreakdownToggle,
         )
       },
   )

@@ -1,4 +1,4 @@
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.transactions.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -14,12 +14,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.money.list.Search
+import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 
 @Composable
 internal fun HeaderKnobs(
     modifier: Modifier,
     state: TransactionViewState,
-    onSearchToggled: () -> Unit,
+
+    // Search
+    onSearchToggle: () -> Unit,
+
+    // Breakdown
+    onBreakdownToggle: () -> Unit,
 ) {
   Row(
       modifier = modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
@@ -28,17 +34,13 @@ internal fun HeaderKnobs(
   ) {
     Search(
         state = state,
-        onSearchToggled = onSearchToggled,
+        onToggle = onSearchToggle,
     )
 
-    IconButton(
-        onClick = {},
-    ) {
-      Icon(
-          imageVector = Icons.Filled.Build,
-          contentDescription = "One",
-      )
-    }
+    PeriodBreakdown(
+        state = state,
+        onToggle = onBreakdownToggle,
+    )
 
     IconButton(
         onClick = {},

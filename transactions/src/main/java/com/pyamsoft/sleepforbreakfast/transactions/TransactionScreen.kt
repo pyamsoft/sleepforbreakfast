@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
-import androidx.annotation.CheckResult
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -28,58 +27,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
+import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
+import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionHeader
+import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionOrHeader
+import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionTotal
+import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWithHeaders
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
-import java.time.Month
-
-@Stable
-private sealed class TransactionOrHeader private constructor() {
-
-  @Stable data class Transaction(val transaction: DbTransaction) : TransactionOrHeader()
-
-  @Stable data class Header(val month: Month) : TransactionOrHeader()
-}
-
-@Composable
-@CheckResult
-private fun rememberTransactionsWithHeaders(
-    transactions: List<DbTransaction>
-): List<TransactionOrHeader> {
-  return remember(transactions) {
-    if (transactions.isEmpty()) {
-      return@remember emptyList()
-    }
-
-    val list = mutableListOf<TransactionOrHeader>()
-
-    // Keep track of the last month
-    var lastSeenMonth = transactions.first().date.month
-
-    // Start by inserting the month header
-    list.add(TransactionOrHeader.Header(lastSeenMonth))
-
-    for (t in transactions) {
-      val currentMonth = t.date.month
-
-      // If the month changes, insert our month header
-      if (currentMonth != lastSeenMonth) {
-        lastSeenMonth = currentMonth
-        list.add(TransactionOrHeader.Header(lastSeenMonth))
-      }
-
-      list.add(TransactionOrHeader.Transaction(t))
-    }
-
-    return@remember list
-  }
-}
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
@@ -101,6 +61,10 @@ fun TransactionScreen(
     // Search
     onSearchToggled: () -> Unit,
     onSearchUpdated: (String) -> Unit,
+
+    // Breakdown
+    onBreakdownToggled: () -> Unit,
+    onBreakdownChange: (BreakdownRange) -> Unit,
 ) {
   val transactions = state.items.collectAsStateList()
   val list = rememberTransactionsWithHeaders(transactions)
@@ -120,8 +84,14 @@ fun TransactionScreen(
           modifier = Modifier.fillMaxWidth().padding(pv),
           state = state,
           onDismiss = onDismiss,
-          onSearchToggled = onSearchToggled,
-          onSearchUpdated = onSearchUpdated,
+
+          // Search
+          onSearchToggle = onSearchToggled,
+          onSearchChange = onSearchUpdated,
+
+          // Breakdown
+          onBreakdownToggle = onBreakdownToggled,
+          onBreakdownChange = onBreakdownChange,
       )
 
       LazyColumn {

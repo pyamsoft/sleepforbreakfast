@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.transactions.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,6 +43,7 @@ import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
+import com.pyamsoft.sleepforbreakfast.transactions.TRANSACTION_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Month

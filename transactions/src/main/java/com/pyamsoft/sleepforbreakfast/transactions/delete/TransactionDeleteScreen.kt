@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteScreen
-import com.pyamsoft.sleepforbreakfast.transactions.TransactionCard
+import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 
 @Composable
 fun TransactionDeleteScreen(

@@ -173,15 +173,15 @@ private fun AppBar(
         actions = {
           Search(
               state = state,
-              onSearchToggled = onSearchToggled,
+              onToggle = onSearchToggled,
           )
         },
     )
 
     SearchBar(
         state = state,
-        onSearchToggled = onSearchToggled,
-        onSearchUpdated = onSearchUpdated,
+        onToggle = onSearchToggled,
+        onChange = onSearchUpdated,
     )
   }
 }
