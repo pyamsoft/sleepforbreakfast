@@ -325,7 +325,7 @@ private fun AutoInfo(
     }
   }
 
-  val date = existing?.repeatCreatedDate
+  val date = existing?.automaticCreatedDate
   if (isOpen && date != null) {
     SurfaceDialog(
         modifier = Modifier.fullScreenDialog(),
