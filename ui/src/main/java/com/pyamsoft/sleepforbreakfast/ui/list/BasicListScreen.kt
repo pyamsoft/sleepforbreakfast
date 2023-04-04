@@ -16,6 +16,10 @@
 
 package com.pyamsoft.sleepforbreakfast.ui.list
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -55,16 +59,10 @@ fun <T : Any> BasicListScreen(
       topBar = topBar,
       floatingActionButtonPosition = FabPosition.End,
       floatingActionButton = {
-        if (showActionButton) {
-          FloatingActionButton(
-              onClick = onActionButtonClicked,
-          ) {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "Add New",
-            )
-          }
-        }
+        AnimatedFab(
+            show = showActionButton,
+            onClick = onActionButtonClicked,
+        )
       },
   ) { pv ->
     content(pv)
@@ -76,6 +74,30 @@ fun <T : Any> BasicListScreen(
         onSnackbarAction = onSnackbarAction,
         deletedMessage = deletedMessage,
     )
+  }
+}
+
+@Composable
+@OptIn(ExperimentalAnimationApi::class)
+private fun AnimatedFab(
+    modifier: Modifier = Modifier,
+    show: Boolean,
+    onClick: () -> Unit,
+) {
+  AnimatedVisibility(
+      visible = show,
+      enter = scaleIn(),
+      exit = scaleOut(),
+  ) {
+    FloatingActionButton(
+        modifier = modifier,
+        onClick = onClick,
+    ) {
+      Icon(
+          imageVector = Icons.Filled.Add,
+          contentDescription = "Add New",
+      )
+    }
   }
 }
 

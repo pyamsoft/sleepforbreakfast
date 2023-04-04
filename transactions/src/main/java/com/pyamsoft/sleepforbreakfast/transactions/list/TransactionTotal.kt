@@ -53,11 +53,11 @@ internal fun TransactionTotal(
         onChange = onSearchChange,
     )
 
-      PeriodBreakdownBar(
-          state = state,
-          onToggle = onBreakdownToggle,
-          onChange = onBreakdownChange,
-      )
+    PeriodBreakdownBar(
+        state = state,
+        onToggle = onBreakdownToggle,
+        onChange = onBreakdownChange,
+    )
   }
 }
 

@@ -1,15 +1,22 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -30,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.theme.success
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
 
@@ -39,19 +47,54 @@ fun Search(
     state: ListViewState<*>,
     onToggle: () -> Unit,
 ) {
+  val search by state.search.collectAsState()
   val isOpen by state.isSearchOpen.collectAsState()
 
-  IconButton(
+  val show = remember(search) { search.isNotBlank() }
+
+  Box(
       modifier = modifier,
-      onClick = onToggle,
+      contentAlignment = Alignment.BottomEnd,
   ) {
-    Icon(
-        imageVector = Icons.Filled.Search,
-        contentDescription = "Search",
-        tint =
-            MaterialTheme.colors.onPrimary.copy(
-                alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
-            ),
+    IconButton(
+        onClick = onToggle,
+    ) {
+      Icon(
+          imageVector = Icons.Filled.Search,
+          contentDescription = "Search",
+          tint =
+              MaterialTheme.colors.onPrimary.copy(
+                  alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
+              ),
+      )
+    }
+
+    UsageIndicator(
+        show = show,
+    )
+  }
+}
+
+@Composable
+@OptIn(ExperimentalAnimationApi::class)
+fun UsageIndicator(
+    modifier: Modifier = Modifier,
+    show: Boolean,
+) {
+  AnimatedVisibility(visible = show, enter = scaleIn(), exit = scaleOut()) {
+    Box(
+        modifier =
+            modifier
+                .padding(bottom = MaterialTheme.keylines.baseline * 1.5F)
+                .padding(end = MaterialTheme.keylines.baseline)
+                .size(MaterialTheme.keylines.baseline)
+                .background(
+                    color = MaterialTheme.colors.success,
+                    shape =
+                        RoundedCornerShape(
+                            percent = 50,
+                        ),
+                ),
     )
   }
 }

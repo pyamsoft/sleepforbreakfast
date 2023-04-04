@@ -27,6 +27,7 @@ import com.pyamsoft.pydroid.theme.warning
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.list.KnobBar
+import com.pyamsoft.sleepforbreakfast.money.list.UsageIndicator
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import java.time.LocalDate
@@ -37,19 +38,30 @@ internal fun PeriodBreakdown(
     state: TransactionViewState,
     onToggle: () -> Unit,
 ) {
+  val breakdown by state.breakdown.collectAsState()
   val isOpen by state.isBreakdownOpen.collectAsState()
 
-  IconButton(
+  val show = remember(breakdown) { breakdown != null }
+
+  Box(
       modifier = modifier,
-      onClick = onToggle,
+      contentAlignment = Alignment.BottomEnd,
   ) {
-    Icon(
-        imageVector = Icons.Filled.DateRange,
-        contentDescription = "Date Range Breakdown",
-        tint =
-            MaterialTheme.colors.onPrimary.copy(
-                alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
-            ),
+    IconButton(
+        onClick = onToggle,
+    ) {
+      Icon(
+          imageVector = Icons.Filled.DateRange,
+          contentDescription = "Date Range Breakdown",
+          tint =
+              MaterialTheme.colors.onPrimary.copy(
+                  alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
+              ),
+      )
+    }
+
+    UsageIndicator(
+        show = show,
     )
   }
 }
