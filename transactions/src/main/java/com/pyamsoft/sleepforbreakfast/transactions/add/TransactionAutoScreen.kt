@@ -150,6 +150,17 @@ fun TransactionAutoScreen(
                         Modifier.fillMaxWidth()
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
+                    text = "ID: ${a.notificationId}",
+                    style = MaterialTheme.typography.body1,
+                )
+              }
+
+              item {
+                Text(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = MaterialTheme.keylines.content)
+                            .padding(bottom = MaterialTheme.keylines.content),
                     text = "Package: ${a.notificationPackageName}",
                     style = MaterialTheme.typography.body1,
                 )
@@ -179,9 +190,7 @@ fun TransactionAutoScreen(
 
               item {
                 val dateString =
-                    remember(date) {
-                      DATE_FORMATTER.get().requireNotNull().format(date)
-                    }
+                    remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()

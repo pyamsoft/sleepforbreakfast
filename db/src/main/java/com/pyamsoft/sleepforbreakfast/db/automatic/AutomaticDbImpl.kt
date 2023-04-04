@@ -73,18 +73,18 @@ internal constructor(
 
   private val queryByNotificationCache =
       multiCachify<
-          QueryByNotificationKey, Maybe<out DbAutomatic>, Int, String, String, String, Long> {
+          QueryByNotificationKey, Maybe<out DbAutomatic>, Int, String, String, String, String> {
           id,
           key,
           group,
           packageName,
-          time ->
+          matchText ->
         enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryByNotification(
             notificationId = id,
             notificationGroup = group,
             notificationKey = key,
-            notificationPostTime = time,
+            notificationMatchText = matchText,
             notificationPackageName = packageName,
         )
       }
@@ -111,7 +111,7 @@ internal constructor(
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationPostTime: Long
+      notificationMatchText: String
   ) =
       withContext(context = Dispatchers.IO) {
         val key =
@@ -119,7 +119,7 @@ internal constructor(
                 notificationId = notificationId,
                 notificationKey = notificationKey,
                 notificationGroup = notificationGroup,
-                notificationPostTime = notificationPostTime,
+                notificationMatchText = notificationMatchText,
                 notificationPackageName = notificationPackageName,
             )
 
@@ -150,7 +150,7 @@ internal constructor(
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationPostTime: Long
+      notificationMatchText: String
   ): Maybe<out DbAutomatic> =
       withContext(context = Dispatchers.IO) {
         val key =
@@ -158,7 +158,7 @@ internal constructor(
                 notificationId = notificationId,
                 notificationKey = notificationKey,
                 notificationGroup = notificationGroup,
-                notificationPostTime = notificationPostTime,
+                notificationMatchText = notificationMatchText,
                 notificationPackageName = notificationPackageName,
             )
 
@@ -169,7 +169,7 @@ internal constructor(
                 notificationKey,
                 notificationGroup,
                 notificationPackageName,
-                notificationPostTime,
+                notificationMatchText,
             )
       }
 
@@ -224,6 +224,6 @@ internal constructor(
       val notificationKey: String,
       val notificationGroup: String,
       val notificationPackageName: String,
-      val notificationPostTime: Long,
+      val notificationMatchText: String,
   )
 }

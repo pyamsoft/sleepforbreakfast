@@ -114,6 +114,31 @@ internal constructor(
         .onFinally { state.loadingRepeat.value = LoadingState.DONE }
   }
 
+  private suspend fun loadAuto(transaction: DbTransaction) {
+    if (transaction.automaticId == null) {
+      state.existingAuto.value = null
+      state.loadingAuto.value = LoadingState.DONE
+      return
+    }
+
+    state.loadingAuto.value = LoadingState.LOADING
+    interactor
+        .loadAuto(transaction)
+        .onSuccess {
+          when (it) {
+            is Maybe.Data -> {
+              state.existingAuto.value = it.data
+            }
+            is Maybe.None -> {
+              state.existingAuto.value = null
+            }
+          }
+        }
+        .onFailure { Timber.e(it, "Error getting auto data") }
+        .onFailure { state.existingAuto.value = null }
+        .onFinally { state.loadingAuto.value = LoadingState.DONE }
+  }
+
   override suspend fun compile(): DbTransaction {
     return DbTransaction.create(clock, initialId)
         .name(state.name.value)
@@ -140,6 +165,7 @@ internal constructor(
     handleReset(result)
 
     launch(context = Dispatchers.Main) { loadRepeat(result) }
+    launch(context = Dispatchers.Main) { loadAuto(result) }
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {

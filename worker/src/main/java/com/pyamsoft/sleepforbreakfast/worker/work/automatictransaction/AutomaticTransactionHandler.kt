@@ -86,6 +86,23 @@ ${auto.notificationMatchText}
     }
   }
 
+  private suspend fun markConsumed(automatic: DbAutomatic) {
+    Timber.d("Created new transaction from auto, consume!")
+
+    when (val result = automaticInsertDao.insert(automatic.consume())) {
+      is DbInsert.InsertResult.Fail -> {
+        Timber.e(result.error, "Failed to consume automatic: $automatic")
+      }
+      is DbInsert.InsertResult.Insert -> {
+        // This should not happen
+        Timber.d("Marked NEW automatic consumed: $automatic")
+      }
+      is DbInsert.InsertResult.Update -> {
+        Timber.d("Marked automatic consumed: $automatic")
+      }
+    }
+  }
+
   suspend fun process(automatic: DbAutomatic) {
     // If its already used, skip it
     if (automatic.used) {
@@ -94,20 +111,7 @@ ${auto.notificationMatchText}
 
     val created = createTransactionFromTemplate(automatic)
     if (created) {
-      Timber.d("Created new transaction from auto, consume!")
-
-      when (val result = automaticInsertDao.insert(automatic.consume())) {
-        is DbInsert.InsertResult.Fail -> {
-          Timber.e(result.error, "Failed to consume automatic: $automatic")
-        }
-        is DbInsert.InsertResult.Insert -> {
-          // This should not happen
-          Timber.d("Marked NEW automatic consumed: $automatic")
-        }
-        is DbInsert.InsertResult.Update -> {
-          Timber.d("Marked automatic consumed: $automatic")
-        }
-      }
+      markConsumed(automatic)
     }
   }
 }

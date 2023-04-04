@@ -32,7 +32,7 @@ interface AutomaticQueryDao : DbQuery<DbAutomatic> {
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationPostTime: Long,
+      notificationMatchText: String,
   ): Maybe<out DbAutomatic>
 
   interface Cache : DbQuery.Cache {
@@ -44,7 +44,7 @@ interface AutomaticQueryDao : DbQuery<DbAutomatic> {
         notificationKey: String,
         notificationGroup: String,
         notificationPackageName: String,
-        notificationPostTime: Long,
+        notificationMatchText: String,
     )
   }
 }
@@ -54,7 +54,7 @@ suspend fun AutomaticQueryDao.queryByAutomaticNotification(
     automatic: DbAutomatic
 ): Maybe<out DbAutomatic> {
   return this.queryByNotification(
-      notificationPostTime = automatic.notificationPostTime,
+      notificationMatchText = automatic.notificationMatchText,
       notificationKey = automatic.notificationKey,
       notificationGroup = automatic.notificationGroup,
       notificationId = automatic.notificationId,

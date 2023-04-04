@@ -19,6 +19,8 @@ package com.pyamsoft.sleepforbreakfast.transactions
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
+import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -44,9 +46,26 @@ constructor(
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
     private val repeatQueryDao: RepeatQueryDao,
+    private val autoQueryDao: AutomaticQueryDao,
 ) :
     TransactionInteractor,
     ListInteractorImpl<DbTransaction.Id, DbTransaction, TransactionChangeEvent>() {
+
+  override suspend fun loadAuto(transaction: DbTransaction): ResultWrapper<Maybe<out DbAutomatic>> =
+      withContext(context = Dispatchers.IO) {
+        val r = transaction.automaticId
+        if (r == null) {
+          Timber.w("Transaction has no auto data: $transaction")
+          return@withContext ResultWrapper.success(Maybe.None)
+        }
+
+        try {
+          ResultWrapper.success(autoQueryDao.queryById(r))
+        } catch (e: Throwable) {
+          Timber.e(e, "Error loading Automatic from transaction: $transaction")
+          ResultWrapper.failure(e)
+        }
+      }
 
   override suspend fun loadRepeat(transaction: DbTransaction): ResultWrapper<Maybe<out DbRepeat>> =
       withContext(context = Dispatchers.IO) {

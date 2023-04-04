@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.transactions
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.Maybe
+import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
@@ -29,4 +30,7 @@ internal interface TransactionInteractor :
 
   @CheckResult
   suspend fun loadRepeat(transaction: DbTransaction): ResultWrapper<Maybe<out DbRepeat>>
+
+  @CheckResult
+  suspend fun loadAuto(transaction: DbTransaction): ResultWrapper<Maybe<out DbAutomatic>>
 }
