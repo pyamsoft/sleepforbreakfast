@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
@@ -80,8 +79,6 @@ internal fun CategoryAddEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 
-  val handleSubmit by rememberUpdatedState { viewModel.handleSubmit(scope = scope) }
-
   MountHooks(
       viewModel = viewModel,
   )
@@ -96,7 +93,12 @@ internal fun CategoryAddEntry(
         onNameChanged = { viewModel.handleNameChanged(it) },
         onNoteChanged = { viewModel.handleNoteChanged(it) },
         onReset = { viewModel.handleReset() },
-        onSubmit = { handleSubmit() },
+        onSubmit = {
+          viewModel.handleSubmit(
+              scope = scope,
+              onDismissAfterUpdated = onDismiss,
+          )
+        },
     )
   }
 }

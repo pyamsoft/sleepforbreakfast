@@ -28,6 +28,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class CategoryAddViewModeler
@@ -83,7 +84,10 @@ internal constructor(
     state.note.value = note
   }
 
-  fun handleSubmit(scope: CoroutineScope) {
+  fun handleSubmit(
+      scope: CoroutineScope,
+      onDismissAfterUpdated: () -> Unit,
+  ) {
     Timber.d("Attempt new submission")
     if (state.working.value) {
       Timber.w("Already working")
@@ -114,6 +118,12 @@ internal constructor(
             }
           }
           .onSuccess { handleReset() }
+          .onSuccess {
+            if (!isIdEmpty(initialId)) {
+              // Force onto main thread
+              withContext(context = Dispatchers.Main) { onDismissAfterUpdated() }
+            }
+          }
           .onFailure {
             Timber.e(it, "Unable to process category: $category")
             // TODO handle error in UI

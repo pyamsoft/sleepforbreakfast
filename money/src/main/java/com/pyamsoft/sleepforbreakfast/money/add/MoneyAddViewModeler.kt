@@ -28,6 +28,7 @@ import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 abstract class MoneyAddViewModeler<I : Any, T : Any, S : MutableMoneyAddViewState>
@@ -117,7 +118,10 @@ protected constructor(
     onReset(payload)
   }
 
-  fun handleSubmit(scope: CoroutineScope) {
+  fun handleSubmit(
+      scope: CoroutineScope,
+      onDismissAfterUpdated: () -> Unit,
+  ) {
     Timber.d("Attempt new submission")
     if (state.working.value) {
       Timber.w("Already working")
@@ -154,6 +158,12 @@ protected constructor(
             }
           }
           .onSuccess { handleReset() }
+          .onSuccess {
+            if (!isIdEmpty(initialId)) {
+              // Force onto main thread
+              withContext(context = Dispatchers.Main) { onDismissAfterUpdated() }
+            }
+          }
           .onFailure {
             Timber.e(it, "Unable to process repeat: $data")
             // TODO handle error in UI

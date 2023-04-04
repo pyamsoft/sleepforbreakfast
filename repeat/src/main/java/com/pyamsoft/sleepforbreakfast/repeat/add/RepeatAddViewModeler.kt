@@ -16,11 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
-import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
-import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
@@ -44,7 +41,6 @@ internal constructor(
     state: MutableRepeatAddViewState,
     interactor: RepeatInteractor,
     params: RepeatAddParams,
-    private val systemCategories: SystemCategories,
     private val clock: Clock,
     private val categoryLoader: CategoryLoader,
     private val workerQueue: WorkerQueue,
@@ -131,22 +127,6 @@ internal constructor(
     handleCloseDateDialog()
   }
 
-  @CheckResult
-  private suspend fun getCategories(): List<DbCategory.Id> {
-    val systemCategory = systemCategories.categoryByName(RequiredCategories.REPEATING)
-    val cleanCategories = mutableSetOf<DbCategory.Id>()
-    if (systemCategory != null) {
-      cleanCategories.add(systemCategory.id)
-    } else {
-      Timber.w("Failed to add system category to repeat")
-    }
-    for (c in state.categories.value) {
-      cleanCategories.add(c)
-    }
-
-    return cleanCategories.toList()
-  }
-
   override suspend fun compile(): DbRepeat {
     return DbRepeat.create(clock, initialId)
         .repeatType(state.repeatType.value)
@@ -157,7 +137,7 @@ internal constructor(
         .transactionAmountInCents(state.amount.value)
         .transactionNote(state.note.value)
         .transactionType(state.type.value)
-        .replaceTransactionCategories(getCategories())
+        .replaceTransactionCategories(state.categories.value)
   }
 
   override suspend fun onNewCreated(data: DbRepeat) {

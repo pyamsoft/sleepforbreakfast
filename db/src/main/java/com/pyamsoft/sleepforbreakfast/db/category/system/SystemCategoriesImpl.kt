@@ -49,7 +49,6 @@ internal constructor(
           RequiredCategories.VENMO_PAY -> "Venmo payments"
           RequiredCategories.VENMO_REQUESTS -> "Venmo requests"
           RequiredCategories.GOOGLE_WALLET -> "Google Wallet spending notifications"
-          RequiredCategories.REPEATING -> "Repeating Transactions"
         }
 
     return "System Category for $what"
