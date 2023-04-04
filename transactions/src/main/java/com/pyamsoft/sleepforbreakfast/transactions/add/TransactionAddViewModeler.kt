@@ -140,7 +140,7 @@ internal constructor(
   }
 
   override suspend fun compile(): DbTransaction {
-    return DbTransaction.create(clock, initialId)
+    return (state.existingTransaction.value ?: DbTransaction.create(clock, initialId))
         .name(state.name.value)
         .amountInCents(state.amount.value)
         .date(state.date.value)
