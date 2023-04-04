@@ -43,7 +43,7 @@ internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationPostTime: Long
+      notificationMatchText: String
   ): Maybe<out DbAutomatic> =
       withContext(context = Dispatchers.IO) {
         when (val result =
@@ -52,7 +52,7 @@ internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
                 key = notificationKey,
                 group = notificationGroup,
                 packageName = notificationPackageName,
-                postTime = notificationPostTime,
+                matchText = notificationMatchText,
             )) {
           null -> Maybe.None
           else -> Maybe.Data(result)
@@ -67,7 +67,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_KEY} = :key
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_GROUP} = :group
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_PACKAGE} = :packageName
-  AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_POST_TIME} = :postTime
+  AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_MATCH_TEXT} = :matchText
   LIMIT 1
 """)
   internal abstract suspend fun daoQueryByNotification(
@@ -75,7 +75,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
       key: String,
       group: String,
       packageName: String,
-      postTime: Long
+      matchText: String,
   ): RoomDbAutomatic?
 
   final override suspend fun queryUnused(): List<DbAutomatic> =

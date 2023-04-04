@@ -31,6 +31,8 @@ import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
 @Singleton
@@ -53,44 +55,54 @@ internal constructor(
   override suspend fun processNotification(
       sbn: StatusBarNotification,
       extras: Bundle,
-  ) {
-    val automaticPayment = manager.extractPayment(sbn.packageName, extras) ?: return
+  ) =
+      GLOBAL_LOCK.withLock {
+        val automaticPayment = manager.extractPayment(sbn.packageName, extras) ?: return
 
-    val automatic =
-        DbAutomatic.create(clock)
-            .notificationId(sbn.id)
-            .notificationKey(sbn.key)
-            .notificationGroup(sbn.groupKey)
-            .notificationPackageName(sbn.packageName)
-            .notificationPostTime(sbn.postTime)
-            .notificationTitle(automaticPayment.title)
-            .notificationMatchText(automaticPayment.text)
-            .notificationAmountInCents(automaticPayment.amount)
-            .notificationType(automaticPayment.type)
-            .replaceCategories(automaticPayment.categories)
+        val automatic =
+            DbAutomatic.create(clock)
+                .notificationId(sbn.id)
+                .notificationKey(sbn.key)
+                .notificationGroup(sbn.groupKey)
+                .notificationPackageName(sbn.packageName)
+                .notificationPostTime(sbn.postTime)
+                .notificationTitle(automaticPayment.title)
+                .notificationMatchText(automaticPayment.text)
+                .notificationAmountInCents(automaticPayment.amount)
+                .notificationType(automaticPayment.type)
+                .replaceCategories(automaticPayment.categories)
 
-    when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {
-      is Maybe.Data -> {
-        Timber.w(
-            "Found existing automatic notification matching parameters: ${mapOf(
+        when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {
+          is Maybe.Data -> {
+            Timber.w(
+                "Found existing automatic notification matching parameters: ${mapOf(
                   "NEW" to automatic,
                   "EXISTING" to existing,
               )}")
-      }
-      is Maybe.None -> {
-        when (val result = automaticInsertDao.insert(automatic)) {
-          is DbInsert.InsertResult.Fail -> {
-            Timber.e(result.error, "Failed to insert automatic $automatic")
           }
-          is DbInsert.InsertResult.Update -> {
-            Timber.d("Update existing automatic: $automatic")
-          }
-          is DbInsert.InsertResult.Insert -> {
-            Timber.d("Inserted automatic: $automatic")
-            handleProcessUnusedAutomatic(automatic)
+          is Maybe.None -> {
+            when (val result = automaticInsertDao.insert(automatic)) {
+              is DbInsert.InsertResult.Fail -> {
+                Timber.e(result.error, "Failed to insert automatic $automatic")
+              }
+              is DbInsert.InsertResult.Update -> {
+                Timber.d("Update existing automatic: $automatic")
+              }
+              is DbInsert.InsertResult.Insert -> {
+                Timber.d("Inserted automatic: $automatic")
+                handleProcessUnusedAutomatic(automatic)
+              }
+            }
           }
         }
       }
-    }
+
+  companion object {
+
+    /**
+     * the global lock prevents multiple callers from running this handler at the same time as it
+     * could cause duplicates in the DB if operations are close enough
+     */
+    private val GLOBAL_LOCK = Mutex()
   }
 }
