@@ -27,7 +27,11 @@ import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class TransactionViewModeler
 @Inject
@@ -124,6 +128,52 @@ internal constructor(
     return this.sortedByDescending { it.date }
   }
 
+  override fun onGenerateItemsBasedOnAllItems(
+      scope: CoroutineScope,
+      allItems: StateFlow<List<DbTransaction>>
+  ) {
+    // Create a source that generates data based on the latest from all sources
+    val combined =
+        combineTransform(
+            allItems,
+            state.search,
+            state.breakdown,
+        ) { all, search, breakdown ->
+          emit(
+              ItemPayload(
+                  transactions = all,
+                  search = search,
+                  range = breakdown,
+              ),
+          )
+        }
+
+    scope.launch(context = Dispatchers.Default) {
+      combined.collect { (all, search, range) ->
+        state.items.value =
+            all.asSequence()
+                // Filter by search query
+                .run {
+                  if (search.isNotBlank()) {
+                    filter { isMatchingSearch(it, search) }
+                  } else {
+                    this
+                  }
+                }
+                // Filter by search query
+                .run {
+                  if (range != null) {
+                    filter { it.date.toLocalDate().let { d -> d >= range.start && d <= range.end } }
+                  } else {
+                    this
+                  }
+                }
+                .toList()
+                .sort()
+      }
+    }
+  }
+
   fun handleEditTransaction(transaction: DbTransaction) {
     handleAddParams(
         params =
@@ -170,6 +220,12 @@ internal constructor(
   fun handleClearBreakdownRange() {
     state.breakdown.value = null
   }
+
+  private data class ItemPayload(
+      val transactions: List<DbTransaction>,
+      val search: String,
+      val range: BreakdownRange?,
+  )
 
   companion object {
     private const val KEY_ADD_PARAMS = "key_add_params"

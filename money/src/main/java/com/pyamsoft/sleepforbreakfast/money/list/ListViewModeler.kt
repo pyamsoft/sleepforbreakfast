@@ -26,6 +26,7 @@ import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
@@ -49,12 +50,38 @@ protected constructor(
     }
   }
 
-  private data class ItemPayload<T : Any>(
-      val items: List<T>,
-      val search: String,
-  )
-
   private fun generateItemsBasedOnAllItems(scope: CoroutineScope) {
+    onGenerateItemsBasedOnAllItems(
+        scope = scope,
+        allItems = allItems,
+    )
+  }
+
+  final override fun registerSaveState(
+      registry: SaveableStateRegistry
+  ): List<SaveableStateRegistry.Entry> =
+      mutableListOf<SaveableStateRegistry.Entry>().apply {
+        registry.registerProvider(KEY_SEARCH) { state.search.value }.also { add(it) }
+        registry.registerProvider(KEY_IS_SEARCH_OPEN) { state.isSearchOpen.value }.also { add(it) }
+
+        onRegisterSaveState(registry)
+      }
+
+  final override fun consumeRestoredState(registry: SaveableStateRegistry) {
+    registry.consumeRestored(KEY_SEARCH)?.let { it as String }?.also { state.search.value = it }
+
+    registry
+        .consumeRestored(KEY_IS_SEARCH_OPEN)
+        ?.let { it as Boolean }
+        ?.also { state.isSearchOpen.value = it }
+
+    onConsumeRestoredState(registry)
+  }
+
+  protected open fun onGenerateItemsBasedOnAllItems(
+      scope: CoroutineScope,
+      allItems: StateFlow<List<T>>,
+  ) {
     // Create a source that generates data based on the latest from all sources
     val combined =
         combineTransform(
@@ -78,27 +105,6 @@ protected constructor(
         }
       }
     }
-  }
-
-  final override fun registerSaveState(
-      registry: SaveableStateRegistry
-  ): List<SaveableStateRegistry.Entry> =
-      mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry.registerProvider(KEY_SEARCH) { state.search.value }.also { add(it) }
-        registry.registerProvider(KEY_IS_SEARCH_OPEN) { state.isSearchOpen.value }.also { add(it) }
-
-        onRegisterSaveState(registry)
-      }
-
-  final override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_SEARCH)?.let { it as String }?.also { state.search.value = it }
-
-    registry
-        .consumeRestored(KEY_IS_SEARCH_OPEN)
-        ?.let { it as Boolean }
-        ?.also { state.isSearchOpen.value = it }
-
-    onConsumeRestoredState(registry)
   }
 
   protected fun handleItemDeleted(
@@ -223,6 +229,11 @@ protected constructor(
   )
 
   protected abstract fun onConsumeRestoredState(registry: SaveableStateRegistry)
+
+  private data class ItemPayload<T : Any>(
+      val items: List<T>,
+      val search: String,
+  )
 
   companion object {
     private const val KEY_IS_SEARCH_OPEN = "key_is_search_open"
