@@ -21,5 +21,4 @@ enum class RequiredCategories(val displayName: String) {
   VENMO_PAY("Venmo Payments"),
   VENMO_REQUESTS("Venmo Requests"),
   GOOGLE_WALLET("Google Wallet"),
-  REPEATING("Repeating Transactions"),
 }
