@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,8 @@ interface CategoryAddViewState : UiViewState {
   val name: StateFlow<String>
   val note: StateFlow<String>
   val working: StateFlow<Boolean>
+
+  val existingCategory: StateFlow<DbCategory?>
 }
 
 @Stable
@@ -34,4 +37,5 @@ class MutableCategoryAddViewState @Inject internal constructor() : CategoryAddVi
   override val name = MutableStateFlow("")
   override val note = MutableStateFlow("")
   override val working = MutableStateFlow(false)
+  override val existingCategory = MutableStateFlow<DbCategory?>(null)
 }

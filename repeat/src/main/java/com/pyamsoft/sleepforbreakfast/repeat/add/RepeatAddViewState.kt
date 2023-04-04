@@ -35,6 +35,8 @@ interface RepeatAddViewState : MoneyAddViewState {
   val repeatType: StateFlow<DbRepeat.Type>
 
   val isDateDialogOpen: StateFlow<Boolean>
+
+  val existingRepeat: StateFlow<DbRepeat?>
 }
 
 @Stable
@@ -48,4 +50,6 @@ internal constructor(
   override val repeatType = MutableStateFlow(DbRepeat.Type.DAILY)
 
   override val isDateDialogOpen = MutableStateFlow(false)
+
+  override val existingRepeat = MutableStateFlow<DbRepeat?>(null)
 }

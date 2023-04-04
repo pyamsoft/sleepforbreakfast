@@ -72,6 +72,8 @@ internal constructor(
   }
 
   override fun CoroutineScope.onDataLoaded(result: DbRepeat) {
+    state.existingRepeat.value = result
+
     // But once we are loaded initialize everything
     handleReset(result)
   }
@@ -128,11 +130,10 @@ internal constructor(
   }
 
   override suspend fun compile(): DbRepeat {
-    return DbRepeat.create(clock, initialId)
+    val repeat = state.existingRepeat.value ?: DbRepeat.create(clock, initialId)
+    return repeat
         .repeatType(state.repeatType.value)
         .firstDay(state.repeatFirstDay.value)
-        .unarchive()
-        .activate()
         .transactionName(state.name.value)
         .transactionAmountInCents(state.amount.value)
         .transactionNote(state.note.value)

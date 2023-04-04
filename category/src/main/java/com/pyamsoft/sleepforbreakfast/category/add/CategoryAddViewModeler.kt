@@ -52,7 +52,8 @@ internal constructor(
 
   @CheckResult
   private fun compile(): DbCategory {
-    return DbCategory.create(clock, initialId).name(state.name.value).note(state.note.value)
+    val category = state.existingCategory.value ?: DbCategory.create(clock, initialId)
+    return category.name(state.name.value).note(state.note.value)
   }
   override fun onBind(scope: CoroutineScope) {
     handleReset()
@@ -63,6 +64,9 @@ internal constructor(
   }
 
   override fun CoroutineScope.onDataLoaded(result: DbCategory) {
+    state.existingCategory.value = result
+
+    // Setup UI
     handleReset(result)
   }
 

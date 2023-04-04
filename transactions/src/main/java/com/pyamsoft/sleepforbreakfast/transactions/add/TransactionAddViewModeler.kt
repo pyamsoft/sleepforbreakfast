@@ -140,7 +140,8 @@ internal constructor(
   }
 
   override suspend fun compile(): DbTransaction {
-    return (state.existingTransaction.value ?: DbTransaction.create(clock, initialId))
+    val transaction = state.existingTransaction.value ?: DbTransaction.create(clock, initialId)
+    return transaction
         .name(state.name.value)
         .amountInCents(state.amount.value)
         .date(state.date.value)
