@@ -19,20 +19,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.DismissValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -40,6 +47,7 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.theme.success
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
+import kotlinx.coroutines.flow.filter
 
 @Composable
 fun Search(
@@ -166,27 +174,56 @@ fun KnobBar(
       enter = fadeIn() + slideInHorizontally(),
       exit = fadeOut() + slideOutHorizontally(),
   ) {
-    Surface(
-        modifier = modifier,
-        elevation = CardDefaults.Elevation,
+    SwipeAway(
+        onSwiped = onToggle,
     ) {
-      Row(
-          modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-          verticalAlignment = Alignment.CenterVertically,
+      Surface(
+          modifier = modifier,
+          elevation = CardDefaults.Elevation,
       ) {
-        content()
-
-        IconButton(
-            modifier = Modifier.padding(start = MaterialTheme.keylines.content),
-            onClick = onToggle,
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-          Icon(
-              imageVector = Icons.Filled.Close,
-              contentDescription = "Close",
-              tint = MaterialTheme.colors.error,
-          )
+          content()
+
+          IconButton(
+              modifier = Modifier.padding(start = MaterialTheme.keylines.content),
+              onClick = onToggle,
+          ) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = "Close",
+                tint = MaterialTheme.colors.error,
+            )
+          }
         }
       }
     }
   }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun SwipeAway(
+    modifier: Modifier = Modifier,
+    onSwiped: () -> Unit,
+    content: @Composable RowScope.() -> Unit,
+) {
+  val handleSwiped by rememberUpdatedState(onSwiped)
+
+  val swipeState = rememberDismissState()
+
+  LaunchedEffect(swipeState) {
+    snapshotFlow { swipeState.currentValue }
+        .filter { it != DismissValue.Default }
+        .collect { handleSwiped() }
+  }
+
+  SwipeToDismiss(
+      modifier = modifier,
+      state = swipeState,
+      background = {},
+      dismissContent = content,
+  )
 }
