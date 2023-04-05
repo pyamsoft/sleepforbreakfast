@@ -18,7 +18,9 @@ package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -31,6 +33,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
@@ -62,8 +65,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.theme.success
+import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.util.isPortrait
-import com.pyamsoft.pydroid.ui.widget.MaterialCheckable
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
@@ -171,27 +175,64 @@ fun MoneyType(
       modifier = modifier,
       verticalAlignment = Alignment.CenterVertically,
   ) {
-    MaterialCheckable(
+    SpendType(
         modifier = Modifier.weight(1F),
-        isEditable = true,
-        condition = isSpend,
-        title = "Spend",
-        description = "Money Spent",
-        onClick = { onTypeChanged(DbTransaction.Type.SPEND) },
+        type = DbTransaction.Type.SPEND,
+        onTypeChanged = onTypeChanged,
     )
 
     Spacer(
         modifier = Modifier.width(MaterialTheme.keylines.content),
     )
 
-    MaterialCheckable(
+    SpendType(
         modifier = Modifier.weight(1F),
-        isEditable = true,
-        condition = isEarn,
-        title = "Earn",
-        description = "Money Earned",
-        onClick = { onTypeChanged(DbTransaction.Type.EARN) },
+        type = DbTransaction.Type.EARN,
+        onTypeChanged = onTypeChanged,
     )
+  }
+}
+
+@Composable
+private fun SpendType(
+    modifier: Modifier = Modifier,
+    type: DbTransaction.Type,
+    onTypeChanged: (DbTransaction.Type) -> Unit,
+) {
+  val spendColor = MaterialTheme.colors.error
+  val earnColor = MaterialTheme.colors.success
+  val color =
+      remember(
+          type,
+          spendColor,
+          earnColor,
+      ) {
+        when (type) {
+          DbTransaction.Type.SPEND -> spendColor
+          DbTransaction.Type.EARN -> earnColor
+        }
+      }
+
+  Card(
+      modifier =
+          modifier.border(
+              width = 2.dp,
+              color = color.copy(alpha = ContentAlpha.medium),
+              shape = MaterialTheme.shapes.medium,
+          ),
+      elevation = CardDefaults.Elevation,
+  ) {
+    Column(
+        modifier =
+            Modifier.clickable { onTypeChanged(type) }.padding(MaterialTheme.keylines.content),
+    ) {
+      Text(
+          modifier = Modifier.fillMaxWidth(),
+          text = type.name,
+          fontWeight = FontWeight.W700,
+          style = MaterialTheme.typography.h6,
+      )
+    }
   }
 }
 

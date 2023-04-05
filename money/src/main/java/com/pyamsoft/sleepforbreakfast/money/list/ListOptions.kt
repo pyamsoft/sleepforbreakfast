@@ -81,7 +81,11 @@ fun UsageIndicator(
     modifier: Modifier = Modifier,
     show: Boolean,
 ) {
-  AnimatedVisibility(visible = show, enter = scaleIn(), exit = scaleOut()) {
+  AnimatedVisibility(
+      visible = show,
+      enter = scaleIn(),
+      exit = scaleOut(),
+  ) {
     Box(
         modifier =
             modifier
