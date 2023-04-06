@@ -16,8 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.money.delete
 
-import com.pyamsoft.highlander.highlander
-import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
 import kotlinx.coroutines.CoroutineScope
@@ -29,15 +27,13 @@ abstract class DeleteViewModeler<I : Any, T : Any, S : MutableDeleteViewState<T>
 protected constructor(
     state: S,
     initialId: I,
-    interactor: ListInteractor<I, T, *>,
+    private val interactor: ListInteractor<I, T, *>,
 ) :
     OneViewModeler<I, T, S>(
         state = state,
         initialId = initialId,
         interactor = interactor,
     ) {
-
-  private val deleteRunner = highlander<ResultWrapper<Boolean>, T> { interactor.delete(it) }
 
   final override fun onBind(scope: CoroutineScope) {}
 
@@ -67,8 +63,8 @@ protected constructor(
       }
 
       state.working.value = true
-      deleteRunner
-          .call(item)
+      interactor
+          .delete(item)
           .onFailure { Timber.e(it, "Failed to delete item: $item") }
           .onSuccess { deleted ->
             if (deleted) {

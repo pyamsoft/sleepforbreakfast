@@ -17,8 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.highlander.highlander
-import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -36,7 +34,7 @@ class CategoryAddViewModeler
 internal constructor(
     state: MutableCategoryAddViewState,
     params: CategoryAddParams,
-    interactor: CategoryInteractor,
+    private val interactor: CategoryInteractor,
     private val clock: Clock,
 ) :
     OneViewModeler<DbCategory.Id, DbCategory, MutableCategoryAddViewState>(
@@ -44,11 +42,6 @@ internal constructor(
         initialId = params.categoryId,
         interactor = interactor,
     ) {
-
-  private val submitRunner =
-      highlander<ResultWrapper<DbInsert.InsertResult<DbCategory>>, DbCategory> { category ->
-        interactor.submit(category)
-      }
 
   @CheckResult
   private fun compile(): DbCategory {
@@ -106,8 +99,8 @@ internal constructor(
 
       val category = compile()
       state.working.value = true
-      submitRunner
-          .call(category)
+      interactor
+          .submit(category)
           .onFailure { Timber.e(it, "Error occurred when submitting category $category") }
           .onSuccess { res ->
             when (res) {

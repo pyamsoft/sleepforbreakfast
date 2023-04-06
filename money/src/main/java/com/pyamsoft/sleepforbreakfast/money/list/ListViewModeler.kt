@@ -18,9 +18,7 @@ package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.highlander.highlander
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
-import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
@@ -40,9 +38,6 @@ protected constructor(
 ) : AbstractViewModeler<S>(state) {
 
   private val allItems = MutableStateFlow(emptyList<T>())
-
-  private val submitRunner =
-      highlander<ResultWrapper<DbInsert.InsertResult<T>>, T> { interactor.submit(it) }
 
   private fun listenForItems(scope: CoroutineScope) {
     scope.launch(context = Dispatchers.Main) {
@@ -182,8 +177,8 @@ protected constructor(
     val deleted = state.recentlyDeleted.getAndUpdate { null }
     if (deleted != null) {
       scope.launch(context = Dispatchers.Main) {
-        submitRunner
-            .call(deleted)
+        interactor
+            .submit(deleted)
             .onFailure { Timber.e(it, "Error when restoring $deleted") }
             .onSuccess { result ->
               when (result) {

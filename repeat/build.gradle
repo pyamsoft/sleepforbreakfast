@@ -54,8 +54,6 @@ android {
 dependencies {
   kapt "com.google.dagger:dagger-compiler:$dagger"
 
-  implementation "com.github.pyamsoft:highlander:$highlander"
-
   // Moshi
   api "com.squareup.moshi:moshi:$moshi"
   kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"

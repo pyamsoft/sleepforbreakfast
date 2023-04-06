@@ -18,8 +18,6 @@ package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.highlander.highlander
-import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -35,16 +33,13 @@ abstract class MoneyAddViewModeler<I : Any, T : Any, S : MutableMoneyAddViewStat
 protected constructor(
     state: S,
     initialId: I,
-    interactor: ListInteractor<I, T, *>,
+    private val interactor: ListInteractor<I, T, *>,
 ) :
     OneViewModeler<I, T, S>(
         state = state,
         initialId = initialId,
         interactor = interactor,
     ) {
-
-  private val submitRunner =
-      highlander<ResultWrapper<DbInsert.InsertResult<T>>, T> { interactor.submit(it) }
 
   final override fun registerSaveState(
       registry: SaveableStateRegistry
@@ -136,8 +131,8 @@ protected constructor(
 
       state.working.value = true
       val data = compile()
-      submitRunner
-          .call(data)
+      interactor
+          .submit(data)
           .onFailure { Timber.e(it, "Error occurred when submitting data $data") }
           .onSuccess { res ->
             when (res) {

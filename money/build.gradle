@@ -54,8 +54,6 @@ android {
 dependencies {
   kapt "com.google.dagger:dagger-compiler:$dagger"
 
-  implementation "com.github.pyamsoft:highlander:$highlander"
-
   implementation project(':db')
   implementation project(':ui')
 }
