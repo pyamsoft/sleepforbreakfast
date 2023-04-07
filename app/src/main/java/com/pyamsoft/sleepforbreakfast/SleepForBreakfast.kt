@@ -114,6 +114,11 @@ class SleepForBreakfast : Application() {
             "The AndroidX Jetpack Room library. Fluent SQLite database access.",
         )
         add(
+            "Cachify",
+            "https://github.com/pyamsoft/cachify",
+            "Simple in-memory caching of all the things",
+        )
+        add(
             "WorkManager",
             "https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/work/",
             "The AndroidX Jetpack WorkManager library. Schedule periodic work in a device friendly way.",
