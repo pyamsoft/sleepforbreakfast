@@ -66,12 +66,35 @@ internal constructor(
   }
 
   @CheckResult
+  private suspend fun ensureActive(category: DbCategory): DbCategory? {
+    if (category.active && !category.archived) {
+      return category
+    }
+
+    return when (val res = categoryInsertDao.insert(category.activate().unarchive())) {
+      is DbInsert.InsertResult.Fail -> {
+        Timber.e(res.error, "Failed ensuring Category active $category")
+        null
+      }
+      is DbInsert.InsertResult.Insert -> {
+        Timber.d("Inserted required category during activating, should this happen?: $category")
+        res.data
+      }
+      is DbInsert.InsertResult.Update -> {
+        Timber.d("Activated required category $category")
+        res.data
+      }
+    }
+  }
+
+  @CheckResult
   private suspend fun ensure(category: RequiredCategories): DbCategory? =
       GLOBAL_LOCK.withLock {
         when (val existing = categoryQueryDao.queryBySystemCategory(category)) {
           is Maybe.Data -> {
             Timber.d("RequiredCategory already exists: $category")
-            return@withLock existing.data
+            // If it already exists, we ensure it is active and not archived
+            return@withLock ensureActive(existing.data)
           }
           is Maybe.None -> {
             when (val res = categoryInsertDao.insert(createSystemCategory(category))) {
