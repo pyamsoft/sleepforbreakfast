@@ -63,6 +63,8 @@ internal constructor(
         .systemLevel()
         .name(category.displayName)
         .note(noteForName(category))
+        .activate()
+        .unarchive()
   }
 
   @CheckResult
