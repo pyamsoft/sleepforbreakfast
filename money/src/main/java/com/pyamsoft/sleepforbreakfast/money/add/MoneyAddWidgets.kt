@@ -23,8 +23,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -45,7 +45,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -88,7 +87,6 @@ fun MoneyAmount(
     onAmountChanged: (Long) -> Unit,
 ) {
   val amount by state.amount.collectAsState()
-  val type by state.type.collectAsState()
 
   val amountTextValue =
       remember(amount) {
@@ -114,30 +112,10 @@ fun MoneyAmount(
     }
   }
 
-  val typeDescription =
-      remember(type) {
-        when (type) {
-          DbTransaction.Type.SPEND -> "Money Spent"
-          DbTransaction.Type.EARN -> "Money Earned"
-        }
-      }
-  val typeIcon =
-      remember(type) {
-        when (type) {
-          DbTransaction.Type.SPEND -> Icons.Filled.Warning
-          DbTransaction.Type.EARN -> Icons.Filled.Add
-        }
-      }
-
   Row(
       modifier = modifier,
       verticalAlignment = Alignment.CenterVertically,
   ) {
-    Icon(
-        modifier = Modifier.padding(end = MaterialTheme.keylines.baseline),
-        imageVector = typeIcon,
-        contentDescription = typeDescription,
-    )
     TextField(
         modifier = Modifier.weight(1F),
         value = amountTextValue,
@@ -159,33 +137,27 @@ fun MoneyAmount(
 }
 
 @Composable
-fun MoneyType(
+fun MoneyTypes(
     modifier: Modifier = Modifier,
     state: MoneyAddViewState,
     onTypeChanged: (DbTransaction.Type) -> Unit,
 ) {
   val type by state.type.collectAsState()
 
-  val isSpend = remember(type) { type == DbTransaction.Type.SPEND }
-  val isEarn = remember(type) { type == DbTransaction.Type.EARN }
-
-  Row(
-      modifier = modifier,
-      verticalAlignment = Alignment.CenterVertically,
+  Column(
+      modifier = modifier.width(IntrinsicSize.Min),
   ) {
     SpendType(
-        modifier = Modifier.weight(1F),
+        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
         type = DbTransaction.Type.SPEND,
+        current = type,
         onTypeChanged = onTypeChanged,
     )
 
-    Spacer(
-        modifier = Modifier.width(MaterialTheme.keylines.content),
-    )
-
     SpendType(
-        modifier = Modifier.weight(1F),
+        modifier = Modifier.fillMaxWidth(),
         type = DbTransaction.Type.EARN,
+        current = type,
         onTypeChanged = onTypeChanged,
     )
   }
@@ -195,8 +167,10 @@ fun MoneyType(
 private fun SpendType(
     modifier: Modifier = Modifier,
     type: DbTransaction.Type,
+    current: DbTransaction.Type,
     onTypeChanged: (DbTransaction.Type) -> Unit,
 ) {
+  val shape = MaterialTheme.shapes.small
   val spendColor = MaterialTheme.colors.error
   val earnColor = MaterialTheme.colors.success
   val color =
@@ -211,24 +185,37 @@ private fun SpendType(
         }
       }
 
+  val isSelected =
+      remember(
+          type,
+          current,
+      ) {
+        type == current
+      }
+
   Card(
       modifier =
           modifier.border(
               width = 2.dp,
               color = color.copy(alpha = ContentAlpha.medium),
-              shape = MaterialTheme.shapes.medium,
+              shape = shape,
           ),
       elevation = CardDefaults.Elevation,
+      backgroundColor = if (isSelected) color else MaterialTheme.colors.surface,
+      contentColor = MaterialTheme.colors.onSurface,
+      shape = shape,
   ) {
     Column(
         modifier =
-            Modifier.clickable { onTypeChanged(type) }.padding(MaterialTheme.keylines.content),
+            Modifier.clickable { onTypeChanged(type) }.padding(MaterialTheme.keylines.typography),
     ) {
       Text(
-          modifier = Modifier.fillMaxWidth(),
+          modifier =
+              Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.typography),
           text = type.name,
           fontWeight = FontWeight.W700,
-          style = MaterialTheme.typography.h6,
+          style = MaterialTheme.typography.body2,
+          textAlign = TextAlign.Center,
       )
     }
   }
@@ -495,8 +482,8 @@ fun AddCategories(
     )
 
     for (id in selectedCategories) {
-      // If a category is delete but still "attached" to the Transaction or Repeat, it will be nully
-      // here as it won't be in the allCategories, so hide it
+      // If a category is delete but still "attached" to the Transaction or Repeat, it will be
+      // null-ish here as it won't be in the allCategories, so hide it
       val maybeCategory =
           remember(
               id,

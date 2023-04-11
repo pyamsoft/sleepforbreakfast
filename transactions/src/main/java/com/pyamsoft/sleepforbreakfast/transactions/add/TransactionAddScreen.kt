@@ -57,7 +57,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
-import com.pyamsoft.sleepforbreakfast.money.add.MoneyType
+import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
 import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoScreen
 import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoScreen
@@ -139,26 +139,26 @@ fun TransactionAddScreen(
       }
 
       item {
-        MoneyAmount(
+        Row(
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content * 2),
-            state = state,
-            keyboardNumberOptions = keyboardNumberOptions,
-            onAmountChanged = onAmountChanged,
-        )
-      }
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+          MoneyAmount(
+              modifier = Modifier.weight(1F),
+              state = state,
+              keyboardNumberOptions = keyboardNumberOptions,
+              onAmountChanged = onAmountChanged,
+          )
 
-      item {
-        MoneyType(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.keylines.content)
-                    .padding(bottom = MaterialTheme.keylines.content),
-            state = state,
-            onTypeChanged = onTypeChanged,
-        )
+          MoneyTypes(
+              modifier = Modifier.padding(start = MaterialTheme.keylines.content),
+              state = state,
+              onTypeChanged = onTypeChanged,
+          )
+        }
       }
 
       item {
