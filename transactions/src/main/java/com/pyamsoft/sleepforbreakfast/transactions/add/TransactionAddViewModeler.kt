@@ -163,7 +163,7 @@ internal constructor(
   override fun CoroutineScope.onDataLoaded(result: DbTransaction) {
     state.existingTransaction.value = result
 
-    handleReset(result)
+    handleReset()
 
     launch(context = Dispatchers.Main) { loadRepeat(result) }
     launch(context = Dispatchers.Main) { loadAuto(result) }
@@ -215,18 +215,24 @@ internal constructor(
     registry.registerProvider(KEY_IS_AUTO_OPEN) { state.isAutoOpen.value }.also { add(it) }
   }
 
-  override fun onReset(payload: DbTransaction?) {
-    if (payload == null) {
-      state.date.value = LocalDateTime.now(clock)
-      state.existingRepeat.value = null
-    } else {
-      state.name.value = payload.name
-      state.note.value = payload.note
-      state.type.value = payload.type
-      state.amount.value = payload.amountInCents
-      state.categories.value = payload.categories
+  override fun handleReset() {
+    val source = state.existingTransaction.value
+    if (source == null) {
+      state.name.value = ""
+      state.note.value = ""
+      state.type.value = DbTransaction.Type.SPEND
+      state.amount.value = 0L
+      state.categories.value = emptyList()
 
-      state.date.value = payload.date
+      state.date.value = LocalDateTime.now(clock)
+    } else {
+      state.name.value = source.name
+      state.note.value = source.note
+      state.type.value = source.type
+      state.amount.value = source.amountInCents
+      state.categories.value = source.categories
+
+      state.date.value = source.date
     }
 
     handleCloseRepeatInfo()

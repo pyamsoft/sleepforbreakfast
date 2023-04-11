@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
@@ -75,7 +76,7 @@ internal constructor(
     state.existingRepeat.value = result
 
     // But once we are loaded initialize everything
-    handleReset(result)
+    handleReset()
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
@@ -111,19 +112,27 @@ internal constructor(
     registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }
   }
 
-  override fun onReset(payload: DbRepeat?) {
-    if (payload == null) {
+  override fun handleReset() {
+    val source = state.existingRepeat.value
+
+    if (source == null) {
+      state.name.value = ""
+      state.note.value = ""
+      state.type.value = DbTransaction.Type.SPEND
+      state.amount.value = 0L
+      state.categories.value = emptyList()
+
       state.repeatFirstDay.value = LocalDate.now(clock)
       state.repeatType.value = DbRepeat.Type.DAILY
     } else {
-      state.repeatFirstDay.value = payload.firstDay
-      state.repeatType.value = payload.repeatType
+      state.name.value = source.transactionName
+      state.note.value = source.transactionNote
+      state.type.value = source.transactionType
+      state.amount.value = source.transactionAmountInCents
+      state.categories.value = source.transactionCategories
 
-      state.name.value = payload.transactionName
-      state.note.value = payload.transactionNote
-      state.type.value = payload.transactionType
-      state.amount.value = payload.transactionAmountInCents
-      state.categories.value = payload.transactionCategories
+      state.repeatFirstDay.value = source.firstDay
+      state.repeatType.value = source.repeatType
     }
 
     handleCloseDateDialog()

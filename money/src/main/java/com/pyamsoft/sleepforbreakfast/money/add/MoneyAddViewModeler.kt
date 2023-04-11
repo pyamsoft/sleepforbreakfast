@@ -85,6 +85,8 @@ protected constructor(
     onConsumeRestoredState(registry)
   }
 
+  protected open suspend fun onNewCreated(data: T) {}
+
   fun handleNameChanged(name: String) {
     state.name.value = name
   }
@@ -99,18 +101,6 @@ protected constructor(
 
   fun handleAmountChanged(amount: Long) {
     state.amount.value = amount
-  }
-
-  fun handleReset(payload: T? = null) {
-    if (payload == null) {
-      state.name.value = ""
-      state.note.value = ""
-      state.type.value = DbTransaction.Type.SPEND
-      state.amount.value = 0L
-      state.categories.value = emptyList()
-    }
-
-    onReset(payload)
   }
 
   fun handleSubmit(
@@ -169,15 +159,13 @@ protected constructor(
 
   @CheckResult protected abstract suspend fun compile(): T
 
-  protected open suspend fun onNewCreated(data: T) {}
-
   protected abstract fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
       registry: SaveableStateRegistry
   )
 
   protected abstract fun onConsumeRestoredState(registry: SaveableStateRegistry)
 
-  protected abstract fun onReset(payload: T?)
+  abstract fun handleReset()
 
   companion object {
     private const val KEY_NAME = "key_name"
