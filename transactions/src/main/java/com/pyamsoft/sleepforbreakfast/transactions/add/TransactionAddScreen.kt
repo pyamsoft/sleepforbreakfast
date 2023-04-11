@@ -58,7 +58,9 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyType
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
 import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoScreen
 import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoScreen
+import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
+import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -162,11 +164,7 @@ fun TransactionAddScreen(
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content),
             state = state,
-            onDateChanged = onDateChanged,
-            onCloseDateDialog = onCloseDateDialog,
             onOpenDateDialog = onOpenDateDialog,
-            onTimeChanged = onTimeChanged,
-            onCloseTimeDialog = onCloseTimeDialog,
             onOpenTimeDialog = onOpenTimeDialog,
         )
       }
@@ -210,13 +208,11 @@ fun TransactionAddScreen(
           RepeatInfo(
               state = state,
               onRepeatInfoOpen = onRepeatInfoOpen,
-              onDismiss = onRepeatInfoClosed,
           )
 
           AutoInfo(
               state = state,
               onAutoInfoOpen = onAutoInfoOpen,
-              onDismiss = onAutoInfoClosed,
           )
         }
       }
@@ -230,6 +226,70 @@ fun TransactionAddScreen(
         )
       }
     }
+
+    val existing by state.existingTransaction.collectAsState()
+
+    val isOpenRepeat by state.isRepeatOpen.collectAsState()
+    val repeatDate = existing?.repeatCreatedDate
+    if (isOpenRepeat && repeatDate != null) {
+      val loadingRepeat by state.loadingRepeat.collectAsState()
+      val repeat by state.existingRepeat.collectAsState()
+
+      SurfaceDialog(
+          modifier = Modifier.fullScreenDialog(),
+          onDismiss = onRepeatInfoClosed,
+      ) {
+        TransactionRepeatInfoScreen(
+            repeat = repeat,
+            loading = loadingRepeat,
+            date = repeatDate,
+            onDismiss = onRepeatInfoClosed,
+        )
+      }
+    }
+
+    val loadingAuto by state.loadingAuto.collectAsState()
+    val isOpenAuto by state.isAutoOpen.collectAsState()
+    val auto by state.existingAuto.collectAsState()
+
+    val autoDate = existing?.automaticCreatedDate
+    if (isOpenAuto && autoDate != null) {
+      SurfaceDialog(
+          modifier = Modifier.fullScreenDialog(),
+          onDismiss = onAutoInfoClosed,
+      ) {
+        TransactionAutoScreen(
+            auto = auto,
+            loading = loadingAuto,
+            date = autoDate,
+            onDismiss = onAutoInfoClosed,
+        )
+      }
+    }
+
+    val showDateDialog by state.isDateDialogOpen.collectAsState()
+    if (showDateDialog) {
+      val date by state.date.collectAsState()
+      val justDate = remember(date) { date.toLocalDate() }
+
+      DatePickerDialog(
+          initialDate = justDate,
+          onDateSelected = onDateChanged,
+          onDismiss = onCloseDateDialog,
+      )
+    }
+
+    val showTimeDialog by state.isTimeDialogOpen.collectAsState()
+    if (showTimeDialog) {
+      val date by state.date.collectAsState()
+      val justTime = remember(date) { date.toLocalTime() }
+
+      TimePickerDialog(
+          initialTime = justTime,
+          onTimeSelected = onTimeChanged,
+          onDismiss = onCloseTimeDialog,
+      )
+    }
   }
 }
 
@@ -238,13 +298,8 @@ private fun RepeatInfo(
     modifier: Modifier = Modifier,
     state: TransactionAddViewState,
     onRepeatInfoOpen: () -> Unit,
-    onDismiss: () -> Unit,
 ) {
   val existing by state.existingTransaction.collectAsState()
-  val loading by state.loadingRepeat.collectAsState()
-  val isOpen by state.isRepeatOpen.collectAsState()
-  val repeat by state.existingRepeat.collectAsState()
-
   Crossfade(
       targetState = existing,
   ) { e ->
@@ -270,21 +325,6 @@ private fun RepeatInfo(
       }
     }
   }
-
-  val date = existing?.repeatCreatedDate
-  if (isOpen && date != null) {
-    SurfaceDialog(
-        modifier = Modifier.fullScreenDialog(),
-        onDismiss = onDismiss,
-    ) {
-      TransactionRepeatInfoScreen(
-          repeat = repeat,
-          loading = loading,
-          date = date,
-          onDismiss = onDismiss,
-      )
-    }
-  }
 }
 
 @Composable
@@ -292,12 +332,8 @@ private fun AutoInfo(
     modifier: Modifier = Modifier,
     state: TransactionAddViewState,
     onAutoInfoOpen: () -> Unit,
-    onDismiss: () -> Unit,
 ) {
   val existing by state.existingTransaction.collectAsState()
-  val loading by state.loadingAuto.collectAsState()
-  val isOpen by state.isAutoOpen.collectAsState()
-  val auto by state.existingAuto.collectAsState()
 
   Crossfade(
       targetState = existing,
@@ -324,21 +360,6 @@ private fun AutoInfo(
       }
     }
   }
-
-  val date = existing?.automaticCreatedDate
-  if (isOpen && date != null) {
-    SurfaceDialog(
-        modifier = Modifier.fullScreenDialog(),
-        onDismiss = onDismiss,
-    ) {
-      TransactionAutoScreen(
-          auto = auto,
-          loading = loading,
-          date = date,
-          onDismiss = onDismiss,
-      )
-    }
-  }
 }
 
 @Composable
@@ -346,15 +367,9 @@ private fun DateTime(
     modifier: Modifier = Modifier,
     state: TransactionAddViewState,
     onOpenDateDialog: () -> Unit,
-    onCloseDateDialog: () -> Unit,
-    onDateChanged: (LocalDate) -> Unit,
     onOpenTimeDialog: () -> Unit,
-    onCloseTimeDialog: () -> Unit,
-    onTimeChanged: (LocalTime) -> Unit,
 ) {
   val date by state.date.collectAsState()
-  val showDateDialog by state.isDateDialogOpen.collectAsState()
-  val showTimeDialog by state.isTimeDialogOpen.collectAsState()
 
   val justDate = remember(date) { date.toLocalDate() }
   val justTime = remember(date) { date.toLocalTime() }
@@ -366,9 +381,6 @@ private fun DateTime(
     DatePicker(
         modifier = Modifier.weight(1F),
         date = justDate,
-        isOpen = showDateDialog,
-        onDateChanged = onDateChanged,
-        onCloseDateDialog = onCloseDateDialog,
         onOpenDateDialog = onOpenDateDialog,
     )
 
@@ -379,9 +391,6 @@ private fun DateTime(
     TimePicker(
         modifier = Modifier.weight(1F),
         time = justTime,
-        isOpen = showTimeDialog,
-        onTimeChanged = onTimeChanged,
-        onCloseTimeDialog = onCloseTimeDialog,
         onOpenTimeDialog = onOpenTimeDialog,
     )
   }

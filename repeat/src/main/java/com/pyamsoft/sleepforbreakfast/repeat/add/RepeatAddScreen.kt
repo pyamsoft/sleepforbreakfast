@@ -58,6 +58,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyType
+import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import java.time.LocalDate
 
 @Composable
@@ -148,7 +149,6 @@ fun RepeatAddScreen(
 
       item {
         val firstDate by state.repeatFirstDay.collectAsState()
-        val showDateDialog by state.isDateDialogOpen.collectAsState()
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
@@ -157,9 +157,6 @@ fun RepeatAddScreen(
           DatePicker(
               modifier = Modifier.weight(1F),
               date = firstDate,
-              isOpen = showDateDialog,
-              onDateChanged = onDateChanged,
-              onCloseDateDialog = onCloseDateDialog,
               onOpenDateDialog = onOpenDateDialog,
           )
 
@@ -211,6 +208,17 @@ fun RepeatAddScreen(
             onSubmit = onSubmit,
         )
       }
+    }
+
+    val showDateDialog by state.isDateDialogOpen.collectAsState()
+    if (showDateDialog) {
+      val date by state.repeatFirstDay.collectAsState()
+
+      DatePickerDialog(
+          initialDate = date,
+          onDateSelected = onDateChanged,
+          onDismiss = onCloseDateDialog,
+      )
     }
   }
 }

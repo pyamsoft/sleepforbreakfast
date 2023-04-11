@@ -72,8 +72,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
-import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
-import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
 import java.time.LocalTime
@@ -240,10 +238,7 @@ private fun SpendType(
 fun DatePicker(
     modifier: Modifier = Modifier,
     date: LocalDate,
-    isOpen: Boolean,
     onOpenDateDialog: () -> Unit,
-    onCloseDateDialog: () -> Unit,
-    onDateChanged: (LocalDate) -> Unit,
 ) {
   val justDate = remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
 
@@ -253,24 +248,13 @@ fun DatePicker(
       style = MaterialTheme.typography.h6,
       textAlign = TextAlign.Center,
   )
-
-  if (isOpen) {
-    DatePickerDialog(
-        initialDate = date,
-        onDateSelected = onDateChanged,
-        onDismiss = onCloseDateDialog,
-    )
-  }
 }
 
 @Composable
 fun TimePicker(
     modifier: Modifier = Modifier,
     time: LocalTime,
-    isOpen: Boolean,
     onOpenTimeDialog: () -> Unit,
-    onCloseTimeDialog: () -> Unit,
-    onTimeChanged: (LocalTime) -> Unit,
 ) {
   val justTime = remember(time) { TIME_FORMATTER.get().requireNotNull().format(time) }
 
@@ -280,14 +264,6 @@ fun TimePicker(
       style = MaterialTheme.typography.h6,
       textAlign = TextAlign.Center,
   )
-
-  if (isOpen) {
-    TimePickerDialog(
-        initialTime = time,
-        onTimeSelected = onTimeChanged,
-        onDismiss = onCloseTimeDialog,
-    )
-  }
 }
 
 @Composable
