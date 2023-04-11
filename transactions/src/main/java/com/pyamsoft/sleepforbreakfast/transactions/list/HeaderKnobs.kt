@@ -28,7 +28,7 @@ internal fun HeaderKnobs(
     onBreakdownToggle: () -> Unit,
 ) {
   Row(
-      modifier = modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+      modifier = modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.End,
   ) {

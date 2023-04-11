@@ -60,7 +60,7 @@ internal fun HomeEntry(
     onOpenSettings: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onOpenCategory: () -> Unit,
+    onOpenCategories: () -> Unit,
 ) {
   val component = rememberComposableInjector { HomeInjector() }
   val viewModel = rememberNotNull(component.viewModel)
@@ -80,6 +80,6 @@ internal fun HomeEntry(
       },
       onOpenTransactions = onOpenTransactions,
       onOpenRepeats = onOpenRepeats,
-      onOpenCategory = onOpenCategory,
+      onOpenCategories = onOpenCategories,
   )
 }

@@ -41,7 +41,7 @@ fun MainScreen(
     onClosePage: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onOpenCategory: () -> Unit,
+    onOpenCategories: () -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsState()
   val page by state.page.collectAsState()
@@ -59,7 +59,7 @@ fun MainScreen(
             onOpenTransactions = onOpenTransactions,
             onOpenRepeats = onOpenRepeats,
             onOpenSettings = onOpenSettings,
-            onOpenCategory = onOpenCategory,
+            onOpenCategories = onOpenCategories,
         )
       } else {
         when (p) {

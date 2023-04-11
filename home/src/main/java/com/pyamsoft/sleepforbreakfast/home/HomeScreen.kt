@@ -16,17 +16,36 @@
 
 package com.pyamsoft.sleepforbreakfast.home
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.sleepforbreakfast.home.category.HomeOpenCategory
-import com.pyamsoft.sleepforbreakfast.home.repeats.HomeOpenRepeats
-import com.pyamsoft.sleepforbreakfast.home.transactions.HomeOpenTransactions
+import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
+import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
+import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.sleepforbreakfast.ui.icons.Category
+import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 
 @Composable
 fun HomeScreen(
@@ -37,7 +56,7 @@ fun HomeScreen(
     onOpenNotificationListenerSettings: () -> Unit,
     onOpenTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
-    onOpenCategory: () -> Unit,
+    onOpenCategories: () -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -67,17 +86,132 @@ fun HomeScreen(
       }
 
       item {
-        HomeOpenRepeats(
+        HomeExtras(
             modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-            onOpen = onOpenRepeats,
+            onOpenRepeats = onOpenRepeats,
+            onOpenCategories = onOpenCategories,
         )
       }
-      item {
-        HomeOpenCategory(
-            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-            onOpen = onOpenCategory,
-        )
+    }
+  }
+}
+
+@Composable
+private fun HomeOpenTransactions(
+    modifier: Modifier = Modifier,
+    onOpen: () -> Unit,
+) {
+  val shape = MaterialTheme.shapes.medium
+
+  Box(
+      modifier = modifier.padding(MaterialTheme.keylines.content),
+  ) {
+    Surface(
+        modifier =
+            Modifier.fillMaxWidth()
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colors.primary,
+                    shape = shape,
+                ),
+        shape = shape,
+        elevation = DialogDefaults.Elevation,
+    ) {
+      Column(
+          modifier = Modifier.clickable { onOpen() }.padding(MaterialTheme.keylines.content),
+      ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Text(
+              text = "Manage Transactions",
+              style =
+                  MaterialTheme.typography.h6.copy(
+                      fontWeight = FontWeight.W700,
+                  ),
+          )
+        }
       }
+    }
+  }
+}
+
+@Composable
+private fun HomeExtras(
+    modifier: Modifier = Modifier,
+    onOpenRepeats: () -> Unit,
+    onOpenCategories: () -> Unit
+) {
+  Row(
+      modifier = modifier.padding(MaterialTheme.keylines.content),
+      verticalAlignment = Alignment.CenterVertically,
+  ) {
+    IconOption(
+        modifier = Modifier.weight(1F),
+        onClick = onOpenCategories,
+        icon = Icons.Filled.Category,
+        title = "View Categories",
+    )
+
+    Spacer(
+        modifier = Modifier.width(MaterialTheme.keylines.content),
+    )
+
+    IconOption(
+        modifier = Modifier.weight(1F),
+        onClick = onOpenRepeats,
+        icon = Icons.Filled.EventRepeat,
+        title = "View Repeats",
+    )
+  }
+}
+
+@Composable
+private fun IconOption(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    icon: ImageVector,
+    title: String,
+) {
+  val shape = MaterialTheme.shapes.medium
+
+  Surface(
+      modifier =
+          modifier.border(
+              width = 2.dp,
+              color = MaterialTheme.colors.primary,
+              shape = shape,
+          ),
+      shape = shape,
+      elevation = ZeroElevation,
+      color =
+          MaterialTheme.colors.primary.copy(
+              alpha = 0.20F,
+          ),
+      contentColor = MaterialTheme.colors.onPrimary,
+  ) {
+    Column(
+        modifier = Modifier.clickable { onClick() }.padding(MaterialTheme.keylines.content),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+      Icon(
+          modifier =
+              Modifier.size(ImageDefaults.LargeSize)
+                  .padding(bottom = MaterialTheme.keylines.content),
+          imageVector = icon,
+          contentDescription = title,
+          tint = MaterialTheme.colors.onPrimary,
+      )
+      Text(
+          text = title,
+          style =
+              MaterialTheme.typography.body1.copy(
+                  color =
+                      MaterialTheme.colors.onPrimary.copy(
+                          alpha = ContentAlpha.medium,
+                      )),
+      )
     }
   }
 }

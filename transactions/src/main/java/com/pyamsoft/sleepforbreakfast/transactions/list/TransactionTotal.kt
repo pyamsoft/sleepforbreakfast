@@ -1,8 +1,11 @@
 package com.pyamsoft.sleepforbreakfast.transactions.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -11,6 +14,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
@@ -40,12 +44,20 @@ internal fun TransactionTotal(
   Column(
       modifier = modifier,
   ) {
-    Totals(
-        state = state,
-        onDismiss = onDismiss,
-        onSearchToggle = onSearchToggle,
-        onBreakdownToggle = onBreakdownToggle,
-    )
+    Column(
+        modifier = Modifier.background(color = MaterialTheme.colors.primary),
+    ) {
+      Spacer(
+          modifier = Modifier.statusBarsPadding(),
+      )
+
+      Totals(
+          state = state,
+          onDismiss = onDismiss,
+          onSearchToggle = onSearchToggle,
+          onBreakdownToggle = onBreakdownToggle,
+      )
+    }
 
     SearchBar(
         state = state,
@@ -88,8 +100,11 @@ private fun Totals(
 
   TransactionCard(
       modifier = modifier,
-      contentModifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-      color = MaterialTheme.colors.primary,
+      contentModifier =
+          Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.typography),
+      priceModifier = Modifier.padding(end = MaterialTheme.keylines.content),
+      noteModifier = Modifier.padding(MaterialTheme.keylines.content),
+      color = Color.Unspecified,
       shape = RectangleShape,
       elevation = ZeroElevation,
       title = "Total",
@@ -103,6 +118,7 @@ private fun Totals(
       noteStyle = MaterialTheme.typography.body2,
       navigationIcon = {
         IconButton(
+            modifier = Modifier.padding(end = MaterialTheme.keylines.content),
             onClick = onDismiss,
         ) {
           Icon(

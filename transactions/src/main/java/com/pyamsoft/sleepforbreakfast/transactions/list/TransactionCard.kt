@@ -101,15 +101,15 @@ internal fun TransactionCard(
           MaterialTheme.typography.h6.copy(
               color =
                   MaterialTheme.colors.onSurface.copy(
-                      alpha = ContentAlpha.medium,
+                      alpha = ContentAlpha.high,
                   ),
           ),
       date = dateString,
       dateStyle =
-          MaterialTheme.typography.caption.copy(
+          MaterialTheme.typography.body2.copy(
               color =
                   MaterialTheme.colors.onSurface.copy(
-                      alpha = ContentAlpha.disabled,
+                      alpha = ContentAlpha.medium,
                   ),
           ),
       price = priceString,
@@ -117,10 +117,10 @@ internal fun TransactionCard(
       priceStyle = MaterialTheme.typography.h5,
       note = transaction.note,
       noteStyle =
-          MaterialTheme.typography.body2.copy(
+          MaterialTheme.typography.caption.copy(
               color =
                   MaterialTheme.colors.onSurface.copy(
-                      alpha = ContentAlpha.medium,
+                      alpha = ContentAlpha.disabled,
                   ),
           ),
   )
@@ -130,6 +130,8 @@ internal fun TransactionCard(
 internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    priceModifier: Modifier = Modifier,
+    noteModifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.surface,
     shape: Shape = MaterialTheme.shapes.medium,
     elevation: Dp = CardDefaults.Elevation,
@@ -204,7 +206,7 @@ internal fun TransactionCard(
       }
 
       Text(
-          modifier = Modifier.fillMaxWidth(),
+          modifier = Modifier.fillMaxWidth().then(priceModifier),
           textAlign = TextAlign.End,
           text = "$pricePrefix$price",
           fontWeight = FontWeight.W700,
@@ -220,7 +222,7 @@ internal fun TransactionCard(
 
       if (hasNote) {
         Text(
-            modifier = Modifier.padding(top = MaterialTheme.keylines.content),
+            modifier = Modifier.padding(top = MaterialTheme.keylines.content).then(noteModifier),
             text = note,
             style = noteStyle,
         )

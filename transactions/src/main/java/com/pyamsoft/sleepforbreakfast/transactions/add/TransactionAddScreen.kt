@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,21 +26,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -61,6 +64,7 @@ import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoS
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
+import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -198,12 +202,11 @@ fun TransactionAddScreen(
       }
 
       item {
-        Row(
+        Column(
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
           RepeatInfo(
               state = state,
@@ -300,30 +303,15 @@ private fun RepeatInfo(
     onRepeatInfoOpen: () -> Unit,
 ) {
   val existing by state.existingTransaction.collectAsState()
-  Crossfade(
-      targetState = existing,
-  ) { e ->
-    if (e == null) {
-      return@Crossfade
-    }
 
-    if (e.repeatId == null) {
-      Text(
-          modifier = modifier,
-          text = "No Repeat Info",
-          style = MaterialTheme.typography.body1,
-      )
-    } else {
-      IconButton(
-          modifier = modifier,
-          onClick = onRepeatInfoOpen,
-      ) {
-        Icon(
-            imageVector = Icons.Filled.AccountBox,
-            contentDescription = "View Repeat Info",
-        )
-      }
-    }
+  ExtraBit(
+      modifier = modifier,
+      data = existing,
+      icon = Icons.Filled.EventRepeat,
+      title = "Repeating Info",
+      onClick = onRepeatInfoOpen,
+  ) {
+    it.repeatId != null && it.repeatCreatedDate != null
   }
 }
 
@@ -335,29 +323,58 @@ private fun AutoInfo(
 ) {
   val existing by state.existingTransaction.collectAsState()
 
+  ExtraBit(
+      modifier = modifier,
+      data = existing,
+      icon = Icons.Filled.AutoAwesome,
+      title = "Automatic Info",
+      onClick = onAutoInfoOpen,
+  ) {
+    it.automaticId != null && it.automaticCreatedDate != null
+  }
+}
+
+@Composable
+private fun <T : Any> ExtraBit(
+    modifier: Modifier = Modifier,
+    data: T?,
+    icon: ImageVector,
+    title: String,
+    onClick: () -> Unit,
+    isValid: (T) -> Boolean,
+) {
+  val handleIsValid by rememberUpdatedState(isValid)
   Crossfade(
-      targetState = existing,
+      targetState = data,
   ) { e ->
     if (e == null) {
       return@Crossfade
     }
 
-    if (e.automaticId == null) {
-      Text(
-          modifier = modifier,
-          text = "No Auto Info",
-          style = MaterialTheme.typography.body1,
+    val valid = remember(e) { handleIsValid(e) }
+    Row(
+        modifier =
+            modifier
+                .clickable(enabled = valid) { onClick() }
+                .padding(MaterialTheme.keylines.baseline),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Icon(
+          modifier = Modifier.padding(end = MaterialTheme.keylines.content),
+          imageVector = icon,
+          contentDescription = "${if (valid) "View" else "No"} $title",
       )
-    } else {
-      IconButton(
-          modifier = modifier,
-          onClick = onAutoInfoOpen,
-      ) {
-        Icon(
-            imageVector = Icons.Filled.AddCircle,
-            contentDescription = "View Auto Info",
-        )
-      }
+
+      Text(
+          text = "${if (valid) "View" else "No"} $title",
+          style =
+              MaterialTheme.typography.body2.copy(
+                  color =
+                      MaterialTheme.colors.onSurface.copy(
+                          alpha = if (valid) ContentAlpha.high else ContentAlpha.disabled,
+                      ),
+              ),
+      )
     }
   }
 }
