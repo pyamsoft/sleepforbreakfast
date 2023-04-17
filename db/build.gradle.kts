@@ -44,7 +44,7 @@ android {
 dependencies {
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
-  api("com.github.pyamsoft.cachify:${rootProject.extra["cachify"]}")
+  api("com.github.pyamsoft:cachify:${rootProject.extra["cachify"]}")
 
   api(project(":core"))
 }
