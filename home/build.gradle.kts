@@ -34,7 +34,10 @@ android {
 
   kotlinOptions { jvmTarget = "17" }
 
-  buildFeatures { buildConfig = false }
+  buildFeatures {
+    buildConfig = false
+    compose = true
+  }
 
   composeOptions {
     kotlinCompilerExtensionVersion = "${rootProject.extra["compose_compiler_version"]}"
