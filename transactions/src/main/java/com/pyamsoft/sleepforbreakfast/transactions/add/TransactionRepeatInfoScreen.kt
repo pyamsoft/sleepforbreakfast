@@ -130,9 +130,7 @@ fun TransactionRepeatInfoScreen(
 
               item {
                 val dateString =
-                    remember(date) {
-                      DATE_FORMATTER.get().requireNotNull().format(date)
-                    }
+                    remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()

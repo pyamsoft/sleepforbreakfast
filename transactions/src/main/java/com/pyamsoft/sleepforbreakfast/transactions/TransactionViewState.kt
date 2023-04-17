@@ -26,7 +26,6 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.time.Clock
 
 @Stable
 interface TransactionViewState : ListViewState<DbTransaction> {
@@ -38,8 +37,7 @@ interface TransactionViewState : ListViewState<DbTransaction> {
 }
 
 @Stable
-class MutableTransactionViewState @Inject internal constructor(
-) :
+class MutableTransactionViewState @Inject internal constructor() :
     TransactionViewState, MutableListViewState<DbTransaction>() {
   override val addParams = MutableStateFlow<TransactionAddParams?>(null)
   override val deleteParams = MutableStateFlow<TransactionDeleteParams?>(null)
