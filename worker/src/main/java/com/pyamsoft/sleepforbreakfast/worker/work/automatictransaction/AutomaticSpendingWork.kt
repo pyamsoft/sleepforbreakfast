@@ -22,6 +22,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -33,18 +35,19 @@ internal constructor(
     private val handler: AutomaticTransactionHandler,
 ) : BgWorker {
 
-  private suspend fun processJobs() {
-    val unconsumed = automaticQueryDao.queryUnused()
+  private suspend fun processJobs() =
+      GLOBAL_LOCK.withLock {
+        val unconsumed = automaticQueryDao.queryUnused()
 
-    for (auto in unconsumed) {
-      // Maybe I suck at SQL
-      if (auto.used) {
-        continue
+        for (auto in unconsumed) {
+          // Maybe I suck at SQL
+          if (auto.used) {
+            continue
+          }
+
+          handler.process(auto)
+        }
       }
-
-      handler.process(auto)
-    }
-  }
 
   override suspend fun work(): BgWorker.WorkResult =
       withContext(context = Dispatchers.IO) {
@@ -61,4 +64,13 @@ internal constructor(
           }
         }
       }
+
+  companion object {
+
+    /**
+     * the global lock prevents multiple callers from running this handler at the same time as it
+     * could cause duplicates in the DB if operations are close enough
+     */
+    private val GLOBAL_LOCK = Mutex()
+  }
 }

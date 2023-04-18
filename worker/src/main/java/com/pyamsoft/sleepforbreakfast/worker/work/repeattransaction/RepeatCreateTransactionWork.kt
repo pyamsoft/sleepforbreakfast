@@ -24,6 +24,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -36,20 +38,21 @@ internal constructor(
     private val handler: RepeatTransactionHandler,
 ) : BgWorker {
 
-  private suspend fun processRepeats() {
-    val today = LocalDate.now(clock)
+  private suspend fun processRepeats() =
+      GLOBAL_LOCK.withLock {
+        val today = LocalDate.now(clock)
 
-    // Get all active repeats
-    val allRepeats = repeatQueryDao.queryActive()
+        // Get all active repeats
+        val allRepeats = repeatQueryDao.queryActive()
 
-    for (rep in allRepeats) {
-      // Pass just the ID instead of the full object
-      // Because this operation may mutate a repeat object, we must be sure
-      // that the repeat object has not been used in between the time when it is
-      // retrieved above in a list and the time it is processed
-      handler.process(rep.id, today)
-    }
-  }
+        for (rep in allRepeats) {
+          // Pass just the ID instead of the full object
+          // Because this operation may mutate a repeat object, we must be sure
+          // that the repeat object has not been used in between the time when it is
+          // retrieved above in a list and the time it is processed
+          handler.process(rep.id, today)
+        }
+      }
 
   override suspend fun work(): BgWorker.WorkResult =
       withContext(context = Dispatchers.IO) {
@@ -66,4 +69,13 @@ internal constructor(
           }
         }
       }
+
+  companion object {
+
+    /**
+     * the global lock prevents multiple callers from running this handler at the same time as it
+     * could cause duplicates in the DB if operations are close enough
+     */
+    private val GLOBAL_LOCK = Mutex()
+  }
 }

@@ -30,6 +30,10 @@ import java.time.LocalDateTime
 import java.util.TimeZone
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Singleton
@@ -103,15 +107,27 @@ ${auto.notificationMatchText}
     }
   }
 
-  suspend fun process(automatic: DbAutomatic) {
-    // If its already used, skip it
-    if (automatic.used) {
-      return
-    }
+  suspend fun process(automatic: DbAutomatic) =
+      withContext(context = Dispatchers.IO) {
+        // If its already used, skip it
+        if (automatic.used) {
+          return@withContext
+        }
 
-    val created = createTransactionFromTemplate(automatic)
-    if (created) {
-      markConsumed(automatic)
-    }
+        GLOBAL_LOCK.withLock {
+          val created = createTransactionFromTemplate(automatic)
+          if (created) {
+            markConsumed(automatic)
+          }
+        }
+      }
+
+  companion object {
+
+    /**
+     * the global lock prevents multiple callers from running this handler at the same time as it
+     * could cause duplicates in the DB if operations are close enough
+     */
+    private val GLOBAL_LOCK = Mutex()
   }
 }
