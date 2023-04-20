@@ -69,6 +69,8 @@ dependencies {
   api("com.squareup.moshi:moshi:${rootProject.extra["moshi"]}")
   kapt("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
+  api("com.patrykandpatrick.vico:compose:1.6.5")
+
   // Material Design
   api("com.google.android.material:material:${rootProject.extra["materialDesign"]}")
 

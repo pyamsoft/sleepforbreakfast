@@ -25,12 +25,15 @@ import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionAmou
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionRange
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
+import java.time.Clock
 import kotlin.math.abs
 
 @Composable
 internal fun TransactionTotal(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+    clock: Clock,
+
     onDismiss: () -> Unit,
 
     // Search
@@ -40,6 +43,9 @@ internal fun TransactionTotal(
     // Breakdown
     onBreakdownToggle: () -> Unit,
     onBreakdownChange: (BreakdownRange) -> Unit,
+
+    // Chart
+    onChartToggle: () -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -56,6 +62,7 @@ internal fun TransactionTotal(
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggle,
           onBreakdownToggle = onBreakdownToggle,
+          onChartToggle = onChartToggle,
       )
     }
 
@@ -70,6 +77,12 @@ internal fun TransactionTotal(
         onToggle = onBreakdownToggle,
         onChange = onBreakdownChange,
     )
+
+    SpendingChartBar(
+        state = state,
+        clock = clock,
+        onToggle = onChartToggle,
+    )
   }
 }
 
@@ -77,6 +90,7 @@ internal fun TransactionTotal(
 private fun Totals(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+
     onDismiss: () -> Unit,
 
     // Search
@@ -84,6 +98,9 @@ private fun Totals(
 
     // Breakdown
     onBreakdownToggle: () -> Unit,
+
+    // Chart
+    onChartToggle: () -> Unit,
 ) {
   val transactions = state.items.collectAsStateList()
 
@@ -134,6 +151,7 @@ private fun Totals(
             state = state,
             onSearchToggle = onSearchToggle,
             onBreakdownToggle = onBreakdownToggle,
+            onChartToggle = onChartToggle,
         )
       },
   )

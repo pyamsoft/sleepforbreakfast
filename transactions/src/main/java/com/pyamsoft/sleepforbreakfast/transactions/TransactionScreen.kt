@@ -40,12 +40,14 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionOrHeader
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionTotal
 import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWithHeaders
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
+import java.time.Clock
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+    clock: Clock,
     onDismiss: () -> Unit,
 
     // Action
@@ -65,6 +67,9 @@ fun TransactionScreen(
     // Breakdown
     onBreakdownToggled: () -> Unit,
     onBreakdownChange: (BreakdownRange) -> Unit,
+
+    // Chart
+    onChartToggled: () -> Unit,
 ) {
   val transactions = state.items.collectAsStateList()
   val list = rememberTransactionsWithHeaders(transactions)
@@ -83,6 +88,7 @@ fun TransactionScreen(
       TransactionTotal(
           modifier = Modifier.fillMaxWidth().padding(pv),
           state = state,
+          clock = clock,
           onDismiss = onDismiss,
 
           // Search
@@ -92,6 +98,9 @@ fun TransactionScreen(
           // Breakdown
           onBreakdownToggle = onBreakdownToggled,
           onBreakdownChange = onBreakdownChange,
+
+          // Chart
+          onChartToggle = onChartToggled,
       )
 
       LazyColumn {

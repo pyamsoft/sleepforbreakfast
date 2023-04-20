@@ -77,6 +77,8 @@ internal constructor(
     registry
         .registerProvider(KEY_IS_BREAKDOWN_OPEN) { state.isBreakdownOpen.value }
         .also { add(it) }
+
+    registry.registerProvider(KEY_IS_CHART_OPEN) { state.isChartOpen.value }.also { add(it) }
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
@@ -91,6 +93,11 @@ internal constructor(
         .consumeRestored(KEY_IS_BREAKDOWN_OPEN)
         ?.let { it as Boolean }
         ?.also { state.isBreakdownOpen.value = it }
+
+    registry
+        .consumeRestored(KEY_IS_CHART_OPEN)
+        ?.let { it as Boolean }
+        ?.also { state.isChartOpen.value = it }
 
     registry
         .consumeRestored(KEY_ADD_PARAMS)
@@ -221,6 +228,10 @@ internal constructor(
     state.breakdown.value = null
   }
 
+  fun handleToggleChart() {
+    state.isChartOpen.update { !it }
+  }
+
   private data class ItemPayload(
       val transactions: List<DbTransaction>,
       val search: String,
@@ -233,5 +244,7 @@ internal constructor(
 
     private const val KEY_IS_BREAKDOWN_OPEN = "key_is_breakdown"
     private const val KEY_BREAKDOWN_RANGE = "key_breakdown_range"
+
+    private const val KEY_IS_CHART_OPEN = "key_is_chart"
   }
 }

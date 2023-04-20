@@ -133,6 +133,12 @@ class SleepForBreakfast : Application() {
             "https://google.github.io/accompanist/systemuicontroller/",
             "System UI Controller provides easy-to-use utilities for updating the System UI bar colors within Jetpack Compose.",
         )
+
+        add(
+            "Vico",
+            "https://github.com/patrykandpatrick/vico",
+            "A light and extensible chart library for Android.",
+        )
       }
     }
   }

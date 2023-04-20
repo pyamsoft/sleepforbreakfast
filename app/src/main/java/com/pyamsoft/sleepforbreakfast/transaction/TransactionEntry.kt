@@ -34,11 +34,13 @@ import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
+import java.time.Clock
 import javax.inject.Inject
 
 internal class TransactionInjector @Inject internal constructor() : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
+  @JvmField @Inject internal var clock: Clock? = null
 
   override fun onInject(activity: FragmentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity).plusTransactions().create().inject(this)
@@ -46,6 +48,7 @@ internal class TransactionInjector @Inject internal constructor() : ComposableIn
 
   override fun onDispose() {
     viewModel = null
+    clock = null
   }
 }
 
@@ -65,11 +68,13 @@ internal fun TransactionEntry(
 ) {
   val component = rememberComposableInjector { TransactionInjector() }
   val viewModel = rememberNotNull(component.viewModel)
-  val scope = rememberCoroutineScope()
+  val clock = rememberNotNull(component.clock)
 
   val state = viewModel.state
   val addParams by state.addParams.collectAsState()
   val deleteParams by state.deleteParams.collectAsState()
+
+  val scope = rememberCoroutineScope()
 
   MountHooks(
       viewModel = viewModel,
@@ -82,6 +87,7 @@ internal fun TransactionEntry(
   TransactionScreen(
       modifier = modifier,
       state = state,
+      clock = clock,
       onDismiss = onDismiss,
       // Action
       showActionButton = true,
@@ -100,6 +106,9 @@ internal fun TransactionEntry(
       // Breakdown
       onBreakdownToggled = { viewModel.handleToggleBreakdown() },
       onBreakdownChange = { viewModel.handleSetBreakdownRange(it) },
+
+      // Chart
+      onChartToggled = { viewModel.handleToggleChart() },
   )
 
   addParams?.also { p ->
