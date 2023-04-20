@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.column.columnChart
 import com.patrykandpatrick.vico.core.chart.column.ColumnChart
@@ -208,6 +207,7 @@ internal fun SpendingChartBar(
       onToggle = onToggle,
   ) {
     val c = rememberNotNull(chart)
+
     Chart(
         modifier = Modifier.weight(1F),
         model = c.models,
@@ -216,7 +216,6 @@ internal fun SpendingChartBar(
                 columns = c.columns,
                 mergeMode = ColumnChart.MergeMode.Stack,
             ),
-        startAxis = startAxis(),
         bottomAxis = bottomAxis(),
     )
   }
