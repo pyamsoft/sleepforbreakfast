@@ -21,7 +21,6 @@ import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
 import java.time.Clock
 import java.time.LocalDate
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -29,7 +28,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@Singleton
 class RepeatCreateTransactionWork
 @Inject
 internal constructor(

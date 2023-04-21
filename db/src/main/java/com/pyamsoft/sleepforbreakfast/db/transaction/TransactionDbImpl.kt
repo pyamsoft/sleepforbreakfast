@@ -50,11 +50,10 @@ internal constructor(
         TransactionDeleteDao,
     >() {
 
-  private val queryCache =
-      cachify<List<DbTransaction>> {
-        enforcer.assertOffMainThread()
-        return@cachify realQueryDao.query()
-      }
+  private val queryCache = cachify {
+    enforcer.assertOffMainThread()
+    return@cachify realQueryDao.query()
+  }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbTransaction>, DbTransaction.Id> { id ->

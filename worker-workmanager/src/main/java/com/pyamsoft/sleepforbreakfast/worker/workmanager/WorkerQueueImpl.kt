@@ -28,12 +28,10 @@ import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.AutomaticSpendi
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.RepeatCreateTransactionWorker
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@Singleton
 internal class WorkerQueueImpl
 @Inject
 internal constructor(

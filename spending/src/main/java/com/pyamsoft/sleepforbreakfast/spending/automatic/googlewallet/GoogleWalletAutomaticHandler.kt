@@ -22,10 +22,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Google wallet notifications come from Google Play Services */
-@Singleton
 internal class GoogleWalletAutomaticHandler
 @Inject
 internal constructor(

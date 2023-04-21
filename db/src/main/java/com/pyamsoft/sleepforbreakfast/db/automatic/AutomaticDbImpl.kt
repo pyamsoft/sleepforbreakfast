@@ -53,11 +53,10 @@ internal constructor(
         AutomaticDeleteDao,
     >() {
 
-  private val queryCache =
-      cachify<List<DbAutomatic>> {
-        enforcer.assertOffMainThread()
-        return@cachify realQueryDao.query()
-      }
+  private val queryCache = cachify {
+    enforcer.assertOffMainThread()
+    return@cachify realQueryDao.query()
+  }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbAutomatic>, DbAutomatic.Id> { id ->
@@ -65,11 +64,10 @@ internal constructor(
         return@multiCachify realQueryDao.queryById(id)
       }
 
-  private val queryUnusedCache =
-      cachify<List<DbAutomatic>> {
-        enforcer.assertOffMainThread()
-        return@cachify realQueryDao.queryUnused()
-      }
+  private val queryUnusedCache = cachify {
+    enforcer.assertOffMainThread()
+    return@cachify realQueryDao.queryUnused()
+  }
 
   private val queryByNotificationCache =
       multiCachify<

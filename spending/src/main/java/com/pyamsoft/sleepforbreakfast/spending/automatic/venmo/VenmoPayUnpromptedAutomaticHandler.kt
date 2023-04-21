@@ -22,10 +22,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /** When you pay someone on Venmo without them requesting you first */
-@Singleton
 internal class VenmoPayUnpromptedAutomaticHandler
 @Inject
 internal constructor(

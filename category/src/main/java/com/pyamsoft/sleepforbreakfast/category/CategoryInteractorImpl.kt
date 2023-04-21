@@ -27,9 +27,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 internal class CategoryInteractorImpl
 @Inject
 constructor(

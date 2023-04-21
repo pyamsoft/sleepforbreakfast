@@ -19,9 +19,7 @@ package com.pyamsoft.sleepforbreakfast.ui.savedstate
 import com.pyamsoft.sleepforbreakfast.ui.InternalApi
 import com.squareup.moshi.Moshi
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 internal class MoshiJsonParser
 @Inject
 constructor(

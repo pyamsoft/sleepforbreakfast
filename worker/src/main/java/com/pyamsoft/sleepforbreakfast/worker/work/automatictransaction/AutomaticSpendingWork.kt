@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.worker.work.automatictransaction
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -27,7 +26,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-@Singleton
 class AutomaticSpendingWork
 @Inject
 internal constructor(

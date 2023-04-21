@@ -50,7 +50,7 @@ internal constructor(
     >() {
 
   private val queryCache =
-      cachify<List<DbCategory>> {
+      cachify {
         enforcer.assertOffMainThread()
         return@cachify realQueryDao.query()
       }

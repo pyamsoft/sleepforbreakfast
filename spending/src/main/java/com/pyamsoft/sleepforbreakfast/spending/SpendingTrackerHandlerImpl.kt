@@ -30,12 +30,10 @@ import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import java.time.Clock
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import timber.log.Timber
 
-@Singleton
 internal class SpendingTrackerHandlerImpl
 @Inject
 internal constructor(

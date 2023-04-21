@@ -25,9 +25,7 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 internal class SleepDbImpl
 @Inject
 internal constructor(

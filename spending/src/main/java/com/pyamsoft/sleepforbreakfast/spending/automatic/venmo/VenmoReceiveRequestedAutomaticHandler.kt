@@ -22,10 +22,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.EarnAutomaticHandler
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /** When you pay someone on Venmo but they request you to */
-@Singleton
 internal class VenmoReceiveRequestedAutomaticHandler
 @Inject
 internal constructor(

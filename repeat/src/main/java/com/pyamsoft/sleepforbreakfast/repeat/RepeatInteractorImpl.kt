@@ -26,9 +26,7 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 internal class RepeatInteractorImpl
 @Inject
 constructor(

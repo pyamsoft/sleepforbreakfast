@@ -52,17 +52,15 @@ internal constructor(
         RepeatDeleteDao,
     >() {
 
-  private val queryCache =
-      cachify<List<DbRepeat>> {
-        enforcer.assertOffMainThread()
-        return@cachify realQueryDao.query()
-      }
+  private val queryCache = cachify {
+    enforcer.assertOffMainThread()
+    return@cachify realQueryDao.query()
+  }
 
-  private val queryActiveCache =
-      cachify<List<DbRepeat>> {
-        enforcer.assertOffMainThread()
-        return@cachify realQueryDao.queryActive()
-      }
+  private val queryActiveCache = cachify {
+    enforcer.assertOffMainThread()
+    return@cachify realQueryDao.queryActive()
+  }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbRepeat>, DbRepeat.Id> { id ->
