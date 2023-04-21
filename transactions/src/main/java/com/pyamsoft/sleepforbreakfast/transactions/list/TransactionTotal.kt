@@ -33,7 +33,6 @@ internal fun TransactionTotal(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
     clock: Clock,
-
     onDismiss: () -> Unit,
 
     // Search
@@ -90,7 +89,6 @@ internal fun TransactionTotal(
 private fun Totals(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
-
     onDismiss: () -> Unit,
 
     // Search

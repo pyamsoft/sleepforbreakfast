@@ -54,17 +54,17 @@ dependencies {
 
   // Compose
   api("androidx.compose.compiler:compiler:${rootProject.extra["compose_compiler_version"]}")
-  api("androidx.activity:activity-compose:${rootProject.extra["composeActivity"]}")
   api("androidx.compose.ui:ui:${rootProject.extra["compose_version"]}")
-  api("androidx.compose.material:material:${rootProject.extra["composeMaterial"]}")
   api("androidx.compose.animation:animation:${rootProject.extra["compose_version"]}")
   api("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["compose_version"]}")
   debugApi("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
-  api("androidx.compose.material:material-icons-extended:1.3.1")
+  api("androidx.activity:activity-compose:1.7.1")
+  api("androidx.compose.material:material:${rootProject.extra["compose_material"]}")
+  api("androidx.compose.material:material-icons-extended:${rootProject.extra["compose_material"]}")
 
   api("com.github.pyamsoft.pydroid:bootstrap:${rootProject.extra["pydroid"]}")
 
-  api("io.coil-kt:coil-compose-base:${rootProject.extra["coil"]}")
+  api("io.coil-kt:coil-compose-base:2.3.0")
 
   api("com.squareup.moshi:moshi:${rootProject.extra["moshi"]}")
   kapt("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
@@ -72,7 +72,7 @@ dependencies {
   api("com.patrykandpatrick.vico:compose:1.6.5")
 
   // Material Design
-  api("com.google.android.material:material:${rootProject.extra["materialDesign"]}")
+  api("com.google.android.material:material:1.8.0")
 
   api(project(":core"))
 }
