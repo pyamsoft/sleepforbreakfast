@@ -47,6 +47,12 @@ import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 
+private enum class ContentTypes {
+  OPTIONS,
+  TRANSACTIONS,
+  EXTRAS,
+}
+
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -70,7 +76,9 @@ fun HomeScreen(
     LazyColumn(
         modifier = modifier,
     ) {
-      item {
+      item(
+          contentType = ContentTypes.OPTIONS,
+      ) {
         HomeOptions(
             modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
             state = state,
@@ -78,14 +86,18 @@ fun HomeScreen(
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.TRANSACTIONS,
+      ) {
         HomeOpenTransactions(
             modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
             onOpen = onOpenTransactions,
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.EXTRAS,
+      ) {
         HomeExtras(
             modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
             onOpenRepeats = onOpenRepeats,

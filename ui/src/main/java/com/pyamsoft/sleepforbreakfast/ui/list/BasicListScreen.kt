@@ -101,6 +101,11 @@ private fun AnimatedFab(
   }
 }
 
+private enum class ContentTypes {
+  TOP_SPACER,
+  BOTTOM_SPACER,
+}
+
 @Composable
 fun <T : Any> ListScreen(
     modifier: Modifier = Modifier,
@@ -111,6 +116,7 @@ fun <T : Any> ListScreen(
     onSnackbarDismissed: () -> Unit,
     onSnackbarAction: () -> Unit,
     itemKey: (T) -> String,
+    itemContentType: (T) -> Any,
     deletedMessage: (T) -> String,
     topBar: @Composable () -> Unit = {},
     item: @Composable (T) -> Unit,
@@ -126,7 +132,9 @@ fun <T : Any> ListScreen(
       deletedMessage = deletedMessage,
   ) { pv ->
     LazyColumn {
-      item {
+      item(
+          contentType = ContentTypes.TOP_SPACER,
+      ) {
         Spacer(
             modifier = Modifier.padding(pv).height(MaterialTheme.keylines.content),
         )
@@ -135,11 +143,14 @@ fun <T : Any> ListScreen(
       items(
           items = items,
           key = itemKey,
+          contentType = itemContentType,
       ) {
         item(it)
       }
 
-      item {
+      item(
+          contentType = ContentTypes.BOTTOM_SPACER,
+      ) {
         Spacer(
             modifier =
                 Modifier.padding(pv)

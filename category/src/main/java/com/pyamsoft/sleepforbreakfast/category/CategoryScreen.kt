@@ -31,6 +31,10 @@ import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
+private enum class ContentTypes {
+  CATEGORY
+}
+
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun CategoryScreen(
@@ -54,6 +58,7 @@ fun CategoryScreen(
       items = categories,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
+      itemContentType = { ContentTypes.CATEGORY },
       deletedMessage = { "${it.name} Removed" },
       onActionButtonClicked = onActionButtonClicked,
       onSnackbarAction = onCategoryRestored,

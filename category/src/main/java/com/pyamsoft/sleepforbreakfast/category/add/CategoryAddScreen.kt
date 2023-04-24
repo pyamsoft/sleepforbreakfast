@@ -40,6 +40,12 @@ import com.pyamsoft.sleepforbreakfast.money.add.AddName
 import com.pyamsoft.sleepforbreakfast.money.add.AddNote
 import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
 
+private enum class ContentTypes {
+  NAME,
+  NOTE,
+  SUBMIT,
+}
+
 @Composable
 fun CategoryAddScreen(
     modifier: Modifier = Modifier,
@@ -82,7 +88,9 @@ fun CategoryAddScreen(
     )
 
     LazyColumn {
-      item {
+      item(
+          contentType = ContentTypes.NAME,
+      ) {
         AddName(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             name = name,
@@ -91,7 +99,9 @@ fun CategoryAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.NOTE,
+      ) {
         AddNote(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             note = note,
@@ -104,7 +114,9 @@ fun CategoryAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.SUBMIT,
+      ) {
         AddSubmit(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             working = working,

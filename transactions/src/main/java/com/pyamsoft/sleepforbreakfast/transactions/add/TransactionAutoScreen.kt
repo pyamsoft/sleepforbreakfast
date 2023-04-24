@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions.auto
+package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
@@ -45,6 +45,17 @@ import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
+
+private enum class AutoContentTypes {
+  TITLE,
+  MATCH_TEXT,
+  AMOUNT,
+  NOTIFICATION_ID,
+  NOTIFICATION_PACKAGE,
+  NOTIFICATION_KEY,
+  NOTIFICATION_GROUP,
+  CREATED_DATE,
+}
 
 @Composable
 fun TransactionAutoScreen(
@@ -110,7 +121,9 @@ fun TransactionAutoScreen(
             }
           } else {
             LazyColumn {
-              item {
+              item(
+                  contentType = AutoContentTypes.TITLE,
+              ) {
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
                     text = "Notification: ${a.notificationTitle}",
@@ -118,7 +131,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.MATCH_TEXT,
+              ) {
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -129,7 +144,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.AMOUNT,
+              ) {
                 val money =
                     remember(a.notificationAmountInCents) {
                       MoneyVisualTransformation.format(a.notificationAmountInCents)
@@ -144,7 +161,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.NOTIFICATION_ID,
+              ) {
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -155,7 +174,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.NOTIFICATION_PACKAGE,
+              ) {
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -166,7 +187,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.NOTIFICATION_KEY,
+              ) {
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -177,7 +200,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.NOTIFICATION_GROUP,
+              ) {
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -188,7 +213,9 @@ fun TransactionAutoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = AutoContentTypes.CREATED_DATE,
+              ) {
                 val dateString =
                     remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
                 Text(

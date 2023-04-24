@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions.repeat
+package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
@@ -44,6 +44,12 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.LocalDate
+
+private enum class RepeatContentTypes {
+  TITLE,
+  TYPE,
+  CREATED_DATE,
+}
 
 @Composable
 fun TransactionRepeatInfoScreen(
@@ -109,7 +115,9 @@ fun TransactionRepeatInfoScreen(
             }
           } else {
             LazyColumn {
-              item {
+              item(
+                  contentType = RepeatContentTypes.TITLE,
+              ) {
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
                     text = "Name: ${r.transactionName}",
@@ -117,7 +125,9 @@ fun TransactionRepeatInfoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = RepeatContentTypes.TYPE,
+              ) {
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -128,7 +138,9 @@ fun TransactionRepeatInfoScreen(
                 )
               }
 
-              item {
+              item(
+                  contentType = RepeatContentTypes.CREATED_DATE,
+              ) {
                 val dateString =
                     remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
                 Text(

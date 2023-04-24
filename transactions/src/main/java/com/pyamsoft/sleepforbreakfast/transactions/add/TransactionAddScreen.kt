@@ -59,14 +59,22 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
-import com.pyamsoft.sleepforbreakfast.transactions.auto.TransactionAutoScreen
-import com.pyamsoft.sleepforbreakfast.transactions.repeat.TransactionRepeatInfoScreen
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
 import java.time.LocalDate
 import java.time.LocalTime
+
+private enum class AddContentTypes {
+  NAME,
+  AMOUNT,
+  DATE,
+  NOTE,
+  CATEGORIES,
+  SUBMIT,
+  REPEAT,
+}
 
 @Composable
 fun TransactionAddScreen(
@@ -129,7 +137,9 @@ fun TransactionAddScreen(
     )
 
     LazyColumn {
-      item {
+      item(
+          contentType = AddContentTypes.NAME,
+      ) {
         MoneyName(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
@@ -138,7 +148,9 @@ fun TransactionAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = AddContentTypes.AMOUNT,
+      ) {
         Row(
             modifier =
                 Modifier.fillMaxWidth()
@@ -161,7 +173,9 @@ fun TransactionAddScreen(
         }
       }
 
-      item {
+      item(
+          contentType = AddContentTypes.DATE,
+      ) {
         DateTime(
             modifier =
                 Modifier.fillMaxWidth()
@@ -173,7 +187,9 @@ fun TransactionAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = AddContentTypes.NOTE,
+      ) {
         MoneyNote(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
@@ -186,7 +202,9 @@ fun TransactionAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = AddContentTypes.CATEGORIES,
+      ) {
         val allCategories by state.allCategories.collectAsState()
 
         MoneyCategories(
@@ -201,7 +219,9 @@ fun TransactionAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = AddContentTypes.REPEAT,
+      ) {
         Column(
             modifier =
                 Modifier.fillMaxWidth()
@@ -220,7 +240,9 @@ fun TransactionAddScreen(
         }
       }
 
-      item {
+      item(
+          contentType = AddContentTypes.SUBMIT,
+      ) {
         MoneySubmit(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,

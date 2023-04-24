@@ -31,6 +31,10 @@ import com.pyamsoft.pydroid.ui.util.collectAsStateList
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
+private enum class ContentTypes {
+  REPEAT
+}
+
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun RepeatScreen(
@@ -54,6 +58,7 @@ fun RepeatScreen(
       items = sources,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
+      itemContentType = { ContentTypes.REPEAT },
       deletedMessage = { "${it.transactionName} Removed" },
       onActionButtonClicked = onActionButtonClicked,
       onSnackbarAction = onRepeatRestored,

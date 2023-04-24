@@ -61,6 +61,15 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import java.time.LocalDate
 
+private enum class ContentTypes {
+  NAME,
+  AMOUNT,
+  DATE,
+  NOTE,
+  CATEGORIES,
+  SUBMIT,
+}
+
 @Composable
 fun RepeatAddScreen(
     modifier: Modifier = Modifier,
@@ -115,7 +124,9 @@ fun RepeatAddScreen(
     )
 
     LazyColumn {
-      item {
+      item(
+          contentType = ContentTypes.NAME,
+      ) {
         MoneyName(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
@@ -124,7 +135,9 @@ fun RepeatAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.AMOUNT,
+      ) {
         Row(
             modifier =
                 Modifier.fillMaxWidth()
@@ -147,7 +160,9 @@ fun RepeatAddScreen(
         }
       }
 
-      item {
+      item(
+          contentType = ContentTypes.DATE,
+      ) {
         val firstDate by state.repeatFirstDay.collectAsState()
 
         Row(
@@ -172,7 +187,9 @@ fun RepeatAddScreen(
         }
       }
 
-      item {
+      item(
+          contentType = ContentTypes.NOTE,
+      ) {
         MoneyNote(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
@@ -185,7 +202,9 @@ fun RepeatAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.CATEGORIES,
+      ) {
         val allCategories by state.allCategories.collectAsState()
 
         MoneyCategories(
@@ -200,7 +219,9 @@ fun RepeatAddScreen(
         )
       }
 
-      item {
+      item(
+          contentType = ContentTypes.SUBMIT,
+      ) {
         MoneySubmit(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,

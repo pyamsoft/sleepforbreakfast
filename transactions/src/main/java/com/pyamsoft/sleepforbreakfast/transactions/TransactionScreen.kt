@@ -42,6 +42,12 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWith
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
 import java.time.Clock
 
+private enum class ContentTypes {
+  HEADER,
+  TRANSACTION,
+  BOTTOM_SPACER,
+}
+
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun TransactionScreen(
@@ -109,7 +115,9 @@ fun TransactionScreen(
             is TransactionOrHeader.Header -> {
               val month = li.month
 
-              stickyHeader {
+              stickyHeader(
+                  contentType = ContentTypes.HEADER,
+              ) {
                 Column(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -129,7 +137,9 @@ fun TransactionScreen(
             is TransactionOrHeader.Transaction -> {
               val transaction = li.transaction
 
-              item {
+              item(
+                  contentType = ContentTypes.TRANSACTION,
+              ) {
                 TransactionCard(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -147,7 +157,9 @@ fun TransactionScreen(
           }
         }
 
-        item {
+        item(
+            contentType = ContentTypes.BOTTOM_SPACER,
+        ) {
           Spacer(
               modifier =
                   Modifier.padding(pv)
