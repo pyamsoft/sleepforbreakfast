@@ -40,6 +40,7 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionOrHeader
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionTotal
 import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWithHeaders
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
+import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 import java.time.Clock
 
 private enum class ContentTypes {
@@ -110,6 +111,8 @@ fun TransactionScreen(
       )
 
       LazyColumn {
+        renderPYDroidExtras()
+
         for (li in list) {
           when (li) {
             is TransactionOrHeader.Header -> {

@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.ui.DeletedSnackbar
+import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 
 @Composable
 fun <T : Any> BasicListScreen(
@@ -132,6 +133,8 @@ fun <T : Any> ListScreen(
       deletedMessage = deletedMessage,
   ) { pv ->
     LazyColumn {
+      renderPYDroidExtras()
+
       item(
           contentType = ContentTypes.TOP_SPACER,
       ) {

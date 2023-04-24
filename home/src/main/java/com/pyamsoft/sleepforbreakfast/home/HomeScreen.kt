@@ -46,8 +46,10 @@ import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
+import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 
 private enum class ContentTypes {
+  HEADER,
   OPTIONS,
   TRANSACTIONS,
   EXTRAS,
@@ -64,46 +66,48 @@ fun HomeScreen(
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
-  Column(
+  LazyColumn(
       modifier = modifier,
   ) {
-    HomeHeader(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
-        appName = appName,
-        onOpenSettings = onOpenSettings,
-    )
+    renderPYDroidExtras()
 
-    LazyColumn(
-        modifier = modifier,
+    item(
+        contentType = ContentTypes.HEADER,
     ) {
-      item(
-          contentType = ContentTypes.OPTIONS,
-      ) {
-        HomeOptions(
-            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-            state = state,
-            onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
-        )
-      }
+      HomeHeader(
+          modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+          appName = appName,
+          onOpenSettings = onOpenSettings,
+      )
+    }
 
-      item(
-          contentType = ContentTypes.TRANSACTIONS,
-      ) {
-        HomeOpenTransactions(
-            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-            onOpen = onOpenTransactions,
-        )
-      }
+    item(
+        contentType = ContentTypes.OPTIONS,
+    ) {
+      HomeOptions(
+          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+          state = state,
+          onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
+      )
+    }
 
-      item(
-          contentType = ContentTypes.EXTRAS,
-      ) {
-        HomeExtras(
-            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-            onOpenRepeats = onOpenRepeats,
-            onOpenCategories = onOpenCategories,
-        )
-      }
+    item(
+        contentType = ContentTypes.TRANSACTIONS,
+    ) {
+      HomeOpenTransactions(
+          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+          onOpen = onOpenTransactions,
+      )
+    }
+
+    item(
+        contentType = ContentTypes.EXTRAS,
+    ) {
+      HomeExtras(
+          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+          onOpenRepeats = onOpenRepeats,
+          onOpenCategories = onOpenCategories,
+      )
     }
   }
 }

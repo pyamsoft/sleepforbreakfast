@@ -29,13 +29,22 @@ import com.pyamsoft.pydroid.ui.widget.ShowChangeLogWidget
 import com.pyamsoft.pydroid.ui.widget.ShowDataPolicyDialog
 import com.pyamsoft.pydroid.ui.widget.UpdateProgressWidget
 
+private enum class PYDroidContentTypes {
+  UPDATE_VERSION,
+  NEW_VERSION,
+  CHANGELOG,
+  BILLING,
+}
+
 @Composable
 fun InstallPYDroidExtras() {
   ShowDataPolicyDialog()
 }
 
 fun LazyListScope.renderPYDroidExtras() {
-  item {
+  item(
+      contentType = PYDroidContentTypes.UPDATE_VERSION,
+  ) {
     UpdateProgressWidget(
         modifier =
             Modifier.fillMaxWidth()
@@ -44,7 +53,9 @@ fun LazyListScope.renderPYDroidExtras() {
     )
   }
 
-  item {
+  item(
+      contentType = PYDroidContentTypes.NEW_VERSION,
+  ) {
     NewVersionWidget(
         modifier =
             Modifier.fillMaxWidth()
@@ -53,7 +64,9 @@ fun LazyListScope.renderPYDroidExtras() {
     )
   }
 
-  item {
+  item(
+      contentType = PYDroidContentTypes.CHANGELOG,
+  ) {
     ShowChangeLogWidget(
         modifier =
             Modifier.fillMaxWidth()
@@ -62,9 +75,14 @@ fun LazyListScope.renderPYDroidExtras() {
     )
   }
 
-  item {
+  item(
+      contentType = PYDroidContentTypes.BILLING,
+  ) {
     BillingUpsellWidget(
-        modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(horizontal = MaterialTheme.keylines.content)
+                .padding(top = MaterialTheme.keylines.content),
     )
   }
 }
