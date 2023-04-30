@@ -24,7 +24,7 @@ buildscript {
     compileSdk = 33
 
     // Us
-    pydroid = "26.4.0"
+    pydroid = "26.4.1"
 
     // Leak Canary
     leakCanary = "2.10"
@@ -42,9 +42,9 @@ buildscript {
     moshi = "1.14.0"
 
     // Compose
-    compose_version = "1.4.2"
-    compose_compiler_version = "1.4.6"
-    compose_material = "1.4.2"
+    compose = "1.4.2"
+    composeCompiler = "1.4.6"
+    composeMaterial = "1.4.2"
 
     desugar = "2.0.3"
   }
