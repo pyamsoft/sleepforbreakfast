@@ -30,7 +30,7 @@ buildscript {
     leakCanary = "2.10"
 
     // Dagger
-    dagger = "2.45"
+    dagger = "2.46"
 
     // Room
     room = "2.5.1"
@@ -42,9 +42,9 @@ buildscript {
     moshi = "1.14.0"
 
     // Compose
-    compose = "1.4.2"
-    composeCompiler = "1.4.6"
-    composeMaterial = "1.4.2"
+    compose = "1.4.3"
+    composeCompiler = "1.4.7"
+    composeMaterial = "1.4.3"
 
     desugar = "2.0.3"
   }
@@ -61,7 +61,7 @@ plugins {
 
   // Kotlin
   // https://developer.android.com/studio/build#top-level
-  id("org.jetbrains.kotlin.android") version "1.8.20" apply false
+  id("org.jetbrains.kotlin.android") version "1.8.21" apply false
 
   // Gradle version checker
   // https://github.com/ben-manes/gradle-versions-plugin

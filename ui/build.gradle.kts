@@ -72,7 +72,7 @@ dependencies {
   api("com.patrykandpatrick.vico:compose:1.6.5")
 
   // Material Design
-  api("com.google.android.material:material:1.8.0")
+  api("com.google.android.material:material:1.9.0")
 
   api(project(":core"))
 }
