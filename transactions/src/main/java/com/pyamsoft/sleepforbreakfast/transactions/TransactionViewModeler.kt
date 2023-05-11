@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
@@ -30,6 +31,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -38,9 +40,11 @@ class TransactionViewModeler
 internal constructor(
     state: MutableTransactionViewState,
     interactor: TransactionInteractor,
+    private val enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
 ) :
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
+        enforcer = enforcer,
         state = state,
         interactor = interactor,
     ) {
@@ -142,21 +146,27 @@ internal constructor(
     // Create a source that generates data based on the latest from all sources
     val combined =
         combineTransform(
-            allItems,
-            state.search,
-            state.breakdown,
-        ) { all, search, breakdown ->
-          emit(
-              ItemPayload(
-                  transactions = all,
-                  search = search,
-                  range = breakdown,
-              ),
-          )
-        }
+                allItems,
+                state.search,
+                state.breakdown,
+            ) { all, search, breakdown ->
+              enforcer.assertOffMainThread()
+
+              emit(
+                  ItemPayload(
+                      transactions = all,
+                      search = search,
+                      range = breakdown,
+                  ),
+              )
+            }
+            // Enforcee in background
+            .flowOn(context = Dispatchers.Default)
 
     scope.launch(context = Dispatchers.Default) {
       combined.collect { (all, search, range) ->
+        enforcer.assertOffMainThread()
+
         state.items.value =
             all.asSequence()
                 // Filter by search query

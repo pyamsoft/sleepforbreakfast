@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.money.list
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -34,6 +36,7 @@ import timber.log.Timber
 abstract class ListViewModeler<T : Any, CE : Any, S : MutableListViewState<T>>
 protected constructor(
     final override val state: S,
+    private val enforcer: ThreadEnforcer,
     private val interactor: ListInteractor<*, T, CE>,
 ) : AbstractViewModeler<S>(state) {
 
@@ -80,19 +83,25 @@ protected constructor(
     // Create a source that generates data based on the latest from all sources
     val combined =
         combineTransform(
-            allItems,
-            state.search,
-        ) { all, search ->
-          emit(
-              ItemPayload(
-                  items = all,
-                  search = search,
-              ),
-          )
-        }
+                allItems,
+                state.search,
+            ) { all, search ->
+              enforcer.assertOffMainThread()
+
+              emit(
+                  ItemPayload(
+                      items = all,
+                      search = search,
+                  ),
+              )
+            }
+            // Enforce in background
+            .flowOn(context = Dispatchers.Default)
 
     scope.launch(context = Dispatchers.Default) {
       combined.collect { (all, search) ->
+        enforcer.assertOffMainThread()
+
         if (search.isBlank()) {
           state.items.value = all.sort()
         } else {

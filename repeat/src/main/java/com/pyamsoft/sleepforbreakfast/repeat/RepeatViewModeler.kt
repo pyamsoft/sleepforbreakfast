@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.repeat
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
@@ -32,9 +33,11 @@ class RepeatViewModeler
 internal constructor(
     state: MutableRepeatViewState,
     interactor: RepeatInteractor,
+    enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
 ) :
     ListViewModeler<DbRepeat, RepeatChangeEvent, MutableRepeatViewState>(
+        enforcer = enforcer,
         state = state,
         interactor = interactor,
     ) {

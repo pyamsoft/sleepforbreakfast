@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.category
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddParams
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteParams
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryChangeEvent
@@ -32,9 +33,11 @@ class CategoryViewModeler
 internal constructor(
     state: MutableCategoryViewState,
     interactor: CategoryInteractor,
+    enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
 ) :
     ListViewModeler<DbCategory, CategoryChangeEvent, MutableCategoryViewState>(
+        enforcer = enforcer,
         state = state,
         interactor = interactor,
     ) {
