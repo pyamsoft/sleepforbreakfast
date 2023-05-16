@@ -30,7 +30,7 @@ buildscript {
     leakCanary = "2.10"
 
     // Dagger
-    dagger = "2.46"
+    dagger = "2.46.1"
 
     // Room
     room = "2.5.1"
@@ -39,7 +39,7 @@ buildscript {
     workmanager = "2.8.1"
 
     // Moshi
-    moshi = "1.14.0"
+    moshi = "1.15.0"
 
     // Compose
     compose = "1.4.3"
