@@ -48,13 +48,13 @@ dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  kapt("androidx.room:room-compiler:${rootProject.extra["room"]}")
 
   // Room
   // Need this format for variable resolution for AGP cache plugin fix
   // Need API for Dagger
   api("androidx.room:room-runtime:${rootProject.extra["room"]}")
   implementation("androidx.room:room-ktx:${rootProject.extra["room"]}")
-  kapt("androidx.room:room-compiler:${rootProject.extra["room"]}")
 
   implementation(project(":core"))
   implementation(project(":db"))

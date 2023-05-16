@@ -51,6 +51,7 @@ dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
   implementation(project(":db"))
   implementation(project(":money"))

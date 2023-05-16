@@ -51,6 +51,7 @@ dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
   // Compose
   api("androidx.compose.compiler:compiler:${rootProject.extra["composeCompiler"]}")
@@ -67,7 +68,6 @@ dependencies {
   api("io.coil-kt:coil-compose-base:2.3.0")
 
   api("com.squareup.moshi:moshi:${rootProject.extra["moshi"]}")
-  kapt("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
   api("com.patrykandpatrick.vico:compose:1.6.6")
 
