@@ -50,7 +50,7 @@ android {
 dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
-  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
   ksp("androidx.room:room-compiler:${rootProject.extra["room"]}")
 
   // Room
