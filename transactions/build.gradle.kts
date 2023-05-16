@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-plugins { id("com.android.library") }
+plugins {
+  id("com.android.library")
+  id("com.google.devtools.ksp")
+}
 
 android {
   namespace = "com.pyamsoft.sleepforbreakfast.transactions"
@@ -50,8 +53,8 @@ android {
 dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
-  kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
-  kapt("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
+  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
   implementation(project(":db"))
   implementation(project(":money"))

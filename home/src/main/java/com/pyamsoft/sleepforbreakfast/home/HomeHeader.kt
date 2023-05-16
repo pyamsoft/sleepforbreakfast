@@ -18,8 +18,6 @@ package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -39,9 +37,6 @@ fun HomeHeader(
   Column(
       modifier = modifier,
   ) {
-    Spacer(
-        modifier = Modifier.statusBarsPadding(),
-    )
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ContentAlpha
@@ -49,6 +50,7 @@ import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 
 private enum class ContentTypes {
+  SPACER,
   HEADER,
   OPTIONS,
   TRANSACTIONS,
@@ -69,6 +71,14 @@ fun HomeScreen(
   LazyColumn(
       modifier = modifier,
   ) {
+    item(
+        contentType = ContentTypes.SPACER,
+    ) {
+      Spacer(
+          modifier = Modifier.statusBarsPadding(),
+      )
+    }
+
     renderPYDroidExtras()
 
     item(
