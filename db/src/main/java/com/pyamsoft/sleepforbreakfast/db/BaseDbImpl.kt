@@ -18,9 +18,13 @@ package com.pyamsoft.sleepforbreakfast.db
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.bus.internal.DefaultEventBus
+<<<<<<< HEAD
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+=======
+import kotlinx.coroutines.flow.Flow
+>>>>>>> e6bbfa6 (Update dispatchers and pydroid code updates)
 
 internal abstract class BaseDbImpl<
     ChangeEvent : Any,
@@ -34,6 +38,7 @@ internal abstract class BaseDbImpl<
 
   @CheckResult protected fun subscribe(): Flow<ChangeEvent> = bus
 
-  protected suspend fun publish(event: ChangeEvent) =
-      withContext(context = Dispatchers.Default) { bus.emit(event) }
+  protected suspend fun publish(event: ChangeEvent) {
+    bus.emit(event)
+  }
 }

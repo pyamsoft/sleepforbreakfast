@@ -146,7 +146,7 @@ protected constructor(
           .onSuccess {
             if (!isIdEmpty(initialId)) {
               // Force onto main thread
-              withContext(context = Dispatchers.Main) { onDismissAfterUpdated() }
+              withContext(context = Dispatchers.Default) { onDismissAfterUpdated() }
             }
           }
           .onFailure {

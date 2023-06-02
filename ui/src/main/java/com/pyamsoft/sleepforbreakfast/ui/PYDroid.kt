@@ -41,13 +41,14 @@ fun InstallPYDroidExtras() {
   ShowDataPolicyDialog()
 }
 
-fun LazyListScope.renderPYDroidExtras() {
+fun LazyListScope.renderPYDroidExtras(modifier: Modifier = Modifier) {
   item(
       contentType = PYDroidContentTypes.UPDATE_VERSION,
   ) {
     UpdateProgressWidget(
         modifier =
-            Modifier.fillMaxWidth()
+            modifier
+                .fillMaxWidth()
                 .padding(horizontal = MaterialTheme.keylines.content)
                 .padding(top = MaterialTheme.keylines.content),
     )
@@ -58,7 +59,8 @@ fun LazyListScope.renderPYDroidExtras() {
   ) {
     NewVersionWidget(
         modifier =
-            Modifier.fillMaxWidth()
+            modifier
+                .fillMaxWidth()
                 .padding(horizontal = MaterialTheme.keylines.content)
                 .padding(top = MaterialTheme.keylines.content),
     )
@@ -69,7 +71,8 @@ fun LazyListScope.renderPYDroidExtras() {
   ) {
     ShowChangeLogWidget(
         modifier =
-            Modifier.fillMaxWidth()
+            modifier
+                .fillMaxWidth()
                 .padding(horizontal = MaterialTheme.keylines.content)
                 .padding(top = MaterialTheme.keylines.content),
     )
@@ -80,7 +83,8 @@ fun LazyListScope.renderPYDroidExtras() {
   ) {
     BillingUpsellWidget(
         modifier =
-            Modifier.fillMaxWidth()
+            modifier
+                .fillMaxWidth()
                 .padding(horizontal = MaterialTheme.keylines.content)
                 .padding(top = MaterialTheme.keylines.content),
     )

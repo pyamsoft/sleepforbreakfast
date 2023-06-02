@@ -79,8 +79,6 @@ fun HomeScreen(
       )
     }
 
-    renderPYDroidExtras()
-
     item(
         contentType = ContentTypes.HEADER,
     ) {
@@ -91,11 +89,13 @@ fun HomeScreen(
       )
     }
 
+    renderPYDroidExtras()
+
     item(
         contentType = ContentTypes.OPTIONS,
     ) {
       HomeOptions(
-          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+          modifier = Modifier.fillMaxWidth(),
           state = state,
           onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
       )
@@ -105,7 +105,7 @@ fun HomeScreen(
         contentType = ContentTypes.TRANSACTIONS,
     ) {
       HomeOpenTransactions(
-          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+          modifier = Modifier.fillMaxWidth(),
           onOpen = onOpenTransactions,
       )
     }
@@ -114,7 +114,7 @@ fun HomeScreen(
         contentType = ContentTypes.EXTRAS,
     ) {
       HomeExtras(
-          modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+          modifier = Modifier.fillMaxWidth(),
           onOpenRepeats = onOpenRepeats,
           onOpenCategories = onOpenCategories,
       )

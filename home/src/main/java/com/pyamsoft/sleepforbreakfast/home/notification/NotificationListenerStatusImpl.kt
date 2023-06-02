@@ -92,7 +92,7 @@ internal constructor(
   }
 
   override suspend fun activateNotificationListener() =
-      withContext(context = Dispatchers.Main) {
+      withContext(context = Dispatchers.Default) {
         val action = Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS
         if (openSettingsPageIntent(action)) {
           Timber.w("Failed to open settings page: $action")

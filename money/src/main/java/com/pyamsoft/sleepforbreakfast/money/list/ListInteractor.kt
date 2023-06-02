@@ -27,9 +27,9 @@ interface ListInteractor<I : Any, T : Any, CE : Any> {
 
   @CheckResult suspend fun loadAll(force: Boolean): ResultWrapper<List<T>>
 
-  @CheckResult fun listenForItemChanges(): Flow<CE>
-
   @CheckResult suspend fun submit(item: T): ResultWrapper<DbInsert.InsertResult<T>>
 
   @CheckResult suspend fun delete(item: T): ResultWrapper<Boolean>
+
+  @CheckResult fun listenForItemChanges(): Flow<CE>
 }
