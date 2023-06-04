@@ -48,6 +48,7 @@ internal constructor(
     val category = state.existingCategory.value ?: DbCategory.create(clock, initialId)
     return category.name(state.name.value).note(state.note.value)
   }
+
   override fun onBind(scope: CoroutineScope) {
     handleReset()
   }

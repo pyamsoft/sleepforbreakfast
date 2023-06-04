@@ -50,17 +50,23 @@ internal interface MainComponent {
 
   // Category
   @CheckResult fun plusCategory(): CategoryComponent.Factory
+
   @CheckResult fun plusAddCategory(): CategoryAddComponent.Factory
+
   @CheckResult fun plusDeleteCategory(): CategoryDeleteComponent.Factory
 
   // Repeat
   @CheckResult fun plusRepeats(): RepeatComponent.Factory
+
   @CheckResult fun plusAddRepeat(): RepeatAddComponent.Factory
+
   @CheckResult fun plusDeleteRepeats(): RepeatDeleteComponent.Factory
 
   // Transactions
   @CheckResult fun plusTransactions(): TransactionComponent.Factory
+
   @CheckResult fun plusAddTransactions(): TransactionAddComponent.Factory
+
   @CheckResult fun plusDeleteTransactions(): TransactionDeleteComponent.Factory
 
   @Subcomponent.Factory

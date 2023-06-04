@@ -63,6 +63,8 @@ class SpendingTrackerService : NotificationListenerService() {
     }
 
     ensureInjected()
-    scope?.apply { launch(context = Dispatchers.Default) { handler?.processNotification(sbn, extras) } }
+    scope?.apply {
+      launch(context = Dispatchers.Default) { handler?.processNotification(sbn, extras) }
+    }
   }
 }

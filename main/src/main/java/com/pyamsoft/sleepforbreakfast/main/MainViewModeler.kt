@@ -60,6 +60,7 @@ internal constructor(
   fun handleCloseSettings() {
     state.isSettingsOpen.value = false
   }
+
   fun handleClosePage() {
     state.page.value = null
   }
