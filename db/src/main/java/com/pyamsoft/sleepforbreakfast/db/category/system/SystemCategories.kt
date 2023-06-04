@@ -29,7 +29,7 @@ interface SystemCategories {
 
 @CheckResult
 suspend fun SystemCategories.ensure() =
-    withContext(context = Dispatchers.IO) {
+    withContext(context = Dispatchers.Default) {
       for (cat in RequiredCategories.values()) {
         categoryByName(cat).also { c ->
           if (c == null) {

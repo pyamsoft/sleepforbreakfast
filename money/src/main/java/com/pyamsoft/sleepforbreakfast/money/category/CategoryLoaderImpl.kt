@@ -35,7 +35,7 @@ constructor(
 ) : CategoryLoader {
 
   override suspend fun queryAllResult(): ResultWrapper<List<DbCategory>> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         try {
           ResultWrapper.success(queryAll())
         } catch (e: Throwable) {
@@ -47,7 +47,7 @@ constructor(
       }
 
   override suspend fun queryAll(): List<DbCategory> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         // This is bad since it constantly queries each time, but its what we've got for now
         systemCategories.ensure()
 

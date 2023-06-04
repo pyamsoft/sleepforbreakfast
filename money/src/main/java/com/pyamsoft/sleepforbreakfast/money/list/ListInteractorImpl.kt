@@ -22,6 +22,7 @@ import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -29,7 +30,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
     ListInteractor<I, T, CE> {
 
   final override suspend fun loadAll(force: Boolean): ResultWrapper<List<T>> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         if (force) {
           performClearCache()
         }
@@ -42,11 +43,8 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
         }
       }
 
-  final override suspend fun listenForItemChanges(onEvent: (CE) -> Unit) =
-      withContext(context = Dispatchers.IO) { performListenRealtime(onEvent) }
-
   final override suspend fun loadOne(force: Boolean, id: I): ResultWrapper<T> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         if (force) {
           performClearCache(id)
         }
@@ -69,7 +67,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
       }
 
   final override suspend fun delete(item: T): ResultWrapper<Boolean> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         try {
           ResultWrapper.success(performDelete(item))
         } catch (e: Throwable) {
@@ -81,7 +79,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
       }
 
   final override suspend fun submit(item: T): ResultWrapper<DbInsert.InsertResult<T>> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         try {
           ResultWrapper.success(performInsert(item))
         } catch (e: Throwable) {
@@ -103,6 +101,4 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
   @CheckResult protected abstract suspend fun performClearCache()
 
   @CheckResult protected abstract suspend fun performClearCache(id: I)
-
-  @CheckResult protected abstract suspend fun performListenRealtime(onEvent: (CE) -> Unit)
 }

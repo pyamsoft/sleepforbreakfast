@@ -38,7 +38,7 @@ internal abstract class RoomTransactionInsertDao : TransactionInsertDao {
   // Transaction methods cannot be final
   @Transaction
   override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val roomTransaction = RoomDbTransaction.create(o)
         return@withContext if (daoQuery(roomTransaction.id) == null) {
           if (daoInsert(roomTransaction) != ROOM_ROW_ID_INSERT_INVALID) {

@@ -31,7 +31,7 @@ import kotlinx.coroutines.withContext
 internal abstract class RoomRepeatQueryDao : RepeatQueryDao {
 
   final override suspend fun query(): List<DbRepeat> =
-      withContext(context = Dispatchers.IO) { daoQuery() }
+      withContext(context = Dispatchers.Default) { daoQuery() }
 
   @CheckResult
   @Transaction
@@ -43,7 +43,7 @@ internal abstract class RoomRepeatQueryDao : RepeatQueryDao {
   internal abstract suspend fun daoQuery(): List<RoomDbRepeat>
 
   final override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
@@ -60,7 +60,7 @@ SELECT * FROM ${RoomDbRepeat.TABLE_NAME}
   internal abstract suspend fun daoQueryById(id: DbRepeat.Id): RoomDbRepeat?
 
   final override suspend fun queryActive(): List<DbRepeat> =
-      withContext(context = Dispatchers.IO) { daoQueryActive() }
+      withContext(context = Dispatchers.Default) { daoQueryActive() }
 
   @CheckResult
   @Transaction

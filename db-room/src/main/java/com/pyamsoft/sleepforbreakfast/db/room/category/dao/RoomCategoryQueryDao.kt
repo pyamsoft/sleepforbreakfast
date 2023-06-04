@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
 
   final override suspend fun query(): List<DbCategory> =
-      withContext(context = Dispatchers.IO) { daoQuery() }
+      withContext(context = Dispatchers.Default) { daoQuery() }
 
   @CheckResult
   @Transaction
@@ -44,7 +44,7 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
   internal abstract suspend fun daoQuery(): List<RoomDbCategory>
 
   final override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
@@ -63,7 +63,7 @@ SELECT * FROM ${RoomDbCategory.TABLE_NAME}
   final override suspend fun queryBySystemCategory(
       category: RequiredCategories
   ): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryBySystemCategory(category.displayName)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)

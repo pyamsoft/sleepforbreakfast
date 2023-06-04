@@ -56,7 +56,7 @@ protected constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Main) {
+    scope.launch(context = Dispatchers.Default) {
       if (state.working.value) {
         Timber.w("Already deleting")
         return@launch

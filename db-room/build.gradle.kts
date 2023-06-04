@@ -53,10 +53,7 @@ dependencies {
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
   ksp("androidx.room:room-compiler:${rootProject.extra["room"]}")
 
-  // Room
-  // Need this format for variable resolution for AGP cache plugin fix
-  // Need API for Dagger
-  api("androidx.room:room-runtime:${rootProject.extra["room"]}")
+  implementation("androidx.room:room-runtime:${rootProject.extra["room"]}")
   implementation("androidx.room:room-ktx:${rootProject.extra["room"]}")
 
   implementation(project(":core"))

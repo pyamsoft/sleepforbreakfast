@@ -52,6 +52,9 @@ dependencies {
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
-  api(project(":db"))
-  api(project(":worker"))
+  implementation("com.patrykandpatrick.vico:compose:${rootProject.extra["vico"]}")
+
+  implementation(project(":core"))
+  implementation(project(":db"))
+  implementation(project(":worker"))
 }

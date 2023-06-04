@@ -26,6 +26,7 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 internal class RepeatInteractorImpl
 @Inject
@@ -53,8 +54,8 @@ constructor(
     repeatQueryCache.invalidateById(id)
   }
 
-  override suspend fun performListenRealtime(onEvent: (RepeatChangeEvent) -> Unit) {
-    return repeatRealtime.listenForChanges(onEvent)
+  override fun listenForItemChanges(): Flow<RepeatChangeEvent> {
+    return repeatRealtime.listenForChanges()
   }
 
   override suspend fun performInsert(item: DbRepeat): DbInsert.InsertResult<DbRepeat> {

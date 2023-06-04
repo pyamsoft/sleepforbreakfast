@@ -28,6 +28,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -84,7 +85,7 @@ internal constructor(
   override val realtime: TransactionRealtime = this
 
   override suspend fun invalidate() =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         queryCache.clear()
         queryByIdCache.clear()
         queryByRepeat.clear()
@@ -92,7 +93,7 @@ internal constructor(
       }
 
   override suspend fun invalidateById(id: DbTransaction.Id) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByIdKey(
                 transactionId = id,
@@ -102,7 +103,7 @@ internal constructor(
       }
 
   override suspend fun invalidateByRepeat(id: DbRepeat.Id) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByRepeat(
                 repeatId = id,
@@ -115,7 +116,7 @@ internal constructor(
       id: DbRepeat.Id,
       dates: Collection<LocalDate>,
   ) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByRepeatOnDates(
                 repeatId = id,
@@ -125,14 +126,15 @@ internal constructor(
         queryByRepeatOnDates.key(key).clear()
       }
 
-  override suspend fun listenForChanges(onChange: (event: TransactionChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) { onEvent(onChange) }
+  override fun listenForChanges(): Flow<TransactionChangeEvent> {
+    return subscribe()
+  }
 
   override suspend fun query(): List<DbTransaction> =
-      withContext(context = Dispatchers.IO) { queryCache.call() }
+      withContext(context = Dispatchers.Default) { queryCache.call() }
 
   override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByIdKey(
                 transactionId = id,
@@ -142,7 +144,7 @@ internal constructor(
       }
 
   override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByRepeat(
                 repeatId = id,
@@ -155,7 +157,7 @@ internal constructor(
       id: DbRepeat.Id,
       dates: Collection<LocalDate>
   ): Set<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByRepeatOnDates(
                 repeatId = id,
@@ -171,7 +173,7 @@ internal constructor(
       }
 
   override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
@@ -189,7 +191,7 @@ internal constructor(
       }
 
   override suspend fun delete(o: DbTransaction): Boolean =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()

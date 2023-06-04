@@ -27,6 +27,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 internal class CategoryInteractorImpl
 @Inject
@@ -55,8 +56,8 @@ constructor(
     categoryQueryCache.invalidateById(id)
   }
 
-  override suspend fun performListenRealtime(onEvent: (CategoryChangeEvent) -> Unit) {
-    categoryRealtime.listenForChanges(onEvent)
+  override fun listenForItemChanges(): Flow<CategoryChangeEvent> {
+    return categoryRealtime.listenForChanges()
   }
 
   override suspend fun performInsert(item: DbCategory): DbInsert.InsertResult<DbCategory> {

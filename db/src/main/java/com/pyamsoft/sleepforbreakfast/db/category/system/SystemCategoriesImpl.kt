@@ -116,7 +116,7 @@ internal constructor(
       }
 
   override suspend fun categoryByName(category: RequiredCategories): DbCategory? =
-      withContext(context = Dispatchers.IO) { ensure(category) }
+      withContext(context = Dispatchers.Default) { ensure(category) }
 
   companion object {
     /**

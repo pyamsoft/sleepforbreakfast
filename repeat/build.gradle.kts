@@ -56,8 +56,9 @@ dependencies {
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
   ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
-  api(project(":db"))
-  api(project(":money"))
-  api(project(":ui"))
-  api(project(":worker"))
+  implementation(project(":core"))
+  implementation(project(":db"))
+  implementation(project(":money"))
+  implementation(project(":ui"))
+  implementation(project(":worker"))
 }

@@ -106,7 +106,7 @@ ${auto.notificationMatchText}
   }
 
   suspend fun process(automatic: DbAutomatic) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         // If its already used, skip it
         if (automatic.used) {
           return@withContext

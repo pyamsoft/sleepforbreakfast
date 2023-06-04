@@ -20,7 +20,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.annotation.CheckResult
-import coil.ImageLoader
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.sleepforbreakfast.category.CategoryAppModule
@@ -87,7 +86,6 @@ internal interface BreakfastComponent {
     fun create(
         @Named("debug") @BindsInstance debug: Boolean,
         @BindsInstance application: Application,
-        @BindsInstance imageLoader: ImageLoader,
         @BindsInstance theming: Theming,
         @BindsInstance enforcer: ThreadEnforcer,
     ): BreakfastComponent

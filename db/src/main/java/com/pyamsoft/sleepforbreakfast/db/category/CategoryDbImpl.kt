@@ -27,6 +27,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -49,11 +50,10 @@ internal constructor(
         CategoryDeleteDao,
     >() {
 
-  private val queryCache =
-      cachify {
-        enforcer.assertOffMainThread()
-        return@cachify realQueryDao.query()
-      }
+  private val queryCache = cachify {
+    enforcer.assertOffMainThread()
+    return@cachify realQueryDao.query()
+  }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbCategory>, DbCategory.Id> { id ->
@@ -77,13 +77,13 @@ internal constructor(
   override val realtime: CategoryRealtime = this
 
   override suspend fun invalidate() =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         queryCache.clear()
         queryByIdCache.clear()
       }
 
   override suspend fun invalidateById(id: DbCategory.Id) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByIdKey(
                 categoryId = id,
@@ -93,7 +93,7 @@ internal constructor(
       }
 
   override suspend fun invalidateBySystemCategory(category: RequiredCategories) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryBySystemCategoryKey(
                 category = category,
@@ -102,14 +102,15 @@ internal constructor(
         queryBySystemCategoryCache.key(key).clear()
       }
 
-  override suspend fun listenForChanges(onChange: (event: CategoryChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) { onEvent(onChange) }
+  override fun listenForChanges(): Flow<CategoryChangeEvent> {
+    return subscribe()
+  }
 
   override suspend fun query(): List<DbCategory> =
-      withContext(context = Dispatchers.IO) { queryCache.call() }
+      withContext(context = Dispatchers.Default) { queryCache.call() }
 
   override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByIdKey(
                 categoryId = id,
@@ -119,7 +120,7 @@ internal constructor(
       }
 
   override suspend fun queryBySystemCategory(category: RequiredCategories): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryBySystemCategoryKey(
                 category = category,
@@ -129,7 +130,7 @@ internal constructor(
       }
 
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
@@ -147,7 +148,7 @@ internal constructor(
       }
 
   override suspend fun delete(o: DbCategory): Boolean =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()

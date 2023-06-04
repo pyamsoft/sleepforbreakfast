@@ -32,6 +32,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -50,7 +51,7 @@ constructor(
     ListInteractorImpl<DbTransaction.Id, DbTransaction, TransactionChangeEvent>() {
 
   override suspend fun loadAuto(transaction: DbTransaction): ResultWrapper<Maybe<out DbAutomatic>> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val r = transaction.automaticId
         if (r == null) {
           Timber.w("Transaction has no auto data: $transaction")
@@ -66,7 +67,7 @@ constructor(
       }
 
   override suspend fun loadRepeat(transaction: DbTransaction): ResultWrapper<Maybe<out DbRepeat>> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val r = transaction.repeatId
         if (r == null) {
           Timber.w("Transaction has no repeat data: $transaction")
@@ -97,8 +98,8 @@ constructor(
     transactionQueryCache.invalidateById(id)
   }
 
-  override suspend fun performListenRealtime(onEvent: (TransactionChangeEvent) -> Unit) {
-    transactionRealtime.listenForChanges(onEvent)
+  override fun listenForItemChanges(): Flow<TransactionChangeEvent> {
+    return transactionRealtime.listenForChanges()
   }
 
   override suspend fun performInsert(item: DbTransaction): DbInsert.InsertResult<DbTransaction> {

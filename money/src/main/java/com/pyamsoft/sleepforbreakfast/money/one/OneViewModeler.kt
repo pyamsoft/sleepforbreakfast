@@ -35,7 +35,7 @@ protected constructor(
   fun bind(scope: CoroutineScope, force: Boolean) {
     // Upon binding, load the existing
     if (!isIdEmpty(initialId)) {
-      scope.launch(context = Dispatchers.Main) {
+      scope.launch(context = Dispatchers.Default) {
         interactor
             .loadOne(force, initialId)
             .onSuccess { result ->

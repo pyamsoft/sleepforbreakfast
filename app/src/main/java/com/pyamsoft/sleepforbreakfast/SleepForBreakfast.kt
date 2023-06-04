@@ -68,7 +68,6 @@ class SleepForBreakfast : Application() {
             .create(
                 debug = isDebugMode(),
                 application = this,
-                imageLoader = mods.imageLoader(),
                 theming = mods.theming(),
                 enforcer = mods.enforcer(),
             )

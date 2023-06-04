@@ -26,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.getAndUpdate
@@ -43,8 +44,8 @@ protected constructor(
   private val allItems = MutableStateFlow(emptyList<T>())
 
   private fun listenForItems(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Main) {
-      interactor.listenForItemChanges { onItemRealtimeEvent(it) }
+    interactor.listenForItemChanges().also { f ->
+      scope.launch(context = Dispatchers.Default) { f.collect { onItemRealtimeEvent(it) } }
     }
   }
 
@@ -151,7 +152,7 @@ protected constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Main) {
+    scope.launch(context = Dispatchers.Default) {
       if (state.loadingState.value == LoadingState.LOADING) {
         Timber.w("Already loading items list")
         return@launch
@@ -185,7 +186,7 @@ protected constructor(
   fun handleRestoreDeleted(scope: CoroutineScope) {
     val deleted = state.recentlyDeleted.getAndUpdate { null }
     if (deleted != null) {
-      scope.launch(context = Dispatchers.Main) {
+      scope.launch(context = Dispatchers.Default) {
         interactor
             .submit(deleted)
             .onFailure { Timber.e(it, "Error when restoring $deleted") }

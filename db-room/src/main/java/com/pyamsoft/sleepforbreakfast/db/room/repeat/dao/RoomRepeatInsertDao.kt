@@ -38,7 +38,7 @@ internal abstract class RoomRepeatInsertDao : RepeatInsertDao {
   // Transaction methods cannot be final
   @Transaction
   override suspend fun insert(o: DbRepeat): DbInsert.InsertResult<DbRepeat> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val roomRepeat = RoomDbRepeat.create(o)
         return@withContext if (daoQuery(roomRepeat.id) == null) {
           if (daoInsert(roomRepeat) != ROOM_ROW_ID_INSERT_INVALID) {

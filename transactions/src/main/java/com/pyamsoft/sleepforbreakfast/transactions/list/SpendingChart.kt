@@ -151,7 +151,7 @@ private fun rememberChart(
 
   LaunchedEffect(transactions) {
     val scope = this
-    scope.launch(context = Dispatchers.Main) {
+    scope.launch(context = Dispatchers.Default) {
       val entries = generateChartEntries(clock, transactions)
       val lineColors = generateLineColors(entries)
 

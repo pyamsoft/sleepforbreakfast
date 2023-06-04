@@ -38,7 +38,7 @@ internal abstract class RoomAutomaticInsertDao : AutomaticInsertDao {
   // Transaction methods cannot be final
   @Transaction
   override suspend fun insert(o: DbAutomatic): DbInsert.InsertResult<DbAutomatic> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val roomAutomatic = RoomDbAutomatic.create(o)
         return@withContext if (daoQuery(roomAutomatic.id) == null) {
           if (daoInsert(roomAutomatic) != ROOM_ROW_ID_INSERT_INVALID) {

@@ -33,7 +33,7 @@ import kotlinx.coroutines.withContext
 internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
 
   final override suspend fun query(): List<DbTransaction> =
-      withContext(context = Dispatchers.IO) { daoQuery() }
+      withContext(context = Dispatchers.Default) { daoQuery() }
 
   @CheckResult
   @Transaction
@@ -41,7 +41,7 @@ internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
 
   final override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
@@ -58,7 +58,7 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 
   final override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
-      withContext(context = Dispatchers.IO) { daoQueryByRepeat(id) }
+      withContext(context = Dispatchers.Default) { daoQueryByRepeat(id) }
 
   @CheckResult
   @Transaction
@@ -73,7 +73,7 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
       id: DbRepeat.Id,
       dates: Collection<LocalDate>
   ): Set<DbTransaction> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         return@withContext daoQueryByRepeatOnDates(id, dates.toList()).toSet()
       }
 

@@ -157,7 +157,7 @@ internal constructor(
   override fun onBind(scope: CoroutineScope) {
     handleReset()
 
-    scope.launch(context = Dispatchers.Main) { loadCategories() }
+    scope.launch(context = Dispatchers.Default) { loadCategories() }
   }
 
   override fun CoroutineScope.onDataLoaded(result: DbTransaction) {
@@ -165,8 +165,8 @@ internal constructor(
 
     handleReset()
 
-    launch(context = Dispatchers.Main) { loadRepeat(result) }
-    launch(context = Dispatchers.Main) { loadAuto(result) }
+    launch(context = Dispatchers.Default) { loadRepeat(result) }
+    launch(context = Dispatchers.Default) { loadAuto(result) }
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {

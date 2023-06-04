@@ -48,7 +48,7 @@ internal constructor(
       }
 
   override suspend fun work(): BgWorker.WorkResult =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         try {
           processJobs()
           return@withContext BgWorker.WorkResult.Success

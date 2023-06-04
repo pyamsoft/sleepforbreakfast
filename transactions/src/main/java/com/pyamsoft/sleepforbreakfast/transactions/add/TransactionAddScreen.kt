@@ -34,7 +34,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -63,6 +62,7 @@ import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
+import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import java.time.LocalDate
 import java.time.LocalTime
 

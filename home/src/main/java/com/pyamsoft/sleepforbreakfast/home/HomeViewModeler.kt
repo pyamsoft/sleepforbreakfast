@@ -31,14 +31,14 @@ internal constructor(
 ) : AbstractViewModeler<HomeViewState>(state) {
 
   fun bind(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Main) {
-      listenerStatus.isNotificationListenerActive().collect {
-        state.isNotificationListenerEnabled.value = it
+    listenerStatus.isNotificationListenerActive().also { f ->
+      scope.launch(context = Dispatchers.Default) {
+        f.collect { state.isNotificationListenerEnabled.value = it }
       }
     }
   }
 
   fun handleOpenNotificationSettings(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Main) { listenerStatus.activateNotificationListener() }
+    scope.launch(context = Dispatchers.Default) { listenerStatus.activateNotificationListener() }
   }
 }

@@ -27,6 +27,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -77,17 +78,17 @@ internal constructor(
   override val realtime: RepeatRealtime = this
 
   override suspend fun invalidate() =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         queryCache.clear()
         queryByIdCache.clear()
         queryActiveCache.clear()
       }
 
   override suspend fun invalidateActive() =
-      withContext(context = Dispatchers.IO) { queryActiveCache.clear() }
+      withContext(context = Dispatchers.Default) { queryActiveCache.clear() }
 
   override suspend fun invalidateById(id: DbRepeat.Id) =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByIdKey(
                 repeatId = id,
@@ -96,17 +97,18 @@ internal constructor(
         queryByIdCache.key(key).clear()
       }
 
-  override suspend fun listenForChanges(onChange: (event: RepeatChangeEvent) -> Unit) =
-      withContext(context = Dispatchers.IO) { onEvent(onChange) }
+  override fun listenForChanges(): Flow<RepeatChangeEvent> {
+    return subscribe()
+  }
 
   override suspend fun query(): List<DbRepeat> =
-      withContext(context = Dispatchers.IO) { queryCache.call() }
+      withContext(context = Dispatchers.Default) { queryCache.call() }
 
   override suspend fun queryActive(): List<DbRepeat> =
-      withContext(context = Dispatchers.IO) { queryActiveCache.call() }
+      withContext(context = Dispatchers.Default) { queryActiveCache.call() }
 
   override suspend fun queryById(id: DbRepeat.Id): Maybe<out DbRepeat> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         val key =
             QueryByIdKey(
                 repeatId = id,
@@ -116,7 +118,7 @@ internal constructor(
       }
 
   override suspend fun insert(o: DbRepeat): DbInsert.InsertResult<DbRepeat> =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
@@ -134,7 +136,7 @@ internal constructor(
       }
 
   override suspend fun delete(o: DbRepeat): Boolean =
-      withContext(context = Dispatchers.IO) {
+      withContext(context = Dispatchers.Default) {
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()

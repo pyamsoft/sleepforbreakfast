@@ -69,7 +69,7 @@ internal constructor(
     // Clear everything
     handleReset()
 
-    scope.launch(context = Dispatchers.Main) { loadCategories() }
+    scope.launch(context = Dispatchers.Default) { loadCategories() }
   }
 
   override fun CoroutineScope.onDataLoaded(result: DbRepeat) {
