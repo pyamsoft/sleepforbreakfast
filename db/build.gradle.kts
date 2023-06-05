@@ -41,8 +41,6 @@ android {
   kotlinOptions { jvmTarget = "17" }
 
   buildFeatures { buildConfig = false }
-
-  composeOptions { kotlinCompilerExtensionVersion = "${rootProject.extra["composeCompiler"]}" }
 }
 
 dependencies {
@@ -51,6 +49,9 @@ dependencies {
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
   implementation("com.github.pyamsoft:cachify:0.3.0")
+
+  // Compose Annotations
+  implementation("androidx.compose.runtime:runtime:${rootProject.extra["compose"]}")
 
   implementation(project(":core"))
 }
