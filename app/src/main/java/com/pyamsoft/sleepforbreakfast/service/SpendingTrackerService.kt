@@ -19,19 +19,25 @@ package com.pyamsoft.sleepforbreakfast.service
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.core.cancelChildren
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class SpendingTrackerService : NotificationListenerService() {
-  private var scope: CoroutineScope? = null
 
   @Inject @JvmField internal var handler: SpendingTrackerHandler? = null
+
+  private val scope by lazy {
+    CoroutineScope(
+        context = SupervisorJob() + Dispatchers.Default + CoroutineName(this::class.java.name),
+    )
+  }
 
   private fun ensureInjected() {
     if (handler == null) {
@@ -39,13 +45,10 @@ class SpendingTrackerService : NotificationListenerService() {
     }
   }
 
-  override fun onListenerConnected() {
-    scope = scope ?: MainScope()
-  }
+  override fun onListenerConnected() {}
 
   override fun onDestroy() {
-    scope?.cancel()
-    scope = null
+    scope.cancelChildren()
     handler = null
   }
 
@@ -63,6 +66,6 @@ class SpendingTrackerService : NotificationListenerService() {
     }
 
     ensureInjected()
-    scope?.apply { launch(context = Dispatchers.Default) { handler?.processNotification(sbn, extras) } }
+    handler?.also { h -> scope.launch { h.processNotification(sbn, extras) } }
   }
 }
