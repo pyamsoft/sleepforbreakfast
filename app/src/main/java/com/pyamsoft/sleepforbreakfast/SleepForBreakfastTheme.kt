@@ -88,7 +88,7 @@ private fun themeColors(
 
 @Composable
 @CheckResult
-private fun themeShapes(activity: Activity): Shapes {
+private fun themeShapes(): Shapes {
   return remember {
     Shapes(
         // Don't use MaterialTheme here since we are defining the theme
@@ -121,7 +121,7 @@ fun Activity.SleepForBreakfastTheme(
 
   PYDroidTheme(
       colors = themeColors(this, isDarkMode),
-      shapes = themeShapes(this),
+      shapes = themeShapes(),
   ) {
     // We update the LocalContentColor to match our onBackground. This allows the default
     // content color to be more appropriate to the theme background
