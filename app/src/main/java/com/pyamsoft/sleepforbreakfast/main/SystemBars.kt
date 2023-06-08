@@ -16,20 +16,21 @@
 
 package com.pyamsoft.sleepforbreakfast.main
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.pyamsoft.pydroid.ui.theme.Theming
+import com.pyamsoft.sleepforbreakfast.getSystemDarkMode
 
 @Composable
 internal fun SystemBars(
     theme: Theming.Mode,
 ) {
   // Dark icons in Light mode only
-  val darkIcons =
-      if (theme == Theming.Mode.SYSTEM) !isSystemInDarkTheme() else theme == Theming.Mode.LIGHT
+  val darkMode = theme.getSystemDarkMode()
+  val darkIcons = remember(darkMode) { !darkMode }
 
   val controller = rememberSystemUiController()
   SideEffect {
