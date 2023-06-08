@@ -120,9 +120,6 @@ dependencies {
 
   implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
-  // Material Design
-  implementation("com.google.android.material:material:1.9.0")
-
   implementation(project(":category"))
   implementation(project(":core"))
   implementation(project(":db"))
