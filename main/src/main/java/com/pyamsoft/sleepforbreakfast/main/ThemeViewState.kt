@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.main
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.pydroid.ui.theme.Theming
+import com.pyamsoft.sleepforbreakfast.core.ActivityScope
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,7 @@ interface ThemeViewState : UiViewState {
 }
 
 @Stable
+@ActivityScope
 class MutableThemeViewState @Inject internal constructor() : ThemeViewState {
   override val theme = MutableStateFlow(Theming.Mode.SYSTEM)
 }

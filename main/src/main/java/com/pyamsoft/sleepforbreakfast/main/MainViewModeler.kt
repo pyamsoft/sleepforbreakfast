@@ -18,10 +18,8 @@ package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
-import com.pyamsoft.sleepforbreakfast.core.ActivityScope
 import javax.inject.Inject
 
-@ActivityScope
 class MainViewModeler
 @Inject
 internal constructor(
