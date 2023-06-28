@@ -26,14 +26,16 @@ import kotlinx.coroutines.launch
 class HomeViewModeler
 @Inject
 internal constructor(
-    override val state: MutableHomeViewState,
+    state: MutableHomeViewState,
     private val listenerStatus: NotificationListenerStatus,
 ) : AbstractViewModeler<HomeViewState>(state) {
+
+  private val vmState = state
 
   fun bind(scope: CoroutineScope) {
     listenerStatus.isNotificationListenerActive().also { f ->
       scope.launch(context = Dispatchers.Default) {
-        f.collect { state.isNotificationListenerEnabled.value = it }
+        f.collect { vmState.isNotificationListenerEnabled.value = it }
       }
     }
   }
