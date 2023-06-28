@@ -46,6 +46,7 @@ internal constructor(
     private val categoryLoader: CategoryLoader,
     private val workerQueue: WorkerQueue,
 ) :
+    RepeatAddViewState by state,
     MoneyAddViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatAddViewState>(
         state = state,
         initialId = params.repeatId,

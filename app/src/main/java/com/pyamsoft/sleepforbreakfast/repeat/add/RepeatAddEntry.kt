@@ -16,11 +16,11 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
@@ -37,7 +37,7 @@ internal constructor(
 
   @JvmField @Inject internal var viewModel: RepeatAddViewModeler? = null
 
-  override fun onInject(activity: FragmentActivity) {
+  override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusAddRepeat()
         .create(
@@ -87,7 +87,7 @@ internal fun RepeatAddEntry(
       onDismiss = onDismiss,
   ) {
     RepeatAddScreen(
-        state = viewModel.state,
+        state = viewModel,
         onDismiss = onDismiss,
         onNameChanged = { viewModel.handleNameChanged(it) },
         onNoteChanged = { viewModel.handleNoteChanged(it) },

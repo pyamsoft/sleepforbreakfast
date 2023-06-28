@@ -23,23 +23,21 @@ import javax.inject.Inject
 class MainViewModeler
 @Inject
 internal constructor(
-    state: MutableMainViewState,
-) : AbstractViewModeler<MainViewState>(state) {
-
-  private val vmState = state
+    override val state: MutableMainViewState,
+) : MainViewState by state, AbstractViewModeler<MainViewState>(state) {
 
   override fun registerSaveState(
       registry: SaveableStateRegistry
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
-        val s = vmState
+        val s = state
 
         registry.registerProvider(KEY_SETTINGS) { s.isSettingsOpen.value }.also { add(it) }
         registry.registerProvider(KEY_PAGE) { s.page.value?.name }.also { add(it) }
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    val s = vmState
+    val s = state
 
     registry
         .consumeRestored(KEY_SETTINGS)
@@ -54,27 +52,27 @@ internal constructor(
   }
 
   fun handleOpenSettings() {
-    vmState.isSettingsOpen.value = true
+    state.isSettingsOpen.value = true
   }
 
   fun handleCloseSettings() {
-    vmState.isSettingsOpen.value = false
+    state.isSettingsOpen.value = false
   }
 
   fun handleClosePage() {
-    vmState.page.value = null
+    state.page.value = null
   }
 
   fun handleOpenTransactions() {
-    vmState.page.value = MainPage.TRANSACTION
+    state.page.value = MainPage.TRANSACTION
   }
 
   fun handleOpenRepeats() {
-    vmState.page.value = MainPage.REPEAT
+    state.page.value = MainPage.REPEAT
   }
 
   fun handleOpenCategory() {
-    vmState.page.value = MainPage.CATEGORY
+    state.page.value = MainPage.CATEGORY
   }
 
   companion object {

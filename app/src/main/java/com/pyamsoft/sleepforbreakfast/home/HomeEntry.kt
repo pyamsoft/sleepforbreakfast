@@ -16,11 +16,11 @@
 
 package com.pyamsoft.sleepforbreakfast.home
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
@@ -32,7 +32,7 @@ internal class HomeInjector @Inject internal constructor() : ComposableInjector(
 
   @JvmField @Inject internal var viewModel: HomeViewModeler? = null
 
-  override fun onInject(activity: FragmentActivity) {
+  override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusHome()
         .create(
@@ -72,7 +72,7 @@ internal fun HomeEntry(
 
   HomeScreen(
       modifier = modifier,
-      state = viewModel.state,
+      state = viewModel,
       appName = appName,
       onOpenSettings = onOpenSettings,
       onOpenNotificationListenerSettings = {

@@ -36,6 +36,7 @@ internal constructor(
     enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
 ) :
+    CategoryViewState by state,
     ListViewModeler<DbCategory, CategoryChangeEvent, MutableCategoryViewState>(
         enforcer = enforcer,
         state = state,

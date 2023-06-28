@@ -28,6 +28,7 @@ internal constructor(
     params: CategoryDeleteParams,
     interactor: CategoryInteractor,
 ) :
+    CategoryDeleteViewState by state,
     DeleteViewModeler<DbCategory.Id, DbCategory, MutableCategoryDeleteViewState>(
         state = state,
         initialId = params.categoryId,

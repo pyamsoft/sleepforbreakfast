@@ -76,12 +76,11 @@ class MainActivity : AppCompatActivity() {
     component.inject(this)
     ObjectGraph.ActivityScope.install(this, component)
 
-    val tvm = themeViewModel.requireNotNull()
+    val vm = themeViewModel.requireNotNull()
     val appName = getString(R.string.app_name)
 
     setContent {
-      val themeState = tvm.state
-      val theme by themeState.theme.collectAsState()
+      val theme by vm.theme.collectAsState()
 
       SleepForBreakfastTheme(
           theme = theme,

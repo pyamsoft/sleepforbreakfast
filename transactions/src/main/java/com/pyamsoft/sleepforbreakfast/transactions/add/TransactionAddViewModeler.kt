@@ -47,6 +47,7 @@ internal constructor(
     private val categoryLoader: CategoryLoader,
     private val clock: Clock,
 ) :
+    TransactionAddViewState by state,
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
         state = state,
         initialId = params.transactionId,

@@ -28,6 +28,7 @@ internal constructor(
     params: TransactionDeleteParams,
     interactor: TransactionInteractor,
 ) :
+    TransactionDeleteViewState by state,
     DeleteViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionDeleteViewState>(
         state = state,
         initialId = params.transactionId,

@@ -16,9 +16,9 @@
 
 package com.pyamsoft.sleepforbreakfast.main
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
@@ -30,7 +30,7 @@ internal class MainInjector @Inject internal constructor() : ComposableInjector(
 
   @JvmField @Inject internal var viewModel: MainViewModeler? = null
 
-  override fun onInject(activity: FragmentActivity) {
+  override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity).inject(this)
   }
 
@@ -59,7 +59,7 @@ internal fun MainEntry(
   MainScreen(
       modifier = modifier,
       appName = appName,
-      state = viewModel.state,
+      state = viewModel,
       onOpenSettings = { viewModel.handleOpenSettings() },
       onCloseSettings = { viewModel.handleCloseSettings() },
       onClosePage = { viewModel.handleClosePage() },

@@ -43,6 +43,7 @@ internal constructor(
     private val enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
 ) :
+    TransactionViewState by state,
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
         enforcer = enforcer,
         state = state,

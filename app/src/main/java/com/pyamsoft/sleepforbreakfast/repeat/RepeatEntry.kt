@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.repeat
 
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,7 +36,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
@@ -53,7 +53,7 @@ internal class RepeatInjector @Inject internal constructor() : ComposableInjecto
 
   @JvmField @Inject internal var viewModel: RepeatViewModeler? = null
 
-  override fun onInject(activity: FragmentActivity) {
+  override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity).plusRepeats().create().inject(this)
   }
 
@@ -80,9 +80,8 @@ internal fun RepeatEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 
-  val state = viewModel.state
-  val addParams by state.addParams.collectAsState()
-  val deleteParams by state.deleteParams.collectAsState()
+  val addParams by viewModel.addParams.collectAsState()
+  val deleteParams by viewModel.deleteParams.collectAsState()
 
   MountHooks(
       viewModel = viewModel,
@@ -95,10 +94,10 @@ internal fun RepeatEntry(
   RepeatScreen(
       modifier = modifier,
       showActionButton = true,
-      state = state,
+      state = viewModel,
       topBar = {
         AppBar(
-            state = state,
+            state = viewModel,
             onDismiss = onDismiss,
             onSearchToggled = { viewModel.handleToggleSearch() },
             onSearchUpdated = { viewModel.handleSearchUpdated(it) },

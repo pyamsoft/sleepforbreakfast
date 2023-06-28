@@ -28,6 +28,7 @@ internal constructor(
     params: RepeatDeleteParams,
     interactor: RepeatInteractor,
 ) :
+    RepeatDeleteViewState by state,
     DeleteViewModeler<DbRepeat.Id, DbRepeat, MutableRepeatDeleteViewState>(
         state = state,
         initialId = params.repeatId,

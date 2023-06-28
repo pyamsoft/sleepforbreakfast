@@ -18,10 +18,10 @@ package com.pyamsoft.sleepforbreakfast.home.notification
 
 import android.content.Intent
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import javax.inject.Inject
@@ -34,7 +34,7 @@ import timber.log.Timber
 internal class NotificationListenerStatusImpl
 @Inject
 internal constructor(
-    private val activity: FragmentActivity,
+    private val activity: ComponentActivity,
 ) : NotificationListenerStatus {
 
   private val status = MutableStateFlow(isNotificationListenerEnabled())

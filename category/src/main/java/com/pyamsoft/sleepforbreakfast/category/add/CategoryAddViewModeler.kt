@@ -37,6 +37,7 @@ internal constructor(
     private val interactor: CategoryInteractor,
     private val clock: Clock,
 ) :
+    CategoryAddViewState by state,
     OneViewModeler<DbCategory.Id, DbCategory, MutableCategoryAddViewState>(
         state = state,
         initialId = params.categoryId,

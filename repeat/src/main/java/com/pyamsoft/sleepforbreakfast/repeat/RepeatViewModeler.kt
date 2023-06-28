@@ -36,6 +36,7 @@ internal constructor(
     enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
 ) :
+    RepeatViewState by state,
     ListViewModeler<DbRepeat, RepeatChangeEvent, MutableRepeatViewState>(
         enforcer = enforcer,
         state = state,

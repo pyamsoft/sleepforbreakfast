@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transaction
 
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
@@ -42,7 +42,7 @@ internal class TransactionInjector @Inject internal constructor() : ComposableIn
   @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
   @JvmField @Inject internal var clock: Clock? = null
 
-  override fun onInject(activity: FragmentActivity) {
+  override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity).plusTransactions().create().inject(this)
   }
 
@@ -70,9 +70,8 @@ internal fun TransactionEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val clock = rememberNotNull(component.clock)
 
-  val state = viewModel.state
-  val addParams by state.addParams.collectAsState()
-  val deleteParams by state.deleteParams.collectAsState()
+  val addParams by viewModel.addParams.collectAsState()
+  val deleteParams by viewModel.deleteParams.collectAsState()
 
   val scope = rememberCoroutineScope()
 
@@ -86,7 +85,7 @@ internal fun TransactionEntry(
 
   TransactionScreen(
       modifier = modifier,
-      state = state,
+      state = viewModel,
       clock = clock,
       onDismiss = onDismiss,
       // Action

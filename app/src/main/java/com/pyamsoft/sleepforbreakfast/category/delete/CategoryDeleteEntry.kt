@@ -16,13 +16,13 @@
 
 package com.pyamsoft.sleepforbreakfast.category.delete
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.fragment.app.FragmentActivity
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
@@ -39,7 +39,7 @@ internal constructor(
 
   @JvmField @Inject internal var viewModel: CategoryDeleteViewModeler? = null
 
-  override fun onInject(activity: FragmentActivity) {
+  override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusDeleteCategory()
         .create(
@@ -95,7 +95,7 @@ internal fun CategoryDeleteEntry(
       onDismiss = onDismiss,
   ) {
     CategoryDeleteScreen(
-        state = viewModel.state,
+        state = viewModel,
         onDismiss = onDismiss,
         onConfirm = { handleSubmit() },
     )
