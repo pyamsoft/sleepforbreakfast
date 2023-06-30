@@ -21,7 +21,7 @@ buildscript {
     // SDK
     minSdk = 24
     targetSdk = 33
-    compileSdk = 33
+    compileSdk = 34
 
     // Us
     pydroid = "26.7.0"
