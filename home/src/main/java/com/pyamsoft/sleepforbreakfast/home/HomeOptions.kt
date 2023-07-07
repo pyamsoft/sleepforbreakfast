@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
+import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
 
 @Composable
 internal fun HomeOptions(
@@ -46,6 +47,8 @@ internal fun HomeOptions(
   val isNotificationListenerEnabled by state.isNotificationListenerEnabled.collectAsState()
 
   val shape = MaterialTheme.shapes.medium
+
+  val hapticManager = LocalHapticManager.current
 
   Box(
       modifier = modifier.padding(MaterialTheme.keylines.content),
@@ -63,7 +66,10 @@ internal fun HomeOptions(
     ) {
       Column(
           modifier =
-              Modifier.clickable { onOpenNotificationListenerSettings() }
+              Modifier.clickable {
+                    hapticManager?.actionButtonPress()
+                    onOpenNotificationListenerSettings()
+                  }
                   .padding(MaterialTheme.keylines.content),
       ) {
         Row(

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
 
 @Composable
 fun HomeHeader(
@@ -34,6 +35,8 @@ fun HomeHeader(
     appName: String,
     onOpenSettings: () -> Unit,
 ) {
+  val hapticManager = LocalHapticManager.current
+
   Column(
       modifier = modifier,
   ) {
@@ -46,7 +49,10 @@ fun HomeHeader(
           style = MaterialTheme.typography.h5,
       )
       IconButton(
-          onClick = onOpenSettings,
+          onClick = {
+            hapticManager?.actionButtonPress()
+            onOpenSettings()
+          },
       ) {
         Icon(
             imageVector = Icons.Filled.Settings,
