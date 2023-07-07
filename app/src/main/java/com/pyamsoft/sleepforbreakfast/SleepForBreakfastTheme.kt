@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast
 
 import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
 import androidx.appcompat.R
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -34,6 +35,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.PYDroidTheme
 import com.pyamsoft.pydroid.theme.attributesFromCurrentTheme
+import com.pyamsoft.pydroid.ui.app.LocalActivity
+import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
+import com.pyamsoft.pydroid.ui.haptics.rememberHapticManager
 import com.pyamsoft.pydroid.ui.theme.Theming
 
 @Composable
@@ -94,20 +98,29 @@ private fun themeShapes(): Shapes {
 }
 
 @Composable
-fun Activity.SleepForBreakfastTheme(
+fun ComponentActivity.SleepForBreakfastTheme(
     theme: Theming.Mode,
     content: @Composable () -> Unit,
 ) {
+  val self = this
+
   val isDarkMode = theme.getSystemDarkMode()
+  val hapticManager = rememberHapticManager()
 
   PYDroidTheme(
-      colors = themeColors(this, isDarkMode),
+      colors = themeColors(self, isDarkMode),
       shapes = themeShapes(),
   ) {
-    // We update the LocalContentColor to match our onBackground. This allows the default
-    // content color to be more appropriate to the theme background
     CompositionLocalProvider(
+        // We update the LocalContentColor to match our onBackground. This allows the default
+        // content color to be more appropriate to the theme background
         LocalContentColor provides MaterialTheme.colors.onBackground,
+
+        // Provide PYDroid optionals
+        LocalActivity provides self,
+        LocalHapticManager provides hapticManager,
+
+        // And the render content
         content = content,
     )
   }

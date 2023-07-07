@@ -16,13 +16,14 @@
 
 package com.pyamsoft.sleepforbreakfast.home.notification
 
+import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
-import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -34,13 +35,14 @@ import timber.log.Timber
 internal class NotificationListenerStatusImpl
 @Inject
 internal constructor(
-    private val activity: ComponentActivity,
+    private val activity: Activity,
+    lifecycle: Lifecycle,
 ) : NotificationListenerStatus {
 
   private val status = MutableStateFlow(isNotificationListenerEnabled())
 
   init {
-    activity.lifecycle.addObserver(
+    lifecycle.addObserver(
         object : DefaultLifecycleObserver {
           override fun onResume(owner: LifecycleOwner) {
             status.value = isNotificationListenerEnabled()

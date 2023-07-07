@@ -37,6 +37,7 @@ internal class HomeInjector @Inject internal constructor() : ComposableInjector(
         .plusHome()
         .create(
             activity = activity,
+            lifecycle = activity.lifecycle,
         )
         .inject(this)
   }
