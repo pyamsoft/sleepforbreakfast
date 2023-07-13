@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
-import com.pyamsoft.pydroid.ui.util.fullScreenDialog
+import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
@@ -111,18 +111,18 @@ internal fun TransactionEntry(
   )
 
   addParams?.also { p ->
-    TransactionAddEntry(
-        modifier = Modifier.fullScreenDialog(),
-        params = p,
-        onDismiss = { viewModel.handleCloseAddTransaction() },
-    )
+      TransactionAddEntry(
+          modifier = Modifier.fillUpToPortraitSize(),
+          params = p,
+          onDismiss = { viewModel.handleCloseAddTransaction() },
+      )
   }
 
   deleteParams?.also { p ->
-    TransactionDeleteEntry(
-        modifier = Modifier.fullScreenDialog(),
-        params = p,
-        onDismiss = { viewModel.handleCloseDeleteTransaction() },
-    )
+      TransactionDeleteEntry(
+          modifier = Modifier.fillUpToPortraitSize(),
+          params = p,
+          onDismiss = { viewModel.handleCloseDeleteTransaction() },
+      )
   }
 }

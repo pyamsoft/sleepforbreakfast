@@ -47,7 +47,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
-import com.pyamsoft.pydroid.ui.util.fullScreenDialog
+import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
@@ -260,17 +260,17 @@ fun TransactionAddScreen(
       val loadingRepeat by state.loadingRepeat.collectAsState()
       val repeat by state.existingRepeat.collectAsState()
 
-      SurfaceDialog(
-          modifier = Modifier.fullScreenDialog(),
-          onDismiss = onRepeatInfoClosed,
-      ) {
-        TransactionRepeatInfoScreen(
-            repeat = repeat,
-            loading = loadingRepeat,
-            date = repeatDate,
+        SurfaceDialog(
+            modifier = Modifier.fillUpToPortraitSize(),
             onDismiss = onRepeatInfoClosed,
-        )
-      }
+        ) {
+            TransactionRepeatInfoScreen(
+                repeat = repeat,
+                loading = loadingRepeat,
+                date = repeatDate,
+                onDismiss = onRepeatInfoClosed,
+            )
+        }
     }
 
     val loadingAuto by state.loadingAuto.collectAsState()
@@ -279,17 +279,17 @@ fun TransactionAddScreen(
 
     val autoDate = existing?.automaticCreatedDate
     if (isOpenAuto && autoDate != null) {
-      SurfaceDialog(
-          modifier = Modifier.fullScreenDialog(),
-          onDismiss = onAutoInfoClosed,
-      ) {
-        TransactionAutoScreen(
-            auto = auto,
-            loading = loadingAuto,
-            date = autoDate,
+        SurfaceDialog(
+            modifier = Modifier.fillUpToPortraitSize(),
             onDismiss = onAutoInfoClosed,
-        )
-      }
+        ) {
+            TransactionAutoScreen(
+                auto = auto,
+                loading = loadingAuto,
+                date = autoDate,
+                onDismiss = onAutoInfoClosed,
+            )
+        }
     }
 
     val showDateDialog by state.isDateDialogOpen.collectAsState()
