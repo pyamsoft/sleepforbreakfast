@@ -31,8 +31,11 @@ import com.pyamsoft.sleepforbreakfast.work.enqueueAppWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class SleepForBreakfast : Application() {
@@ -86,11 +89,18 @@ class SleepForBreakfast : Application() {
 
   override fun onCreate() {
     super.onCreate()
-
-    installLogger()
     val modules = installPYDroid()
-    installComponent(modules)
 
+    val scope =
+        CoroutineScope(
+            context = SupervisorJob() + Dispatchers.Default + CoroutineName(this::class.java.name),
+        )
+    installLogger(
+        scope = scope,
+        inAppDebugStatus = modules.get().inAppDebugStatus(),
+    )
+
+    installComponent(modules)
     addLibraries()
     beginWork()
   }
@@ -99,11 +109,11 @@ class SleepForBreakfast : Application() {
 
     @JvmStatic
     private fun addLibraries() {
-      // We are using pydroid-notify
-      OssLibraries.usingNotify = true
-
-      // We are using pydroid-autopsy
-      OssLibraries.usingAutopsy = true
+      OssLibraries.apply {
+        usingAutopsy = true
+        usingArch = true
+        usingUi = true
+      }
 
       OssLibraries.apply {
         add(
