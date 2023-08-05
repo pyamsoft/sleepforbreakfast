@@ -43,7 +43,7 @@ class SleepForBreakfast : Application() {
   @Inject @JvmField internal var workerQueue: WorkerQueue? = null
 
   @CheckResult
-  private fun installPYDroid(): ModuleProvider {
+  private fun initPYDroid(): ModuleProvider {
     val url = "https://github.com/pyamsoft/sleepforbreakfast"
 
     return installPYDroid(
@@ -89,7 +89,7 @@ class SleepForBreakfast : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    val modules = installPYDroid()
+    val modules = initPYDroid()
 
     val scope =
         CoroutineScope(
