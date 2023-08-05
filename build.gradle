@@ -24,7 +24,7 @@ buildscript {
     compileSdk = 34
 
     // Us
-    pydroid = "26.8.0"
+    pydroid = "26.8.1"
 
     // Kotlin
     kotlin = "1.8.22"
