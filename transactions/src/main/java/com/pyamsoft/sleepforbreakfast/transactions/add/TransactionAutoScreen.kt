@@ -104,6 +104,7 @@ fun TransactionAutoScreen(
       }
       LoadingState.DONE -> {
         Crossfade(
+            label = "Transaction Auto Info",
             targetState = auto,
         ) { a ->
           if (a == null) {

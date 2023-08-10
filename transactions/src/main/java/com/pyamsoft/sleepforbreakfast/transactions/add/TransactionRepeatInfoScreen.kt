@@ -98,6 +98,7 @@ fun TransactionRepeatInfoScreen(
       }
       LoadingState.DONE -> {
         Crossfade(
+            label = "Transaction Repeat Info",
             targetState = repeat,
         ) { r ->
           if (r == null) {

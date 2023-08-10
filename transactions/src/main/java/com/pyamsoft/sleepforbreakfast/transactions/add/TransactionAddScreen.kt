@@ -367,6 +367,7 @@ private fun <T : Any> ExtraBit(
 ) {
   val handleIsValid by rememberUpdatedState(isValid)
   Crossfade(
+      label = "Info Extras",
       targetState = data,
   ) { e ->
     if (e == null) {

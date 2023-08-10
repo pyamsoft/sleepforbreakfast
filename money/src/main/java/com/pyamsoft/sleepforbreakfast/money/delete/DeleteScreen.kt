@@ -74,6 +74,7 @@ fun <T : Any> DeleteScreen(
     )
 
     Crossfade(
+        label = "Loading Remove",
         modifier = Modifier.padding(MaterialTheme.keylines.content),
         targetState = item,
     ) { data ->
@@ -94,6 +95,7 @@ fun <T : Any> DeleteScreen(
               enabled = !working && canDelete,
           ) {
             Crossfade(
+                label = "Removing",
                 targetState = working,
             ) { w ->
               if (w) {

@@ -50,6 +50,7 @@ fun MainScreen(
       modifier = modifier.fillMaxSize(),
   ) { pv ->
     Crossfade(
+        label = "Main",
         targetState = page,
     ) { p ->
       if (p == null) {
