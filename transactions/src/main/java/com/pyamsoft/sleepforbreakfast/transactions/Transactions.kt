@@ -52,9 +52,9 @@ internal fun Long.calculateTotalTransactionDirection(): SpendDirection {
   return if (self == 0L) {
     SpendDirection.NONE
   } else if (self < 0) {
-    SpendDirection.LOSS
+    SpendDirection.SPEND
   } else {
-    SpendDirection.GAIN
+    SpendDirection.EARN
   }
 }
 

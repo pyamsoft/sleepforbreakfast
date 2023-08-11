@@ -44,6 +44,8 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
 import com.pyamsoft.sleepforbreakfast.transactions.TRANSACTION_FORMATTER
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Month
@@ -158,8 +160,8 @@ internal fun TransactionCard(
       ) {
         when (priceDirection) {
           SpendDirection.NONE -> defaultColor
-          SpendDirection.LOSS -> Color.Red
-          SpendDirection.GAIN -> Color.Green
+          SpendDirection.SPEND -> COLOR_SPEND
+          SpendDirection.EARN -> COLOR_EARN
         }
       }
 
@@ -167,8 +169,8 @@ internal fun TransactionCard(
       remember(priceDirection) {
         when (priceDirection) {
           SpendDirection.NONE -> " "
-          SpendDirection.LOSS -> "-"
-          SpendDirection.GAIN -> "+"
+          SpendDirection.SPEND -> "-"
+          SpendDirection.EARN -> "+"
         }
       }
 

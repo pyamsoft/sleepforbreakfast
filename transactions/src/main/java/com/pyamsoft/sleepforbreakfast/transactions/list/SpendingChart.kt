@@ -34,9 +34,12 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.KnobBar
 import com.pyamsoft.sleepforbreakfast.money.list.UsageIndicator
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.icons.BarChart
 import java.time.Clock
 import java.time.LocalDate
+import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -106,8 +109,10 @@ private suspend fun generateChartEntries(
       val totalDays = now.month.length(now.isLeapYear)
       return@withContext mutableListOf<List<FloatEntry>>().apply {
         for (date in 1..totalDays) {
-          val x = date.toFloat()
           val data = entriesWithData[date]
+
+          // Chart needs our X to start at 0
+          val x = date.minus(1).toFloat()
           if (data == null) {
             add(
                 listOf(
@@ -136,8 +141,13 @@ private fun generateLineColors(entries: List<List<ChartEntry>>): List<LineCompon
   return entries
       .asSequence()
       .flatMap { it }
-      .map { if (it.y == 0F) Color.Unspecified else if (it.y > 0) Color.Green else Color.Red }
-      .map { LineComponent(color = it.toArgb()) }
+      .map { if (it.y == 0F) Color.Unspecified else if (it.y > 0) COLOR_EARN else COLOR_SPEND }
+      .map { color ->
+        LineComponent(
+            color = color.toArgb(),
+            thicknessDp = 16F,
+        )
+      }
       .toList()
 }
 
@@ -153,7 +163,6 @@ private fun rememberChart(
     val scope = this
     scope.launch(context = Dispatchers.Default) {
       val entries = generateChartEntries(clock, transactions)
-      val lineColors = generateLineColors(entries)
 
       // Create a composite chart (we do this because each LineColor is applied to a different chart
       // entry model)
@@ -178,7 +187,7 @@ private fun rememberChart(
           setData(
               ChartData(
                   models = m,
-                  columns = lineColors,
+                  columns = generateLineColors(entries),
               ),
           )
         }
@@ -216,7 +225,11 @@ internal fun SpendingChartBar(
                 columns = c.columns,
                 mergeMode = ColumnChart.MergeMode.Stack,
             ),
-        bottomAxis = bottomAxis(),
+        bottomAxis =
+            bottomAxis(
+                // The first day is "0" change it to -> "1"
+                valueFormatter = { v, _ -> "${v.plus(1).roundToInt()}" },
+            ),
     )
   }
 }

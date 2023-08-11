@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +37,8 @@ import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -73,8 +74,8 @@ internal fun RepeatCard(
       ) {
         when (spendDirection) {
           SpendDirection.NONE -> defaultColor
-          SpendDirection.LOSS -> Color.Red
-          SpendDirection.GAIN -> Color.Green
+          SpendDirection.SPEND -> COLOR_SPEND
+          SpendDirection.EARN -> COLOR_EARN
         }
       }
 
@@ -82,8 +83,8 @@ internal fun RepeatCard(
       remember(spendDirection) {
         when (spendDirection) {
           SpendDirection.NONE -> " "
-          SpendDirection.LOSS -> "-"
-          SpendDirection.GAIN -> "+"
+          SpendDirection.SPEND -> "-"
+          SpendDirection.EARN -> "+"
         }
       }
 

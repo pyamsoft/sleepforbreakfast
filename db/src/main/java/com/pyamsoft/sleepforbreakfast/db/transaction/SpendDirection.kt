@@ -4,13 +4,13 @@ import androidx.annotation.CheckResult
 
 enum class SpendDirection {
   NONE,
-  LOSS,
-  GAIN
+  SPEND,
+  EARN
 }
 
 @CheckResult
 fun DbTransaction.Type.asDirection(): SpendDirection =
     when (this) {
-      DbTransaction.Type.SPEND -> SpendDirection.LOSS
-      DbTransaction.Type.EARN -> SpendDirection.GAIN
+      DbTransaction.Type.SPEND -> SpendDirection.SPEND
+      DbTransaction.Type.EARN -> SpendDirection.EARN
     }
