@@ -111,18 +111,18 @@ internal fun TransactionEntry(
   )
 
   addParams?.also { p ->
-      TransactionAddEntry(
-          modifier = Modifier.fillUpToPortraitSize(),
-          params = p,
-          onDismiss = { viewModel.handleCloseAddTransaction() },
-      )
+    TransactionAddEntry(
+        modifier = Modifier.fillUpToPortraitSize(),
+        params = p,
+        onDismiss = { viewModel.handleCloseAddTransaction() },
+    )
   }
 
   deleteParams?.also { p ->
-      TransactionDeleteEntry(
-          modifier = Modifier.fillUpToPortraitSize(),
-          params = p,
-          onDismiss = { viewModel.handleCloseDeleteTransaction() },
-      )
+    TransactionDeleteEntry(
+        modifier = Modifier.fillUpToPortraitSize(),
+        params = p,
+        onDismiss = { viewModel.handleCloseDeleteTransaction() },
+    )
   }
 }

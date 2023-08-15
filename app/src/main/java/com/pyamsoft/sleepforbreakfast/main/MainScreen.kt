@@ -87,10 +87,10 @@ fun MainScreen(
     }
 
     if (isSettingsOpen) {
-        SettingsDialog(
-            modifier = Modifier.fillUpToPortraitSize(),
-            onDismiss = onCloseSettings,
-        )
+      SettingsDialog(
+          modifier = Modifier.fillUpToPortraitSize(),
+          onDismiss = onCloseSettings,
+      )
     }
   }
 }

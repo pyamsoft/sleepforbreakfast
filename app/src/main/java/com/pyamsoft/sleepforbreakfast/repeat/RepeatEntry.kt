@@ -111,19 +111,19 @@ internal fun RepeatEntry(
   )
 
   addParams?.also { p ->
-      RepeatAddEntry(
-          modifier = Modifier.fillUpToPortraitSize(),
-          params = p,
-          onDismiss = { viewModel.handleCloseAddRepeat() },
-      )
+    RepeatAddEntry(
+        modifier = Modifier.fillUpToPortraitSize(),
+        params = p,
+        onDismiss = { viewModel.handleCloseAddRepeat() },
+    )
   }
 
   deleteParams?.also { p ->
-      RepeatDeleteEntry(
-          modifier = Modifier.fillUpToPortraitSize(),
-          params = p,
-          onDismiss = { viewModel.handleCloseDeleteRepeat() },
-      )
+    RepeatDeleteEntry(
+        modifier = Modifier.fillUpToPortraitSize(),
+        params = p,
+        onDismiss = { viewModel.handleCloseDeleteRepeat() },
+    )
   }
 }
 
