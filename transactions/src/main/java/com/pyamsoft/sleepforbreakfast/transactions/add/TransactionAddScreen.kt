@@ -35,7 +35,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -205,7 +205,7 @@ fun TransactionAddScreen(
       item(
           contentType = AddContentTypes.CATEGORIES,
       ) {
-        val allCategories by state.allCategories.collectAsState()
+        val allCategories by state.allCategories.collectAsStateWithLifecycle()
 
         MoneyCategories(
             modifier =
@@ -252,13 +252,13 @@ fun TransactionAddScreen(
       }
     }
 
-    val existing by state.existingTransaction.collectAsState()
+    val existing by state.existingTransaction.collectAsStateWithLifecycle()
 
-    val isOpenRepeat by state.isRepeatOpen.collectAsState()
+    val isOpenRepeat by state.isRepeatOpen.collectAsStateWithLifecycle()
     val repeatDate = existing?.repeatCreatedDate
     if (isOpenRepeat && repeatDate != null) {
-      val loadingRepeat by state.loadingRepeat.collectAsState()
-      val repeat by state.existingRepeat.collectAsState()
+      val loadingRepeat by state.loadingRepeat.collectAsStateWithLifecycle()
+      val repeat by state.existingRepeat.collectAsStateWithLifecycle()
 
       SurfaceDialog(
           modifier = Modifier.fillUpToPortraitSize(),
@@ -273,9 +273,9 @@ fun TransactionAddScreen(
       }
     }
 
-    val loadingAuto by state.loadingAuto.collectAsState()
-    val isOpenAuto by state.isAutoOpen.collectAsState()
-    val auto by state.existingAuto.collectAsState()
+    val loadingAuto by state.loadingAuto.collectAsStateWithLifecycle()
+    val isOpenAuto by state.isAutoOpen.collectAsStateWithLifecycle()
+    val auto by state.existingAuto.collectAsStateWithLifecycle()
 
     val autoDate = existing?.automaticCreatedDate
     if (isOpenAuto && autoDate != null) {
@@ -292,9 +292,9 @@ fun TransactionAddScreen(
       }
     }
 
-    val showDateDialog by state.isDateDialogOpen.collectAsState()
+    val showDateDialog by state.isDateDialogOpen.collectAsStateWithLifecycle()
     if (showDateDialog) {
-      val date by state.date.collectAsState()
+      val date by state.date.collectAsStateWithLifecycle()
       val justDate = remember(date) { date.toLocalDate() }
 
       DatePickerDialog(
@@ -304,9 +304,9 @@ fun TransactionAddScreen(
       )
     }
 
-    val showTimeDialog by state.isTimeDialogOpen.collectAsState()
+    val showTimeDialog by state.isTimeDialogOpen.collectAsStateWithLifecycle()
     if (showTimeDialog) {
-      val date by state.date.collectAsState()
+      val date by state.date.collectAsStateWithLifecycle()
       val justTime = remember(date) { date.toLocalTime() }
 
       TimePickerDialog(
@@ -324,7 +324,7 @@ private fun RepeatInfo(
     state: TransactionAddViewState,
     onRepeatInfoOpen: () -> Unit,
 ) {
-  val existing by state.existingTransaction.collectAsState()
+  val existing by state.existingTransaction.collectAsStateWithLifecycle()
 
   ExtraBit(
       modifier = modifier,
@@ -343,7 +343,7 @@ private fun AutoInfo(
     state: TransactionAddViewState,
     onAutoInfoOpen: () -> Unit,
 ) {
-  val existing by state.existingTransaction.collectAsState()
+  val existing by state.existingTransaction.collectAsStateWithLifecycle()
 
   ExtraBit(
       modifier = modifier,
@@ -409,7 +409,7 @@ private fun DateTime(
     onOpenDateDialog: () -> Unit,
     onOpenTimeDialog: () -> Unit,
 ) {
-  val date by state.date.collectAsState()
+  val date by state.date.collectAsStateWithLifecycle()
 
   val justDate = remember(date) { date.toLocalDate() }
   val justTime = remember(date) { date.toLocalTime() }

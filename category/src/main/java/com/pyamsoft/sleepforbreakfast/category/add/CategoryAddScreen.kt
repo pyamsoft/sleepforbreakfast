@@ -29,7 +29,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -56,9 +56,9 @@ fun CategoryAddScreen(
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-  val name by state.name.collectAsState()
-  val note by state.note.collectAsState()
-  val working by state.working.collectAsState()
+  val name by state.name.collectAsStateWithLifecycle()
+  val note by state.note.collectAsStateWithLifecycle()
+  val working by state.working.collectAsStateWithLifecycle()
 
   val keyboardTextOptions = remember {
     KeyboardOptions(

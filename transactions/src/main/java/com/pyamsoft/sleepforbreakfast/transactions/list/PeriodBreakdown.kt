@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,8 +38,8 @@ internal fun PeriodBreakdown(
     state: TransactionViewState,
     onToggle: () -> Unit,
 ) {
-  val breakdown by state.breakdown.collectAsState()
-  val isOpen by state.isBreakdownOpen.collectAsState()
+  val breakdown by state.breakdown.collectAsStateWithLifecycle()
+  val isOpen by state.isBreakdownOpen.collectAsStateWithLifecycle()
 
   val show = remember(breakdown) { breakdown != null }
 
@@ -109,8 +109,8 @@ internal fun PeriodBreakdownBar(
     onToggle: () -> Unit,
     onChange: (BreakdownRange) -> Unit,
 ) {
-  val range by state.breakdown.collectAsState()
-  val isOpen by state.isBreakdownOpen.collectAsState()
+  val range by state.breakdown.collectAsStateWithLifecycle()
+  val isOpen by state.isBreakdownOpen.collectAsStateWithLifecycle()
 
   val (isStartDateOpen, setStartDateOpen) = remember { mutableStateOf(false) }
   val (selectedStart, setSelectedStart) = remember { mutableStateOf<LocalDate?>(null) }

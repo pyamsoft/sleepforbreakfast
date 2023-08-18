@@ -47,7 +47,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,7 +87,7 @@ fun MoneyAmount(
     keyboardNumberOptions: KeyboardOptions,
     onAmountChanged: (Long) -> Unit,
 ) {
-  val amount by state.amount.collectAsState()
+  val amount by state.amount.collectAsStateWithLifecycle()
 
   val amountTextValue =
       remember(amount) {
@@ -143,7 +143,7 @@ fun MoneyTypes(
     state: MoneyAddViewState,
     onTypeChanged: (DbTransaction.Type) -> Unit,
 ) {
-  val type by state.type.collectAsState()
+  val type by state.type.collectAsStateWithLifecycle()
 
   Column(
       modifier = modifier.width(IntrinsicSize.Min),
@@ -261,7 +261,7 @@ fun MoneySubmit(
     onReset: () -> Unit,
     onSubmit: () -> Unit,
 ) {
-  val working by state.working.collectAsState()
+  val working by state.working.collectAsStateWithLifecycle()
 
   AddSubmit(
       modifier = modifier,
@@ -334,7 +334,7 @@ fun MoneyName(
     keyboardTextOptions: KeyboardOptions,
     onNameChanged: (String) -> Unit,
 ) {
-  val name by state.name.collectAsState()
+  val name by state.name.collectAsStateWithLifecycle()
 
   AddName(
       modifier = modifier,
@@ -376,7 +376,7 @@ fun MoneyNote(
     onNoteChanged: (String) -> Unit,
     label: (@Composable () -> Unit)? = null
 ) {
-  val note by state.note.collectAsState()
+  val note by state.note.collectAsStateWithLifecycle()
   AddNote(
       modifier = modifier,
       note = note,
@@ -435,7 +435,7 @@ fun MoneyCategories(
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
 ) {
-  val categories by state.categories.collectAsState()
+  val categories by state.categories.collectAsStateWithLifecycle()
   AddCategories(
       modifier = modifier,
       selectedCategories = categories,

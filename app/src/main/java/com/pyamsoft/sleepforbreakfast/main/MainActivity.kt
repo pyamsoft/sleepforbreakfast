@@ -22,7 +22,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     val appName = getString(R.string.app_name)
 
     setContent {
-      val theme by vm.theme.collectAsState()
+      val theme by vm.theme.collectAsStateWithLifecycle()
 
       SleepForBreakfastTheme(
           theme = theme,

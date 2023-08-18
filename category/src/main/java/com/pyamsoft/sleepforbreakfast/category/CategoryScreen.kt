@@ -23,11 +23,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.util.collectAsStateList
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
@@ -48,8 +48,8 @@ fun CategoryScreen(
     topBar: @Composable () -> Unit,
     onCategoryLongClicked: ((DbCategory) -> Unit)? = null,
 ) {
-  val categories = state.items.collectAsStateList()
-  val undoable by state.recentlyDeleted.collectAsState()
+  val categories = state.items.collectAsStateListWithLifecycle()
+  val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
 
   ListScreen(
       modifier = modifier,

@@ -20,7 +20,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -70,8 +70,8 @@ internal fun TransactionEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val clock = rememberNotNull(component.clock)
 
-  val addParams by viewModel.addParams.collectAsState()
-  val deleteParams by viewModel.deleteParams.collectAsState()
+  val addParams by viewModel.addParams.collectAsStateWithLifecycle()
+  val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
 
   val scope = rememberCoroutineScope()
 

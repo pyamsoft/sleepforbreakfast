@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -36,7 +36,7 @@ fun CategoryDeleteScreen(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-  val item by state.item.collectAsState()
+  val item by state.item.collectAsStateWithLifecycle()
   val canDelete = remember(item) { item.let { if (it == null) false else !it.system } }
 
   DeleteScreen(

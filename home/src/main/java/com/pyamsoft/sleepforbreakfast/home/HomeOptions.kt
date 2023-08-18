@@ -28,7 +28,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +44,7 @@ internal fun HomeOptions(
     state: HomeViewState,
     onOpenNotificationListenerSettings: () -> Unit,
 ) {
-  val isNotificationListenerEnabled by state.isNotificationListenerEnabled.collectAsState()
+  val isNotificationListenerEnabled by state.isNotificationListenerEnabled.collectAsStateWithLifecycle()
 
   val shape = MaterialTheme.shapes.medium
 

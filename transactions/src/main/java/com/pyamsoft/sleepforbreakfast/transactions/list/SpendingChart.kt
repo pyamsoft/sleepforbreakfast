@@ -9,7 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +28,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.composed.plus
 import com.patrykandpatrick.vico.core.entry.entryModelOf
-import com.pyamsoft.pydroid.ui.util.collectAsStateList
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.KnobBar
@@ -50,7 +50,7 @@ internal fun SpendingChart(
     state: TransactionViewState,
     onToggle: () -> Unit,
 ) {
-  val isOpen by state.isChartOpen.collectAsState()
+  val isOpen by state.isChartOpen.collectAsStateWithLifecycle()
 
   Box(
       modifier = modifier,
@@ -205,8 +205,8 @@ internal fun SpendingChartBar(
     clock: Clock,
     onToggle: () -> Unit,
 ) {
-  val isOpen by state.isChartOpen.collectAsState()
-  val transactions = state.items.collectAsStateList()
+  val isOpen by state.isChartOpen.collectAsStateWithLifecycle()
+  val transactions = state.items.collectAsStateListWithLifecycle()
 
   val chart = rememberChart(clock, transactions)
 

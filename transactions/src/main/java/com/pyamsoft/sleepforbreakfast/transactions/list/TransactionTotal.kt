@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
-import com.pyamsoft.pydroid.ui.util.collectAsStateList
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionAmount
@@ -100,7 +100,7 @@ private fun Totals(
     // Chart
     onChartToggle: () -> Unit,
 ) {
-  val transactions = state.items.collectAsStateList()
+  val transactions = state.items.collectAsStateListWithLifecycle()
 
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
   val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }

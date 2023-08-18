@@ -35,7 +35,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -163,7 +163,7 @@ fun RepeatAddScreen(
       item(
           contentType = ContentTypes.DATE,
       ) {
-        val firstDate by state.repeatFirstDay.collectAsState()
+        val firstDate by state.repeatFirstDay.collectAsStateWithLifecycle()
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
@@ -205,7 +205,7 @@ fun RepeatAddScreen(
       item(
           contentType = ContentTypes.CATEGORIES,
       ) {
-        val allCategories by state.allCategories.collectAsState()
+        val allCategories by state.allCategories.collectAsStateWithLifecycle()
 
         MoneyCategories(
             modifier =
@@ -231,9 +231,9 @@ fun RepeatAddScreen(
       }
     }
 
-    val showDateDialog by state.isDateDialogOpen.collectAsState()
+    val showDateDialog by state.isDateDialogOpen.collectAsStateWithLifecycle()
     if (showDateDialog) {
-      val date by state.repeatFirstDay.collectAsState()
+      val date by state.repeatFirstDay.collectAsStateWithLifecycle()
 
       DatePickerDialog(
           initialDate = date,
@@ -250,7 +250,7 @@ private fun RepeatType(
     state: RepeatAddViewState,
     onTypeChanged: (DbRepeat.Type) -> Unit,
 ) {
-  val repeatType by state.repeatType.collectAsState()
+  val repeatType by state.repeatType.collectAsStateWithLifecycle()
 
   // TODO move into VM
   val (show, setShow) = rememberSaveable { mutableStateOf(false) }

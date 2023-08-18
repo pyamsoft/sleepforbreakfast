@@ -31,7 +31,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,8 +46,8 @@ fun <T : Any> DeleteScreen(
     onConfirm: () -> Unit,
     content: @Composable (T) -> Unit,
 ) {
-  val working by state.working.collectAsState()
-  val item by state.item.collectAsState()
+  val working by state.working.collectAsStateWithLifecycle()
+  val item by state.item.collectAsStateWithLifecycle()
 
   Column(
       modifier = modifier,

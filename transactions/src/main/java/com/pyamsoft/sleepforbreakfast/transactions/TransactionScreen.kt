@@ -27,11 +27,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.util.collectAsStateList
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
@@ -78,9 +78,9 @@ fun TransactionScreen(
     // Chart
     onChartToggled: () -> Unit,
 ) {
-  val transactions = state.items.collectAsStateList()
+  val transactions = state.items.collectAsStateListWithLifecycle()
   val list = rememberTransactionsWithHeaders(transactions)
-  val undoable by state.recentlyDeleted.collectAsState()
+  val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
 
   BasicListScreen(
       modifier = modifier,

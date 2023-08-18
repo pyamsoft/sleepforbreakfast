@@ -32,7 +32,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -80,8 +80,8 @@ internal fun RepeatEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 
-  val addParams by viewModel.addParams.collectAsState()
-  val deleteParams by viewModel.deleteParams.collectAsState()
+  val addParams by viewModel.addParams.collectAsStateWithLifecycle()
+  val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
 
   MountHooks(
       viewModel = viewModel,

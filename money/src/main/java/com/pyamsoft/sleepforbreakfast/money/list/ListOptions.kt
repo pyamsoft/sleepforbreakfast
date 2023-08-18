@@ -35,7 +35,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -55,8 +55,8 @@ fun Search(
     state: ListViewState<*>,
     onToggle: () -> Unit,
 ) {
-  val search by state.search.collectAsState()
-  val isOpen by state.isSearchOpen.collectAsState()
+  val search by state.search.collectAsStateWithLifecycle()
+  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
 
   val show = remember(search) { search.isNotBlank() }
 
@@ -118,8 +118,8 @@ fun SearchBar(
     onToggle: () -> Unit,
     onChange: (String) -> Unit,
 ) {
-  val initialSearch by state.search.collectAsState()
-  val isOpen by state.isSearchOpen.collectAsState()
+  val initialSearch by state.search.collectAsStateWithLifecycle()
+  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
 
   // Do this so that we can debounce typing events
   val (search, setSearch) = debouncedOnTextChange(initialSearch, onChange)

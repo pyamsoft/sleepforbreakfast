@@ -21,7 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
@@ -43,8 +43,8 @@ fun MainScreen(
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
-  val isSettingsOpen by state.isSettingsOpen.collectAsState()
-  val page by state.page.collectAsState()
+  val isSettingsOpen by state.isSettingsOpen.collectAsStateWithLifecycle()
+  val page by state.page.collectAsStateWithLifecycle()
 
   Scaffold(
       modifier = modifier.fillMaxSize(),
