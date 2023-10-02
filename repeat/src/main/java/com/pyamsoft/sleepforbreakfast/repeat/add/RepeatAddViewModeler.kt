@@ -120,7 +120,7 @@ internal constructor(
       state.name.value = ""
       state.note.value = ""
       state.type.value = DbTransaction.Type.SPEND
-      state.amount.value = 0L
+      state.amount.value = ""
       state.categories.value = emptyList()
 
       state.repeatFirstDay.value = LocalDate.now(clock)
@@ -129,8 +129,9 @@ internal constructor(
       state.name.value = source.transactionName
       state.note.value = source.transactionNote
       state.type.value = source.transactionType
-      state.amount.value = source.transactionAmountInCents
       state.categories.value = source.transactionCategories
+      // If toAmount() fails, fallback to empty string
+      state.amount.value = source.transactionAmountInCents.toAmount { "" }
 
       state.repeatFirstDay.value = source.firstDay
       state.repeatType.value = source.repeatType
@@ -145,10 +146,11 @@ internal constructor(
         .repeatType(state.repeatType.value)
         .firstDay(state.repeatFirstDay.value)
         .transactionName(state.name.value)
-        .transactionAmountInCents(state.amount.value)
         .transactionNote(state.note.value)
         .transactionType(state.type.value)
         .replaceTransactionCategories(state.categories.value)
+        // This will throw if toCents() fails, and will be caught by the caller
+        .transactionAmountInCents(state.amount.value.toCents())
   }
 
   override suspend fun onNewCreated(data: DbRepeat) {

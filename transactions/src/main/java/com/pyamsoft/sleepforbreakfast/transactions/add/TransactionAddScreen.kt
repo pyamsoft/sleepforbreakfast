@@ -82,7 +82,7 @@ fun TransactionAddScreen(
     state: TransactionAddViewState,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
-    onAmountChanged: (Long) -> Unit,
+    onAmountChanged: (String) -> Unit,
     onTypeChanged: (DbTransaction.Type) -> Unit,
     onDateChanged: (LocalDate) -> Unit,
     onOpenDateDialog: () -> Unit,

@@ -46,8 +46,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,12 +57,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.theme.success
@@ -72,46 +71,23 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
-import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
 import java.time.LocalTime
+import timber.log.Timber
 
 // This is basically longer than any expected money amount.
 private const val MAX_ALLOWED_AMOUNT_LENGTH = 18
-private val REGEX_FILTER_ONLY_DIGITS = Regex("[^\\d+]")
 
 @Composable
 fun MoneyAmount(
     modifier: Modifier = Modifier,
     state: MoneyAddViewState,
     keyboardNumberOptions: KeyboardOptions,
-    onAmountChanged: (Long) -> Unit,
+    onAmountChanged: (String) -> Unit,
 ) {
   val amount by state.amount.collectAsStateWithLifecycle()
 
-  val amountTextValue =
-      remember(amount) {
-        if (amount <= 0) TextFieldValue("")
-        else {
-          val text = "$amount"
-          TextFieldValue(
-              text = text,
-              // enforce the cursor at the end of the text field
-              selection = TextRange(text.length),
-          )
-        }
-      }
-
-  val handleAmountChanged by rememberUpdatedState { tv: TextFieldValue ->
-    // Ignore anything not a number when parsing to number
-    val aa = tv.text.trim().replace(REGEX_FILTER_ONLY_DIGITS, "")
-    if (aa.length <= MAX_ALLOWED_AMOUNT_LENGTH) {
-      val newAmount = aa.toLongOrNull()
-
-      // If this is null, we reset to 0 (in cases where a user backspaces all the content)
-      onAmountChanged(newAmount ?: 0L)
-    }
-  }
+  Timber.d("AMount: $amount")
 
   Row(
       modifier = modifier,
@@ -119,10 +95,42 @@ fun MoneyAmount(
   ) {
     TextField(
         modifier = Modifier.weight(1F),
-        value = amountTextValue,
-        onValueChange = { handleAmountChanged(it) },
-        visualTransformation = MoneyVisualTransformation(),
+        value = amount,
+        onValueChange = { v ->
+          // No long strings
+          if (v.length >= MAX_ALLOWED_AMOUNT_LENGTH) {
+            return@TextField
+          }
+
+          // No white space
+          if (v.contains(Regex("\\s"))) {
+            return@TextField
+          }
+
+          // Also don't allow other characters
+          if (v.contains(Regex("[,\\-/_]"))) {
+            return@TextField
+          }
+
+          // Can't start with decimal
+          if (v.startsWith('.')) {
+            return@TextField
+          }
+
+          // No double decimals
+          if (v.count { it == '.' } >= 2) {
+            return@TextField
+          }
+
+          onAmountChanged(v)
+        },
         keyboardOptions = keyboardNumberOptions,
+        leadingIcon = {
+          Icon(
+              imageVector = Icons.Filled.AttachMoney,
+              contentDescription = "Amount",
+          )
+        },
         label = {
           Text(
               text = "Amount",
@@ -492,8 +500,7 @@ fun AddCategories(
               allCategories,
           ) {
             allCategories.firstOrNull { it.id == id }
-          }
-              ?: continue
+          } ?: continue
 
       Category(
           modifier =

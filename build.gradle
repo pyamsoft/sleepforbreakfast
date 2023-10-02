@@ -24,7 +24,7 @@ buildscript {
     compileSdk = 34
 
     // Us
-    pydroid = "26.8.3"
+    pydroid = "26.8.5"
 
     // Kotlin
     kotlin = "1.9.10"
@@ -46,9 +46,9 @@ buildscript {
     moshi = "1.15.0"
 
     // Compose
-    compose = "1.5.1"
+    compose = "1.5.2"
     composeCompiler = "1.5.3"
-    composeMaterial = "1.5.1"
+    composeMaterial = "1.5.2"
 
     // Charts
     vico = "1.8.1"

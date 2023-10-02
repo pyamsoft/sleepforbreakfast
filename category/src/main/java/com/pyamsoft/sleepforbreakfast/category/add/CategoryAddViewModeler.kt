@@ -99,8 +99,17 @@ internal constructor(
         return@launch
       }
 
-      val category = compile()
       state.working.value = true
+      val category: DbCategory
+      try {
+        category = compile()
+      } catch (e: Throwable) {
+        Timber.e(e, "Error compiling category")
+        state.working.value = false
+        // TODO handle error in UI
+        return@launch
+      }
+
       interactor
           .submit(category)
           .onFailure { Timber.e(it, "Error occurred when submitting category $category") }

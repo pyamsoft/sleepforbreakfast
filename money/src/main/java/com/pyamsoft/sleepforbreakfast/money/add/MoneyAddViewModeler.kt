@@ -23,6 +23,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ protected constructor(
 
     registry.consumeRestored(KEY_NOTE)?.let { it as String }?.also { state.note.value = it }
 
-    registry.consumeRestored(KEY_AMOUNT)?.let { it as Long }?.also { state.amount.value = it }
+    registry.consumeRestored(KEY_AMOUNT)?.let { it as String }?.also { state.amount.value = it }
 
     registry
         .consumeRestored(KEY_CATEGORIES)
@@ -99,7 +100,7 @@ protected constructor(
     state.type.value = type
   }
 
-  fun handleAmountChanged(amount: Long) {
+  fun handleAmountChanged(amount: String) {
     state.amount.value = amount
   }
 
@@ -120,7 +121,16 @@ protected constructor(
       }
 
       state.working.value = true
-      val data = compile()
+      val data: T
+      try {
+        data = compile()
+      } catch (e: Throwable) {
+        Timber.e(e, "Error compiling data")
+        state.working.value = false
+        // TODO handle error in UI
+        return@launch
+      }
+
       interactor
           .submit(data)
           .onFailure { Timber.e(it, "Error occurred when submitting data $data") }
@@ -173,5 +183,58 @@ protected constructor(
     private const val KEY_TYPE = "key_type"
     private const val KEY_AMOUNT = "key_amount"
     private const val KEY_CATEGORIES = "key_categories"
+
+    private val ONE_HUNDRED = BigDecimal.valueOf(100L)
+
+    /** Cents is a long, parse it to a Double and then to a string */
+    @JvmStatic
+    @CheckResult
+    protected fun Long.toAmount(orElse: (() -> String)? = null): String {
+      try {
+        if (this < 0) {
+          throw IllegalArgumentException("Cents cannot be negative: $this")
+        }
+
+        // Converts -> 15049 ==> 150.48
+        return BigDecimal.valueOf(this, 2).toPlainString()
+      } catch (e: Throwable) {
+        // For whatever reason we have failed
+
+        // Either return a default
+        if (orElse != null) {
+          return orElse()
+        }
+
+        // Or throw
+        throw e
+      }
+    }
+
+    /** Convert a string to a cents amount */
+    @JvmStatic
+    @CheckResult
+    protected fun String.toCents(orElse: (() -> Long)? = null): Long {
+      try {
+        val plainNumberLike = this.removePrefix("$")
+
+        // Guard negative
+        val raw = BigDecimal(plainNumberLike).multiply(ONE_HUNDRED).longValueExact()
+        if (raw < 0) {
+          throw IllegalArgumentException("Amount string cannot be negative: $this => $raw")
+        }
+
+        return raw
+      } catch (e: Throwable) {
+        // For whatever reason we have failed
+
+        // Either return a default
+        if (orElse != null) {
+          return orElse()
+        }
+
+        // Or throw
+        throw e
+      }
+    }
   }
 }

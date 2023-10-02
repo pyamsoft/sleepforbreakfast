@@ -144,11 +144,12 @@ internal constructor(
     val transaction = state.existingTransaction.value ?: DbTransaction.create(clock, initialId)
     return transaction
         .name(state.name.value)
-        .amountInCents(state.amount.value)
         .date(state.date.value)
         .note(state.note.value)
         .type(state.type.value)
         .replaceCategories(getOnlyExistingCategories())
+        // This will throw if toCents() fails, and will be caught by the caller
+        .amountInCents(state.amount.value.toCents())
   }
 
   override fun isIdEmpty(id: DbTransaction.Id): Boolean {
@@ -222,7 +223,7 @@ internal constructor(
       state.name.value = ""
       state.note.value = ""
       state.type.value = DbTransaction.Type.SPEND
-      state.amount.value = 0L
+      state.amount.value = ""
       state.categories.value = emptyList()
 
       state.date.value = LocalDateTime.now(clock)
@@ -230,8 +231,10 @@ internal constructor(
       state.name.value = source.name
       state.note.value = source.note
       state.type.value = source.type
-      state.amount.value = source.amountInCents
       state.categories.value = source.categories
+
+      // If toAmount() fails, fallback to empty string
+      state.amount.value = source.amountInCents.toAmount { "" }
 
       state.date.value = source.date
     }

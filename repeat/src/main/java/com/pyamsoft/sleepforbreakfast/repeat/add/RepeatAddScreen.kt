@@ -76,7 +76,7 @@ fun RepeatAddScreen(
     state: RepeatAddViewState,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
-    onAmountChanged: (Long) -> Unit,
+    onAmountChanged: (String) -> Unit,
     onDateChanged: (LocalDate) -> Unit,
     onOpenDateDialog: () -> Unit,
     onCloseDateDialog: () -> Unit,
