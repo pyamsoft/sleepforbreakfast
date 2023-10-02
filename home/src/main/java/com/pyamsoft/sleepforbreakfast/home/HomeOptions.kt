@@ -28,12 +28,12 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
@@ -44,7 +44,8 @@ internal fun HomeOptions(
     state: HomeViewState,
     onOpenNotificationListenerSettings: () -> Unit,
 ) {
-  val isNotificationListenerEnabled by state.isNotificationListenerEnabled.collectAsStateWithLifecycle()
+  val isNotificationListenerEnabled by
+      state.isNotificationListenerEnabled.collectAsStateWithLifecycle()
 
   val shape = MaterialTheme.shapes.medium
 
