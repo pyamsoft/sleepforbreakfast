@@ -78,12 +78,14 @@ fun TransactionScreen(
     // Chart
     onChartToggled: () -> Unit,
 ) {
+  val loading by state.loadingState.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
   val list = rememberTransactionsWithHeaders(transactions)
   val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
 
   BasicListScreen(
       modifier = modifier,
+      loading = loading,
       showActionButton = showActionButton,
       recentlyDeletedItem = undoable,
       deletedMessage = { "${it.name} Removed" },

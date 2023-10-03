@@ -17,15 +17,20 @@
 package com.pyamsoft.sleepforbreakfast.ui.list
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -35,14 +40,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.ui.DeletedSnackbar
+import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun <T : Any> BasicListScreen(
     modifier: Modifier = Modifier,
+    loading: LoadingState,
     showActionButton: Boolean,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
@@ -53,6 +67,17 @@ fun <T : Any> BasicListScreen(
     content: @Composable (PaddingValues) -> Unit,
 ) {
   val scaffoldState = rememberScaffoldState()
+  val isLoading = remember(loading) { loading !== LoadingState.DONE }
+  val (showLoading, setShowLoading) = remember { mutableStateOf(false) }
+
+  LaunchedEffect(isLoading) {
+    if (isLoading) {
+      delay(250.milliseconds)
+      setShowLoading(true)
+    } else {
+      setShowLoading(false)
+    }
+  }
 
   Scaffold(
       modifier = modifier,
@@ -66,7 +91,30 @@ fun <T : Any> BasicListScreen(
         )
       },
   ) { pv ->
-    content(pv)
+    Crossfade(
+        label = "List Screen",
+        targetState = isLoading,
+    ) { isLoad ->
+      if (isLoad) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+          Crossfade(
+              label = "Loading Spinner",
+              targetState = showLoading,
+          ) { show ->
+            if (show) {
+              CircularProgressIndicator(
+                  modifier = Modifier.size(80.dp),
+              )
+            }
+          }
+        }
+      } else {
+        content(pv)
+      }
+    }
 
     DeletedSnackbar(
         scaffoldState = scaffoldState,
@@ -110,6 +158,7 @@ private enum class ContentTypes {
 @Composable
 fun <T : Any> ListScreen(
     modifier: Modifier = Modifier,
+    loading: LoadingState,
     items: List<T>,
     showActionButton: Boolean,
     recentlyDeletedItem: T?,
@@ -124,6 +173,7 @@ fun <T : Any> ListScreen(
 ) {
   BasicListScreen(
       modifier = modifier,
+      loading = loading,
       showActionButton = showActionButton,
       topBar = topBar,
       recentlyDeletedItem = recentlyDeletedItem,

@@ -48,11 +48,13 @@ fun RepeatScreen(
     topBar: @Composable () -> Unit,
     onRepeatLongClicked: ((DbRepeat) -> Unit)? = null,
 ) {
+  val loading by state.loadingState.collectAsStateWithLifecycle()
   val sources = state.items.collectAsStateListWithLifecycle()
   val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
 
   ListScreen(
       modifier = modifier,
+      loading = loading,
       showActionButton = showActionButton,
       topBar = topBar,
       items = sources,

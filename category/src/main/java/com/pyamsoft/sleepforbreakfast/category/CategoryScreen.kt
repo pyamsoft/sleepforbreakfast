@@ -48,11 +48,13 @@ fun CategoryScreen(
     topBar: @Composable () -> Unit,
     onCategoryLongClicked: ((DbCategory) -> Unit)? = null,
 ) {
+  val loading by state.loadingState.collectAsStateWithLifecycle()
   val categories = state.items.collectAsStateListWithLifecycle()
   val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
 
   ListScreen(
       modifier = modifier,
+      loading = loading,
       showActionButton = showActionButton,
       topBar = topBar,
       items = categories,
