@@ -40,18 +40,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.sleepforbreakfast.ui.Delayed
 import com.pyamsoft.sleepforbreakfast.ui.DeletedSnackbar
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.delay
 
 @Composable
 fun <T : Any> BasicListScreen(
@@ -68,16 +65,6 @@ fun <T : Any> BasicListScreen(
 ) {
   val scaffoldState = rememberScaffoldState()
   val isLoading = remember(loading) { loading !== LoadingState.DONE }
-  val (showLoading, setShowLoading) = remember { mutableStateOf(false) }
-
-  LaunchedEffect(isLoading) {
-    if (isLoading) {
-      delay(250.milliseconds)
-      setShowLoading(true)
-    } else {
-      setShowLoading(false)
-    }
-  }
 
   Scaffold(
       modifier = modifier,
@@ -100,15 +87,10 @@ fun <T : Any> BasicListScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-          Crossfade(
-              label = "Loading Spinner",
-              targetState = showLoading,
-          ) { show ->
-            if (show) {
-              CircularProgressIndicator(
-                  modifier = Modifier.size(80.dp),
-              )
-            }
+          Delayed {
+            CircularProgressIndicator(
+                modifier = Modifier.size(80.dp),
+            )
           }
         }
       } else {
