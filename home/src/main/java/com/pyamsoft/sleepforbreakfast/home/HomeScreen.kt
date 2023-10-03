@@ -97,6 +97,7 @@ fun HomeScreen(
       HomeOptions(
           modifier = Modifier.fillMaxWidth(),
           state = state,
+          appName = appName,
           onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
       )
     }
