@@ -521,7 +521,8 @@ fun AddCategories(
               allCategories,
           ) {
             allCategories.firstOrNull { it.id == id }
-          } ?: continue
+          }
+              ?: continue
 
       val color =
           remember(

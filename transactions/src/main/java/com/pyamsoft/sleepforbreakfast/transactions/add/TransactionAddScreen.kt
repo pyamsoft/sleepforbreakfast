@@ -50,6 +50,7 @@ import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyCategories
@@ -58,7 +59,6 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog

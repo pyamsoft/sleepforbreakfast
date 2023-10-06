@@ -59,10 +59,10 @@ internal fun MainEntry(
 
   val page by viewModel.page.collectAsStateWithLifecycle()
   val isDarkIcons = remember(page) { page == null }
-      SystemBars(
-          theme = theme,
-          isDarkIcons = isDarkIcons,
-      )
+  SystemBars(
+      theme = theme,
+      isDarkIcons = isDarkIcons,
+  )
 
   MountHooks(
       viewModel = viewModel,
