@@ -92,9 +92,6 @@ class MainActivity : AppCompatActivity() {
       SleepForBreakfastTheme(
           theme = theme,
       ) {
-        SystemBars(
-            theme = theme,
-        )
         InstallPYDroidExtras(
             modifier = Modifier.fillUpToPortraitSize(),
             appName = appName,
@@ -103,6 +100,7 @@ class MainActivity : AppCompatActivity() {
         MainEntry(
             modifier = Modifier.fillMaxSize(),
             appName = appName,
+            theme = theme,
         )
       }
     }

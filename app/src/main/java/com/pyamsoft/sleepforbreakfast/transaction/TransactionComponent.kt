@@ -17,6 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.transaction
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import dagger.BindsInstance
 import dagger.Module
 import dagger.Subcomponent
 
@@ -33,7 +35,10 @@ internal interface TransactionComponent {
   @Subcomponent.Factory
   interface Factory {
 
-    @CheckResult fun create(): TransactionComponent
+    @CheckResult
+    fun create(
+        @BindsInstance categoryId: DbCategory.Id,
+    ): TransactionComponent
   }
 
   @Module abstract class TransactionModule

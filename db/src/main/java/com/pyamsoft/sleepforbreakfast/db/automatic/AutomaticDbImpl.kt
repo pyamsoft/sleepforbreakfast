@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -29,7 +30,6 @@ import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 @Singleton
 internal class AutomaticDbImpl
@@ -196,7 +196,7 @@ internal constructor(
               publish(AutomaticChangeEvent.Update(result.data))
             }
             is DbInsert.InsertResult.Fail ->
-                Timber.e(result.error, "Insert attempt failed: ${result.data}")
+                Timber.e(result.error) { "Insert attempt failed: ${result.data}" }
           }
         }
       }

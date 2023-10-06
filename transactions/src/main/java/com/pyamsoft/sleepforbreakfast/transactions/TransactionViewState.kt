@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.compose.runtime.Stable
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewState
 import com.pyamsoft.sleepforbreakfast.money.list.MutableListViewState
@@ -29,6 +30,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface TransactionViewState : ListViewState<DbTransaction> {
+  val category: StateFlow<DbCategory?>
+
   val addParams: StateFlow<TransactionAddParams?>
   val deleteParams: StateFlow<TransactionDeleteParams?>
 
@@ -41,6 +44,8 @@ interface TransactionViewState : ListViewState<DbTransaction> {
 @Stable
 class MutableTransactionViewState @Inject internal constructor() :
     TransactionViewState, MutableListViewState<DbTransaction>() {
+  override val category = MutableStateFlow<DbCategory?>(null)
+
   override val addParams = MutableStateFlow<TransactionAddParams?>(null)
   override val deleteParams = MutableStateFlow<TransactionDeleteParams?>(null)
 

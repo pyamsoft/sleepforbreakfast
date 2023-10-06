@@ -21,11 +21,11 @@ import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
 import com.pyamsoft.sleepforbreakfast.core.REGEX_DOLLAR_PRICE
 import com.pyamsoft.sleepforbreakfast.core.REGEX_FILTER_ONLY_DIGITS
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
 import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
-import timber.log.Timber
 
 internal abstract class BaseAutomaticHandler protected constructor() : AutomaticHandler {
 
@@ -42,14 +42,15 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
         } else if (regex.containsMatchIn(bigText)) {
           bigText
         } else {
-          Timber.w(
-              "Could not match notification: ${mapOf(
+          Timber.w {
+            "Could not match notification: ${mapOf(
                 "text" to text,
                 "bigText" to bigText,
                 "title" to title,
                 "bigTitle" to bigTitle,
                 "regex" to regex.pattern,
-          )}")
+          )}"
+          }
           return null
         }
 
@@ -61,7 +62,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
             ?.toLongOrNull()
 
     if (justPrice == null) {
-      Timber.w("Unable to get justPrice from payText: $payText")
+      Timber.w { "Unable to get justPrice from payText: $payText" }
       return null
     }
 

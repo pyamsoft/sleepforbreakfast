@@ -19,11 +19,11 @@ package com.pyamsoft.sleepforbreakfast.money.one
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.arch.UiViewState
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 abstract class OneViewModeler<I : Any, T : Any, S : UiViewState>
 protected constructor(
@@ -39,10 +39,10 @@ protected constructor(
         interactor
             .loadOne(force, initialId)
             .onSuccess { result ->
-              Timber.d("Loaded data: $result")
+              Timber.d { "Loaded data: $result" }
               onDataLoaded(result)
             }
-            .onFailure { Timber.e(it, "Error loading data: $initialId") }
+            .onFailure { Timber.e(it) { "Error loading data: $initialId" } }
       }
     }
 

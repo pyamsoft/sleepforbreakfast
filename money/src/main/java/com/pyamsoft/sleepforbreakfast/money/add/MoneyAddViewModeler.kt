@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -28,7 +29,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 abstract class MoneyAddViewModeler<I : Any, T : Any, S : MutableMoneyAddViewState>
 protected constructor(
@@ -108,15 +108,15 @@ protected constructor(
       scope: CoroutineScope,
       onDismissAfterUpdated: () -> Unit,
   ) {
-    Timber.d("Attempt new submission")
+    Timber.d { "Attempt new submission" }
     if (state.working.value) {
-      Timber.w("Already working")
+      Timber.w { "Already working" }
       return
     }
 
     scope.launch(context = Dispatchers.Default) {
       if (state.working.value) {
-        Timber.w("Already working")
+        Timber.w { "Already working" }
         return@launch
       }
 
@@ -125,7 +125,7 @@ protected constructor(
       try {
         data = compile()
       } catch (e: Throwable) {
-        Timber.e(e, "Error compiling data")
+        Timber.e(e) { "Error compiling data" }
         state.working.value = false
         // TODO handle error in UI
         return@launch
@@ -133,19 +133,19 @@ protected constructor(
 
       interactor
           .submit(data)
-          .onFailure { Timber.e(it, "Error occurred when submitting data $data") }
+          .onFailure { Timber.e(it) { "Error occurred when submitting data $data" } }
           .onSuccess { res ->
             when (res) {
               is DbInsert.InsertResult.Insert -> {
-                Timber.d("New data: ${res.data}")
+                Timber.d { "New data: ${res.data}" }
                 onNewCreated(res.data)
               }
               is DbInsert.InsertResult.Update -> {
-                Timber.d("Update data: ${res.data}")
+                Timber.d { "Update data: ${res.data}" }
                 onNewCreated(res.data)
               }
               is DbInsert.InsertResult.Fail -> {
-                Timber.e(res.error, "Failed to insert data: $data")
+                Timber.e(res.error) { "Failed to insert data: $data" }
 
                 // Will be caught by onFailure below
                 throw res.error
@@ -160,7 +160,7 @@ protected constructor(
             }
           }
           .onFailure {
-            Timber.e(it, "Unable to process repeat: $data")
+            Timber.e(it) { "Unable to process repeat: $data" }
             // TODO handle error in UI
           }
           .onFinally { state.working.value = false }

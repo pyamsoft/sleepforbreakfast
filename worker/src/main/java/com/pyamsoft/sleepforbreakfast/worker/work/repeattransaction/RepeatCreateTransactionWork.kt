@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.worker.work.repeattransaction
 
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
 import java.time.Clock
@@ -26,7 +27,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class RepeatCreateTransactionWork
 @Inject
@@ -59,10 +59,10 @@ internal constructor(
           return@withContext BgWorker.WorkResult.Success
         } catch (e: Throwable) {
           if (e is CancellationException) {
-            Timber.w("Job cancelled during processing")
+            Timber.w { "Job cancelled during processing" }
             return@withContext BgWorker.WorkResult.Cancelled
           } else {
-            Timber.e(e, "Error during processing of repeats to create transactions")
+            Timber.e(e) { "Error during processing of repeats to create transactions" }
             return@withContext BgWorker.WorkResult.Failed(e)
           }
         }

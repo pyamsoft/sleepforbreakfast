@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import javax.inject.Inject
 
 class MainViewModeler
@@ -33,7 +34,20 @@ internal constructor(
         val s = state
 
         registry.registerProvider(KEY_SETTINGS) { s.isSettingsOpen.value }.also { add(it) }
-        registry.registerProvider(KEY_PAGE) { s.page.value?.name }.also { add(it) }
+        registry
+            .registerProvider(KEY_PAGE) {
+              val p = s.page.value
+              if (p == null) {
+                return@registerProvider null
+              } else {
+                return@registerProvider when (p) {
+                  is MainPage.Category,
+                  is MainPage.Repeat -> p::class.java.name
+                  is MainPage.Transactions -> p.categoryId.raw
+                }
+              }
+            }
+            .also { add(it) }
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
@@ -47,7 +61,14 @@ internal constructor(
     registry
         .consumeRestored(KEY_PAGE)
         ?.let { it as String }
-        ?.let { MainPage.valueOf(it) }
+        ?.let { p ->
+          return@let when (p) {
+            MainPage.Category::class.java.name -> MainPage.Category
+            MainPage.Repeat::class.java.name -> MainPage.Repeat
+            // Assume P is a category ID as a String
+            else -> MainPage.Transactions(DbCategory.Id(p))
+          }
+        }
         ?.also { s.page.value = it }
   }
 
@@ -63,16 +84,16 @@ internal constructor(
     state.page.value = null
   }
 
-  fun handleOpenTransactions() {
-    state.page.value = MainPage.TRANSACTION
+  fun handleOpenTransactions(category: DbCategory) {
+    state.page.value = MainPage.Transactions(category.id)
   }
 
   fun handleOpenRepeats() {
-    state.page.value = MainPage.REPEAT
+    state.page.value = MainPage.Repeat
   }
 
   fun handleOpenCategory() {
-    state.page.value = MainPage.CATEGORY
+    state.page.value = MainPage.Category
   }
 
   companion object {

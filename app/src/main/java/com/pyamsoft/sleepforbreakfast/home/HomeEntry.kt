@@ -26,6 +26,7 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import javax.inject.Inject
 
 internal class HomeInjector @Inject internal constructor() : ComposableInjector() {
@@ -59,7 +60,7 @@ internal fun HomeEntry(
     modifier: Modifier = Modifier,
     appName: String,
     onOpenSettings: () -> Unit,
-    onOpenTransactions: () -> Unit,
+    onOpenTransactions: (DbCategory) -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
@@ -76,11 +77,11 @@ internal fun HomeEntry(
       state = viewModel,
       appName = appName,
       onOpenSettings = onOpenSettings,
-      onOpenNotificationListenerSettings = {
-        viewModel.handleOpenNotificationSettings(scope = scope)
-      },
       onOpenTransactions = onOpenTransactions,
       onOpenRepeats = onOpenRepeats,
       onOpenCategories = onOpenCategories,
+      onOpenNotificationListenerSettings = {
+        viewModel.handleOpenNotificationSettings(scope = scope)
+      },
   )
 }

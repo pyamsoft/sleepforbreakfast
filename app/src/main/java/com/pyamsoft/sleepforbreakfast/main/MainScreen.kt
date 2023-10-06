@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.main.settings.SettingsDialog
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
@@ -39,7 +40,7 @@ fun MainScreen(
     onOpenSettings: () -> Unit,
     onCloseSettings: () -> Unit,
     onClosePage: () -> Unit,
-    onOpenTransactions: () -> Unit,
+    onOpenTransactions: (DbCategory) -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
@@ -64,19 +65,20 @@ fun MainScreen(
         )
       } else {
         when (p) {
-          MainPage.TRANSACTION -> {
+          is MainPage.Transactions -> {
             TransactionEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
+                categoryId = p.categoryId,
                 onDismiss = onClosePage,
             )
           }
-          MainPage.REPEAT -> {
+          is MainPage.Repeat -> {
             RepeatEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 onDismiss = onClosePage,
             )
           }
-          MainPage.CATEGORY -> {
+          is MainPage.Category -> {
             CategoryEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 onDismiss = onClosePage,

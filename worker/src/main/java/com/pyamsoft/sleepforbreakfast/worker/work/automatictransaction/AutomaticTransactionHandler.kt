@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.worker.work.automatictransaction
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
@@ -33,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 internal class AutomaticTransactionHandler
 @Inject
@@ -73,34 +73,34 @@ ${auto.notificationMatchText}
 
     return when (val result = transactionInsertDao.insert(transaction)) {
       is DbInsert.InsertResult.Fail -> {
-        Timber.e(result.error, "Failed to create transaction: $auto -> $transaction")
+        Timber.e(result.error) { "Failed to create transaction: $auto -> $transaction" }
         false
       }
       is DbInsert.InsertResult.Insert -> {
-        Timber.d("Create auto transaction $auto -> $transaction")
+        Timber.d { "Create auto transaction $auto -> $transaction" }
         true
       }
       is DbInsert.InsertResult.Update -> {
         // This should not happen
-        Timber.d("Update auto transaction $auto -> $transaction")
+        Timber.d { "Update auto transaction $auto -> $transaction" }
         true
       }
     }
   }
 
   private suspend fun markConsumed(automatic: DbAutomatic) {
-    Timber.d("Created new transaction from auto, consume!")
+    Timber.d { "Created new transaction from auto, consume!" }
 
     when (val result = automaticInsertDao.insert(automatic.consume())) {
       is DbInsert.InsertResult.Fail -> {
-        Timber.e(result.error, "Failed to consume automatic: $automatic")
+        Timber.e(result.error) { "Failed to consume automatic: $automatic" }
       }
       is DbInsert.InsertResult.Insert -> {
         // This should not happen
-        Timber.d("Marked NEW automatic consumed: $automatic")
+        Timber.d { "Marked NEW automatic consumed: $automatic" }
       }
       is DbInsert.InsertResult.Update -> {
-        Timber.d("Marked automatic consumed: $automatic")
+        Timber.d { "Marked automatic consumed: $automatic" }
       }
     }
   }

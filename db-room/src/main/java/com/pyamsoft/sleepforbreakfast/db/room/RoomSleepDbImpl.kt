@@ -36,7 +36,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 2,
+    version = 3,
     entities =
         [
             RoomDbTransaction::class,
@@ -50,6 +50,12 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
             AutoMigration(
                 from = 1,
                 to = 2,
+            ),
+
+            // Remove this after dev is done and set everything back to 1
+            AutoMigration(
+                from = 2,
+                to = 3,
             ),
         ],
 )

@@ -18,10 +18,14 @@ package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
+import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import javax.inject.Inject
@@ -48,9 +52,17 @@ private fun MountHooks(viewModel: MainViewModeler) {
 internal fun MainEntry(
     modifier: Modifier = Modifier,
     appName: String,
+    theme: Theming.Mode,
 ) {
   val component = rememberComposableInjector { MainInjector() }
   val viewModel = rememberNotNull(component.viewModel)
+
+  val page by viewModel.page.collectAsStateWithLifecycle()
+  val isDarkIcons = remember(page) { page == null }
+      SystemBars(
+          theme = theme,
+          isDarkIcons = isDarkIcons,
+      )
 
   MountHooks(
       viewModel = viewModel,
@@ -63,7 +75,8 @@ internal fun MainEntry(
       onOpenSettings = { viewModel.handleOpenSettings() },
       onCloseSettings = { viewModel.handleCloseSettings() },
       onClosePage = { viewModel.handleClosePage() },
-      onOpenTransactions = { viewModel.handleOpenTransactions() },
+      onOpenTransactions = { viewModel.handleOpenTransactions(it) },
       onOpenRepeats = { viewModel.handleOpenRepeats() },
-      onOpenCategories = { viewModel.handleOpenCategory() })
+      onOpenCategories = { viewModel.handleOpenCategory() },
+  )
 }

@@ -18,16 +18,22 @@ package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface HomeViewState : UiViewState {
+  val loading: StateFlow<LoadingState>
   val isNotificationListenerEnabled: StateFlow<Boolean>
+  val categories: StateFlow<List<DbCategory>>
 }
 
 @Stable
 class MutableHomeViewState @Inject internal constructor() : HomeViewState {
+  override val loading = MutableStateFlow(LoadingState.NONE)
   override val isNotificationListenerEnabled = MutableStateFlow(false)
+  override val categories = MutableStateFlow(emptyList<DbCategory>())
 }

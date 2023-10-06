@@ -42,6 +42,7 @@ import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.transactions.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.LocalDate
 
@@ -64,7 +65,7 @@ fun TransactionRepeatInfoScreen(
   ) {
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = LocalCategoryColor.current,
         contentColor = MaterialTheme.colors.onPrimary,
         elevation = ZeroElevation,
         navigationIcon = {

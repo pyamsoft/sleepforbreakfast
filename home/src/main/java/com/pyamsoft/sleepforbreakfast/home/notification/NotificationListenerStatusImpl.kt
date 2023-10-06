@@ -25,12 +25,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 internal class NotificationListenerStatusImpl
 @Inject
@@ -68,7 +68,7 @@ internal constructor(
       activity.startActivity(intent)
       true
     } catch (e: android.content.ActivityNotFoundException) {
-      Timber.e(e, "Could not open intent: ${intent.action}")
+      Timber.e(e) { "Could not open intent: ${intent.action}" }
       false
     }
   }
@@ -78,10 +78,10 @@ internal constructor(
     // Try specific first, may fail on some devices
     var intent = Intent(action, "package:${activity.packageName}".toUri())
     if (!tryOpenIntent(intent)) {
-      Timber.w("Failed specific intent for $action")
+      Timber.w { "Failed specific intent for $action" }
       intent = Intent(action)
       if (!tryOpenIntent(intent)) {
-        Timber.w("Failed generic intent for $action")
+        Timber.w { "Failed generic intent for $action" }
         return false
       }
     }
@@ -97,7 +97,7 @@ internal constructor(
       withContext(context = Dispatchers.Default) {
         val action = Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS
         if (openSettingsPageIntent(action)) {
-          Timber.w("Failed to open settings page: $action")
+          Timber.w { "Failed to open settings page: $action" }
         }
       }
 }

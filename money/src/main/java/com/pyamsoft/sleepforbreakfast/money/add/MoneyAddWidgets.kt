@@ -73,7 +73,6 @@ import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
 import java.time.LocalDate
 import java.time.LocalTime
-import timber.log.Timber
 
 // This is basically longer than any expected money amount.
 private const val MAX_ALLOWED_AMOUNT_LENGTH = 18
@@ -86,8 +85,6 @@ fun MoneyAmount(
     onAmountChanged: (String) -> Unit,
 ) {
   val amount by state.amount.collectAsStateWithLifecycle()
-
-  Timber.d("AMount: $amount")
 
   Row(
       modifier = modifier,
@@ -500,8 +497,7 @@ fun AddCategories(
               allCategories,
           ) {
             allCategories.firstOrNull { it.id == id }
-          }
-              ?: continue
+          } ?: continue
 
       Category(
           modifier =

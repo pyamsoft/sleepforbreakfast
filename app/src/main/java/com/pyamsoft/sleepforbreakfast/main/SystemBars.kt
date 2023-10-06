@@ -27,10 +27,17 @@ import com.pyamsoft.sleepforbreakfast.getSystemDarkMode
 @Composable
 internal fun SystemBars(
     theme: Theming.Mode,
+    isDarkIcons: Boolean,
 ) {
   // Dark icons in Light mode only
   val darkMode = theme.getSystemDarkMode()
-  val darkIcons = remember(darkMode) { !darkMode }
+  val darkIcons =
+      remember(
+          darkMode,
+          isDarkIcons,
+      ) {
+        if (darkMode) false else isDarkIcons
+      }
 
   val controller = rememberSystemUiController()
   SideEffect {

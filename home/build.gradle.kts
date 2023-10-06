@@ -55,5 +55,6 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":db"))
+  implementation(project(":money"))
   implementation(project(":ui"))
 }

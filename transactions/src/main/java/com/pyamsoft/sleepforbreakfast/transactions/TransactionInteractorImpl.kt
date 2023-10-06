@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
@@ -34,7 +35,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 internal class TransactionInteractorImpl
 @Inject
@@ -54,14 +54,14 @@ constructor(
       withContext(context = Dispatchers.Default) {
         val r = transaction.automaticId
         if (r == null) {
-          Timber.w("Transaction has no auto data: $transaction")
+          Timber.w { "Transaction has no auto data: $transaction" }
           return@withContext ResultWrapper.success(Maybe.None)
         }
 
         try {
           ResultWrapper.success(autoQueryDao.queryById(r))
         } catch (e: Throwable) {
-          Timber.e(e, "Error loading Automatic from transaction: $transaction")
+          Timber.e(e) { "Error loading Automatic from transaction: $transaction" }
           ResultWrapper.failure(e)
         }
       }
@@ -70,14 +70,14 @@ constructor(
       withContext(context = Dispatchers.Default) {
         val r = transaction.repeatId
         if (r == null) {
-          Timber.w("Transaction has no repeat data: $transaction")
+          Timber.w { "Transaction has no repeat data: $transaction" }
           return@withContext ResultWrapper.success(Maybe.None)
         }
 
         try {
           ResultWrapper.success(repeatQueryDao.queryById(r))
         } catch (e: Throwable) {
-          Timber.e(e, "Error loading Repeat from transaction: $transaction")
+          Timber.e(e) { "Error loading Repeat from transaction: $transaction" }
           ResultWrapper.failure(e)
         }
       }

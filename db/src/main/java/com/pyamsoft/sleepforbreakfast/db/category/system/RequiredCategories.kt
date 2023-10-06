@@ -17,8 +17,27 @@
 package com.pyamsoft.sleepforbreakfast.db.category.system
 
 enum class RequiredCategories(val displayName: String) {
-  VENMO("Venmo"),
-  VENMO_PAY("Venmo Payments"),
-  VENMO_REQUESTS("Venmo Requests"),
-  GOOGLE_WALLET("Google Wallet"),
+  // Food
+  GROCERIES("Groceries"),
+  RESTAURANTS("Restaurants"),
+  FAST_FOOD("Fast Food"),
+  DELIVERY("Delivery"),
+
+  // Entertainment
+  MOVIES("Movies"),
+  VIDEO_GAMES("Video Games"),
+  STREAMING("Streaming"),
+  ONLINE_SHOPPING("Online Shopping"),
+  ENTERTAINMENT("Entertainment"),
+
+  // Utility
+  WATER_BILL("Water Bill"),
+  GAS_BILL("Gas Bill"),
+  ELECTRICITY_BILL("Electricity Bill"),
+  INTERNET_BILL("Internet Bill"),
+
+  // Work
+  RENT("Rent"),
+  MORTGAGE("Mortgage"),
+  SALARY("Salary"),
 }

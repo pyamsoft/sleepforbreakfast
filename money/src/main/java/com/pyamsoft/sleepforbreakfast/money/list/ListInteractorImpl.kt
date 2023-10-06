@@ -19,11 +19,11 @@ package com.pyamsoft.sleepforbreakfast.money.list
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected constructor() :
     ListInteractor<I, T, CE> {
@@ -37,7 +37,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
         return@withContext try {
           ResultWrapper.success(performQueryAll())
         } catch (e: Throwable) {
-          Timber.e(e, "Error loading items")
+          Timber.e(e) { "Error loading items" }
           ResultWrapper.failure(e)
         }
       }
@@ -55,12 +55,11 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
             }
             is Maybe.None -> {
               val err = RuntimeException("Could not find item with ID $id")
-              Timber.w(err.message)
               ResultWrapper.failure(err)
             }
           }
         } catch (e: Throwable) {
-          Timber.e(e, "Error loading item $id")
+          Timber.e(e) { "Error loading item $id" }
           ResultWrapper.failure(e)
         }
       }
@@ -71,7 +70,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
           ResultWrapper.success(performDelete(item))
         } catch (e: Throwable) {
           e.ifNotCancellation {
-            Timber.e(e, "Error deleting item: $item")
+            Timber.e(e) { "Error deleting item: $item" }
             ResultWrapper.failure(e)
           }
         }
@@ -83,7 +82,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
           ResultWrapper.success(performInsert(item))
         } catch (e: Throwable) {
           e.ifNotCancellation {
-            Timber.e(e, "Error submitting item: $item")
+            Timber.e(e) { "Error submitting item: $item" }
             ResultWrapper.failure(e)
           }
         }

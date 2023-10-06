@@ -16,8 +16,12 @@
 
 package com.pyamsoft.sleepforbreakfast.main
 
-enum class MainPage {
-  TRANSACTION,
-  REPEAT,
-  CATEGORY
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+
+sealed interface MainPage {
+  data class Transactions(val categoryId: DbCategory.Id) : MainPage
+
+  data object Repeat : MainPage
+
+  data object Category : MainPage
 }

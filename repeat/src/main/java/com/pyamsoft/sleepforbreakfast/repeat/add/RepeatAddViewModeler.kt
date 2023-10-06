@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
@@ -34,7 +35,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class RepeatAddViewModeler
 @Inject
@@ -56,9 +56,9 @@ internal constructor(
   private suspend fun loadCategories() {
     categoryLoader
         .queryAllResult()
-        .onSuccess { Timber.d("Loaded categories: $it") }
+        .onSuccess { Timber.d { "Loaded categories: $it" } }
         .onSuccess { cats -> state.allCategories.value = cats.sortedBy { it.name } }
-        .onFailure { Timber.e(it, "Error loading all categories") }
+        .onFailure { Timber.e(it) { "Error loading all categories" } }
         .onFailure { state.allCategories.value = emptyList() }
   }
 

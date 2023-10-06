@@ -58,6 +58,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
+import com.pyamsoft.sleepforbreakfast.transactions.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
@@ -120,7 +121,7 @@ fun TransactionAddScreen(
   ) {
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = LocalCategoryColor.current,
         contentColor = MaterialTheme.colors.onPrimary,
         elevation = ZeroElevation,
         navigationIcon = {

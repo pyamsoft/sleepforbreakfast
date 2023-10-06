@@ -22,7 +22,7 @@ import android.app.Service
 import android.content.Context
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.requireNotNull
-import timber.log.Timber
+import com.pyamsoft.sleepforbreakfast.core.Timber
 
 object WorkerObjectGraph {
 
@@ -33,7 +33,7 @@ object WorkerObjectGraph {
       component: WorkerComponent,
   ) {
     trackingMap[application] = component
-    Timber.d("Track WorkerScoped install: $application $component")
+    Timber.d { "Track WorkerScoped install: $application $component" }
   }
 
   @CheckResult

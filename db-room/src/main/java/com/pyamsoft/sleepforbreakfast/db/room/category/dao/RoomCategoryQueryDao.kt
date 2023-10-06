@@ -23,7 +23,6 @@ import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.category.system.RequiredCategories
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -59,24 +58,4 @@ SELECT * FROM ${RoomDbCategory.TABLE_NAME}
   LIMIT 1
 """)
   internal abstract suspend fun daoQueryById(id: DbCategory.Id): RoomDbCategory?
-
-  final override suspend fun queryBySystemCategory(
-      category: RequiredCategories
-  ): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.Default) {
-        when (val transaction = daoQueryBySystemCategory(category.displayName)) {
-          null -> Maybe.None
-          else -> Maybe.Data(transaction)
-        }
-      }
-
-  @CheckResult
-  @Query(
-      """
-SELECT * FROM ${RoomDbCategory.TABLE_NAME}
-  WHERE ${RoomDbCategory.COLUMN_NAME} = :name
-  AND ${RoomDbCategory.COLUMN_SYSTEM} = TRUE
-  LIMIT 1
-""")
-  internal abstract suspend fun daoQueryBySystemCategory(name: String): RoomDbCategory?
 }

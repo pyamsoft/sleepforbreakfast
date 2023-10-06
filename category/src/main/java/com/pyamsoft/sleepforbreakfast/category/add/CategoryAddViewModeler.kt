@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
@@ -27,7 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class CategoryAddViewModeler
 @Inject
@@ -87,15 +87,15 @@ internal constructor(
       scope: CoroutineScope,
       onDismissAfterUpdated: () -> Unit,
   ) {
-    Timber.d("Attempt new submission")
+    Timber.d { "Attempt new submission" }
     if (state.working.value) {
-      Timber.w("Already working")
+      Timber.w { "Already working" }
       return
     }
 
     scope.launch(context = Dispatchers.Default) {
       if (state.working.value) {
-        Timber.w("Already working")
+        Timber.w { "Already working" }
         return@launch
       }
 
@@ -104,7 +104,7 @@ internal constructor(
       try {
         category = compile()
       } catch (e: Throwable) {
-        Timber.e(e, "Error compiling category")
+        Timber.e(e) { "Error compiling category" }
         state.working.value = false
         // TODO handle error in UI
         return@launch
@@ -112,13 +112,13 @@ internal constructor(
 
       interactor
           .submit(category)
-          .onFailure { Timber.e(it, "Error occurred when submitting category $category") }
+          .onFailure { Timber.e(it) { "Error occurred when submitting category $category" } }
           .onSuccess { res ->
             when (res) {
-              is DbInsert.InsertResult.Insert -> Timber.d("New category: ${res.data}")
-              is DbInsert.InsertResult.Update -> Timber.d("Update category: ${res.data}")
+              is DbInsert.InsertResult.Insert -> Timber.d { "New category: ${res.data}" }
+              is DbInsert.InsertResult.Update -> Timber.d { "Update category: ${res.data}" }
               is DbInsert.InsertResult.Fail -> {
-                Timber.e(res.error, "Failed to insert category: $category")
+                Timber.e(res.error) { "Failed to insert category: $category" }
 
                 // Will be caught by onFailure below
                 throw res.error
@@ -133,7 +133,7 @@ internal constructor(
             }
           }
           .onFailure {
-            Timber.e(it, "Unable to process category: $category")
+            Timber.e(it) { "Unable to process category: $category" }
             // TODO handle error in UI
           }
           .onFinally { state.working.value = false }

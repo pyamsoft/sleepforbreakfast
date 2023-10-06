@@ -22,6 +22,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.await
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.AutomaticSpendingWorker
@@ -30,7 +31,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 internal class WorkerQueueImpl
 @Inject
@@ -55,13 +55,13 @@ internal constructor(
             }
 
         val work = builder.addTag(type.name).build()
-        Timber.d("Enqueue work: $type")
+        Timber.d { "Enqueue work: $type" }
 
         // Resolve the WorkManager instance
         try {
           WorkManager.getInstance(context).enqueue(work).await()
         } catch (e: Throwable) {
-          Timber.e(e, "Error queueing work: $type")
+          Timber.e(e) { "Error queueing work: $type" }
         }
 
         // No return
@@ -72,11 +72,11 @@ internal constructor(
       withContext(context = Dispatchers.Default) {
 
         // Resolve the WorkManager instance
-        Timber.d("Cancel work by tag: $type")
+        Timber.d { "Cancel work by tag: $type" }
         try {
           WorkManager.getInstance(context).cancelAllWorkByTag(type.name).await()
         } catch (e: Throwable) {
-          Timber.e(e, "Error cancelling work: $type")
+          Timber.e(e) { "Error cancelling work: $type" }
         }
 
         // No return

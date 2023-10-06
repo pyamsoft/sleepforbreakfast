@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -36,7 +37,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class TransactionAddViewModeler
 @Inject
@@ -57,9 +57,9 @@ internal constructor(
   private suspend fun loadCategories() {
     categoryLoader
         .queryAllResult()
-        .onSuccess { Timber.d("Loaded categories: $it") }
+        .onSuccess { Timber.d { "Loaded categories: $it" } }
         .onSuccess { cats -> state.allCategories.value = cats.sortedBy { it.name } }
-        .onFailure { Timber.e(it, "Error loading all categories") }
+        .onFailure { Timber.e(it) { "Error loading all categories" } }
         .onFailure { state.allCategories.value = emptyList() }
   }
 
@@ -69,7 +69,7 @@ internal constructor(
     val currentCategories = state.categories.value
     val allCategories = state.allCategories.value
     if (allCategories.isEmpty()) {
-      Timber.w("Could not load allCategories, do not change categories for compile()")
+      Timber.w { "Could not load allCategories, do not change categories for compile()" }
       cleaned = currentCategories
     } else {
       // For each category currently added
@@ -82,7 +82,7 @@ internal constructor(
           cleaned = cleaned + cat
         } else {
           // Otherwise this "was" a category but it has been deleted
-          Timber.w("Category was selected but no longer exists: $cat")
+          Timber.w { "Category was selected but no longer exists: $cat" }
         }
       }
     }
@@ -110,7 +110,7 @@ internal constructor(
             }
           }
         }
-        .onFailure { Timber.e(it, "Error getting repeat data") }
+        .onFailure { Timber.e(it) { "Error getting repeat data" } }
         .onFailure { state.existingRepeat.value = null }
         .onFinally { state.loadingRepeat.value = LoadingState.DONE }
   }
@@ -135,7 +135,7 @@ internal constructor(
             }
           }
         }
-        .onFailure { Timber.e(it, "Error getting auto data") }
+        .onFailure { Timber.e(it) { "Error getting auto data" } }
         .onFailure { state.existingAuto.value = null }
         .onFinally { state.loadingAuto.value = LoadingState.DONE }
   }

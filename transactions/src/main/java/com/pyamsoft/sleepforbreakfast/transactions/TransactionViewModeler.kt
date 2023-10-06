@@ -16,10 +16,15 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
+import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.pydroid.util.contains
+import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
@@ -42,6 +47,8 @@ internal constructor(
     interactor: TransactionInteractor,
     private val enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
+    private val categoryId: DbCategory.Id,
+    private val categoryLoader: CategoryLoader,
 ) :
     TransactionViewState by state,
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
@@ -56,6 +63,18 @@ internal constructor(
 
   private fun handleDeleteParams(params: TransactionDeleteParams) {
     state.deleteParams.value = params
+  }
+
+  @CheckResult
+  private suspend fun loadTargetCategory(): DbCategory {
+    val knownCategory = state.category.value
+    return if (knownCategory == null) {
+      val category = categoryLoader.queryAll().firstOrNull { it.id == categoryId }
+      state.category.value = category
+      category ?: DbCategory.NONE
+    } else {
+      knownCategory
+    }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
@@ -168,8 +187,22 @@ internal constructor(
       combined.collect { (all, search, range) ->
         enforcer.assertOffMainThread()
 
+        val category = loadTargetCategory()
+
         state.items.value =
             all.asSequence()
+                // The NONE category captures everything
+                .filter { t ->
+                  if (category.id.isEmpty) {
+                    // Either no categories
+                    return@filter t.categories.isEmpty() ||
+                        // Or one category, where the category is empty
+                        t.categories.size == 1 && t.categories.first().isEmpty
+                  } else {
+                    // This includes the category in its list of categories
+                    return@filter t.categories.contains { it == category.id }
+                  }
+                }
                 // Filter by search query
                 .run {
                   if (search.isNotBlank()) {

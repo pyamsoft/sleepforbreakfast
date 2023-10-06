@@ -78,7 +78,10 @@ internal constructor(
 
   @Ignore override val createdAt = dbCreatedAt
 
-  @Ignore override val categories = dbCategories
+  /** Remove the empty Id(raw=) category ID that sometimes gets placed into the list */
+  @get:Ignore
+  @delegate:Ignore
+  override val categories by lazy { dbCategories.filterNot { it.isEmpty } }
 
   @Ignore override val name = dbName
 

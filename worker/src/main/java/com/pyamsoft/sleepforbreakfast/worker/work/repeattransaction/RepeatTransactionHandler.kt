@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.worker.work.repeattransaction
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
@@ -37,7 +38,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import timber.log.Timber
 
 internal class RepeatTransactionHandler
 @Inject
@@ -69,26 +69,28 @@ internal constructor(
   private suspend fun markRepeatUsed(repeat: DbRepeat, date: LocalDate) {
     when (val res = repeatInsertDao.insert(repeat.lastRunDay(date))) {
       is DbInsert.InsertResult.Fail -> {
-        Timber.e(
-            res.error,
-            "Failed updating Repeat to lastUsed: ${mapOf(
+        Timber.e(res.error) {
+          "Failed updating Repeat to lastUsed: ${mapOf(
                       "repeat" to repeat,
                       "date" to date,
-                  )}")
+                )}"
+        }
       }
       is DbInsert.InsertResult.Insert -> {
-        Timber.d(
-            "Inserted new repeat, should this happen?: ${mapOf(
+        Timber.d {
+          "Inserted new repeat, should this happen?: ${mapOf(
                       "repeat" to repeat,
                       "date" to date,
-                  )}")
+                )}"
+        }
       }
       is DbInsert.InsertResult.Update -> {
-        Timber.d(
-            "Updated existing transaction for repeat ${mapOf(
+        Timber.d {
+          "Updated existing transaction for repeat ${mapOf(
                       "repeat" to repeat,
                       "transaction" to res.data,
-                  )}")
+)}"
+        }
       }
     }
   }
@@ -106,26 +108,28 @@ internal constructor(
 
     when (val res = transactionInsertDao.insert(transaction)) {
       is DbInsert.InsertResult.Fail -> {
-        Timber.e(
-            res.error,
-            "Failed inserting new Transaction made by repeat: ${mapOf(
+        Timber.e(res.error) {
+          "Failed inserting new Transaction made by repeat: ${mapOf(
                     "repeat" to repeat,
                     "transaction" to transaction,
-                )}")
+                )}"
+        }
       }
       is DbInsert.InsertResult.Insert -> {
-        Timber.d(
-            "Inserted new transaction made by repeat: ${mapOf(
+        Timber.d {
+          "Inserted new transaction made by repeat: ${mapOf(
               "repeat" to repeat,
               "transaction" to res.data,
-          )}")
+          )}"
+        }
       }
       is DbInsert.InsertResult.Update -> {
-        Timber.d(
-            "Updated existing transaction made by repeat. Should this happen? ${mapOf(
+        Timber.d {
+          "Updated existing transaction made by repeat. Should this happen? ${mapOf(
                   "repeat" to repeat,
                   "transaction" to res.data,
-              )}")
+              )}"
+        }
       }
     }
   }
@@ -224,7 +228,7 @@ internal constructor(
             dates = possibleDates,
         )
 
-    Timber.d("Existing transactions: $repeat $existingTransactions")
+    Timber.d { "Existing transactions: $repeat $existingTransactions" }
     val emptyDates = mutableSetOf<LocalDate>()
     for (d in possibleDates) {
       val existing =
@@ -232,12 +236,12 @@ internal constructor(
             it.repeatCreatedDate != null && it.repeatCreatedDate == d
           }
       if (existing == null) {
-        Timber.d("No transaction exists yet for $d")
+        Timber.d { "No transaction exists yet for $d" }
         emptyDates.add(d)
       }
     }
 
-    Timber.d("New transactions: $repeat $emptyDates")
+    Timber.d { "New transactions: $repeat $emptyDates" }
 
     return emptyDates
   }
@@ -250,33 +254,34 @@ internal constructor(
         // Query here in case a previous DB operation caused this to be used
         when (val res = repeatQueryDao.queryById(repeatId)) {
           is Maybe.None -> {
-            Timber.w("Could not find repeat for id: $repeatId")
+            Timber.w { "Could not find repeat for id: $repeatId" }
           }
           is Maybe.Data -> {
             val repeat = res.data
 
             // Just in case my SQL is bad
             if (repeat.archived) {
-              Timber.w("Cannot process from archived repeat")
+              Timber.w { "Cannot process from archived repeat" }
               return@withLock
             }
 
             if (!repeat.active) {
-              Timber.w("Cannot process from inactive repeat")
+              Timber.w { "Cannot process from inactive repeat" }
               return@withLock
             }
 
             if (repeat.lastRunDay == today) {
-              Timber.w("Cannot process from already used repeat today")
+              Timber.w { "Cannot process from already used repeat today" }
               return@withLock
             }
 
             if (today < repeat.firstDay) {
-              Timber.w(
-                  "Cannot process repeat not started yet: ${mapOf(
+              Timber.w {
+                "Cannot process repeat not started yet: ${mapOf(
                           "firstDay" to repeat.firstDay,
                           "today" to today
-                      )}")
+                      )}"
+              }
               return@withLock
             }
 
@@ -298,10 +303,10 @@ internal constructor(
                     lastUsed = today,
                 )
               } else {
-                Timber.w("Not using repeat: $repeat")
+                Timber.w { "Not using repeat: $repeat" }
               }
             } catch (e: Throwable) {
-              Timber.e(e, "Error during creating transaction from repeat: $repeat")
+              Timber.e(e) { "Error during creating transaction from repeat: $repeat" }
             }
           }
         }

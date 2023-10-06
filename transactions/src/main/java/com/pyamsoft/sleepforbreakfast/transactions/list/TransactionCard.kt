@@ -43,6 +43,7 @@ import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
+import com.pyamsoft.sleepforbreakfast.transactions.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transactions.TRANSACTION_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
@@ -52,7 +53,10 @@ import java.time.Month
 import java.time.format.TextStyle as MonthTextStyle
 
 @Composable
-internal fun TransactionHeader(modifier: Modifier, month: Month) {
+internal fun TransactionHeader(
+    modifier: Modifier,
+    month: Month,
+) {
   val locale = rememberCurrentLocale()
 
   val monthName =
@@ -65,7 +69,7 @@ internal fun TransactionHeader(modifier: Modifier, month: Month) {
 
   Surface(
       modifier = modifier,
-      color = MaterialTheme.colors.primary,
+      color = LocalCategoryColor.current,
       contentColor = MaterialTheme.colors.onPrimary,
       shape = MaterialTheme.shapes.medium,
   ) {
@@ -152,7 +156,7 @@ internal fun TransactionCard(
   val hasDate = remember(date) { date.isNotBlank() }
   val hasNote = remember(note) { note.isNotBlank() }
 
-  val defaultColor = MaterialTheme.colors.onSurface
+  val defaultColor = MaterialTheme.colors.onPrimary
   val priceColor =
       remember(
           priceDirection,

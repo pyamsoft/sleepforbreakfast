@@ -36,11 +36,15 @@ interface DbCategory : ActivateModel<DbCategory> {
 
   @get:CheckResult val system: Boolean
 
+  @get:CheckResult val color: Long
+
   @CheckResult fun name(name: String): DbCategory
 
   @CheckResult fun note(note: String): DbCategory
 
   @CheckResult fun systemLevel(): DbCategory
+
+  @CheckResult fun color(color: Long): DbCategory
 
   data class Id(@get:CheckResult val raw: String) {
 
@@ -60,6 +64,7 @@ interface DbCategory : ActivateModel<DbCategory> {
       override val system: Boolean = false,
       override val active: Boolean = true,
       override val archived: Boolean = false,
+      override val color: Long = 0L,
   ) : DbCategory {
 
     override fun name(name: String): DbCategory {
@@ -89,9 +94,21 @@ interface DbCategory : ActivateModel<DbCategory> {
     override fun unarchive(): DbCategory {
       return this.copy(archived = false)
     }
+
+    override fun color(color: Long): DbCategory {
+      return this.copy(color = color)
+    }
   }
 
   companion object {
+
+    @JvmField
+    val NONE: DbCategory =
+        Impl(
+                id = Id.EMPTY,
+                createdAt = LocalDateTime.MIN,
+            )
+            .name("No Categories")
 
     @JvmStatic
     @CheckResult

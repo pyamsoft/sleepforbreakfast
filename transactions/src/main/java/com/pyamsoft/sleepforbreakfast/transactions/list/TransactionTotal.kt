@@ -6,20 +6,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
+import com.pyamsoft.sleepforbreakfast.transactions.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionDirection
@@ -50,7 +54,15 @@ internal fun TransactionTotal(
       modifier = modifier,
   ) {
     Column(
-        modifier = Modifier.background(color = MaterialTheme.colors.primary),
+        modifier =
+            Modifier.background(
+                color = LocalCategoryColor.current,
+                shape =
+                    MaterialTheme.shapes.medium.copy(
+                        topStart = ZeroCornerSize,
+                        topEnd = ZeroCornerSize,
+                    ),
+            ),
     ) {
       Spacer(
           modifier = Modifier.statusBarsPadding(),
@@ -100,6 +112,7 @@ private fun Totals(
     // Chart
     onChartToggle: () -> Unit,
 ) {
+  val category by state.category.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
 
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
@@ -113,24 +126,46 @@ private fun Totals(
         if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
       }
 
+  val title =
+      remember(
+          category,
+      ) {
+        val c = category
+        if (c == null || c.id.isEmpty) "Total" else c.name
+      }
+
   TransactionCard(
       modifier = modifier,
       contentModifier =
-          Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.typography),
+          Modifier.fillMaxWidth()
+              .padding(horizontal = MaterialTheme.keylines.typography)
+              .padding(bottom = MaterialTheme.keylines.baseline),
       priceModifier = Modifier.padding(end = MaterialTheme.keylines.content),
       noteModifier = Modifier.padding(MaterialTheme.keylines.content),
       color = Color.Unspecified,
       shape = RectangleShape,
       elevation = ZeroElevation,
-      title = "Total",
-      titleStyle = MaterialTheme.typography.h6,
+      title = title,
+      titleStyle =
+          MaterialTheme.typography.h6.copy(
+              color = MaterialTheme.colors.onPrimary,
+          ),
       date = "",
-      dateStyle = MaterialTheme.typography.caption,
+      dateStyle =
+          MaterialTheme.typography.caption.copy(
+              color = MaterialTheme.colors.onPrimary,
+          ),
       price = totalPrice,
       priceDirection = totalDirection,
-      priceStyle = MaterialTheme.typography.h4,
+      priceStyle =
+          MaterialTheme.typography.h4.copy(
+              color = MaterialTheme.colors.onPrimary,
+          ),
       note = totalRangeNote,
-      noteStyle = MaterialTheme.typography.body2,
+      noteStyle =
+          MaterialTheme.typography.body2.copy(
+              color = MaterialTheme.colors.onPrimary,
+          ),
       navigationIcon = {
         IconButton(
             modifier = Modifier.padding(end = MaterialTheme.keylines.content),

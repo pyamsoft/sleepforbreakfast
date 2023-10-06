@@ -16,12 +16,12 @@
 
 package com.pyamsoft.sleepforbreakfast.money.delete
 
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 abstract class DeleteViewModeler<I : Any, T : Any, S : MutableDeleteViewState<T>>
 protected constructor(
@@ -46,33 +46,33 @@ protected constructor(
       onDeleted: (T) -> Unit,
   ) {
     if (state.working.value) {
-      Timber.w("Already deleting")
+      Timber.w { "Already deleting" }
       return
     }
 
     val item = state.item.value
     if (item == null) {
-      Timber.w("No item, cannot delete")
+      Timber.w { "No item, cannot delete" }
       return
     }
 
     scope.launch(context = Dispatchers.Default) {
       if (state.working.value) {
-        Timber.w("Already deleting")
+        Timber.w { "Already deleting" }
         return@launch
       }
 
       state.working.value = true
       interactor
           .delete(item)
-          .onFailure { Timber.e(it, "Failed to delete item: $item") }
+          .onFailure { Timber.e(it) { "Failed to delete item: $item" } }
           .onSuccess { deleted ->
             if (deleted) {
-              Timber.d("Transaction item: $item")
+              Timber.d { "Transaction item: $item" }
               state.item.value = null
               onDeleted(item)
             } else {
-              Timber.w("Item was not deleted: $item")
+              Timber.w { "Item was not deleted: $item" }
             }
           }
           .onFinally { state.working.value = false }

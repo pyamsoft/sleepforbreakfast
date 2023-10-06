@@ -20,6 +20,7 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +32,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 abstract class ListViewModeler<T : Any, CE : Any, S : MutableListViewState<T>>
 protected constructor(
@@ -118,7 +118,7 @@ protected constructor(
     allItems.update { list -> list.filterNot { isEqual(it, item) } }
 
     if (offerUndo) {
-      Timber.d("Offer undo on item delete: $item")
+      Timber.d { "Offer undo on item delete: $item" }
       state.recentlyDeleted.value = item
     }
   }
@@ -147,25 +147,25 @@ protected constructor(
       force: Boolean,
   ) {
     if (state.loadingState.value == LoadingState.LOADING) {
-      Timber.w("Already loading items list")
+      Timber.w { "Already loading items list" }
       return
     }
 
     scope.launch(context = Dispatchers.Default) {
       if (state.loadingState.value == LoadingState.LOADING) {
-        Timber.w("Already loading items list")
+        Timber.w { "Already loading items list" }
         return@launch
       }
 
       state.loadingState.value = LoadingState.LOADING
       interactor
           .loadAll(force = force)
-          .onSuccess { Timber.d("Loaded items list: $it") }
+          .onSuccess { Timber.d { "Loaded items list: $it" } }
           .onSuccess { items ->
             allItems.value = items
             state.itemError.value = null
           }
-          .onFailure { Timber.e(it, "Error loading items") }
+          .onFailure { Timber.e(it) { "Error loading items" } }
           .onFailure { err ->
             allItems.value = emptyList()
             state.itemError.value = err
@@ -188,20 +188,21 @@ protected constructor(
       scope.launch(context = Dispatchers.Default) {
         interactor
             .submit(deleted)
-            .onFailure { Timber.e(it, "Error when restoring $deleted") }
+            .onFailure { Timber.e(it) { "Error when restoring $deleted" } }
             .onSuccess { result ->
               when (result) {
-                is DbInsert.InsertResult.Insert -> Timber.d("Restored: ${result.data}")
-                is DbInsert.InsertResult.Update -> Timber.d("Updated: ${result.data} from $deleted")
+                is DbInsert.InsertResult.Insert -> Timber.d { "Restored: ${result.data}" }
+                is DbInsert.InsertResult.Update ->
+                    Timber.d { "Updated: ${result.data} from $deleted" }
                 is DbInsert.InsertResult.Fail -> {
-                  Timber.e(result.error, "Failed to restore: $deleted")
+                  Timber.e(result.error) { "Failed to restore: $deleted" }
                   // Caught by the onFailure below
                   throw result.error
                 }
               }
             }
             .onFailure {
-              Timber.e(it, "Failed to restore")
+              Timber.e(it) { "Failed to restore" }
               // TODO handle restore error
             }
       }

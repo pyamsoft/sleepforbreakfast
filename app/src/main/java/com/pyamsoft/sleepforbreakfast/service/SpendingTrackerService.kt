@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.service
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.core.cancelChildren
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
 import javax.inject.Inject
@@ -27,7 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class SpendingTrackerService : NotificationListenerService() {
 
@@ -55,13 +55,13 @@ class SpendingTrackerService : NotificationListenerService() {
   override fun onNotificationPosted(sbn: StatusBarNotification) {
     val notif = sbn.notification
     if (notif == null) {
-      Timber.w("SBN is missing notification data")
+      Timber.w { "SBN is missing notification data" }
       return
     }
 
     val extras = notif.extras
     if (extras == null) {
-      Timber.w("SBN Notification data is missing extras bundle")
+      Timber.w { "SBN Notification data is missing extras bundle" }
       return
     }
 

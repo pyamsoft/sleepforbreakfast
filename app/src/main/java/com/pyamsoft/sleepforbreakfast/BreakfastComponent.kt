@@ -24,10 +24,12 @@ import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.sleepforbreakfast.category.CategoryAppModule
 import com.pyamsoft.sleepforbreakfast.db.DbModule
+import com.pyamsoft.sleepforbreakfast.db.DbPreferences
 import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
 import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.money.MoneyAppModule
+import com.pyamsoft.sleepforbreakfast.preference.PreferencesImpl
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatAppModule
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandlersAppModule
@@ -36,6 +38,7 @@ import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkManagerAppModule
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerComponent
+import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -93,6 +96,8 @@ internal interface BreakfastComponent {
 
   @Module
   abstract class Provider {
+
+    @Binds internal abstract fun provideDbPreferences(impl: PreferencesImpl): DbPreferences
 
     @Module
     companion object {
