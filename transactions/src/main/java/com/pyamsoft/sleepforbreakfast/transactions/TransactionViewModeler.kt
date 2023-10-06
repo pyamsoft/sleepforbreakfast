@@ -20,7 +20,6 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.util.contains
-import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
@@ -47,8 +46,8 @@ internal constructor(
     interactor: TransactionInteractor,
     private val enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
-    private val categoryId: DbCategory.Id,
     private val categoryLoader: CategoryLoader,
+    private val defaultCategoryId: DbCategory.Id,
 ) :
     TransactionViewState by state,
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
@@ -69,7 +68,7 @@ internal constructor(
   private suspend fun loadTargetCategory(): DbCategory {
     val knownCategory = state.category.value
     return if (knownCategory == null) {
-      val category = categoryLoader.queryAll().firstOrNull { it.id == categoryId }
+      val category = categoryLoader.queryAll().firstOrNull { it.id == defaultCategoryId }
       state.category.value = category
       category ?: DbCategory.NONE
     } else {
@@ -230,6 +229,7 @@ internal constructor(
         params =
             TransactionAddParams(
                 transactionId = transaction.id,
+                ensureCategoryId = defaultCategoryId,
             ),
     )
   }
@@ -239,6 +239,7 @@ internal constructor(
         params =
             TransactionAddParams(
                 transactionId = DbTransaction.Id.EMPTY,
+                ensureCategoryId = defaultCategoryId,
             ),
     )
   }

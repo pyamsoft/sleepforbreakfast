@@ -54,6 +54,8 @@ internal constructor(
         interactor = interactor,
     ) {
 
+  private val ensureCategoryId = params.ensureCategoryId
+
   private suspend fun loadCategories() {
     categoryLoader
         .queryAllResult()
@@ -224,6 +226,7 @@ internal constructor(
       state.note.value = ""
       state.type.value = DbTransaction.Type.SPEND
       state.amount.value = ""
+
       state.categories.value = emptyList()
 
       state.date.value = LocalDateTime.now(clock)
@@ -237,6 +240,13 @@ internal constructor(
       state.amount.value = source.amountInCents.toAmount { "" }
 
       state.date.value = source.date
+    }
+
+    // Ensure we always have the guaranteed category ID
+    if (!ensureCategoryId.isEmpty) {
+      if (!state.categories.value.contains(ensureCategoryId)) {
+        state.categories.update { it + ensureCategoryId }
+      }
     }
 
     handleCloseRepeatInfo()
@@ -282,7 +292,11 @@ internal constructor(
   }
 
   fun handleCategoryRemoved(category: DbCategory) {
-    state.categories.update { list -> list.filterNot { it == category.id } }
+    if (category.id.isEmpty || category.id == ensureCategoryId) {
+      Timber.w { "Cannot remove the ensured category ID: $category" }
+    } else {
+      state.categories.update { list -> list.filterNot { it == category.id } }
+    }
   }
 
   fun handleOpenRepeatInfo() {

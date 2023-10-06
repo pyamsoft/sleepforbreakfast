@@ -156,7 +156,7 @@ fun TransactionAddScreen(
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(horizontal = MaterialTheme.keylines.content)
-                    .padding(bottom = MaterialTheme.keylines.content * 2),
+                    .padding(bottom = MaterialTheme.keylines.content),
             verticalAlignment = Alignment.CenterVertically,
         ) {
           MoneyAmount(
@@ -175,6 +175,24 @@ fun TransactionAddScreen(
       }
 
       item(
+          contentType = AddContentTypes.NOTE,
+      ) {
+        MoneyNote(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.keylines.content)
+                    .padding(bottom = MaterialTheme.keylines.content),
+            state = state,
+            onNoteChanged = onNoteChanged,
+            label = {
+              Text(
+                  text = "Note about this Transaction",
+              )
+            },
+        )
+      }
+
+      item(
           contentType = AddContentTypes.DATE,
       ) {
         DateTime(
@@ -185,21 +203,6 @@ fun TransactionAddScreen(
             state = state,
             onOpenDateDialog = onOpenDateDialog,
             onOpenTimeDialog = onOpenTimeDialog,
-        )
-      }
-
-      item(
-          contentType = AddContentTypes.NOTE,
-      ) {
-        MoneyNote(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            state = state,
-            onNoteChanged = onNoteChanged,
-            label = {
-              Text(
-                  text = "Note about this Transaction",
-              )
-            },
         )
       }
 

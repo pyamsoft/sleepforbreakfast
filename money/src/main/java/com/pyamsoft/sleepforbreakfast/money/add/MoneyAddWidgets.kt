@@ -208,7 +208,7 @@ private fun SpendType(
           ),
       elevation = CardDefaults.Elevation,
       backgroundColor = if (isSelected) color else MaterialTheme.colors.surface,
-      contentColor = MaterialTheme.colors.onSurface,
+      contentColor = if (isSelected) MaterialTheme.colors.onSecondary else color,
       shape = shape,
   ) {
     Column(
@@ -409,14 +409,25 @@ fun AddNote(
 @Composable
 private fun Category(
     modifier: Modifier = Modifier,
-    color: Color,
     category: DbCategory,
+    color: Color?,
 ) {
+  val backgroundColor = remember(color) { color ?: Color.Unspecified }
+  val unselectedTextColor = MaterialTheme.colors.onSurface
+  val selectedTextColor = MaterialTheme.colors.onSecondary
+  val textColor =
+      remember(
+          color,
+          unselectedTextColor,
+          selectedTextColor,
+      ) {
+        if (color == null) unselectedTextColor else selectedTextColor
+      }
   Text(
       modifier =
           modifier
               .background(
-                  color = color,
+                  color = backgroundColor,
                   shape = MaterialTheme.shapes.small,
               )
               .padding(horizontal = MaterialTheme.keylines.baseline)
@@ -425,7 +436,7 @@ private fun Category(
       style =
           MaterialTheme.typography.caption.copy(
               color =
-                  MaterialTheme.colors.onSecondary.copy(
+                  textColor.copy(
                       alpha = ContentAlpha.high,
                   ),
           ),
@@ -549,7 +560,7 @@ fun AddCategories(
       ) {
         Category(
             category = cat,
-            color = if (isSelected) MaterialTheme.colors.secondary else Color.Unspecified,
+            color = if (isSelected) MaterialTheme.colors.secondary else null,
         )
       }
     }
