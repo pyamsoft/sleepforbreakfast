@@ -69,6 +69,7 @@ fun TransactionScreen(
 
     // Search
     onSearchToggled: () -> Unit,
+    onSearchToggleAll: () -> Unit,
     onSearchUpdated: (String) -> Unit,
 
     // Breakdown
@@ -104,6 +105,7 @@ fun TransactionScreen(
           // Search
           onSearchToggle = onSearchToggled,
           onSearchChange = onSearchUpdated,
+          onSearchToggleAll = onSearchToggleAll,
 
           // Breakdown
           onBreakdownToggle = onBreakdownToggled,

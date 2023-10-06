@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.ZeroCornerSize
+import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -41,6 +42,7 @@ internal fun TransactionTotal(
 
     // Search
     onSearchToggle: () -> Unit,
+    onSearchToggleAll: () -> Unit,
     onSearchChange: (String) -> Unit,
 
     // Breakdown
@@ -81,6 +83,13 @@ internal fun TransactionTotal(
         state = state,
         onToggle = onSearchToggle,
         onChange = onSearchChange,
+        trailingIcon = {
+          val isSearchAll by state.searchAll.collectAsStateWithLifecycle()
+          Checkbox(
+              checked = isSearchAll,
+              onCheckedChange = { onSearchToggleAll() },
+          )
+        },
     )
 
     PeriodBreakdownBar(

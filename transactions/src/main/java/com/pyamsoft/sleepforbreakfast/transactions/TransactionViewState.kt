@@ -39,6 +39,8 @@ interface TransactionViewState : ListViewState<DbTransaction> {
   val breakdown: StateFlow<BreakdownRange?>
 
   val isChartOpen: StateFlow<Boolean>
+
+  val searchAll: StateFlow<Boolean>
 }
 
 @Stable
@@ -53,4 +55,6 @@ class MutableTransactionViewState @Inject internal constructor() :
   override val breakdown = MutableStateFlow<BreakdownRange?>(null)
 
   override val isChartOpen = MutableStateFlow(false)
+
+  override val searchAll = MutableStateFlow(false)
 }

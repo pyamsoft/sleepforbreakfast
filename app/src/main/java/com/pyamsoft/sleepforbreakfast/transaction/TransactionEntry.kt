@@ -132,6 +132,7 @@ internal fun TransactionEntry(
         // Search
         onSearchToggled = { viewModel.handleToggleSearch() },
         onSearchUpdated = { viewModel.handleSearchUpdated(it) },
+        onSearchToggleAll = { viewModel.handleToggleSearchAll() },
 
         // Breakdown
         onBreakdownToggled = { viewModel.handleToggleBreakdown() },

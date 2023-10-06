@@ -117,6 +117,8 @@ fun SearchBar(
     state: ListViewState<*>,
     onToggle: () -> Unit,
     onChange: (String) -> Unit,
+    leadingIcon: @Composable () -> Unit = {},
+    trailingIcon: @Composable () -> Unit = {},
 ) {
   val initialSearch by state.search.collectAsStateWithLifecycle()
   val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
@@ -145,13 +147,21 @@ fun SearchBar(
               imageVector = Icons.Filled.Search,
               contentDescription = "Search",
           )
+          leadingIcon()
         },
         trailingIcon = {
-          Icon(
-              modifier = Modifier.clickable { setSearch("") },
-              imageVector = Icons.Filled.Clear,
-              contentDescription = "Clear",
-          )
+          Row(
+              verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Icon(
+                modifier = Modifier.clickable { setSearch("") },
+                imageVector = Icons.Filled.Clear,
+                contentDescription = "Clear",
+            )
+
+            // Extra content
+            trailingIcon()
+          }
         },
         label = {
           Text(

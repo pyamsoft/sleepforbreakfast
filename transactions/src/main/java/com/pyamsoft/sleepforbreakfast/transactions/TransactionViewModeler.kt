@@ -168,7 +168,8 @@ internal constructor(
                 allItems,
                 state.search,
                 state.breakdown,
-            ) { all, search, breakdown ->
+                state.searchAll,
+            ) { all, search, breakdown, searchAll ->
               enforcer.assertOffMainThread()
 
               emit(
@@ -176,6 +177,7 @@ internal constructor(
                       transactions = all,
                       search = search,
                       range = breakdown,
+                      searchAll = searchAll,
                   ),
               )
             }
@@ -183,7 +185,7 @@ internal constructor(
             .flowOn(context = Dispatchers.Default)
 
     scope.launch(context = Dispatchers.Default) {
-      combined.collect { (all, search, range) ->
+      combined.collect { (all, search, range, searchAll) ->
         enforcer.assertOffMainThread()
 
         val category = loadTargetCategory()
@@ -192,6 +194,11 @@ internal constructor(
             all.asSequence()
                 // The NONE category captures everything
                 .filter { t ->
+                  // If we are searching over all categories, do not filter out
+                  if (searchAll) {
+                    return@filter true
+                  }
+
                   if (category.id.isEmpty) {
                     // Either no categories
                     return@filter t.categories.isEmpty() ||
@@ -277,10 +284,15 @@ internal constructor(
     state.isChartOpen.update { !it }
   }
 
+  fun handleToggleSearchAll() {
+    state.searchAll.update { !it }
+  }
+
   private data class ItemPayload(
       val transactions: List<DbTransaction>,
       val search: String,
       val range: BreakdownRange?,
+      val searchAll: Boolean,
   )
 
   companion object {
