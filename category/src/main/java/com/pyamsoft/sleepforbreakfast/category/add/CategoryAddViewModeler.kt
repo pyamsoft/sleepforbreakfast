@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.annotation.CheckResult
+import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -44,10 +45,26 @@ internal constructor(
         interactor = interactor,
     ) {
 
+  private val defaultColor = params.categoryColor
+
   @CheckResult
   private fun compile(): DbCategory {
     val category = state.existingCategory.value ?: DbCategory.create(clock, initialId)
-    return category.name(state.name.value).note(state.note.value)
+    return category.name(state.name.value).note(state.note.value).color(state.color.value)
+  }
+
+  private fun resetData(s: DbCategory? = null) {
+    if (s == null) {
+      handleNameChanged("")
+      handleNoteChanged("")
+      handleColorChanged(defaultColor)
+    } else {
+      handleNameChanged(s.name)
+      handleNoteChanged(s.note)
+      handleColorChanged(s.color)
+    }
+
+    handleCloseColorPicker()
   }
 
   override fun onBind(scope: CoroutineScope) {
@@ -62,17 +79,40 @@ internal constructor(
     state.existingCategory.value = result
 
     // Setup UI
-    handleReset(result)
+    resetData(result)
   }
 
-  fun handleReset(s: DbCategory? = null) {
-    if (s == null) {
-      state.name.value = ""
-      state.note.value = ""
-    } else {
-      state.name.value = s.name
-      state.note.value = s.note
-    }
+  override fun registerSaveState(
+      registry: SaveableStateRegistry
+  ): List<SaveableStateRegistry.Entry> =
+      mutableListOf<SaveableStateRegistry.Entry>().apply {
+        registry.registerProvider(KEY_NAME) { state.name.value }.also { add(it) }
+        registry.registerProvider(KEY_NOTE) { state.note.value }.also { add(it) }
+        registry.registerProvider(KEY_COLOR) { state.color.value }.also { add(it) }
+
+        registry
+            .registerProvider(KEY_COLOR_PICKER_OPEN) { state.showColorPicker.value }
+            .also { add(it) }
+      }
+
+  override fun consumeRestoredState(registry: SaveableStateRegistry) {
+    registry.consumeRestored(KEY_NAME)?.let { it as String }?.also { handleNameChanged(it) }
+    registry.consumeRestored(KEY_NOTE)?.let { it as String }?.also { handleNoteChanged(it) }
+    registry.consumeRestored(KEY_COLOR)?.let { it as Long }?.also { handleColorChanged(it) }
+    registry
+        .consumeRestored(KEY_COLOR_PICKER_OPEN)
+        ?.let { it as Boolean }
+        ?.also {
+          if (it) {
+            handleOpenColorPicker()
+          } else {
+            handleCloseColorPicker()
+          }
+        }
+  }
+
+  fun handleReset() {
+    resetData(state.existingCategory.value)
   }
 
   fun handleNameChanged(name: String) {
@@ -81,6 +121,18 @@ internal constructor(
 
   fun handleNoteChanged(note: String) {
     state.note.value = note
+  }
+
+  fun handleColorChanged(color: Long) {
+    state.color.value = color
+  }
+
+  fun handleOpenColorPicker() {
+    state.showColorPicker.value = true
+  }
+
+  fun handleCloseColorPicker() {
+    state.showColorPicker.value = false
   }
 
   fun handleSubmit(
@@ -138,5 +190,12 @@ internal constructor(
           }
           .onFinally { state.working.value = false }
     }
+  }
+
+  companion object {
+    private const val KEY_NAME = "key_name"
+    private const val KEY_NOTE = "key_note"
+    private const val KEY_COLOR = "key_color"
+    private const val KEY_COLOR_PICKER_OPEN = "key_color_picker_open"
   }
 }

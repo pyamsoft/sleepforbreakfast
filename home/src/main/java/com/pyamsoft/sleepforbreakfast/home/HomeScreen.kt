@@ -174,7 +174,7 @@ private fun Category(
           category,
           defaultColor,
       ) {
-        if (category.color == 0L) defaultColor else Color(category.color)
+        if (category.color == 0L) defaultColor else Color(category.color.toULong())
       }
 
   val fontStyle =

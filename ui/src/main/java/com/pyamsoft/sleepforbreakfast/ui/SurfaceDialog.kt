@@ -12,7 +12,7 @@ import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 
 @Composable
 fun SurfaceDialog(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
 ) {

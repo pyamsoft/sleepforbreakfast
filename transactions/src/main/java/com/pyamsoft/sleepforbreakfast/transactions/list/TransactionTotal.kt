@@ -23,7 +23,7 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
-import com.pyamsoft.sleepforbreakfast.transactions.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionDirection

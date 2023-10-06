@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
@@ -70,6 +71,7 @@ import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
 import java.time.LocalDate
 import java.time.LocalTime
@@ -298,6 +300,10 @@ fun AddSubmit(
                 topEnd = ZeroCornerSize,
             ),
         enabled = isButtonEnabled,
+        colors =
+            ButtonDefaults.outlinedButtonColors(
+                contentColor = LocalCategoryColor.current,
+            ),
     ) {
       Text(
           text = "Reset",
@@ -313,6 +319,11 @@ fun AddSubmit(
                 topStart = ZeroCornerSize,
             ),
         elevation = null,
+        colors =
+            ButtonDefaults.buttonColors(
+                backgroundColor = LocalCategoryColor.current,
+                contentColor = MaterialTheme.colors.onPrimary,
+            ),
     ) {
       Crossfade(
           label = "Submit",
@@ -470,6 +481,8 @@ fun AddCategories(
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
 ) {
+  val defaultColor = MaterialTheme.colors.secondary
+
   // TODO move into VM
   val (show, setShow) = rememberSaveable { mutableStateOf(false) }
 
@@ -510,12 +523,21 @@ fun AddCategories(
             allCategories.firstOrNull { it.id == id }
           } ?: continue
 
+      val color =
+          remember(
+              maybeCategory,
+              defaultColor,
+          ) {
+            val c = maybeCategory.color
+            if (c == 0L) defaultColor else Color(c.toULong())
+          }
+
       Category(
           modifier =
               Modifier.padding(end = MaterialTheme.keylines.baseline)
                   .padding(bottom = MaterialTheme.keylines.baseline)
                   .clickable { handleShow() },
-          color = MaterialTheme.colors.secondary,
+          color = color,
           category = maybeCategory,
       )
     }
@@ -549,6 +571,15 @@ fun AddCategories(
             selectedCategories.firstOrNull { it == cat.id } != null
           }
 
+      val color =
+          remember(
+              cat,
+              defaultColor,
+          ) {
+            val c = cat.color
+            if (c == 0L) defaultColor else Color(c.toULong())
+          }
+
       DropdownMenuItem(
           onClick = {
             if (isSelected) {
@@ -560,7 +591,7 @@ fun AddCategories(
       ) {
         Category(
             category = cat,
-            color = if (isSelected) MaterialTheme.colors.secondary else null,
+            color = if (isSelected) color else null,
         )
       }
     }

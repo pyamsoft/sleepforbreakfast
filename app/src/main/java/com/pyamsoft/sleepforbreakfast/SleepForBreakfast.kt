@@ -147,6 +147,12 @@ class SleepForBreakfast : Application() {
             "https://github.com/patrykandpatrick/vico",
             "A light and extensible chart library for Android.",
         )
+
+        add(
+            "Jetpack Compose Color Picker",
+            "https://github.com/godaddy/compose-color-picker",
+            "A component that provides two different HSV color pickers, written in Jetpack Compose.",
+        )
       }
     }
   }

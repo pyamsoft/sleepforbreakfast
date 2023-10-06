@@ -35,9 +35,9 @@ import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
-import com.pyamsoft.sleepforbreakfast.transactions.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
 import java.time.Clock
@@ -100,7 +100,7 @@ internal fun TransactionEntry(
           defaultColor,
       ) {
         val c = category?.color ?: 0L
-        if (c == 0L) defaultColor else Color(c)
+        if (c == 0L) defaultColor else Color(c.toULong())
       }
 
   MountHooks(
@@ -119,8 +119,8 @@ internal fun TransactionEntry(
         state = viewModel,
         clock = clock,
         onDismiss = onDismiss,
+
         // Action
-        showActionButton = true,
         onActionButtonClicked = { viewModel.handleAddNewTransaction() },
 
         // Items

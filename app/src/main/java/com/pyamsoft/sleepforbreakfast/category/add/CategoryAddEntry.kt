@@ -17,15 +17,22 @@
 package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.activity.ComponentActivity
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
@@ -76,28 +83,45 @@ internal fun CategoryAddEntry(
   }
 
   val viewModel = rememberNotNull(component.viewModel)
+  val categoryColor by viewModel.color.collectAsStateWithLifecycle()
   val scope = rememberCoroutineScope()
+
+  val defaultColor = MaterialTheme.colors.primary
+  val color =
+      remember(
+          categoryColor,
+          defaultColor,
+      ) {
+        if (categoryColor == 0L) defaultColor else Color(categoryColor.toULong())
+      }
 
   MountHooks(
       viewModel = viewModel,
   )
 
-  SurfaceDialog(
-      modifier = modifier,
-      onDismiss = onDismiss,
+  CompositionLocalProvider(
+      LocalCategoryColor provides color,
   ) {
-    CategoryAddScreen(
-        state = viewModel,
+    SurfaceDialog(
+        modifier = modifier,
         onDismiss = onDismiss,
-        onNameChanged = { viewModel.handleNameChanged(it) },
-        onNoteChanged = { viewModel.handleNoteChanged(it) },
-        onReset = { viewModel.handleReset() },
-        onSubmit = {
-          viewModel.handleSubmit(
-              scope = scope,
-              onDismissAfterUpdated = onDismiss,
-          )
-        },
-    )
+    ) {
+      CategoryAddScreen(
+          state = viewModel,
+          onDismiss = onDismiss,
+          onNameChanged = { viewModel.handleNameChanged(it) },
+          onNoteChanged = { viewModel.handleNoteChanged(it) },
+          onColorChanged = { viewModel.handleColorChanged(it.value.toLong()) },
+          onOpenColorPicker = { viewModel.handleOpenColorPicker() },
+          onCloseColorPicker = { viewModel.handleCloseColorPicker() },
+          onReset = { viewModel.handleReset() },
+          onSubmit = {
+            viewModel.handleSubmit(
+                scope = scope,
+                onDismissAfterUpdated = onDismiss,
+            )
+          },
+      )
+    }
   }
 }

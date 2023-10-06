@@ -18,7 +18,6 @@ package com.pyamsoft.sleepforbreakfast.ui.list
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
@@ -43,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.ui.Delayed
@@ -55,6 +55,7 @@ fun <T : Any> BasicListScreen(
     modifier: Modifier = Modifier,
     loading: LoadingState,
     showActionButton: Boolean,
+    actionButtonBackgroundColor: Color = MaterialTheme.colors.primary,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
     onSnackbarDismissed: () -> Unit,
@@ -74,6 +75,7 @@ fun <T : Any> BasicListScreen(
       floatingActionButton = {
         AnimatedFab(
             show = showActionButton,
+            backgroundColor = actionButtonBackgroundColor,
             onClick = onActionButtonClicked,
         )
       },
@@ -109,9 +111,9 @@ fun <T : Any> BasicListScreen(
 }
 
 @Composable
-@OptIn(ExperimentalAnimationApi::class)
 private fun AnimatedFab(
     modifier: Modifier = Modifier,
+    backgroundColor: Color,
     show: Boolean,
     onClick: () -> Unit,
 ) {
@@ -122,6 +124,8 @@ private fun AnimatedFab(
   ) {
     FloatingActionButton(
         modifier = modifier,
+        backgroundColor = backgroundColor,
+        contentColor = MaterialTheme.colors.onPrimary,
         onClick = onClick,
     ) {
       Icon(

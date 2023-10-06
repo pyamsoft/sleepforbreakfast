@@ -54,6 +54,8 @@ dependencies {
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
   ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
+  implementation("com.godaddy.android.colorpicker:compose-color-picker:0.7.0")
+
   implementation(project(":core"))
   implementation(project(":db"))
   implementation(project(":money"))

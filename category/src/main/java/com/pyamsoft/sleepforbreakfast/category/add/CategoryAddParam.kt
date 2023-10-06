@@ -24,12 +24,14 @@ import com.squareup.moshi.JsonClass
 @Stable
 data class CategoryAddParams(
     val categoryId: DbCategory.Id,
+    val categoryColor: Long,
 ) {
 
   @CheckResult
   fun toJson(): Json {
     return Json(
         categoryId = categoryId.raw,
+        categoryColor = categoryColor,
     )
   }
 
@@ -37,12 +39,14 @@ data class CategoryAddParams(
   @JsonClass(generateAdapter = true)
   data class Json(
       val categoryId: String,
+      val categoryColor: Long,
   ) {
 
     @CheckResult
     fun fromJson(): CategoryAddParams {
       return CategoryAddParams(
           categoryId = DbCategory.Id(categoryId),
+          categoryColor = categoryColor,
       )
     }
   }

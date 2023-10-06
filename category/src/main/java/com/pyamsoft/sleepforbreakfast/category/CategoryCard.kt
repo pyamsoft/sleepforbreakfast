@@ -20,6 +20,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
@@ -27,6 +28,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -65,6 +68,16 @@ internal fun CategoryCard(
   val note = category.note
   val hasNote = remember(note) { note.isNotBlank() }
 
+  val defaultColor = MaterialTheme.colors.primary
+  val color =
+      remember(
+          defaultColor,
+          category,
+      ) {
+        val c = category.color
+        if (c == 0L) defaultColor else Color(c.toULong())
+      }
+
   Card(
       modifier = modifier,
       shape = MaterialTheme.shapes.medium,
@@ -85,12 +98,10 @@ internal fun CategoryCard(
               ),
       )
 
-      if (category.system) {
-        Tag(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
-            text = "System",
-        )
-      }
+      CategoryColor(
+          modifier = Modifier.size(48.dp),
+          color = color,
+      )
 
       if (hasNote) {
         Text(

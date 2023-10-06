@@ -111,6 +111,7 @@ internal constructor(
         params =
             CategoryAddParams(
                 categoryId = category.id,
+                categoryColor = category.color,
             ),
     )
   }
@@ -120,6 +121,7 @@ internal constructor(
         params =
             CategoryAddParams(
                 categoryId = DbCategory.Id.EMPTY,
+                categoryColor = 0L,
             ),
     )
   }

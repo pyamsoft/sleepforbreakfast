@@ -16,29 +16,50 @@
 
 package com.pyamsoft.sleepforbreakfast.category.add
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.godaddy.android.colorpicker.ClassicColorPicker
+import com.godaddy.android.colorpicker.HsvColor
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.sleepforbreakfast.category.CategoryColor
+import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddName
 import com.pyamsoft.sleepforbreakfast.money.add.AddNote
 import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
+import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 
 private enum class ContentTypes {
   NAME,
@@ -52,13 +73,18 @@ fun CategoryAddScreen(
     state: CategoryAddViewState,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
+    onColorChanged: (Color) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
+    onOpenColorPicker: () -> Unit,
+    onCloseColorPicker: () -> Unit,
 ) {
   val name by state.name.collectAsStateWithLifecycle()
   val note by state.note.collectAsStateWithLifecycle()
   val working by state.working.collectAsStateWithLifecycle()
+
+  val showColorPicker by state.showColorPicker.collectAsStateWithLifecycle()
 
   val keyboardTextOptions = remember {
     KeyboardOptions(
@@ -67,62 +93,175 @@ fun CategoryAddScreen(
     )
   }
 
-  Column(
+  Box(
       modifier = modifier,
+      contentAlignment = Alignment.Center,
   ) {
-    TopAppBar(
-        modifier = Modifier.fillMaxWidth(),
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary,
-        navigationIcon = {
-          IconButton(
-              onClick = onDismiss,
+    Column {
+      TopAppBar(
+          modifier = Modifier.fillMaxWidth(),
+          backgroundColor = LocalCategoryColor.current,
+          contentColor = MaterialTheme.colors.onPrimary,
+          navigationIcon = {
+            IconButton(
+                onClick = onDismiss,
+            ) {
+              Icon(
+                  imageVector = Icons.Filled.Close,
+                  contentDescription = "Close",
+              )
+            }
+          },
+          title = {},
+      )
+
+      LazyColumn {
+        item(
+            contentType = ContentTypes.NAME,
+        ) {
+          Row(
+              modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+              verticalAlignment = Alignment.CenterVertically,
           ) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = "Close",
+            AddName(
+                modifier = Modifier.weight(1F),
+                name = name,
+                keyboardTextOptions = keyboardTextOptions,
+                onNameChanged = onNameChanged,
+            )
+
+            CategoryColor(
+                modifier =
+                    Modifier.padding(start = MaterialTheme.keylines.content).size(48.dp).clickable {
+                      onOpenColorPicker()
+                    },
+                color = LocalCategoryColor.current,
             )
           }
-        },
-        title = {},
-    )
+        }
 
-    LazyColumn {
-      item(
-          contentType = ContentTypes.NAME,
-      ) {
-        AddName(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            name = name,
-            keyboardTextOptions = keyboardTextOptions,
-            onNameChanged = onNameChanged,
-        )
+        item(
+            contentType = ContentTypes.NOTE,
+        ) {
+          AddNote(
+              modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+              note = note,
+              onNoteChanged = onNoteChanged,
+              label = {
+                Text(
+                    text = "Note about this Category",
+                )
+              },
+          )
+        }
+
+        item(
+            contentType = ContentTypes.SUBMIT,
+        ) {
+          AddSubmit(
+              modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+              working = working,
+              onReset = onReset,
+              onSubmit = onSubmit,
+          )
+        }
       }
+    }
 
-      item(
-          contentType = ContentTypes.NOTE,
-      ) {
-        AddNote(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            note = note,
-            onNoteChanged = onNoteChanged,
-            label = {
-              Text(
-                  text = "Note about this Category",
+    if (showColorPicker) {
+      ColorPickerDialog(
+          onDismiss = onCloseColorPicker,
+          onColorChanged = onColorChanged,
+      )
+    }
+  }
+}
+
+@Composable
+private fun ColorPickerDialog(
+    modifier: Modifier = Modifier,
+    onColorChanged: (Color) -> Unit,
+    onDismiss: () -> Unit,
+) {
+  val defaultColor = LocalCategoryColor.current
+  val (renderKey, setRenderKey) = remember { mutableStateOf(IdGenerator.generate()) }
+  val (currentColor, setCurrentColor) = remember { mutableStateOf(defaultColor) }
+
+  val handleReset by rememberUpdatedState {
+    setCurrentColor(defaultColor)
+    setRenderKey(IdGenerator.generate())
+  }
+
+  val handleSubmit by rememberUpdatedState {
+    onColorChanged(currentColor)
+    onDismiss()
+  }
+
+  val color = remember(currentColor) { HsvColor.from(currentColor) }
+
+  SurfaceDialog(
+      modifier = modifier,
+      onDismiss = onDismiss,
+  ) {
+    Column {
+      TopAppBar(
+          modifier = Modifier.fillMaxWidth(),
+          backgroundColor = LocalCategoryColor.current,
+          contentColor = MaterialTheme.colors.onPrimary,
+          navigationIcon = {
+            IconButton(
+                onClick = onDismiss,
+            ) {
+              Icon(
+                  imageVector = Icons.Filled.Close,
+                  contentDescription = "Close",
               )
-            },
+            }
+          },
+          title = {
+            Text(
+                text = "Color Picker",
+            )
+          },
+      )
+
+      // This must remount each time the color changes from being reset or it will not
+      // update the new color in the picker
+      Crossfade(
+          targetState = renderKey,
+          label = "Color Picker",
+      ) { key ->
+        ClassicColorPicker(
+            modifier = Modifier.fillMaxHeight(fraction = 0.4F).layoutId("color-picker-$key"),
+            showAlphaBar = false,
+            color = color,
+            onColorChanged = { setCurrentColor(it.toColor()) },
         )
       }
-
-      item(
-          contentType = ContentTypes.SUBMIT,
+      Row(
+          modifier = Modifier.padding(horizontal = MaterialTheme.keylines.content),
+          verticalAlignment = Alignment.CenterVertically,
       ) {
-        AddSubmit(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            working = working,
-            onReset = onReset,
-            onSubmit = onSubmit,
+        Spacer(
+            modifier = Modifier.weight(1F),
         )
+
+        TextButton(
+            onClick = { handleReset() },
+        ) {
+          Text(
+              text = "Reset",
+          )
+        }
+
+        Button(
+            modifier = Modifier.padding(start = MaterialTheme.keylines.content),
+            onClick = { handleSubmit() },
+        ) {
+          Text(
+              text = "Save",
+          )
+        }
       }
     }
   }

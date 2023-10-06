@@ -27,15 +27,26 @@ import kotlinx.coroutines.flow.StateFlow
 interface CategoryAddViewState : UiViewState {
   val name: StateFlow<String>
   val note: StateFlow<String>
-  val working: StateFlow<Boolean>
 
-  val existingCategory: StateFlow<DbCategory?>
+  val color: StateFlow<Long>
+  val showColorPicker: StateFlow<Boolean>
+
+  val working: StateFlow<Boolean>
 }
 
 @Stable
-class MutableCategoryAddViewState @Inject internal constructor() : CategoryAddViewState {
+class MutableCategoryAddViewState
+@Inject
+internal constructor(
+    params: CategoryAddParams,
+) : CategoryAddViewState {
   override val name = MutableStateFlow("")
   override val note = MutableStateFlow("")
+
+  override val color = MutableStateFlow(params.categoryColor)
+  override val showColorPicker = MutableStateFlow(false)
+
   override val working = MutableStateFlow(false)
-  override val existingCategory = MutableStateFlow<DbCategory?>(null)
+
+  internal val existingCategory = MutableStateFlow<DbCategory?>(null)
 }
