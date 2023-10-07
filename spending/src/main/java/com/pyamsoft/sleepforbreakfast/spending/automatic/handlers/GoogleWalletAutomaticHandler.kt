@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending.automatic.venmo
+package com.pyamsoft.sleepforbreakfast.spending.automatic.handlers
 
-import com.pyamsoft.sleepforbreakfast.core.RAW_STRING_DOLLAR_PRICE
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
+import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
+import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
 
-/** When you pay someone on Venmo without them requesting you first */
-internal class VenmoPayUnpromptedAutomaticHandler
-@Inject
-internal constructor(
-    private val systemCategories: SystemCategories,
-) : SpendAutomaticHandler() {
+/** Google wallet notifications come from Google Play Services */
+internal class GoogleWalletAutomaticHandler @Inject internal constructor() :
+    SpendAutomaticHandler() {
 
   override fun getRegex(): Regex {
-    return VENMO_WALLET_REGEX
+    return GOOGLE_WALLET_REGEX
   }
 
   override fun canExtract(packageName: String): Boolean {
-    return packageName == "com.venmo"
+    return packageName == "com.google.android.gms"
   }
 
   override suspend fun getCategories(): List<DbCategory.Id> {
@@ -43,14 +40,16 @@ internal constructor(
 
   companion object {
 
+    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>.* •••• \\d\\d\\d\\d)"
+
     /**
-     * Venmo posts messages like
+     * Google Wallet posts messages like
      *
-     * You paid Tom Smith's $123.45
+     * $123.45 with Amex •••• 1234
      *
      * We can look for that notification text and parse the values out
      */
-    private val VENMO_WALLET_REGEX =
-        "You paid .* ${RAW_STRING_DOLLAR_PRICE}$".toRegex(RegexOption.MULTILINE)
+    private val GOOGLE_WALLET_REGEX =
+        "$CAPTURE_GROUP_AMOUNT with $ACCOUNT_GROUP".toRegex(RegexOption.MULTILINE)
   }
 }

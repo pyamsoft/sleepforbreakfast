@@ -16,17 +16,25 @@
 
 package com.pyamsoft.sleepforbreakfast.spending
 
-import com.pyamsoft.sleepforbreakfast.spending.automatic.googlewallet.GoogleWalletAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.venmo.VenmoPayRequestedAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.venmo.VenmoPayUnpromptedAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.venmo.VenmoReceiveRequestedAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.venmo.VenmoReceiveUnpromptedAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEmailAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.GoogleWalletAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoPayRequestedAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoPayUnpromptedAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveRequestedAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveUnpromptedAutomaticHandler
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
 
 @Module
 abstract class AutomaticHandlersAppModule {
+
+  @Binds
+  @IntoSet
+  @SpendingApi
+  internal abstract fun bindChaseEmailHandler(
+      impl: ChaseBankEmailAutomaticHandler
+  ): AutomaticHandler
 
   @Binds
   @IntoSet

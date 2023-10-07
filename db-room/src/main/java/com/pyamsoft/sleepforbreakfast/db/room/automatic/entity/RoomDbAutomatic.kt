@@ -44,6 +44,36 @@ internal constructor(
     @ColumnInfo(name = COLUMN_NOTIFICATION_TYPE)
     val dbNotificationType: DbTransaction.Type,
     @JvmField @ColumnInfo(name = COLUMN_USED) val dbUsed: Boolean,
+
+    // Optional
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_OPTIONAL_ACCOUNT,
+        // TODO remove for first release and kill migrations
+        defaultValue = "",
+    )
+    val dbNotificationOptionalAccount: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_OPTIONAL_DATE,
+        // TODO remove for first release and kill migrations
+        defaultValue = "",
+    )
+    val dbNotificationOptionalDate: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_OPTIONAL_MERCHANT,
+        // TODO remove for first release and kill migrations
+        defaultValue = "",
+    )
+    val dbNotificationOptionalMerchant: String,
+    @JvmField
+    @ColumnInfo(
+        name = COLUMN_OPTIONAL_DESCRIPTION,
+        // TODO remove for first release and kill migrations
+        defaultValue = "",
+    )
+    val dbNotificationOptionalDescription: String,
 ) : DbAutomatic {
 
   @Ignore override val id = dbId
@@ -71,6 +101,15 @@ internal constructor(
   @Ignore override val notificationType = dbNotificationType
 
   @Ignore override val used = dbUsed
+
+  // Optional
+  @Ignore override val notificationOptionalAccount = dbNotificationOptionalAccount
+
+  @Ignore override val notificationOptionalDate = dbNotificationOptionalDate
+
+  @Ignore override val notificationOptionalDescription = dbNotificationOptionalDescription
+
+  @Ignore override val notificationOptionalMerchant = dbNotificationOptionalMerchant
 
   @Ignore
   override fun addCategory(id: DbCategory.Id): DbAutomatic {
@@ -137,6 +176,27 @@ internal constructor(
     return this.copy(dbUsed = true)
   }
 
+  // Optional
+  @Ignore
+  override fun notificationOptionalAccount(optional: String): DbAutomatic {
+    return this.copy(dbNotificationOptionalAccount = optional)
+  }
+
+  @Ignore
+  override fun notificationOptionalDate(optional: String): DbAutomatic {
+    return this.copy(dbNotificationOptionalDate = optional)
+  }
+
+  @Ignore
+  override fun notificationOptionalMerchant(optional: String): DbAutomatic {
+    return this.copy(dbNotificationOptionalMerchant = optional)
+  }
+
+  @Ignore
+  override fun notificationOptionalDescription(optional: String): DbAutomatic {
+    return this.copy(dbNotificationOptionalDescription = optional)
+  }
+
   companion object {
 
     @Ignore internal const val TABLE_NAME = "room_automatics_table"
@@ -167,6 +227,14 @@ internal constructor(
 
     @Ignore internal const val COLUMN_USED = "used"
 
+    @Ignore internal const val COLUMN_OPTIONAL_ACCOUNT = "optional_account"
+
+    @Ignore internal const val COLUMN_OPTIONAL_DATE = "optional_date"
+
+    @Ignore internal const val COLUMN_OPTIONAL_MERCHANT = "optional_merchant"
+
+    @Ignore internal const val COLUMN_OPTIONAL_DESCRIPTION = "optional_description"
+
     @Ignore
     @JvmStatic
     @CheckResult
@@ -187,6 +255,10 @@ internal constructor(
             item.notificationTitle,
             item.notificationType,
             item.used,
+            item.notificationOptionalAccount,
+            item.notificationOptionalDate,
+            item.notificationOptionalMerchant,
+            item.notificationOptionalDescription,
         )
       }
     }

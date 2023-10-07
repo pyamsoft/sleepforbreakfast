@@ -36,7 +36,10 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_ARCHIVED) val dbArchived: Boolean,
     @JvmField
     @ColumnInfo(
-        name = COLUMN_COLOR, /* Remove when release, back to version 1 */ defaultValue = "0")
+        name = COLUMN_COLOR,
+        // TODO remove for first release and kill migrations
+        defaultValue = "0",
+    )
     val dbColor: Long,
 ) : DbCategory {
 

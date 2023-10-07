@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.core
+package com.pyamsoft.sleepforbreakfast.spending.automatic
 
-@JvmField val REGEX_FILTER_ONLY_DIGITS = Regex("[^\\d+]")
+internal const val CAPTURE_NAME_ACCOUNT = "account"
+internal const val CAPTURE_NAME_AMOUNT = "amount"
+internal const val CAPTURE_NAME_DATE = "date"
+internal const val CAPTURE_NAME_MERCHANT = "merchant"
+internal const val CAPTURE_NAME_DESCRIPTION = "description"
 
 /**
  * This claims the \\. is redundant, but a Regex checker says it is required to escape \. even in a
  * group
  */
-@Suppress("RegExpRedundantEscape") const val RAW_STRING_DOLLAR_PRICE = "\\$[\\d\\.,]+"
-@JvmField val REGEX_DOLLAR_PRICE = RAW_STRING_DOLLAR_PRICE.toRegex()
+@Suppress("RegExpRedundantEscape")
+internal const val CAPTURE_GROUP_AMOUNT = "(?<$CAPTURE_NAME_AMOUNT>\\$[\\d\\.,]+)"
+
+@JvmField internal val REGEX_FILTER_ONLY_DIGITS = Regex("[^\\d+]")

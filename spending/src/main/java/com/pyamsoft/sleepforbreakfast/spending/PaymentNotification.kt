@@ -22,7 +22,11 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 internal data class PaymentNotification(
     val title: String,
     val text: String,
-    val amount: Long,
     val type: DbTransaction.Type,
-    val categories: List<DbCategory.Id>
+    val categories: List<DbCategory.Id>,
+    val amount: Long,
+    val optionalAccount: String,
+    val optionalDate: String,
+    val optionalMerchant: String,
+    val optionalDescription: String,
 )

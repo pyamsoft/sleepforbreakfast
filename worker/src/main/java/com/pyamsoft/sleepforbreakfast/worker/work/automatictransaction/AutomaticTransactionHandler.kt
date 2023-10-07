@@ -28,7 +28,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.TimeZone
+import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -51,13 +51,32 @@ internal constructor(
   @CheckResult
   private suspend fun createTransactionFromTemplate(auto: DbAutomatic): Boolean {
 
-    val note =
-        """
-Automatically created from Notification
+    val note = buildString {
+      appendLine("Automatically created from Notification")
 
-${auto.notificationMatchText}
-"""
-            .trimIndent()
+      appendLine()
+      appendLine(auto.notificationMatchText)
+
+      if (auto.notificationOptionalAccount.isNotBlank()) {
+        appendLine()
+        appendLine("Account: ${auto.notificationOptionalAccount}")
+      }
+
+      if (auto.notificationOptionalDate.isNotBlank()) {
+        appendLine()
+        appendLine("Date: ${auto.notificationOptionalDate}")
+      }
+
+      if (auto.notificationOptionalMerchant.isNotBlank()) {
+        appendLine()
+        appendLine("Merchant: ${auto.notificationOptionalMerchant}")
+      }
+
+      if (auto.notificationOptionalDescription.isNotBlank()) {
+        appendLine()
+        appendLine("Description: ${auto.notificationOptionalDescription}")
+      }
+    }
 
     val transaction =
         DbTransaction.create(clock, DbTransaction.Id.EMPTY)

@@ -51,6 +51,12 @@ interface DbAutomatic {
 
   @get:CheckResult val notificationType: DbTransaction.Type
 
+  // Optional
+  @get:CheckResult val notificationOptionalAccount: String
+  @get:CheckResult val notificationOptionalDate: String
+  @get:CheckResult val notificationOptionalMerchant: String
+  @get:CheckResult val notificationOptionalDescription: String
+
   @get:CheckResult val used: Boolean
 
   @CheckResult fun addCategory(id: DbCategory.Id): DbAutomatic
@@ -79,6 +85,15 @@ interface DbAutomatic {
 
   @CheckResult fun consume(): DbAutomatic
 
+  // Optional
+  @CheckResult fun notificationOptionalAccount(optional: String): DbAutomatic
+
+  @CheckResult fun notificationOptionalDate(optional: String): DbAutomatic
+
+  @CheckResult fun notificationOptionalMerchant(optional: String): DbAutomatic
+
+  @CheckResult fun notificationOptionalDescription(optional: String): DbAutomatic
+
   data class Id(@get:CheckResult val raw: String) {
 
     @get:CheckResult val isEmpty: Boolean = raw.isBlank()
@@ -103,6 +118,12 @@ interface DbAutomatic {
       override val notificationTitle: String = "",
       override val notificationType: DbTransaction.Type = DbTransaction.Type.SPEND,
       override val used: Boolean = false,
+
+      // Optional
+      override val notificationOptionalAccount: String = "",
+      override val notificationOptionalDate: String = "",
+      override val notificationOptionalMerchant: String = "",
+      override val notificationOptionalDescription: String = "",
   ) : DbAutomatic {
 
     override fun addCategory(id: DbCategory.Id): DbAutomatic {
@@ -155,6 +176,23 @@ interface DbAutomatic {
 
     override fun consume(): DbAutomatic {
       return this.copy(used = true)
+    }
+
+    // Optional
+    override fun notificationOptionalAccount(optional: String): DbAutomatic {
+      return this.copy(notificationOptionalAccount = optional)
+    }
+
+    override fun notificationOptionalDate(optional: String): DbAutomatic {
+      return this.copy(notificationOptionalDate = optional)
+    }
+
+    override fun notificationOptionalMerchant(optional: String): DbAutomatic {
+      return this.copy(notificationOptionalMerchant = optional)
+    }
+
+    override fun notificationOptionalDescription(optional: String): DbAutomatic {
+      return this.copy(notificationOptionalDescription = optional)
     }
   }
 

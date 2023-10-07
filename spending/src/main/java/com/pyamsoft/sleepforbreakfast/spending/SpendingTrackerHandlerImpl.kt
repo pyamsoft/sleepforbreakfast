@@ -68,6 +68,10 @@ internal constructor(
                 .notificationMatchText(automaticPayment.text)
                 .notificationAmountInCents(automaticPayment.amount)
                 .notificationType(automaticPayment.type)
+                .notificationOptionalAccount(automaticPayment.optionalAccount)
+                .notificationOptionalDate(automaticPayment.optionalDate)
+                .notificationOptionalMerchant(automaticPayment.optionalMerchant)
+                .notificationOptionalDescription(automaticPayment.optionalDescription)
                 .replaceCategories(automaticPayment.categories)
 
         when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {

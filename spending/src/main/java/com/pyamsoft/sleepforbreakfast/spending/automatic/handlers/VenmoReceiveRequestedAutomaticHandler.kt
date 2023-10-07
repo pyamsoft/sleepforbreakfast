@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending.automatic.venmo
+package com.pyamsoft.sleepforbreakfast.spending.automatic.handlers
 
-import com.pyamsoft.sleepforbreakfast.core.RAW_STRING_DOLLAR_PRICE
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
-import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
+import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DESCRIPTION
+import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
+import com.pyamsoft.sleepforbreakfast.spending.automatic.EarnAutomaticHandler
 import javax.inject.Inject
 
 /** When you pay someone on Venmo but they request you to */
-internal class VenmoPayRequestedAutomaticHandler
-@Inject
-internal constructor(
-    private val systemCategories: SystemCategories,
-) : SpendAutomaticHandler() {
+internal class VenmoReceiveRequestedAutomaticHandler @Inject internal constructor() :
+    EarnAutomaticHandler() {
 
   override fun getRegex(): Regex {
     return VENMO_WALLET_REGEX
@@ -43,14 +41,17 @@ internal constructor(
 
   companion object {
 
+    private const val MERCHANT_GROUP = "(?<$CAPTURE_NAME_MERCHANT>.*)"
+    private const val DESCRIPTION_GROUP = "(?<$CAPTURE_NAME_DESCRIPTION>.*)"
     /**
      * Venmo posts messages like
      *
-     * You completed Tom Smith's request for $123.45 - Note about payment here
+     * Tom pair you $123.45 - Note about payment here - You now have $250 in your Venmo account
      *
      * We can look for that notification text and parse the values out
      */
     private val VENMO_WALLET_REGEX =
-        "You completed .*'s request for $RAW_STRING_DOLLAR_PRICE -".toRegex(RegexOption.MULTILINE)
+        "$MERCHANT_GROUP paid you $CAPTURE_GROUP_AMOUNT - $DESCRIPTION_GROUP - You now have \$"
+            .toRegex(RegexOption.MULTILINE)
   }
 }

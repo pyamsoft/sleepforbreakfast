@@ -19,8 +19,6 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic
 import android.os.Bundle
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
-import com.pyamsoft.sleepforbreakfast.core.REGEX_DOLLAR_PRICE
-import com.pyamsoft.sleepforbreakfast.core.REGEX_FILTER_ONLY_DIGITS
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -28,6 +26,13 @@ import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
 import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
 
 internal abstract class BaseAutomaticHandler protected constructor() : AutomaticHandler {
+
+  @CheckResult
+  private fun MatchGroupCollection.extractGroup(
+      group: String,
+  ): String? {
+    return this.get(name = group)?.value?.trim()
+  }
 
   final override suspend fun extract(bundle: Bundle): PaymentNotification? {
     val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
@@ -54,10 +59,11 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
           return null
         }
 
+    val captureGroups = regex.find(payText)?.groups
+
     val justPrice =
-        REGEX_DOLLAR_PRICE.find(payText)
-            ?.value
-            ?.trim()
+        captureGroups
+            ?.extractGroup(CAPTURE_NAME_AMOUNT)
             ?.replace(REGEX_FILTER_ONLY_DIGITS, "")
             ?.toLongOrNull()
 
@@ -71,12 +77,21 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
       name = DEFAULT_TITLE
     }
 
+    val optionalAccount = captureGroups.extractGroup(CAPTURE_NAME_ACCOUNT).orEmpty()
+    val optionalDate = captureGroups.extractGroup(CAPTURE_NAME_DATE).orEmpty()
+    val optionalMerchant = captureGroups.extractGroup(CAPTURE_NAME_MERCHANT).orEmpty()
+    val optionalDescription = captureGroups.extractGroup(CAPTURE_NAME_DESCRIPTION).orEmpty()
+
     return PaymentNotification(
         title = name.toString(),
         text = payText.toString(),
-        amount = justPrice,
         type = getType(),
         categories = getCategories(),
+        amount = justPrice,
+        optionalAccount = optionalAccount,
+        optionalDate = optionalDate,
+        optionalDescription = optionalDescription,
+        optionalMerchant = optionalMerchant,
     )
   }
 
