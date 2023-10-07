@@ -48,6 +48,7 @@ internal constructor(
     private val jsonParser: JsonParser,
     private val categoryLoader: CategoryLoader,
     private val defaultCategoryId: DbCategory.Id,
+    private val showAllTransactions: Boolean,
 ) :
     TransactionViewState by state,
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
@@ -65,15 +66,18 @@ internal constructor(
   }
 
   @CheckResult
+  private suspend fun loadAllCategories(): List<DbCategory> {
+    val all = state.allCategories.value
+    return all.ifEmpty { categoryLoader.queryAll().also { state.allCategories.value = it } }
+  }
+
+  @CheckResult
   private suspend fun loadTargetCategory(): DbCategory {
-    val knownCategory = state.category.value
-    return if (knownCategory == null) {
-      val category = categoryLoader.queryAll().firstOrNull { it.id == defaultCategoryId }
-      state.category.value = category
-      category ?: DbCategory.NONE
-    } else {
-      knownCategory
-    }
+    return state.category.value
+        ?: loadAllCategories()
+            .firstOrNull { it.id == defaultCategoryId }
+            .let { it ?: DbCategory.NONE }
+            .also { state.category.value = it }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
@@ -168,8 +172,7 @@ internal constructor(
                 allItems,
                 state.search,
                 state.breakdown,
-                state.searchAll,
-            ) { all, search, breakdown, searchAll ->
+            ) { all, search, breakdown ->
               enforcer.assertOffMainThread()
 
               emit(
@@ -177,7 +180,6 @@ internal constructor(
                       transactions = all,
                       search = search,
                       range = breakdown,
-                      searchAll = searchAll,
                   ),
               )
             }
@@ -185,20 +187,20 @@ internal constructor(
             .flowOn(context = Dispatchers.Default)
 
     scope.launch(context = Dispatchers.Default) {
-      combined.collect { (all, search, range, searchAll) ->
+      combined.collect { (all, search, range) ->
         enforcer.assertOffMainThread()
 
         val category = loadTargetCategory()
 
         state.items.value =
             all.asSequence()
-                // The NONE category captures everything
                 .filter { t ->
-                  // If we are searching over all categories, do not filter out
-                  if (searchAll) {
+                  // If we are showing all transactions, don't filter
+                  if (showAllTransactions) {
                     return@filter true
                   }
 
+                  // The NONE category captures everything
                   if (category.id.isEmpty) {
                     // Either no categories
                     return@filter t.categories.isEmpty() ||
@@ -284,15 +286,10 @@ internal constructor(
     state.isChartOpen.update { !it }
   }
 
-  fun handleToggleSearchAll() {
-    state.searchAll.update { !it }
-  }
-
   private data class ItemPayload(
       val transactions: List<DbTransaction>,
       val search: String,
       val range: BreakdownRange?,
-      val searchAll: Boolean,
   )
 
   companion object {

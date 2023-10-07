@@ -34,6 +34,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -70,6 +71,7 @@ fun HomeScreen(
     appName: String,
     onOpenSettings: () -> Unit,
     onOpenNotificationListenerSettings: () -> Unit,
+    onOpenAllTransactions: () -> Unit,
     onOpenTransactions: (DbCategory) -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
@@ -114,7 +116,8 @@ fun HomeScreen(
       HomeCategories(
           modifier = Modifier.fillMaxWidth(),
           state = state,
-          onOpen = onOpenTransactions,
+          onOpenAllTransactions = onOpenAllTransactions,
+          onOpenCategory = onOpenTransactions,
       )
     }
 
@@ -134,30 +137,44 @@ fun HomeScreen(
 private fun HomeCategories(
     modifier: Modifier = Modifier,
     state: HomeViewState,
-    onOpen: (DbCategory) -> Unit,
+    onOpenAllTransactions: () -> Unit,
+    onOpenCategory: (DbCategory) -> Unit,
 ) {
   val categories = state.categories.collectAsStateListWithLifecycle()
 
-  LazyRow(
+  Column(
       modifier = modifier.padding(MaterialTheme.keylines.content),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
   ) {
-    item {
-      Category(
-          category = DbCategory.NONE,
-          onOpen = onOpen,
+    OutlinedButton(
+        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+        onClick = onOpenAllTransactions,
+    ) {
+      Text(
+          text = "View All Transactions",
       )
     }
 
-    items(
-        items = categories,
-        key = { it.id.raw },
-    ) { category ->
-      Category(
-          category = category,
-          onOpen = onOpen,
-      )
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
+    ) {
+      item {
+        Category(
+            category = DbCategory.NONE,
+            onOpen = onOpenCategory,
+        )
+      }
+
+      items(
+          items = categories,
+          key = { it.id.raw },
+      ) { category ->
+        Category(
+            category = category,
+            onOpen = onOpenCategory,
+        )
+      }
     }
   }
 }

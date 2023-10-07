@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -102,6 +103,8 @@ fun RepeatAddScreen(
         imeAction = ImeAction.Next,
     )
   }
+
+  val allCategories = state.allCategories.collectAsStateListWithLifecycle()
 
   Column(
       modifier = modifier,
@@ -205,14 +208,14 @@ fun RepeatAddScreen(
       item(
           contentType = ContentTypes.CATEGORIES,
       ) {
-        val allCategories by state.allCategories.collectAsStateWithLifecycle()
-
         MoneyCategories(
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content),
             state = state,
+            canAdd = true,
+            showLabel = true,
             allCategories = allCategories,
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,

@@ -108,7 +108,7 @@ interface DbCategory : ActivateModel<DbCategory> {
                 id = Id.EMPTY,
                 createdAt = LocalDateTime.MIN,
             )
-            .name("No Categories")
+            .name("Uncategorized")
 
     @JvmStatic
     @CheckResult

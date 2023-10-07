@@ -43,7 +43,7 @@ internal constructor(
                 return@registerProvider when (p) {
                   is MainPage.Category,
                   is MainPage.Repeat -> p::class.java.name
-                  is MainPage.Transactions -> p.categoryId.raw
+                  is MainPage.Transactions -> p.asSaveable()
                 }
               }
             }
@@ -66,7 +66,7 @@ internal constructor(
             MainPage.Category::class.java.name -> MainPage.Category
             MainPage.Repeat::class.java.name -> MainPage.Repeat
             // Assume P is a category ID as a String
-            else -> MainPage.Transactions(DbCategory.Id(p))
+            else -> MainPage.Transactions.fromSaveable(p)
           }
         }
         ?.also { s.page.value = it }
@@ -85,7 +85,19 @@ internal constructor(
   }
 
   fun handleOpenTransactions(category: DbCategory) {
-    state.page.value = MainPage.Transactions(category.id)
+    state.page.value =
+        MainPage.Transactions(
+            categoryId = category.id,
+            showAllTransactions = false,
+        )
+  }
+
+  fun handleOpenAllTransactions() {
+    state.page.value =
+        MainPage.Transactions(
+            categoryId = DbCategory.Id.EMPTY,
+            showAllTransactions = true,
+        )
   }
 
   fun handleOpenRepeats() {

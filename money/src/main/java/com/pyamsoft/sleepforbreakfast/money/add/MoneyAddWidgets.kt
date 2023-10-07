@@ -50,10 +50,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,6 +69,7 @@ import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.theme.success
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -418,7 +421,7 @@ fun AddNote(
 }
 
 @Composable
-private fun Category(
+private fun CategoryChip(
     modifier: Modifier = Modifier,
     category: DbCategory,
     color: Color?,
@@ -458,13 +461,17 @@ private fun Category(
 fun MoneyCategories(
     modifier: Modifier = Modifier,
     state: MoneyAddViewState,
-    allCategories: List<DbCategory>,
-    onCategoryAdded: (DbCategory) -> Unit,
-    onCategoryRemoved: (DbCategory) -> Unit,
+    canAdd: Boolean,
+    showLabel: Boolean,
+    allCategories: SnapshotStateList<DbCategory>,
+    onCategoryAdded: ((DbCategory) -> Unit)?,
+    onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
-  val categories by state.categories.collectAsStateWithLifecycle()
+  val categories = state.categories.collectAsStateListWithLifecycle()
   AddCategories(
       modifier = modifier,
+      canAdd = canAdd,
+      showLabel = showLabel,
       selectedCategories = categories,
       allCategories = allCategories,
       onCategoryAdded = onCategoryAdded,
@@ -476,10 +483,12 @@ fun MoneyCategories(
 @OptIn(ExperimentalLayoutApi::class)
 fun AddCategories(
     modifier: Modifier = Modifier,
-    selectedCategories: List<DbCategory.Id>,
-    allCategories: List<DbCategory>,
-    onCategoryAdded: (DbCategory) -> Unit,
-    onCategoryRemoved: (DbCategory) -> Unit,
+    canAdd: Boolean,
+    showLabel: Boolean,
+    selectedCategories: SnapshotStateList<DbCategory.Id>,
+    allCategories: SnapshotStateList<DbCategory>,
+    onCategoryAdded: ((DbCategory) -> Unit)?,
+    onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
   val defaultColor = MaterialTheme.colors.secondary
 
@@ -488,59 +497,70 @@ fun AddCategories(
 
   val handleShow by rememberUpdatedState { setShow(true) }
 
-  Text(
-      modifier =
-          Modifier.padding(horizontal = MaterialTheme.keylines.content)
-              .padding(bottom = MaterialTheme.keylines.baseline),
-      text = "Categories",
-      fontWeight = FontWeight.W700,
-      color =
-          MaterialTheme.colors.onSurface.copy(
-              alpha = ContentAlpha.disabled,
-          ),
-      style = MaterialTheme.typography.caption,
-  )
-
-  FlowRow(
-      modifier = modifier.fillMaxWidth(),
-      verticalArrangement = Arrangement.Center,
+  Column(
+      modifier = modifier,
   ) {
-    Icon(
-        modifier =
-            Modifier.padding(end = MaterialTheme.keylines.content).clickable { handleShow() },
-        imageVector = Icons.Filled.Add,
-        contentDescription = "Categories",
-    )
-
-    for (id in selectedCategories) {
-      // If a category is delete but still "attached" to the Transaction or Repeat, it will be
-      // null-ish here as it won't be in the allCategories, so hide it
-      val maybeCategory =
-          remember(
-              id,
-              allCategories,
-          ) {
-            allCategories.firstOrNull { it.id == id }
-          }
-              ?: continue
-
-      val color =
-          remember(
-              maybeCategory,
-              defaultColor,
-          ) {
-            val c = maybeCategory.color
-            if (c == 0L) defaultColor else Color(c.toULong())
-          }
-
-      Category(
-          modifier =
-              Modifier.padding(end = MaterialTheme.keylines.baseline)
-                  .padding(bottom = MaterialTheme.keylines.baseline)
-                  .clickable { handleShow() },
-          color = color,
-          category = maybeCategory,
+    if (showLabel) {
+      Text(
+          modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
+          text = "Categories",
+          fontWeight = FontWeight.W700,
+          color =
+              MaterialTheme.colors.onSurface.copy(
+                  alpha = ContentAlpha.disabled,
+              ),
+          style = MaterialTheme.typography.caption,
       )
+    }
+
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+    ) {
+      if (canAdd) {
+        Icon(
+            modifier =
+                Modifier.padding(end = MaterialTheme.keylines.content).clickable { handleShow() },
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Categories",
+        )
+      }
+
+      val showCategories =
+          remember(selectedCategories, allCategories) {
+            val result = mutableStateListOf<DbCategory>()
+            for (id in selectedCategories) {
+              // If a category is delete but still "attached" to the Transaction or Repeat, it will
+              // be
+              // null-ish here as it won't be in the allCategories, so hide it
+              val maybeCategory = allCategories.firstOrNull { it.id == id }
+              if (maybeCategory != null) {
+                result.add(maybeCategory)
+              }
+            }
+
+            return@remember result.sortedBy { it.name.lowercase() }
+          }
+
+      for (cat in showCategories) {
+        val color =
+            remember(
+                cat,
+                defaultColor,
+            ) {
+              val c = cat.color
+              if (c == 0L) defaultColor else Color(c.toULong())
+            }
+
+        CategoryChip(
+            modifier =
+                Modifier.padding(end = MaterialTheme.keylines.baseline)
+                    .padding(bottom = MaterialTheme.keylines.baseline)
+                    .clickable(enabled = canAdd) { handleShow() },
+            color = color,
+            category = cat,
+        )
+      }
     }
   }
 
@@ -556,13 +576,44 @@ fun AddCategories(
         return@remember h.dp
       }
 
+  val isClickEnabled =
+      remember(
+          onCategoryAdded,
+          onCategoryRemoved,
+      ) {
+        onCategoryAdded != null && onCategoryRemoved != null
+      }
+
   DropdownMenu(
       modifier = Modifier.heightIn(max = dropdownMaxHeight),
       properties = remember { PopupProperties(focusable = true) },
       expanded = show,
       onDismissRequest = { setShow(false) },
   ) {
-    for (cat in allCategories) {
+
+    // Remember this only on the initial composition to keep the "starting selected" on top,
+    // then alphabetical. New selections will not go to the top
+    val showCategories = remember {
+      val result = mutableStateListOf<DbCategory>()
+      val unselected = mutableStateListOf<DbCategory>()
+      for (cat in allCategories) {
+        val selected = selectedCategories.firstOrNull { it == cat.id }
+        if (selected != null) {
+          result.add(cat)
+        } else {
+          unselected.add(cat)
+        }
+      }
+
+      // Sort the existing result list in place, selected on top alphabetical
+      result.sortBy { it.name.lowercase() }
+
+      // Then sort unselected, and all the two
+      unselected.sortBy { it.name.lowercase() }
+      return@remember result + unselected
+    }
+
+    for (cat in showCategories) {
       // If this category is selected
       val isSelected =
           remember(
@@ -582,15 +633,16 @@ fun AddCategories(
           }
 
       DropdownMenuItem(
+          enabled = isClickEnabled,
           onClick = {
             if (isSelected) {
-              onCategoryRemoved(cat)
+              onCategoryRemoved?.invoke(cat)
             } else {
-              onCategoryAdded(cat)
+              onCategoryAdded?.invoke(cat)
             }
           },
       ) {
-        Category(
+        CategoryChip(
             category = cat,
             color = if (isSelected) color else null,
         )

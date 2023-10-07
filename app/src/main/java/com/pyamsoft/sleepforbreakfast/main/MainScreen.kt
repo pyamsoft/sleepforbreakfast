@@ -41,6 +41,7 @@ fun MainScreen(
     onCloseSettings: () -> Unit,
     onClosePage: () -> Unit,
     onOpenTransactions: (DbCategory) -> Unit,
+    onOpenAllTransactions: () -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
@@ -59,6 +60,7 @@ fun MainScreen(
             modifier = Modifier.fillMaxSize().padding(pv),
             appName = appName,
             onOpenTransactions = onOpenTransactions,
+            onOpenAllTransactions = onOpenAllTransactions,
             onOpenRepeats = onOpenRepeats,
             onOpenSettings = onOpenSettings,
             onOpenCategories = onOpenCategories,
@@ -68,7 +70,7 @@ fun MainScreen(
           is MainPage.Transactions -> {
             TransactionEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
-                categoryId = p.categoryId,
+                page = p,
                 onDismiss = onClosePage,
             )
           }

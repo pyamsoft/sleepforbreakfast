@@ -69,7 +69,6 @@ fun TransactionScreen(
 
     // Search
     onSearchToggled: () -> Unit,
-    onSearchToggleAll: () -> Unit,
     onSearchUpdated: (String) -> Unit,
 
     // Breakdown
@@ -79,10 +78,12 @@ fun TransactionScreen(
     // Chart
     onChartToggled: () -> Unit,
 ) {
+  val currentCategory by state.category.collectAsStateWithLifecycle()
   val loading by state.loadingState.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
   val list = rememberTransactionsWithHeaders(transactions)
   val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
+  val allCategories = state.allCategories.collectAsStateListWithLifecycle()
 
   BasicListScreen(
       modifier = modifier,
@@ -105,7 +106,6 @@ fun TransactionScreen(
           // Search
           onSearchToggle = onSearchToggled,
           onSearchChange = onSearchUpdated,
-          onSearchToggleAll = onSearchToggleAll,
 
           // Breakdown
           onBreakdownToggle = onBreakdownToggled,
@@ -144,22 +144,25 @@ fun TransactionScreen(
             }
             is TransactionOrHeader.Transaction -> {
               val transaction = li.transaction
-
-              item(
-                  contentType = ContentTypes.TRANSACTION,
-              ) {
-                TransactionCard(
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .padding(horizontal = MaterialTheme.keylines.content)
-                            .padding(bottom = MaterialTheme.keylines.content),
-                    contentModifier =
-                        Modifier.combinedClickable(
-                            onClick = { onTransactionClicked(transaction) },
-                            onLongClick = { onTransactionLongClicked(transaction) },
-                        ),
-                    transaction = transaction,
-                )
+              currentCategory?.also { cur ->
+                item(
+                    contentType = ContentTypes.TRANSACTION,
+                ) {
+                  TransactionCard(
+                      modifier =
+                          Modifier.fillMaxWidth()
+                              .padding(horizontal = MaterialTheme.keylines.content)
+                              .padding(bottom = MaterialTheme.keylines.content),
+                      contentModifier =
+                          Modifier.combinedClickable(
+                              onClick = { onTransactionClicked(transaction) },
+                              onLongClick = { onTransactionLongClicked(transaction) },
+                          ),
+                      transaction = transaction,
+                      allCategories = allCategories,
+                      currentCategory = cur.id,
+                  )
+                }
               }
             }
           }

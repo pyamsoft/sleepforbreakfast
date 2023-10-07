@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.ZeroCornerSize
-import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
@@ -42,7 +43,6 @@ internal fun TransactionTotal(
 
     // Search
     onSearchToggle: () -> Unit,
-    onSearchToggleAll: () -> Unit,
     onSearchChange: (String) -> Unit,
 
     // Breakdown
@@ -83,13 +83,6 @@ internal fun TransactionTotal(
         state = state,
         onToggle = onSearchToggle,
         onChange = onSearchChange,
-        trailingIcon = {
-          val isSearchAll by state.searchAll.collectAsStateWithLifecycle()
-          Checkbox(
-              checked = isSearchAll,
-              onCheckedChange = { onSearchToggleAll() },
-          )
-        },
     )
 
     PeriodBreakdownBar(
@@ -154,6 +147,7 @@ private fun Totals(
       color = Color.Unspecified,
       shape = RectangleShape,
       elevation = ZeroElevation,
+      isHeader = true,
       title = title,
       titleStyle =
           MaterialTheme.typography.h6.copy(
@@ -196,5 +190,8 @@ private fun Totals(
             onChartToggle = onChartToggle,
         )
       },
+      currentCategory = DbCategory.Id.EMPTY,
+      categories = remember { mutableStateListOf() },
+      allCategories = remember { mutableStateListOf() },
   )
 }

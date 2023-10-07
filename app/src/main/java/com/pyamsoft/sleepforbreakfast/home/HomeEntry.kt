@@ -60,9 +60,10 @@ internal fun HomeEntry(
     modifier: Modifier = Modifier,
     appName: String,
     onOpenSettings: () -> Unit,
-    onOpenTransactions: (DbCategory) -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
+    onOpenAllTransactions: () -> Unit,
+    onOpenTransactions: (DbCategory) -> Unit,
 ) {
   val component = rememberComposableInjector { HomeInjector() }
   val viewModel = rememberNotNull(component.viewModel)
@@ -77,6 +78,7 @@ internal fun HomeEntry(
       state = viewModel,
       appName = appName,
       onOpenSettings = onOpenSettings,
+      onOpenAllTransactions = onOpenAllTransactions,
       onOpenTransactions = onOpenTransactions,
       onOpenRepeats = onOpenRepeats,
       onOpenCategories = onOpenCategories,

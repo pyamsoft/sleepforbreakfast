@@ -76,6 +76,7 @@ internal fun MainEntry(
       onCloseSettings = { viewModel.handleCloseSettings() },
       onClosePage = { viewModel.handleClosePage() },
       onOpenTransactions = { viewModel.handleOpenTransactions(it) },
+      onOpenAllTransactions = { viewModel.handleOpenAllTransactions() },
       onOpenRepeats = { viewModel.handleOpenRepeats() },
       onOpenCategories = { viewModel.handleOpenCategory() },
   )

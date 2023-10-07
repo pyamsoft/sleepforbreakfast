@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Stable
 interface TransactionViewState : ListViewState<DbTransaction> {
   val category: StateFlow<DbCategory?>
+  val allCategories: StateFlow<List<DbCategory>>
 
   val addParams: StateFlow<TransactionAddParams?>
   val deleteParams: StateFlow<TransactionDeleteParams?>
@@ -39,14 +40,13 @@ interface TransactionViewState : ListViewState<DbTransaction> {
   val breakdown: StateFlow<BreakdownRange?>
 
   val isChartOpen: StateFlow<Boolean>
-
-  val searchAll: StateFlow<Boolean>
 }
 
 @Stable
 class MutableTransactionViewState @Inject internal constructor() :
     TransactionViewState, MutableListViewState<DbTransaction>() {
   override val category = MutableStateFlow<DbCategory?>(null)
+  override val allCategories = MutableStateFlow(emptyList<DbCategory>())
 
   override val addParams = MutableStateFlow<TransactionAddParams?>(null)
   override val deleteParams = MutableStateFlow<TransactionDeleteParams?>(null)
@@ -55,6 +55,4 @@ class MutableTransactionViewState @Inject internal constructor() :
   override val breakdown = MutableStateFlow<BreakdownRange?>(null)
 
   override val isChartOpen = MutableStateFlow(false)
-
-  override val searchAll = MutableStateFlow(false)
 }

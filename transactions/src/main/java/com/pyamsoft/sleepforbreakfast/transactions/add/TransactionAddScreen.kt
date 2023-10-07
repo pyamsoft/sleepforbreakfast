@@ -47,6 +47,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -115,6 +116,8 @@ fun TransactionAddScreen(
         imeAction = ImeAction.Next,
     )
   }
+
+  val allCategories = state.allCategories.collectAsStateListWithLifecycle()
 
   Column(
       modifier = modifier,
@@ -209,14 +212,14 @@ fun TransactionAddScreen(
       item(
           contentType = AddContentTypes.CATEGORIES,
       ) {
-        val allCategories by state.allCategories.collectAsStateWithLifecycle()
-
         MoneyCategories(
             modifier =
                 Modifier.fillMaxWidth()
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content),
             state = state,
+            canAdd = true,
+            showLabel = true,
             allCategories = allCategories,
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,
@@ -272,6 +275,7 @@ fun TransactionAddScreen(
             repeat = repeat,
             loading = loadingRepeat,
             date = repeatDate,
+            allCategories = allCategories,
             onDismiss = onRepeatInfoClosed,
         )
       }

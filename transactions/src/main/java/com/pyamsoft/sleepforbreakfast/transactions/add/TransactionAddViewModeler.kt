@@ -292,11 +292,7 @@ internal constructor(
   }
 
   fun handleCategoryRemoved(category: DbCategory) {
-    if (category.id.isEmpty || category.id == ensureCategoryId) {
-      Timber.w { "Cannot remove the ensured category ID: $category" }
-    } else {
-      state.categories.update { list -> list.filterNot { it == category.id } }
-    }
+    state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
   fun handleOpenRepeatInfo() {

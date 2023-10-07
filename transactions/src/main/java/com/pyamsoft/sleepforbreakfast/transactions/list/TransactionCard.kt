@@ -16,6 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.list
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -28,6 +30,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,10 +44,13 @@ import androidx.compose.ui.unit.Dp
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
+import com.pyamsoft.pydroid.ui.util.rememberAsStateList
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
 import com.pyamsoft.sleepforbreakfast.transactions.TRANSACTION_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
@@ -87,6 +94,8 @@ internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     transaction: DbTransaction,
+    currentCategory: DbCategory.Id,
+    allCategories: SnapshotStateList<DbCategory>,
 ) {
   val date = transaction.date
   val dateString = remember(date) { TRANSACTION_FORMATTER.get().requireNotNull().format(date) }
@@ -129,10 +138,14 @@ internal fun TransactionCard(
                       alpha = ContentAlpha.disabled,
                   ),
           ),
+      currentCategory = currentCategory,
+      allCategories = allCategories,
+      categories = transaction.categories.rememberAsStateList(),
   )
 }
 
 @Composable
+@OptIn(ExperimentalFoundationApi::class)
 internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
@@ -143,6 +156,7 @@ internal fun TransactionCard(
     elevation: Dp = CardDefaults.Elevation,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
+    isHeader: Boolean = false,
     title: String,
     titleStyle: TextStyle,
     date: String,
@@ -152,6 +166,9 @@ internal fun TransactionCard(
     priceStyle: TextStyle,
     note: String,
     noteStyle: TextStyle,
+    currentCategory: DbCategory.Id,
+    categories: SnapshotStateList<DbCategory.Id>,
+    allCategories: SnapshotStateList<DbCategory>,
 ) {
   val hasDate = remember(date) { date.isNotBlank() }
   val hasNote = remember(note) { note.isNotBlank() }
@@ -203,10 +220,20 @@ internal fun TransactionCard(
       ) {
         navigationIcon()
 
-        Text(
-            text = title,
-            style = titleStyle,
-        )
+        if (isHeader) {
+          Text(
+              modifier = Modifier.weight(1F).basicMarquee(),
+              text = title,
+              style = titleStyle,
+              maxLines = 1,
+          )
+        } else {
+          Text(
+              modifier = Modifier.weight(1F),
+              text = title,
+              style = titleStyle,
+          )
+        }
 
         actions()
       }
@@ -226,9 +253,28 @@ internal fun TransactionCard(
               ),
       )
 
+      val otherCategories =
+          remember(
+              categories,
+              currentCategory,
+          ) {
+            categories.filterNot { it == currentCategory }.toMutableStateList()
+          }
+      if (otherCategories.isNotEmpty()) {
+        AddCategories(
+            modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+            canAdd = false,
+            showLabel = false,
+            selectedCategories = otherCategories,
+            allCategories = allCategories,
+            onCategoryAdded = null,
+            onCategoryRemoved = null,
+        )
+      }
+
       if (hasNote) {
         Text(
-            modifier = Modifier.padding(top = MaterialTheme.keylines.content).then(noteModifier),
+            modifier = Modifier.padding(top = MaterialTheme.keylines.baseline).then(noteModifier),
             text = note,
             style = noteStyle,
         )

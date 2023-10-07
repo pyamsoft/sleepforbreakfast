@@ -38,6 +38,7 @@ internal interface TransactionComponent {
     @CheckResult
     fun create(
         @BindsInstance categoryId: DbCategory.Id,
+        @BindsInstance showAllTransactions: Boolean,
     ): TransactionComponent
   }
 

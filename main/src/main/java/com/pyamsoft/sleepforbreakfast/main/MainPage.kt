@@ -16,12 +16,41 @@
 
 package com.pyamsoft.sleepforbreakfast.main
 
+import androidx.annotation.CheckResult
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
+@Stable
 sealed interface MainPage {
-  data class Transactions(val categoryId: DbCategory.Id) : MainPage
 
-  data object Repeat : MainPage
+  @Stable
+  @Immutable
+  data class Transactions(
+      val categoryId: DbCategory.Id,
+      val showAllTransactions: Boolean,
+  ) : MainPage {
 
-  data object Category : MainPage
+    @CheckResult
+    fun asSaveable(): String {
+      return "$categoryId|$showAllTransactions"
+    }
+
+    companion object {
+
+      @JvmStatic
+      @CheckResult
+      fun fromSaveable(s: String): MainPage.Transactions {
+        val split = s.split("|")
+        return Transactions(
+            categoryId = DbCategory.Id(split[0]),
+            showAllTransactions = split[1].toBooleanStrict(),
+        )
+      }
+    }
+  }
+
+  @Stable @Immutable data object Repeat : MainPage
+
+  @Stable @Immutable data object Category : MainPage
 }

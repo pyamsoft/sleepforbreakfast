@@ -34,7 +34,7 @@ import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
@@ -46,7 +46,7 @@ import javax.inject.Inject
 internal class TransactionInjector
 @Inject
 internal constructor(
-    private val categoryId: DbCategory.Id,
+    private val page: MainPage.Transactions,
 ) : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
@@ -56,7 +56,8 @@ internal constructor(
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusTransactions()
         .create(
-            categoryId = categoryId,
+            categoryId = page.categoryId,
+            showAllTransactions = page.showAllTransactions,
         )
         .inject(this)
   }
@@ -79,10 +80,14 @@ private fun MountHooks(
 @Composable
 internal fun TransactionEntry(
     modifier: Modifier = Modifier,
-    categoryId: DbCategory.Id,
+    page: MainPage.Transactions,
     onDismiss: () -> Unit,
 ) {
-  val component = rememberComposableInjector { TransactionInjector(categoryId) }
+  val component = rememberComposableInjector {
+    TransactionInjector(
+        page = page,
+    )
+  }
   val viewModel = rememberNotNull(component.viewModel)
   val clock = rememberNotNull(component.clock)
 
@@ -132,7 +137,6 @@ internal fun TransactionEntry(
         // Search
         onSearchToggled = { viewModel.handleToggleSearch() },
         onSearchUpdated = { viewModel.handleSearchUpdated(it) },
-        onSearchToggleAll = { viewModel.handleToggleSearchAll() },
 
         // Breakdown
         onBreakdownToggled = { viewModel.handleToggleBreakdown() },

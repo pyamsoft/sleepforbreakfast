@@ -21,8 +21,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 
@@ -48,6 +51,8 @@ fun TransactionDeleteScreen(
     TransactionCard(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
         transaction = transaction,
+        currentCategory = DbCategory.Id.EMPTY,
+        allCategories = remember { mutableStateListOf() },
     )
   }
 }
