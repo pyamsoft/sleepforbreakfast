@@ -20,12 +20,15 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
@@ -66,6 +69,7 @@ private fun MountHooks(viewModel: RepeatAddViewModeler) {
 @Composable
 internal fun RepeatAddEntry(
     modifier: Modifier = Modifier,
+    mapper: CategoryIdMapper,
     params: RepeatAddParams,
     onDismiss: () -> Unit,
 ) {
@@ -88,6 +92,7 @@ internal fun RepeatAddEntry(
   ) {
     RepeatAddScreen(
         state = viewModel,
+        mapper = mapper,
         onDismiss = onDismiss,
         onNameChanged = { viewModel.handleNameChanged(it) },
         onNoteChanged = { viewModel.handleNoteChanged(it) },

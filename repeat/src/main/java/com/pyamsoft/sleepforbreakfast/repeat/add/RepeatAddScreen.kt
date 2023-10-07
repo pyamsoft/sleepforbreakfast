@@ -40,6 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -48,7 +49,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -59,6 +59,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import java.time.LocalDate
 
@@ -75,6 +76,7 @@ private enum class ContentTypes {
 fun RepeatAddScreen(
     modifier: Modifier = Modifier,
     state: RepeatAddViewState,
+    mapper: CategoryIdMapper,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
@@ -103,8 +105,6 @@ fun RepeatAddScreen(
         imeAction = ImeAction.Next,
     )
   }
-
-  val allCategories = state.allCategories.collectAsStateListWithLifecycle()
 
   Column(
       modifier = modifier,
@@ -216,7 +216,7 @@ fun RepeatAddScreen(
             state = state,
             canAdd = true,
             showLabel = true,
-            allCategories = allCategories,
+            mapper = mapper,
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,
         )

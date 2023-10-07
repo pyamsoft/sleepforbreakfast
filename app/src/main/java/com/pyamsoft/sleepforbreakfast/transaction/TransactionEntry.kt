@@ -36,6 +36,7 @@ import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
@@ -81,6 +82,7 @@ private fun MountHooks(
 internal fun TransactionEntry(
     modifier: Modifier = Modifier,
     page: MainPage.Transactions,
+    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
@@ -123,6 +125,9 @@ internal fun TransactionEntry(
         modifier = modifier,
         state = viewModel,
         clock = clock,
+        mapper = mapper,
+
+        // Dismiss
         onDismiss = onDismiss,
 
         // Action
@@ -150,6 +155,7 @@ internal fun TransactionEntry(
       TransactionAddEntry(
           modifier = Modifier.fillUpToPortraitSize(),
           params = p,
+          mapper = mapper,
           onDismiss = { viewModel.handleCloseAddTransaction() },
       )
     }
@@ -158,6 +164,7 @@ internal fun TransactionEntry(
       TransactionDeleteEntry(
           modifier = Modifier.fillUpToPortraitSize(),
           params = p,
+          mapper = mapper,
           onDismiss = { viewModel.handleCloseDeleteTransaction() },
       )
     }

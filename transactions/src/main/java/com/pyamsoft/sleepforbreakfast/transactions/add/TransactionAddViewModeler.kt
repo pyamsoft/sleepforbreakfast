@@ -44,8 +44,8 @@ internal constructor(
     state: MutableTransactionAddViewState,
     params: TransactionAddParams,
     private val interactor: TransactionInteractor,
-    private val categoryLoader: CategoryLoader,
     private val clock: Clock,
+    private val allCategories: List<DbCategory>
 ) :
     TransactionAddViewState by state,
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
@@ -56,20 +56,10 @@ internal constructor(
 
   private val ensureCategoryId = params.ensureCategoryId
 
-  private suspend fun loadCategories() {
-    categoryLoader
-        .queryAllResult()
-        .onSuccess { Timber.d { "Loaded categories: $it" } }
-        .onSuccess { cats -> state.allCategories.value = cats.sortedBy { it.name } }
-        .onFailure { Timber.e(it) { "Error loading all categories" } }
-        .onFailure { state.allCategories.value = emptyList() }
-  }
-
   @CheckResult
   private fun getOnlyExistingCategories(): List<DbCategory.Id> {
     var cleaned = emptyList<DbCategory.Id>()
     val currentCategories = state.categories.value
-    val allCategories = state.allCategories.value
     if (allCategories.isEmpty()) {
       Timber.w { "Could not load allCategories, do not change categories for compile()" }
       cleaned = currentCategories
@@ -160,8 +150,6 @@ internal constructor(
 
   override fun onBind(scope: CoroutineScope) {
     handleReset()
-
-    scope.launch(context = Dispatchers.Default) { loadCategories() }
   }
 
   override fun CoroutineScope.onDataLoaded(result: DbTransaction) {

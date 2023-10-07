@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface TransactionAddViewState : MoneyAddViewState {
-  val allCategories: StateFlow<List<DbCategory>>
   val date: StateFlow<LocalDateTime>
   val isDateDialogOpen: StateFlow<Boolean>
   val isTimeDialogOpen: StateFlow<Boolean>
@@ -55,7 +54,6 @@ internal constructor(
     clock: Clock,
 ) : TransactionAddViewState, MutableMoneyAddViewState() {
 
-  override val allCategories = MutableStateFlow<List<DbCategory>>(emptyList())
   override val date = MutableStateFlow<LocalDateTime>(LocalDateTime.now(clock))
 
   override val isDateDialogOpen = MutableStateFlow(false)

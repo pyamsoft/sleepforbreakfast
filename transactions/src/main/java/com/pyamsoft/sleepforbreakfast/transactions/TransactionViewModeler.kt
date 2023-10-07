@@ -66,15 +66,10 @@ internal constructor(
   }
 
   @CheckResult
-  private suspend fun loadAllCategories(): List<DbCategory> {
-    val all = state.allCategories.value
-    return all.ifEmpty { categoryLoader.queryAll().also { state.allCategories.value = it } }
-  }
-
-  @CheckResult
   private suspend fun loadTargetCategory(): DbCategory {
     return state.category.value
-        ?: loadAllCategories()
+        ?: categoryLoader
+            .queryAll()
             .firstOrNull { it.id == defaultCategoryId }
             .let { it ?: DbCategory.NONE }
             .also { state.category.value = it }

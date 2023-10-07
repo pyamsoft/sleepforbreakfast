@@ -28,12 +28,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionHeader
@@ -55,6 +58,9 @@ private enum class ContentTypes {
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+
+    mapper: CategoryIdMapper,
+
     clock: Clock,
     onDismiss: () -> Unit,
 
@@ -83,7 +89,6 @@ fun TransactionScreen(
   val transactions = state.items.collectAsStateListWithLifecycle()
   val list = rememberTransactionsWithHeaders(transactions)
   val undoable by state.recentlyDeleted.collectAsStateWithLifecycle()
-  val allCategories = state.allCategories.collectAsStateListWithLifecycle()
 
   BasicListScreen(
       modifier = modifier,
@@ -101,6 +106,8 @@ fun TransactionScreen(
           modifier = Modifier.fillMaxWidth().padding(pv),
           state = state,
           clock = clock,
+          mapper = mapper,
+
           onDismiss = onDismiss,
 
           // Search
@@ -159,7 +166,7 @@ fun TransactionScreen(
                               onLongClick = { onTransactionLongClicked(transaction) },
                           ),
                       transaction = transaction,
-                      allCategories = allCategories,
+                      mapper = mapper,
                       currentCategory = cur.id,
                   )
                 }

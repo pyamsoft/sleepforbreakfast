@@ -47,7 +47,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
-import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -60,6 +59,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
@@ -82,6 +82,7 @@ private enum class AddContentTypes {
 fun TransactionAddScreen(
     modifier: Modifier = Modifier,
     state: TransactionAddViewState,
+    mapper: CategoryIdMapper,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
@@ -116,8 +117,6 @@ fun TransactionAddScreen(
         imeAction = ImeAction.Next,
     )
   }
-
-  val allCategories = state.allCategories.collectAsStateListWithLifecycle()
 
   Column(
       modifier = modifier,
@@ -220,7 +219,7 @@ fun TransactionAddScreen(
             state = state,
             canAdd = true,
             showLabel = true,
-            allCategories = allCategories,
+            mapper = mapper,
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,
         )
@@ -275,7 +274,7 @@ fun TransactionAddScreen(
             repeat = repeat,
             loading = loadingRepeat,
             date = repeatDate,
-            allCategories = allCategories,
+            mapper = mapper,
             onDismiss = onRepeatInfoClosed,
         )
       }

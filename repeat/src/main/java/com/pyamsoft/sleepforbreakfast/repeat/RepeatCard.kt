@@ -26,6 +26,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
@@ -34,9 +35,13 @@ import androidx.compose.ui.text.style.TextAlign
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
+import com.pyamsoft.pydroid.ui.util.rememberAsStateList
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
+import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
@@ -56,6 +61,7 @@ internal fun RepeatCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     repeat: DbRepeat,
+    mapper: CategoryIdMapper,
 ) {
   val note = repeat.transactionNote
   val hasNote = remember(note) { note.isNotBlank() }
@@ -153,6 +159,15 @@ internal fun RepeatCard(
                           alpha = ContentAlpha.medium,
                       ),
               ),
+      )
+
+      AddCategories(
+          canAdd = false,
+          showLabel = true,
+          mapper = mapper,
+          selectedCategories = repeat.transactionCategories.rememberAsStateList(),
+          onCategoryAdded = null,
+          onCategoryRemoved = null,
       )
 
       if (hasNote) {

@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transaction.add
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import dagger.BindsInstance
 import dagger.Module
@@ -38,6 +39,7 @@ internal interface TransactionAddComponent {
     @CheckResult
     fun create(
         @BindsInstance params: TransactionAddParams,
+        @BindsInstance allCategories: List<DbCategory>,
     ): TransactionAddComponent
   }
 

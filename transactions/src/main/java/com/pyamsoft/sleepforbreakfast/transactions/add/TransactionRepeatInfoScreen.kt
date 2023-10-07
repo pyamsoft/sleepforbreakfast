@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,7 +33,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -43,11 +41,11 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.LocalDate
 
@@ -58,16 +56,16 @@ private enum class RepeatContentTypes {
   CATEGORIES,
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TransactionRepeatInfoScreen(
     modifier: Modifier = Modifier,
     loading: LoadingState,
     repeat: DbRepeat?,
     date: LocalDate,
-    allCategories: SnapshotStateList<DbCategory>,
+    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 ) {
+
   Column(
       modifier = modifier,
   ) {
@@ -172,7 +170,7 @@ fun TransactionRepeatInfoScreen(
                       canAdd = false,
                       showLabel = true,
                       selectedCategories = categories,
-                      allCategories = allCategories,
+                      mapper = mapper,
                       onCategoryAdded = null,
                       onCategoryRemoved = null,
                   )

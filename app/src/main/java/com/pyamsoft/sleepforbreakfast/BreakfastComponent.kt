@@ -29,6 +29,8 @@ import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
 import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.money.MoneyAppModule
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.category.DefaultCategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.preference.PreferencesImpl
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatAppModule
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
@@ -98,6 +100,9 @@ internal interface BreakfastComponent {
   abstract class Provider {
 
     @Binds internal abstract fun provideDbPreferences(impl: PreferencesImpl): DbPreferences
+
+    @Binds
+    internal abstract fun provideCategoryMapper(impl: DefaultCategoryIdMapper): CategoryIdMapper
 
     @Module
     companion object {

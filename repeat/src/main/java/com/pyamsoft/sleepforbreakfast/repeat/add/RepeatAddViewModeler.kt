@@ -17,13 +17,11 @@
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
-import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
@@ -32,9 +30,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class RepeatAddViewModeler
 @Inject
@@ -43,7 +39,6 @@ internal constructor(
     interactor: RepeatInteractor,
     params: RepeatAddParams,
     private val clock: Clock,
-    private val categoryLoader: CategoryLoader,
     private val workerQueue: WorkerQueue,
 ) :
     RepeatAddViewState by state,
@@ -53,15 +48,6 @@ internal constructor(
         interactor = interactor,
     ) {
 
-  private suspend fun loadCategories() {
-    categoryLoader
-        .queryAllResult()
-        .onSuccess { Timber.d { "Loaded categories: $it" } }
-        .onSuccess { cats -> state.allCategories.value = cats.sortedBy { it.name } }
-        .onFailure { Timber.e(it) { "Error loading all categories" } }
-        .onFailure { state.allCategories.value = emptyList() }
-  }
-
   override fun isIdEmpty(id: DbRepeat.Id): Boolean {
     return id.isEmpty
   }
@@ -69,8 +55,6 @@ internal constructor(
   override fun onBind(scope: CoroutineScope) {
     // Clear everything
     handleReset()
-
-    scope.launch(context = Dispatchers.Default) { loadCategories() }
   }
 
   override fun CoroutineScope.onDataLoaded(result: DbRepeat) {

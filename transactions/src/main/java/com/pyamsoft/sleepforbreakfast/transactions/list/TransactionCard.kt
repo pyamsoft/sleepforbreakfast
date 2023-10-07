@@ -51,6 +51,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.transactions.TRANSACTION_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
@@ -93,9 +94,9 @@ internal fun TransactionHeader(
 internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
+    mapper: CategoryIdMapper,
     transaction: DbTransaction,
     currentCategory: DbCategory.Id,
-    allCategories: SnapshotStateList<DbCategory>,
 ) {
   val date = transaction.date
   val dateString = remember(date) { TRANSACTION_FORMATTER.get().requireNotNull().format(date) }
@@ -111,6 +112,7 @@ internal fun TransactionCard(
       modifier = modifier,
       contentModifier =
           Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
+      mapper = mapper,
       title = transaction.name,
       titleStyle =
           MaterialTheme.typography.h6.copy(
@@ -139,7 +141,6 @@ internal fun TransactionCard(
                   ),
           ),
       currentCategory = currentCategory,
-      allCategories = allCategories,
       categories = transaction.categories.rememberAsStateList(),
   )
 }
@@ -157,6 +158,7 @@ internal fun TransactionCard(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     isHeader: Boolean = false,
+    mapper: CategoryIdMapper,
     title: String,
     titleStyle: TextStyle,
     date: String,
@@ -168,7 +170,6 @@ internal fun TransactionCard(
     noteStyle: TextStyle,
     currentCategory: DbCategory.Id,
     categories: SnapshotStateList<DbCategory.Id>,
-    allCategories: SnapshotStateList<DbCategory>,
 ) {
   val hasDate = remember(date) { date.isNotBlank() }
   val hasNote = remember(note) { note.isNotBlank() }
@@ -266,7 +267,7 @@ internal fun TransactionCard(
             canAdd = false,
             showLabel = false,
             selectedCategories = otherCategories,
-            allCategories = allCategories,
+            mapper = mapper,
             onCategoryAdded = null,
             onCategoryRemoved = null,
         )

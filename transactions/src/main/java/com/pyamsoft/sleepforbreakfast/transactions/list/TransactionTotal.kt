@@ -25,6 +25,7 @@ import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.transactions.calculateTotalTransactionAmount
@@ -39,6 +40,7 @@ internal fun TransactionTotal(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
     clock: Clock,
+    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 
     // Search
@@ -72,6 +74,7 @@ internal fun TransactionTotal(
 
       Totals(
           state = state,
+          mapper = mapper,
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggle,
           onBreakdownToggle = onBreakdownToggle,
@@ -103,6 +106,7 @@ internal fun TransactionTotal(
 private fun Totals(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 
     // Search
@@ -147,6 +151,7 @@ private fun Totals(
       color = Color.Unspecified,
       shape = RectangleShape,
       elevation = ZeroElevation,
+      mapper = mapper,
       isHeader = true,
       title = title,
       titleStyle =
@@ -192,6 +197,5 @@ private fun Totals(
       },
       currentCategory = DbCategory.Id.EMPTY,
       categories = remember { mutableStateListOf() },
-      allCategories = remember { mutableStateListOf() },
   )
 }

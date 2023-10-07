@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -28,10 +29,12 @@ import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import javax.inject.Inject
 
 internal class MainInjector @Inject internal constructor() : ComposableInjector() {
 
+  @JvmField @Inject internal var mapper: CategoryIdMapper? = null
   @JvmField @Inject internal var viewModel: MainViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
@@ -40,12 +43,17 @@ internal class MainInjector @Inject internal constructor() : ComposableInjector(
 
   override fun onDispose() {
     viewModel = null
+    mapper = null
   }
 }
 
 @Composable
-private fun MountHooks(viewModel: MainViewModeler) {
+private fun MountHooks(
+    viewModel: MainViewModeler,
+    mapper: CategoryIdMapper,
+) {
   SaveStateDisposableEffect(viewModel)
+  LaunchedEffect(mapper) { mapper.bind(scope = this) }
 }
 
 @Composable
@@ -56,6 +64,7 @@ internal fun MainEntry(
 ) {
   val component = rememberComposableInjector { MainInjector() }
   val viewModel = rememberNotNull(component.viewModel)
+  val mapper = rememberNotNull(component.mapper)
 
   val page by viewModel.page.collectAsStateWithLifecycle()
   val isDarkIcons = remember(page) { page == null }
@@ -66,12 +75,14 @@ internal fun MainEntry(
 
   MountHooks(
       viewModel = viewModel,
+      mapper = mapper,
   )
 
   MainScreen(
       modifier = modifier,
       appName = appName,
       state = viewModel,
+      mapper = mapper,
       onOpenSettings = { viewModel.handleOpenSettings() },
       onCloseSettings = { viewModel.handleCloseSettings() },
       onClosePage = { viewModel.handleClosePage() },

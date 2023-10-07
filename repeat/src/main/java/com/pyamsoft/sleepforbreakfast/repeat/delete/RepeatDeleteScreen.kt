@@ -23,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteScreen
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatCard
 
@@ -30,6 +31,7 @@ import com.pyamsoft.sleepforbreakfast.repeat.RepeatCard
 fun RepeatDeleteScreen(
     modifier: Modifier = Modifier,
     state: RepeatDeleteViewState,
+    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
@@ -48,6 +50,7 @@ fun RepeatDeleteScreen(
     RepeatCard(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
         repeat = repeat,
+        mapper = mapper,
     )
   }
 }

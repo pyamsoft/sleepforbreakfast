@@ -22,12 +22,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler
@@ -72,6 +75,7 @@ private fun MountHooks(viewModel: TransactionDeleteViewModeler) {
 internal fun TransactionDeleteEntry(
     modifier: Modifier = Modifier,
     params: TransactionDeleteParams,
+    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
@@ -99,6 +103,7 @@ internal fun TransactionDeleteEntry(
   ) {
     TransactionDeleteScreen(
         state = viewModel,
+        mapper = mapper,
         onDismiss = onDismiss,
         onConfirm = { handleSubmit() },
     )

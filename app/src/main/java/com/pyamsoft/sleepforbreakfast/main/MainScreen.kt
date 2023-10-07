@@ -29,6 +29,7 @@ import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.main.settings.SettingsDialog
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 
@@ -37,6 +38,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     appName: String,
     state: MainViewState,
+    mapper: CategoryIdMapper,
     onOpenSettings: () -> Unit,
     onCloseSettings: () -> Unit,
     onClosePage: () -> Unit,
@@ -71,12 +73,14 @@ fun MainScreen(
             TransactionEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 page = p,
+                mapper = mapper,
                 onDismiss = onClosePage,
             )
           }
           is MainPage.Repeat -> {
             RepeatEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
+                mapper = mapper,
                 onDismiss = onClosePage,
             )
           }

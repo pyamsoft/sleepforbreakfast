@@ -50,12 +50,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -76,6 +76,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -424,18 +425,32 @@ fun AddNote(
 private fun CategoryChip(
     modifier: Modifier = Modifier,
     category: DbCategory,
-    color: Color?,
+    isSelected: Boolean,
 ) {
-  val backgroundColor = remember(color) { color ?: Color.Unspecified }
+  val defaultColor = MaterialTheme.colors.secondary
+  val backgroundColor =
+      remember(
+          isSelected,
+          category,
+          defaultColor,
+      ) {
+        if (isSelected) {
+          val c = category.color
+          return@remember if (c == 0L) defaultColor else Color(c.toULong())
+        } else {
+          return@remember Color.Unspecified
+        }
+      }
+
   val unselectedTextColor = MaterialTheme.colors.onSurface
   val selectedTextColor = MaterialTheme.colors.onSecondary
   val textColor =
       remember(
-          color,
+          isSelected,
           unselectedTextColor,
           selectedTextColor,
       ) {
-        if (color == null) unselectedTextColor else selectedTextColor
+        if (isSelected) unselectedTextColor else selectedTextColor
       }
   Text(
       modifier =
@@ -463,7 +478,7 @@ fun MoneyCategories(
     state: MoneyAddViewState,
     canAdd: Boolean,
     showLabel: Boolean,
-    allCategories: SnapshotStateList<DbCategory>,
+    mapper: CategoryIdMapper,
     onCategoryAdded: ((DbCategory) -> Unit)?,
     onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
@@ -472,8 +487,8 @@ fun MoneyCategories(
       modifier = modifier,
       canAdd = canAdd,
       showLabel = showLabel,
+      mapper = mapper,
       selectedCategories = categories,
-      allCategories = allCategories,
       onCategoryAdded = onCategoryAdded,
       onCategoryRemoved = onCategoryRemoved,
   )
@@ -485,13 +500,11 @@ fun AddCategories(
     modifier: Modifier = Modifier,
     canAdd: Boolean,
     showLabel: Boolean,
+    mapper: CategoryIdMapper,
     selectedCategories: SnapshotStateList<DbCategory.Id>,
-    allCategories: SnapshotStateList<DbCategory>,
     onCategoryAdded: ((DbCategory) -> Unit)?,
     onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
-  val defaultColor = MaterialTheme.colors.secondary
-
   // TODO move into VM
   val (show, setShow) = rememberSaveable { mutableStateOf(false) }
 
@@ -526,126 +539,97 @@ fun AddCategories(
         )
       }
 
-      val showCategories =
-          remember(selectedCategories, allCategories) {
-            val result = mutableStateListOf<DbCategory>()
-            for (id in selectedCategories) {
-              // If a category is delete but still "attached" to the Transaction or Repeat, it will
-              // be
-              // null-ish here as it won't be in the allCategories, so hide it
-              val maybeCategory = allCategories.firstOrNull { it.id == id }
-              if (maybeCategory != null) {
-                result.add(maybeCategory)
-              }
-            }
-
-            return@remember result.sortedBy { it.name.lowercase() }
-          }
-
+      val showCategories = mapper.map(selectedCategories)
       for (cat in showCategories) {
-        val color =
-            remember(
-                cat,
-                defaultColor,
-            ) {
-              val c = cat.color
-              if (c == 0L) defaultColor else Color(c.toULong())
-            }
-
         CategoryChip(
             modifier =
                 Modifier.padding(end = MaterialTheme.keylines.baseline)
                     .padding(bottom = MaterialTheme.keylines.baseline)
                     .clickable(enabled = canAdd) { handleShow() },
-            color = color,
             category = cat,
+            isSelected = true,
         )
       }
     }
   }
 
-  val configuration = LocalConfiguration.current
-  val dropdownMaxHeight =
-      remember(configuration) {
-        val h =
-            configuration.run {
-              val size = if (isPortrait) screenHeightDp else screenWidthDp
-              return@run size / 3
-            }
+  if (canAdd) {
+    val configuration = LocalConfiguration.current
+    val dropdownMaxHeight =
+        remember(configuration) {
+          val h =
+              configuration.run {
+                val size = if (isPortrait) screenHeightDp else screenWidthDp
+                return@run size / 3
+              }
 
-        return@remember h.dp
-      }
-
-  val isClickEnabled =
-      remember(
-          onCategoryAdded,
-          onCategoryRemoved,
-      ) {
-        onCategoryAdded != null && onCategoryRemoved != null
-      }
-
-  DropdownMenu(
-      modifier = Modifier.heightIn(max = dropdownMaxHeight),
-      properties = remember { PopupProperties(focusable = true) },
-      expanded = show,
-      onDismissRequest = { setShow(false) },
-  ) {
-
-    // Remember this only on the initial composition to keep the "starting selected" on top,
-    // then alphabetical. New selections will not go to the top
-    val showCategories = remember {
-      val result = mutableStateListOf<DbCategory>()
-      val unselected = mutableStateListOf<DbCategory>()
-      for (cat in allCategories) {
-        val selected = selectedCategories.firstOrNull { it == cat.id }
-        if (selected != null) {
-          result.add(cat)
-        } else {
-          unselected.add(cat)
+          return@remember h.dp
         }
-      }
 
-      // Sort the existing result list in place, selected on top alphabetical
-      result.sortBy { it.name.lowercase() }
+    val isClickEnabled =
+        remember(
+            onCategoryAdded,
+            onCategoryRemoved,
+        ) {
+          onCategoryAdded != null && onCategoryRemoved != null
+        }
 
-      // Then sort unselected, and all the two
-      unselected.sortBy { it.name.lowercase() }
-      return@remember result + unselected
-    }
+    DropdownMenu(
+        modifier = Modifier.heightIn(max = dropdownMaxHeight),
+        properties = remember { PopupProperties(focusable = true) },
+        expanded = show,
+        onDismissRequest = { setShow(false) },
+    ) {
 
-    for (cat in showCategories) {
-      // If this category is selected
-      val isSelected =
-          remember(
-              cat,
-              selectedCategories,
-          ) {
-            selectedCategories.firstOrNull { it == cat.id } != null
-          }
-
-      val color =
-          remember(
-              cat,
-              defaultColor,
-          ) {
-            val c = cat.color
-            if (c == 0L) defaultColor else Color(c.toULong())
-          }
-
-      DropdownMenuItem(
-          enabled = isClickEnabled,
-          onClick = {
-            if (isSelected) {
-              onCategoryRemoved?.invoke(cat)
-            } else {
-              onCategoryAdded?.invoke(cat)
+      // Remember this only on the initial composition to keep the "starting selected" on top,
+      // then alphabetical. New selections will not go to the top
+      val allCategories = mapper.collectAllCategories()
+      val showCategories =
+          remember(allCategories) {
+            val result = mutableListOf<DbCategory>()
+            val unselected = mutableListOf<DbCategory>()
+            for (cat in allCategories) {
+              val selected = selectedCategories.firstOrNull { it == cat.id }
+              if (selected != null) {
+                result.add(cat)
+              } else {
+                unselected.add(cat)
+              }
             }
-          },
-      ) {
-        CategoryChip(
-            category = cat,
-            color = if (isSelected) color else null,
-        )
+
+            // Sort the existing result list in place, selected on top alphabetical
+            result.sortBy { it.name.lowercase() }
+
+            // Then sort unselected, and all the two
+            unselected.sortBy { it.name.lowercase() }
+            return@remember (result + unselected).toMutableStateList()
+          }
+
+      for (cat in showCategories) {
+        // If this category is selected
+        val isSelected =
+            remember(
+                cat,
+                selectedCategories,
+            ) {
+              selectedCategories.firstOrNull { it == cat.id } != null
+            }
+
+        DropdownMenuItem(
+            enabled = isClickEnabled,
+            onClick = {
+              if (isSelected) {
+                onCategoryRemoved?.invoke(cat)
+              } else {
+                onCategoryAdded?.invoke(cat)
+              }
+            },
+        ) {
+          CategoryChip(
+              category = cat,
+              isSelected = isSelected,
+          )
+        }
       }
     }
   }

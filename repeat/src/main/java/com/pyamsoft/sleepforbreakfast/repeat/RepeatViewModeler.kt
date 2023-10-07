@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatChangeEvent
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddParams
 import com.pyamsoft.sleepforbreakfast.repeat.delete.RepeatDeleteParams
@@ -34,6 +35,7 @@ internal constructor(
     state: MutableRepeatViewState,
     interactor: RepeatInteractor,
     enforcer: ThreadEnforcer,
+    private val categoryLoader: CategoryLoader,
     private val jsonParser: JsonParser,
 ) :
     RepeatViewState by state,
