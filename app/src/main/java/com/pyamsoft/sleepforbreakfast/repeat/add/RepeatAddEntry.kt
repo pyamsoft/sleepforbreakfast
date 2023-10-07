@@ -17,7 +17,9 @@
 package com.pyamsoft.sleepforbreakfast.repeat.add
 
 import androidx.activity.ComponentActivity
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -26,6 +28,7 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
@@ -84,31 +87,35 @@ internal fun RepeatAddEntry(
       viewModel = viewModel,
   )
 
-  SurfaceDialog(
-      modifier = modifier,
-      onDismiss = onDismiss,
+  CompositionLocalProvider(
+      LocalCategoryColor provides MaterialTheme.colors.primary,
   ) {
-    RepeatAddScreen(
-        state = viewModel,
-        mapper = mapper,
+    SurfaceDialog(
+        modifier = modifier,
         onDismiss = onDismiss,
-        onNameChanged = { viewModel.handleNameChanged(it) },
-        onNoteChanged = { viewModel.handleNoteChanged(it) },
-        onAmountChanged = { viewModel.handleAmountChanged(it) },
-        onTypeChanged = { viewModel.handleTypeChanged(it) },
-        onCategoryAdded = { viewModel.handleCategoryAdded(it) },
-        onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
-        onDateChanged = { viewModel.handleDateChanged(it) },
-        onOpenDateDialog = { viewModel.handleOpenDateDialog() },
-        onCloseDateDialog = { viewModel.handleCloseDateDialog() },
-        onRepeatTypeChanged = { viewModel.handleRepeatTypeChanged(it) },
-        onReset = { viewModel.handleReset() },
-        onSubmit = {
-          viewModel.handleSubmit(
-              scope = scope,
-              onDismissAfterUpdated = onDismiss,
-          )
-        },
-    )
+    ) {
+      RepeatAddScreen(
+          state = viewModel,
+          mapper = mapper,
+          onDismiss = onDismiss,
+          onNameChanged = { viewModel.handleNameChanged(it) },
+          onNoteChanged = { viewModel.handleNoteChanged(it) },
+          onAmountChanged = { viewModel.handleAmountChanged(it) },
+          onTypeChanged = { viewModel.handleTypeChanged(it) },
+          onCategoryAdded = { viewModel.handleCategoryAdded(it) },
+          onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
+          onDateChanged = { viewModel.handleDateChanged(it) },
+          onOpenDateDialog = { viewModel.handleOpenDateDialog() },
+          onCloseDateDialog = { viewModel.handleCloseDateDialog() },
+          onRepeatTypeChanged = { viewModel.handleRepeatTypeChanged(it) },
+          onReset = { viewModel.handleReset() },
+          onSubmit = {
+            viewModel.handleSubmit(
+                scope = scope,
+                onDismissAfterUpdated = onDismiss,
+            )
+          },
+      )
+    }
   }
 }
