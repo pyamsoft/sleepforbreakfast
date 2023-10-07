@@ -28,6 +28,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,27 @@ internal constructor(
     private val clock: Clock,
 ) {
 
+  private val chaseTransactionDateFormatter by lazy {
+    // Oct 7, 2023 at 1:23AM ET
+    DateTimeFormatter.ofPattern("LL d, yyyy 'at' h:mm a z")
+  }
+
+  @CheckResult
+  private fun getAutomaticDate(auto: DbAutomatic): LocalDateTime? {
+    val date = auto.notificationOptionalDate
+    if (date.isBlank()) {
+      return null
+    }
+
+    return try {
+      LocalDateTime.parse(date, chaseTransactionDateFormatter)
+    } catch (e: Throwable) {
+      Timber.e(e) { "Failed to parse timestamp into Chase Transaction Date" }
+      null
+    }
+  }
+
+  @CheckResult
   private fun getNotificationPostTime(auto: DbAutomatic): LocalDateTime {
     val epoch = Instant.ofEpochMilli(auto.notificationPostTime)
     return LocalDateTime.ofInstant(epoch, TimeZone.getDefault().toZoneId())
@@ -87,7 +109,7 @@ internal constructor(
             .amountInCents(auto.notificationAmountInCents)
             .type(auto.notificationType)
             .name(auto.notificationOptionalMerchant.ifBlank { auto.notificationTitle })
-            .date(getNotificationPostTime(auto))
+            .date(getAutomaticDate(auto) ?: getNotificationPostTime(auto))
             .note(note)
 
     return when (val result = transactionInsertDao.insert(transaction)) {
