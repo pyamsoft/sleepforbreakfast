@@ -86,7 +86,7 @@ internal constructor(
             .replaceCategories(auto.categories)
             .amountInCents(auto.notificationAmountInCents)
             .type(auto.notificationType)
-            .name(auto.notificationTitle)
+            .name(auto.notificationOptionalMerchant.ifBlank { auto.notificationTitle })
             .date(getNotificationPostTime(auto))
             .note(note)
 
