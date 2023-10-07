@@ -28,12 +28,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
@@ -58,9 +56,7 @@ private enum class ContentTypes {
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
-
     mapper: CategoryIdMapper,
-
     clock: Clock,
     onDismiss: () -> Unit,
 
@@ -107,7 +103,6 @@ fun TransactionScreen(
           state = state,
           clock = clock,
           mapper = mapper,
-
           onDismiss = onDismiss,
 
           // Search
