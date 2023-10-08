@@ -59,11 +59,17 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
           return null
         }
 
-    val captureGroups = regex.find(payText)?.groups
+    val capture = regex.find(payText)
+    if (capture == null) {
+      Timber.w { "Unable to capture from payText: $payText" }
+      return null
+    }
+
+    val captureGroups = capture.groups
 
     val justPrice =
         captureGroups
-            ?.extractGroup(CAPTURE_NAME_AMOUNT)
+            .extractGroup(CAPTURE_NAME_AMOUNT)
             ?.replace(REGEX_FILTER_ONLY_DIGITS, "")
             ?.toLongOrNull()
 
@@ -72,11 +78,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
       return null
     }
 
-    var name = getTitle(title, bigTitle, payText)
-    if (name.isBlank()) {
-      name = DEFAULT_TITLE
-    }
-
+    val name = getTitle(title, bigTitle)
     val optionalAccount = captureGroups.extractGroup(CAPTURE_NAME_ACCOUNT).orEmpty()
     val optionalDate = captureGroups.extractGroup(CAPTURE_NAME_DATE).orEmpty()
     val optionalMerchant = captureGroups.extractGroup(CAPTURE_NAME_MERCHANT).orEmpty()
@@ -84,7 +86,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
 
     return PaymentNotification(
         title = name.toString(),
-        text = payText.toString(),
+        text = capture.value,
         type = getType(),
         categories = getCategories(),
         amount = justPrice,
@@ -96,10 +98,9 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
   }
 
   @CheckResult
-  protected open fun getTitle(
+  private fun getTitle(
       title: CharSequence,
       bigTitle: CharSequence,
-      payText: CharSequence,
   ): CharSequence {
     return if (title.isNotBlank()) {
       title
