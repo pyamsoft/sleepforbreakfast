@@ -21,20 +21,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import com.pyamsoft.pydroid.core.requireNotNull
 import java.text.DecimalFormat
-import java.text.NumberFormat
 
-private val MONEY_FORMATTER =
-    object : ThreadLocal<NumberFormat>() {
-
-      override fun initialValue(): NumberFormat? {
-        return DecimalFormat.getCurrencyInstance().apply {
-          minimumFractionDigits = 2
-          maximumFractionDigits = 2
-        }
-      }
-    }
+private val moneyFormatter by lazy {
+  DecimalFormat.getCurrencyInstance().apply {
+    minimumFractionDigits = 2
+    maximumFractionDigits = 2
+  }
+}
 
 class MoneyVisualTransformation : VisualTransformation {
 
@@ -87,8 +81,7 @@ class MoneyVisualTransformation : VisualTransformation {
     @JvmStatic
     @CheckResult
     private fun format(amount: Double): String {
-      val formatter = MONEY_FORMATTER.get().requireNotNull()
-      return formatter.format(amount / 100)
+      return moneyFormatter.format(amount / 100)
     }
 
     @JvmStatic

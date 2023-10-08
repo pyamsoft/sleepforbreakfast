@@ -34,7 +34,7 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionHeader
@@ -56,7 +56,6 @@ private enum class ContentTypes {
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
-    mapper: CategoryIdMapper,
     clock: Clock,
     onDismiss: () -> Unit,
 
@@ -102,7 +101,6 @@ fun TransactionScreen(
           modifier = Modifier.fillMaxWidth().padding(pv),
           state = state,
           clock = clock,
-          mapper = mapper,
           onDismiss = onDismiss,
 
           // Search
@@ -161,7 +159,6 @@ fun TransactionScreen(
                               onLongClick = { onTransactionLongClicked(transaction) },
                           ),
                       transaction = transaction,
-                      mapper = mapper,
                       currentCategory = cur.id,
                   )
                 }

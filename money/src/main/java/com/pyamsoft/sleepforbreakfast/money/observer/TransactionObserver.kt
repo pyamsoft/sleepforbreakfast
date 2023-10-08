@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.money.observer
 
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 
-@JvmField
-internal val TRANSACTION_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedDateTime(
-            FormatStyle.LONG,
-            FormatStyle.SHORT,
-        )
-      }
-    }
+interface TransactionObserver : BaseDbObserver<DbTransaction, DbTransaction.Id>

@@ -25,7 +25,7 @@ import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.success
 import com.pyamsoft.pydroid.theme.warning
 import com.pyamsoft.sleepforbreakfast.db.Maybe
-import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.dateFormatter
 import com.pyamsoft.sleepforbreakfast.money.list.KnobBar
 import com.pyamsoft.sleepforbreakfast.money.list.UsageIndicator
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
@@ -127,11 +127,11 @@ internal fun PeriodBreakdownBar(
             if (r == null) {
               "Start Date"
             } else {
-              DATE_FORMATTER.get().requireNotNull().format(r.start)
+              dateFormatter.format(r.start)
             }
           }
         } else {
-          DATE_FORMATTER.get().requireNotNull().format(selectedStart)
+          dateFormatter.format(selectedStart)
         }
       }
 
@@ -145,11 +145,11 @@ internal fun PeriodBreakdownBar(
             if (r == null) {
               "End Date"
             } else {
-              DATE_FORMATTER.get().requireNotNull().format(r.end)
+              dateFormatter.format(r.end)
             }
           }
         } else {
-          DATE_FORMATTER.get().requireNotNull().format(selectedEnd)
+          dateFormatter.format(selectedEnd)
         }
       }
 

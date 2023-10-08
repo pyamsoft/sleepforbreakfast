@@ -41,7 +41,7 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
-import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.dateFormatter
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
@@ -219,7 +219,7 @@ fun TransactionAutoScreen(
                   contentType = AutoContentTypes.CREATED_DATE,
               ) {
                 val dateString =
-                    remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
+                    remember(date) { dateFormatter.format(date) }
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()

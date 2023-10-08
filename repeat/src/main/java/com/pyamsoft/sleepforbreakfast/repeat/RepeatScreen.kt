@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 private enum class ContentTypes {
@@ -41,7 +41,6 @@ private enum class ContentTypes {
 fun RepeatScreen(
     modifier: Modifier = Modifier,
     showActionButton: Boolean,
-    mapper: CategoryIdMapper,
     state: RepeatViewState,
     onActionButtonClicked: () -> Unit,
     onRepeatClicked: (DbRepeat) -> Unit,
@@ -85,7 +84,6 @@ fun RepeatScreen(
               }
             },
         repeat = repeat,
-        mapper = mapper,
     )
   }
 }

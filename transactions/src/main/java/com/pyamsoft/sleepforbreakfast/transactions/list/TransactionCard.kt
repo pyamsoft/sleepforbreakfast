@@ -41,7 +41,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
@@ -51,14 +50,21 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
-import com.pyamsoft.sleepforbreakfast.transactions.TRANSACTION_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Month
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.format.TextStyle as MonthTextStyle
+
+private val transactionFormatter by lazy {
+  DateTimeFormatter.ofLocalizedDateTime(
+      FormatStyle.LONG,
+      FormatStyle.SHORT,
+  )
+}
 
 @Composable
 internal fun TransactionHeader(
@@ -94,12 +100,11 @@ internal fun TransactionHeader(
 internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
-    mapper: CategoryIdMapper,
     transaction: DbTransaction,
     currentCategory: DbCategory.Id,
 ) {
   val date = transaction.date
-  val dateString = remember(date) { TRANSACTION_FORMATTER.get().requireNotNull().format(date) }
+  val dateString = remember(date) { transactionFormatter.format(date) }
 
   val amount = transaction.amountInCents
   val priceString =
@@ -112,7 +117,6 @@ internal fun TransactionCard(
       modifier = modifier,
       contentModifier =
           Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
-      mapper = mapper,
       title = transaction.name,
       titleStyle =
           MaterialTheme.typography.h6.copy(
@@ -158,7 +162,6 @@ internal fun TransactionCard(
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     isHeader: Boolean = false,
-    mapper: CategoryIdMapper,
     title: String,
     titleStyle: TextStyle,
     date: String,
@@ -267,7 +270,6 @@ internal fun TransactionCard(
             canAdd = false,
             showLabel = false,
             selectedCategories = otherCategories,
-            mapper = mapper,
             onCategoryAdded = null,
             onCategoryRemoved = null,
         )

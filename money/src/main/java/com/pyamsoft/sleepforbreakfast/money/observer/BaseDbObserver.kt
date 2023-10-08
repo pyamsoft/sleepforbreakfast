@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.money.category
+package com.pyamsoft.sleepforbreakfast.money.observer
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.ResultWrapper
-import com.pyamsoft.sleepforbreakfast.db.DbQuery
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import kotlinx.coroutines.CoroutineScope
 
-interface CategoryLoader : DbQuery<DbCategory> {
+interface BaseDbObserver<T : Any, I : Any> {
 
-  @CheckResult suspend fun queryAsResult(): ResultWrapper<List<DbCategory>>
+  fun bind(scope: CoroutineScope)
+
+  @Composable @CheckResult fun collect(): SnapshotStateList<T>
+
+  @Composable @CheckResult fun map(id: I): T
+
+  @Composable @CheckResult fun map(ids: SnapshotStateList<I>): SnapshotStateList<T>
 }

@@ -19,20 +19,8 @@ package com.pyamsoft.sleepforbreakfast.money
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-@JvmField
-val DATE_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
+val dateFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
 
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-      }
-    }
-
-@JvmField
-val TIME_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-      }
-    }
+val timeFormatter: DateTimeFormatter by lazy {
+  DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+}

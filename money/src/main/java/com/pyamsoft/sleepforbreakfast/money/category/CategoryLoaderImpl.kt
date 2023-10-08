@@ -37,10 +37,10 @@ constructor(
     private val preferences: DbPreferences,
 ) : CategoryLoader {
 
-  override suspend fun queryAllResult(): ResultWrapper<List<DbCategory>> =
+  override suspend fun queryAsResult(): ResultWrapper<List<DbCategory>> =
       withContext(context = Dispatchers.Default) {
         try {
-          ResultWrapper.success(queryAll())
+          ResultWrapper.success(query())
         } catch (e: Throwable) {
           e.ifNotCancellation {
             Timber.e(e) { "Error getting Categories" }
@@ -49,7 +49,7 @@ constructor(
         }
       }
 
-  override suspend fun queryAll(): List<DbCategory> =
+  override suspend fun query(): List<DbCategory> =
       withContext(context = Dispatchers.Default) {
         if (!preferences.listenSystemCategoriesPreloaded().first()) {
           preferences.markSystemCategoriesPreloaded()

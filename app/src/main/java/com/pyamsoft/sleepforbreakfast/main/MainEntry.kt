@@ -32,12 +32,14 @@ import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
+import com.pyamsoft.sleepforbreakfast.money.observer.TransactionObserver
 import javax.inject.Inject
 
 internal class MainInjector @Inject internal constructor() : ComposableInjector() {
 
-  @JvmField @Inject internal var mapper: CategoryIdMapper? = null
+  @JvmField @Inject internal var transactionObserver: TransactionObserver? = null
+  @JvmField @Inject internal var categoryObserver: CategoryObserver? = null
   @JvmField @Inject internal var viewModel: MainViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
@@ -46,17 +48,21 @@ internal class MainInjector @Inject internal constructor() : ComposableInjector(
 
   override fun onDispose() {
     viewModel = null
-    mapper = null
+    categoryObserver = null
+    transactionObserver = null
   }
 }
 
 @Composable
 private fun MountHooks(
     viewModel: MainViewModeler,
-    mapper: CategoryIdMapper,
+    categoryObserver: CategoryObserver,
+    transactionObserver: TransactionObserver,
 ) {
   SaveStateDisposableEffect(viewModel)
-  LaunchedEffect(mapper) { mapper.bind(scope = this) }
+
+  LaunchedEffect(categoryObserver) { categoryObserver.bind(scope = this) }
+  LaunchedEffect(transactionObserver) { transactionObserver.bind(scope = this) }
 }
 
 @Composable
@@ -67,7 +73,8 @@ internal fun MainEntry(
 ) {
   val component = rememberComposableInjector { MainInjector() }
   val viewModel = rememberNotNull(component.viewModel)
-  val mapper = rememberNotNull(component.mapper)
+  val categoryObserver = rememberNotNull(component.categoryObserver)
+  val transactionObserver = rememberNotNull(component.transactionObserver)
 
   val page by viewModel.page.collectAsStateWithLifecycle()
   val isDarkIcons = remember(page) { page == null }
@@ -78,7 +85,8 @@ internal fun MainEntry(
 
   MountHooks(
       viewModel = viewModel,
-      mapper = mapper,
+      categoryObserver = categoryObserver,
+      transactionObserver = transactionObserver,
   )
 
   CompositionLocalProvider(
@@ -88,7 +96,6 @@ internal fun MainEntry(
         modifier = modifier,
         appName = appName,
         state = viewModel,
-        mapper = mapper,
         onOpenSettings = { viewModel.handleOpenSettings() },
         onCloseSettings = { viewModel.handleCloseSettings() },
         onClosePage = { viewModel.handleClosePage() },

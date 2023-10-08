@@ -17,19 +17,12 @@
 package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-private val DATE_RANGE_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-      }
-    }
+private val dateRangeFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
 
 @CheckResult
 internal fun List<DbTransaction>.calculateTotalTransactionAmount(): Long {
@@ -69,15 +62,13 @@ internal fun List<DbTransaction>.calculateTotalTransactionRange(): String {
     return ""
   }
 
-  val formatter = DATE_RANGE_FORMATTER.get().requireNotNull()
-
   // If we only have one transaction
   if (last == null || last.date == first.date) {
-    val dateString = formatter.format(first.date)
+    val dateString = dateRangeFormatter.format(first.date)
     return "From $dateString"
   }
 
-  val firstDateString = formatter.format(first.date)
-  val lastDateString = formatter.format(last.date)
+  val firstDateString = dateRangeFormatter.format(first.date)
+  val lastDateString = dateRangeFormatter.format(last.date)
   return "From $lastDateString to $firstDateString"
 }

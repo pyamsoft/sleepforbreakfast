@@ -43,7 +43,7 @@ import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.list.Search
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddEntry
@@ -75,7 +75,6 @@ private fun MountHooks(
 @Composable
 internal fun RepeatEntry(
     modifier: Modifier = Modifier,
-    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector { RepeatInjector() }
@@ -95,7 +94,6 @@ internal fun RepeatEntry(
 
   RepeatScreen(
       modifier = modifier,
-      mapper = mapper,
       showActionButton = true,
       state = viewModel,
       topBar = {
@@ -117,7 +115,6 @@ internal fun RepeatEntry(
     RepeatAddEntry(
         modifier = Modifier.fillUpToPortraitSize(),
         params = p,
-        mapper = mapper,
         onDismiss = { viewModel.handleCloseAddRepeat() },
     )
   }
@@ -126,7 +123,6 @@ internal fun RepeatEntry(
     RepeatDeleteEntry(
         modifier = Modifier.fillUpToPortraitSize(),
         params = p,
-        mapper = mapper,
         onDismiss = { viewModel.handleCloseDeleteRepeat() },
     )
   }

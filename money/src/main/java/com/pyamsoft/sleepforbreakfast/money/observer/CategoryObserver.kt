@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.money.category
+package com.pyamsoft.sleepforbreakfast.money.observer
 
-import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.ResultWrapper
-import com.pyamsoft.sleepforbreakfast.db.DbQuery
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
-interface CategoryLoader : DbQuery<DbCategory> {
-
-  @CheckResult suspend fun queryAsResult(): ResultWrapper<List<DbCategory>>
-}
+interface CategoryObserver : BaseDbObserver<DbCategory, DbCategory.Id>

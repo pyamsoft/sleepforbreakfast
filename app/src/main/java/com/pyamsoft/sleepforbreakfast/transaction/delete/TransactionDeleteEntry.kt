@@ -28,7 +28,7 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler
@@ -73,7 +73,6 @@ private fun MountHooks(viewModel: TransactionDeleteViewModeler) {
 internal fun TransactionDeleteEntry(
     modifier: Modifier = Modifier,
     params: TransactionDeleteParams,
-    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
@@ -101,7 +100,6 @@ internal fun TransactionDeleteEntry(
   ) {
     TransactionDeleteScreen(
         state = viewModel,
-        mapper = mapper,
         onDismiss = onDismiss,
         onConfirm = { handleSubmit() },
     )

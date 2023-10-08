@@ -43,7 +43,7 @@ internal constructor(
   @CheckResult
   private suspend fun fetchCategories(): List<DbCategory> {
     try {
-      return categoryLoader.queryAll()
+      return categoryLoader.query()
     } catch (e: Throwable) {
       e.ifNotCancellation {
         Timber.e(e) { "Error fetching categories" }

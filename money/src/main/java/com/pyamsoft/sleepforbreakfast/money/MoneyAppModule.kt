@@ -19,11 +19,23 @@ package com.pyamsoft.sleepforbreakfast.money
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoaderImpl
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
+import com.pyamsoft.sleepforbreakfast.money.observer.DefaultCategoryObserver
+import com.pyamsoft.sleepforbreakfast.money.observer.DefaultTransactionObserver
+import com.pyamsoft.sleepforbreakfast.money.observer.TransactionObserver
 import dagger.Binds
 import dagger.Module
 
 @Module
 abstract class MoneyAppModule {
+
+  @Binds
+  internal abstract fun provideTransactionObserver(
+      impl: DefaultTransactionObserver
+  ): TransactionObserver
+
+  @Binds
+  internal abstract fun provideCategoryObserver(impl: DefaultCategoryObserver): CategoryObserver
 
   @Binds
   @CheckResult

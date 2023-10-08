@@ -20,15 +20,12 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddScreen
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddViewModeler
@@ -39,7 +36,6 @@ internal class TransactionAddInjector
 @Inject
 internal constructor(
     private val params: TransactionAddParams,
-    private val allCategories: SnapshotStateList<DbCategory>,
 ) : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: TransactionAddViewModeler? = null
@@ -49,7 +45,6 @@ internal constructor(
         .plusAddTransactions()
         .create(
             params = params,
-            allCategories = allCategories,
         )
         .inject(this)
   }
@@ -74,15 +69,12 @@ private fun MountHooks(viewModel: TransactionAddViewModeler) {
 @Composable
 internal fun TransactionAddEntry(
     modifier: Modifier = Modifier,
-    mapper: CategoryIdMapper,
     params: TransactionAddParams,
     onDismiss: () -> Unit,
 ) {
-  val allCategories = mapper.collectAllCategories()
   val component = rememberComposableInjector {
     TransactionAddInjector(
         params = params,
-        allCategories = allCategories,
     )
   }
 
@@ -100,7 +92,6 @@ internal fun TransactionAddEntry(
   ) {
     TransactionAddScreen(
         state = viewModel,
-        mapper = mapper,
         onDismiss = onDismiss,
         onNameChanged = { viewModel.handleNameChanged(it) },
         onNoteChanged = { viewModel.handleNoteChanged(it) },

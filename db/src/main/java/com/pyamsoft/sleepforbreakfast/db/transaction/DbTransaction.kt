@@ -157,6 +157,13 @@ interface DbTransaction {
   }
 
   companion object {
+    @JvmField
+    val NONE: DbTransaction =
+        Impl(
+            id = Id.EMPTY,
+            createdAt = LocalDateTime.MIN,
+            date = LocalDateTime.MIN,
+        )
 
     @JvmStatic
     @CheckResult

@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
@@ -39,27 +38,19 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-private val REPEAT_FORMATTER =
-    object : ThreadLocal<DateTimeFormatter>() {
-
-      override fun initialValue(): DateTimeFormatter {
-        return DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-      }
-    }
+private val repeatFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
 
 @Composable
 internal fun RepeatCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
     repeat: DbRepeat,
-    mapper: CategoryIdMapper,
 ) {
   val note = repeat.transactionNote
   val hasNote = remember(note) { note.isNotBlank() }
@@ -93,8 +84,7 @@ internal fun RepeatCard(
       }
 
   val startDate = repeat.firstDay
-  val startDateString =
-      remember(startDate) { REPEAT_FORMATTER.get().requireNotNull().format(startDate) }
+  val startDateString = remember(startDate) { repeatFormatter.format(startDate) }
 
   Card(
       modifier = modifier,
@@ -162,7 +152,6 @@ internal fun RepeatCard(
       AddCategories(
           canAdd = false,
           showLabel = true,
-          mapper = mapper,
           selectedCategories = repeat.transactionCategories.rememberAsStateList(),
           onCategoryAdded = null,
           onCategoryRemoved = null,

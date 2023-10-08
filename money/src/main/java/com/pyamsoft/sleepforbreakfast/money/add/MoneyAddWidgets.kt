@@ -73,10 +73,10 @@ import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.dateFormatter
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
+import com.pyamsoft.sleepforbreakfast.money.timeFormatter
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -239,7 +239,7 @@ fun DatePicker(
     date: LocalDate,
     onOpenDateDialog: () -> Unit,
 ) {
-  val justDate = remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
+  val justDate = remember(date) { dateFormatter.format(date) }
 
   Text(
       modifier = modifier.clickable { onOpenDateDialog() },
@@ -255,7 +255,7 @@ fun TimePicker(
     time: LocalTime,
     onOpenTimeDialog: () -> Unit,
 ) {
-  val justTime = remember(time) { TIME_FORMATTER.get().requireNotNull().format(time) }
+  val justTime = remember(time) { timeFormatter.format(time) }
 
   Text(
       modifier = modifier.clickable { onOpenTimeDialog() },
@@ -478,7 +478,6 @@ fun MoneyCategories(
     state: MoneyAddViewState,
     canAdd: Boolean,
     showLabel: Boolean,
-    mapper: CategoryIdMapper,
     onCategoryAdded: ((DbCategory) -> Unit)?,
     onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
@@ -487,7 +486,6 @@ fun MoneyCategories(
       modifier = modifier,
       canAdd = canAdd,
       showLabel = showLabel,
-      mapper = mapper,
       selectedCategories = categories,
       onCategoryAdded = onCategoryAdded,
       onCategoryRemoved = onCategoryRemoved,
@@ -500,11 +498,12 @@ fun AddCategories(
     modifier: Modifier = Modifier,
     canAdd: Boolean,
     showLabel: Boolean,
-    mapper: CategoryIdMapper,
     selectedCategories: SnapshotStateList<DbCategory.Id>,
     onCategoryAdded: ((DbCategory) -> Unit)?,
     onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
+  val observer = LocalCategoryObserver.current
+
   // TODO move into VM
   val (show, setShow) = rememberSaveable { mutableStateOf(false) }
 
@@ -539,7 +538,7 @@ fun AddCategories(
         )
       }
 
-      val showCategories = mapper.map(selectedCategories)
+      val showCategories = observer.map(selectedCategories)
       for (cat in showCategories) {
         CategoryChip(
             modifier =
@@ -583,7 +582,7 @@ fun AddCategories(
 
       // Remember this only on the initial composition to keep the "starting selected" on top,
       // then alphabetical. New selections will not go to the top
-      val allCategories = mapper.collectAllCategories()
+      val allCategories = observer.collect()
       val showCategories =
           remember(allCategories) {
             val result = mutableListOf<DbCategory>()

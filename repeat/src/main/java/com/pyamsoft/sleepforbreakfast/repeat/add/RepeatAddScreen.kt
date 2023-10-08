@@ -58,7 +58,6 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyName
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import java.time.LocalDate
 
@@ -75,7 +74,6 @@ private enum class ContentTypes {
 fun RepeatAddScreen(
     modifier: Modifier = Modifier,
     state: RepeatAddViewState,
-    mapper: CategoryIdMapper,
     onNameChanged: (String) -> Unit,
     onNoteChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
@@ -215,7 +213,6 @@ fun RepeatAddScreen(
             state = state,
             canAdd = true,
             showLabel = true,
-            mapper = mapper,
             onCategoryAdded = onCategoryAdded,
             onCategoryRemoved = onCategoryRemoved,
         )

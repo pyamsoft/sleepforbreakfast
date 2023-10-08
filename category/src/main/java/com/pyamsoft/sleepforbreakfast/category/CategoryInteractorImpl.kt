@@ -41,7 +41,7 @@ constructor(
 ) : CategoryInteractor, ListInteractorImpl<DbCategory.Id, DbCategory, CategoryChangeEvent>() {
 
   override suspend fun performQueryAll(): List<DbCategory> {
-    return categoryLoader.queryAll()
+    return categoryLoader.query()
   }
 
   override suspend fun performQueryOne(id: DbCategory.Id): Maybe<out DbCategory> {

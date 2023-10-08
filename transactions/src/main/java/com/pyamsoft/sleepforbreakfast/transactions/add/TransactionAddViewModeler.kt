@@ -24,6 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
+import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.Clock
@@ -44,7 +45,7 @@ internal constructor(
     params: TransactionAddParams,
     private val interactor: TransactionInteractor,
     private val clock: Clock,
-    private val allCategories: List<DbCategory>
+    private val categoryLoader: CategoryLoader,
 ) :
     TransactionAddViewState by state,
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
@@ -56,9 +57,10 @@ internal constructor(
   private val ensureCategoryId = params.ensureCategoryId
 
   @CheckResult
-  private fun getOnlyExistingCategories(): List<DbCategory.Id> {
+  private suspend fun getOnlyExistingCategories(): List<DbCategory.Id> {
     var cleaned = emptyList<DbCategory.Id>()
     val currentCategories = state.categories.value
+    val allCategories = categoryLoader.query()
     if (allCategories.isEmpty()) {
       Timber.w { "Could not load allCategories, do not change categories for compile()" }
       cleaned = currentCategories

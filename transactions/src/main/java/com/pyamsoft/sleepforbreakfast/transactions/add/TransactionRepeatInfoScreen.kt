@@ -42,10 +42,9 @@ import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
+import com.pyamsoft.sleepforbreakfast.money.dateFormatter
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.LocalDate
 
@@ -62,7 +61,6 @@ fun TransactionRepeatInfoScreen(
     loading: LoadingState,
     repeat: DbRepeat?,
     date: LocalDate,
-    mapper: CategoryIdMapper,
     onDismiss: () -> Unit,
 ) {
 
@@ -150,7 +148,7 @@ fun TransactionRepeatInfoScreen(
                   contentType = RepeatContentTypes.CREATED_DATE,
               ) {
                 val dateString =
-                    remember(date) { DATE_FORMATTER.get().requireNotNull().format(date) }
+                    remember(date) { dateFormatter.format(date) }
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -170,7 +168,6 @@ fun TransactionRepeatInfoScreen(
                       canAdd = false,
                       showLabel = true,
                       selectedCategories = categories,
-                      mapper = mapper,
                       onCategoryAdded = null,
                       onCategoryRemoved = null,
                   )

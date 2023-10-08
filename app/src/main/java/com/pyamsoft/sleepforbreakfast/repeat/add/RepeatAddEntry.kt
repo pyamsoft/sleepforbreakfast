@@ -26,7 +26,7 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.money.category.CategoryIdMapper
+import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
@@ -67,7 +67,6 @@ private fun MountHooks(viewModel: RepeatAddViewModeler) {
 @Composable
 internal fun RepeatAddEntry(
     modifier: Modifier = Modifier,
-    mapper: CategoryIdMapper,
     params: RepeatAddParams,
     onDismiss: () -> Unit,
 ) {
@@ -90,7 +89,6 @@ internal fun RepeatAddEntry(
   ) {
     RepeatAddScreen(
         state = viewModel,
-        mapper = mapper,
         onDismiss = onDismiss,
         onNameChanged = { viewModel.handleNameChanged(it) },
         onNoteChanged = { viewModel.handleNoteChanged(it) },

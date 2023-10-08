@@ -69,7 +69,7 @@ internal constructor(
   private suspend fun loadTargetCategory(): DbCategory {
     return state.category.value
         ?: categoryLoader
-            .queryAll()
+            .query()
             .firstOrNull { it.id == defaultCategoryId }
             .let { it ?: DbCategory.NONE }
             .also { state.category.value = it }
