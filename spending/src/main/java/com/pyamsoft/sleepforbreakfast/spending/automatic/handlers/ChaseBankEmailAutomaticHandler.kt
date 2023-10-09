@@ -37,7 +37,7 @@ internal class ChaseBankEmailAutomaticHandler @Inject internal constructor() :
   }
 
   override fun canExtract(packageName: String): Boolean {
-    return packageName in VALID_PACKAGE_NAMES
+    return true
   }
 
   override suspend fun getCategories(): List<DbCategory.Id> {
@@ -46,18 +46,9 @@ internal class ChaseBankEmailAutomaticHandler @Inject internal constructor() :
 
   companion object {
 
-    private val VALID_PACKAGE_NAMES =
-        listOf(
-            // Gmail
-            "com.google.android.gm",
-            // FairEmail
-            "eu.faircode.email",
-        )
-
-    private const val ACCOUNT_GROUP =
-        "(?<$CAPTURE_NAME_ACCOUNT>Chase .* \\(\\.\\.\\.\\.\\d\\d\\d\\d\\))"
+    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
     private const val DATE_GROUP =
-        "(?<$CAPTURE_NAME_DATE>\\w*\\s\\w*,\\s\\w*\\sat\\s\\w*:\\w*\\s\\w*)"
+        "(?<$CAPTURE_NAME_DATE>\\w*\\s\\w*,\\s\\w*\\sat\\s\\w*:\\w*\\s\\w*\\s\\w*)"
     private const val MERCHANT_GROUP = "(?<$CAPTURE_NAME_MERCHANT>.*)"
 
     /**
@@ -65,18 +56,13 @@ internal class ChaseBankEmailAutomaticHandler @Inject internal constructor() :
      * ==
      * You made an online, phone, or mail transaction
      *
-     * Account Chase Credit Card (....XXXX)
-     *
-     * Date Oct 7, 2023 at 1:23PM ET
-     *
-     * Merchant Amazon.com
-     *
-     * Amount $123.45
+     * Chase Freedom: You made a $2.00 transaction with My Favorite Merchant on Oct 7, 2023 at
+     * 1:23PM ET
      * ==
      * We can look for that notification text and parse the values out
      */
     private val CHASE_ALERT_EMAIL_REGEX =
-        "You made an online, phone, or mail transaction Account $ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount $CAPTURE_GROUP_AMOUNT"
+        "${ACCOUNT_GROUP}: You made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on ${DATE_GROUP}."
             .toRegex(RegexOption.MULTILINE)
   }
 }

@@ -28,8 +28,8 @@ import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
@@ -45,8 +45,8 @@ internal constructor(
 ) {
 
   private val chaseTransactionDateFormatter by lazy {
-    // Oct 7, 2023 at 1:23AM ET
-    DateTimeFormatter.ofPattern("LL d, yyyy 'at' h:mm a z")
+    // Oct 7, 2023 at 1:23 AM ET
+    DateTimeFormatter.ofPattern(CHASE_DATE_PATTERN)
   }
 
   @CheckResult
@@ -56,18 +56,54 @@ internal constructor(
       return null
     }
 
-    return try {
-      LocalDateTime.parse(date, chaseTransactionDateFormatter)
-    } catch (e: Throwable) {
-      Timber.e(e) { "Failed to parse timestamp into Chase Transaction Date" }
-      null
+    // Attempt to fix Chase's bad time zone
+    // ET is not a time zone, it's either EST or EDT
+    // figure out based on whether we are in DST right now or not
+    val len = date.length
+    val badTZWithSpace = date.substring(len - 3, len)
+    // ET or PT or MT or CT or whatever-T
+    if (badTZWithSpace.matches("\\s.T".toRegex())) {
+      val goodTZ =
+          if (isDst()) {
+            "${badTZWithSpace[1]}D${badTZWithSpace[2]}"
+          } else {
+            "${badTZWithSpace[1]}S${badTZWithSpace[2]}"
+          }
+      val dateString = date.substring(0, len - 3)
+
+      return try {
+        Timber.d {
+          "Parse timestamp into Chase Transaction Date: ${mapOf(
+            "pattern" to CHASE_DATE_PATTERN,
+            "raw" to date,
+            "dateString" to dateString,
+          )}"
+        }
+
+        // Just the date locally
+        LocalDateTime.parse(dateString, chaseTransactionDateFormatter)
+            .atZone(ZoneId.of(goodTZ, KNOWN_SHORT_IDS))
+            .withZoneSameInstant(ZoneId.systemDefault())
+            .toLocalDateTime()
+      } catch (e: Throwable) {
+        Timber.e(e) {
+          "Failed to parse timestamp into Chase Transaction Date: ${mapOf(
+            "pattern" to CHASE_DATE_PATTERN,
+            "raw" to date,
+            "dateString" to dateString,
+          )}"
+        }
+        null
+      }
     }
+
+    return null
   }
 
   @CheckResult
   private fun getNotificationPostTime(auto: DbAutomatic): LocalDateTime {
     val epoch = Instant.ofEpochMilli(auto.notificationPostTime)
-    return LocalDateTime.ofInstant(epoch, TimeZone.getDefault().toZoneId())
+    return LocalDateTime.ofInstant(epoch, ZoneId.systemDefault())
   }
 
   @CheckResult
@@ -168,5 +204,27 @@ internal constructor(
      * could cause duplicates in the DB if operations are close enough
      */
     private val GLOBAL_LOCK = Mutex()
+
+    private const val CHASE_DATE_PATTERN = "MMM d, yyyy 'at' h:mm a"
+
+    private val localZoneRules by lazy { ZoneId.systemDefault().rules }
+
+    private val KNOWN_SHORT_IDS by lazy {
+      val base = ZoneId.SHORT_IDS
+      base +
+          mapOf(
+              "ADT" to "-03:00",
+              "EDT" to "-04:00",
+              "CDT" to "-04:00",
+              "HDT" to "-9:00",
+              "MDT" to "-06:00",
+              "PDT" to "-07:00",
+          )
+    }
+
+    @CheckResult
+    private fun isDst(): Boolean {
+      return localZoneRules.isDaylightSavings(Instant.now())
+    }
   }
 }

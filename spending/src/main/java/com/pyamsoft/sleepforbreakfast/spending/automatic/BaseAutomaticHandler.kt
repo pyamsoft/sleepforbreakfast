@@ -30,9 +30,13 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
   @CheckResult
   private fun MatchGroupCollection.extractGroup(
       group: String,
-  ): String? {
-    return this.get(name = group)?.value?.trim()
-  }
+  ): String? =
+      try {
+        this.get(name = group)?.value?.trim()
+      } catch (_: Throwable) {
+        // This throws if it can't find the group, oh well
+        null
+      }
 
   final override suspend fun extract(bundle: Bundle): PaymentNotification? {
     val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
