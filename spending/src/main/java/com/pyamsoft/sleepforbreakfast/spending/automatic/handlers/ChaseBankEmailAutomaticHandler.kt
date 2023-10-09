@@ -37,7 +37,7 @@ internal class ChaseBankEmailAutomaticHandler @Inject internal constructor() :
   }
 
   override fun canExtract(packageName: String): Boolean {
-    return true
+    return packageName == "com.chase.sig.android"
   }
 
   override suspend fun getCategories(): List<DbCategory.Id> {
