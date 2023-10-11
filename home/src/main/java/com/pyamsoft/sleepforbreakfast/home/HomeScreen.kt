@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.home
 
+import androidx.annotation.CheckResult
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,10 +53,19 @@ import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
+import com.pyamsoft.pydroid.ui.util.collectAsStateMapWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
+import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
+import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
+import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
+import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
+import kotlin.math.abs
 
 private enum class ContentTypes {
   SPACER,
@@ -134,6 +145,15 @@ fun HomeScreen(
 }
 
 @Composable
+@CheckResult
+private fun rememberCategories(
+    map: SnapshotStateMap<DbCategory.Id, Set<DbTransaction>>,
+    id: DbCategory.Id
+): Set<DbTransaction> {
+  return remember(map, id) { map.getOrElse(id) { emptySet() } }
+}
+
+@Composable
 private fun HomeCategories(
     modifier: Modifier = Modifier,
     state: HomeViewState,
@@ -141,6 +161,7 @@ private fun HomeCategories(
     onOpenCategory: (DbCategory) -> Unit,
 ) {
   val categories = state.categories.collectAsStateListWithLifecycle()
+  val transactionsByCategory = state.transactionsByCategory.collectAsStateMapWithLifecycle()
 
   Column(
       modifier = modifier.padding(MaterialTheme.keylines.content),
@@ -160,9 +181,15 @@ private fun HomeCategories(
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
     ) {
       item {
+        val uncategorizedTransactions =
+            rememberCategories(
+                transactionsByCategory,
+                DbCategory.Id.EMPTY,
+            )
         Category(
             category = DbCategory.NONE,
             onOpen = onOpenCategory,
+            transactions = uncategorizedTransactions,
         )
       }
 
@@ -170,9 +197,15 @@ private fun HomeCategories(
           items = categories,
           key = { it.id.raw },
       ) { category ->
+        val transactions =
+            rememberCategories(
+                transactionsByCategory,
+                category.id,
+            )
         Category(
             category = category,
             onOpen = onOpenCategory,
+            transactions = transactions,
         )
       }
     }
@@ -183,6 +216,7 @@ private fun HomeCategories(
 private fun Category(
     modifier: Modifier = Modifier,
     category: DbCategory,
+    transactions: Set<DbTransaction>,
     onOpen: (DbCategory) -> Unit,
 ) {
   val defaultColor = MaterialTheme.colors.surface
@@ -211,6 +245,29 @@ private fun Category(
         if (category.id.isEmpty) noneCategoryAlpha else defaultCategoryAlpha
       }
 
+  val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
+  val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
+  val totalPrice =
+      remember(
+          transactions,
+          totalAmount,
+      ) {
+        if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
+      }
+
+  val zeroPriceColor = MaterialTheme.colors.onPrimary
+  val priceColor =
+      remember(
+          totalDirection,
+          zeroPriceColor,
+      ) {
+        when (totalDirection) {
+          SpendDirection.NONE -> zeroPriceColor
+          SpendDirection.SPEND -> COLOR_SPEND
+          SpendDirection.EARN -> COLOR_EARN
+        }
+      }
+
   Card(
       modifier = modifier,
       elevation = CardDefaults.Elevation,
@@ -229,6 +286,18 @@ private fun Category(
               ),
           text = category.name,
           fontStyle = fontStyle,
+      )
+
+      Text(
+          modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+          style =
+              MaterialTheme.typography.body2.copy(
+                  color =
+                      priceColor.copy(
+                          alpha = ContentAlpha.disabled,
+                      ),
+              ),
+          text = totalPrice,
       )
     }
   }

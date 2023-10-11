@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.transactions
+package com.pyamsoft.sleepforbreakfast.money
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -25,7 +25,7 @@ import java.time.format.FormatStyle
 private val dateRangeFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
 
 @CheckResult
-internal fun List<DbTransaction>.calculateTotalTransactionAmount(): Long {
+fun Collection<DbTransaction>.calculateTotalTransactionAmount(): Long {
   val self = this
   var total: Long = 0
   for (transaction in self) {
@@ -40,7 +40,7 @@ internal fun List<DbTransaction>.calculateTotalTransactionAmount(): Long {
 }
 
 @CheckResult
-internal fun Long.calculateTotalTransactionDirection(): SpendDirection {
+fun Long.calculateTotalTransactionDirection(): SpendDirection {
   val self = this
   return if (self == 0L) {
     SpendDirection.NONE
@@ -52,7 +52,7 @@ internal fun Long.calculateTotalTransactionDirection(): SpendDirection {
 }
 
 @CheckResult
-internal fun List<DbTransaction>.calculateTotalTransactionRange(): String {
+fun Collection<DbTransaction>.calculateTotalTransactionRange(): String {
   val self = this
   val first = self.firstOrNull()
   val last = self.lastOrNull()

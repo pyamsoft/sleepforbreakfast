@@ -21,6 +21,8 @@ import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.home.notification.NotificationListenerStatus
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
@@ -38,7 +40,20 @@ internal constructor(
     override val state: MutableHomeViewState,
     private val listenerStatus: NotificationListenerStatus,
     private val categoryLoader: CategoryLoader,
+    private val transactionQueryDao: TransactionQueryDao,
 ) : HomeViewState by state, AbstractViewModeler<HomeViewState>(state) {
+
+  @CheckResult
+  private suspend fun fetchTransactions(): List<DbTransaction> {
+    try {
+      return transactionQueryDao.query()
+    } catch (e: Throwable) {
+      e.ifNotCancellation {
+        Timber.e(e) { "Error fetching transactions" }
+        return emptyList()
+      }
+    }
+  }
 
   @CheckResult
   private suspend fun fetchCategories(): List<DbCategory> {
@@ -66,6 +81,26 @@ internal constructor(
         scope.async(context = Dispatchers.Default) {
           val categories = fetchCategories()
           state.categories.value = categories.sortedBy { it.name.lowercase() }
+        },
+    )
+    jobs.add(
+        scope.async(context = Dispatchers.Default) {
+          val transactions = fetchTransactions()
+          val map = mutableMapOf<DbCategory.Id, MutableSet<DbTransaction>>()
+          for (t in transactions) {
+            if (t.categories.isEmpty()) {
+              // If no categories add this Transaction to the Uncategorized
+              map.getOrPut(DbCategory.Id.EMPTY) { mutableSetOf() }.add(t)
+            } else {
+              for (c in t.categories) {
+                // Avoid a bug where the empty shows up
+                if (!c.isEmpty) {
+                  map.getOrPut(c) { mutableSetOf() }.add(t)
+                }
+              }
+            }
+          }
+          state.transactionsByCategory.value = map
         },
     )
 

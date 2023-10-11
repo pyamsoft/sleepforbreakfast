@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.money.list
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -74,6 +75,11 @@ protected constructor(
         ?.also { state.isSearchOpen.value = it }
 
     onConsumeRestoredState(registry)
+  }
+
+  @CheckResult
+  protected open suspend fun loadItems(force: Boolean): ResultWrapper<List<T>> {
+    return interactor.loadAll(force = force)
   }
 
   protected open fun onGenerateItemsBasedOnAllItems(
@@ -158,8 +164,7 @@ protected constructor(
       }
 
       state.loadingState.value = LoadingState.LOADING
-      interactor
-          .loadAll(force = force)
+      loadItems(force)
           .onSuccess { Timber.d { "Loaded items list: $it" } }
           .onSuccess { items ->
             allItems.value = items

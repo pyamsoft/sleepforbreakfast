@@ -96,7 +96,7 @@ interface DbTransaction {
       override val id: Id,
       override val createdAt: LocalDateTime,
       override val date: LocalDateTime,
-      override val categories: List<DbCategory.Id> = emptyList(),
+      private val realCategories: List<DbCategory.Id> = emptyList(),
       override val name: String = "",
       override val amountInCents: Long = 0,
       override val type: Type = Type.SPEND,
@@ -107,16 +107,19 @@ interface DbTransaction {
       override val automaticCreatedDate: LocalDate? = null,
   ) : DbTransaction {
 
+    // Sometimes the "empty" can show up in this list, filter it out
+    override val categories by lazy { realCategories.filterNot { it.isEmpty } }
+
     override fun addCategory(id: DbCategory.Id): DbTransaction {
-      return this.copy(categories = this.categories + id)
+      return this.copy(realCategories = this.categories + id)
     }
 
     override fun removeCategory(id: DbCategory.Id): DbTransaction {
-      return this.copy(categories = this.categories.filterNot { it == id })
+      return this.copy(realCategories = this.categories.filterNot { it == id })
     }
 
     override fun clearCategories(): DbTransaction {
-      return this.copy(categories = emptyList())
+      return this.copy(realCategories = emptyList())
     }
 
     override fun name(name: String): DbTransaction {
@@ -178,16 +181,6 @@ interface DbTransaction {
       )
     }
   }
-}
-
-@CheckResult
-fun DbTransaction.addCategory(category: DbCategory): DbTransaction {
-  return this.addCategory(id = category.id)
-}
-
-@CheckResult
-fun DbTransaction.removeCategory(category: DbCategory): DbTransaction {
-  return this.removeCategory(id = category.id)
 }
 
 @CheckResult

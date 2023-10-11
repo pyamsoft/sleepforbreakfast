@@ -24,6 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import java.time.LocalDate
 import javax.inject.Inject
@@ -62,6 +63,12 @@ internal constructor(
         return@multiCachify realQueryDao.queryById(id)
       }
 
+  private val queryByCategory =
+      multiCachify<QueryByCategory, List<DbTransaction>, DbCategory.Id> { id ->
+        enforcer.assertOffMainThread()
+        return@multiCachify realQueryDao.queryByCategory(id)
+      }
+
   private val queryByRepeat =
       multiCachify<QueryByRepeat, List<DbTransaction>, DbRepeat.Id> { id ->
         enforcer.assertOffMainThread()
@@ -89,26 +96,25 @@ internal constructor(
         queryCache.clear()
         queryByIdCache.clear()
         queryByRepeat.clear()
+        queryByCategory.clear()
         queryByRepeatOnDates.clear()
       }
 
   override suspend fun invalidateById(id: DbTransaction.Id) =
       withContext(context = Dispatchers.Default) {
-        val key =
-            QueryByIdKey(
-                transactionId = id,
-            )
-
+        val key = QueryByIdKey(transactionId = id)
         queryByIdCache.key(key).clear()
+      }
+
+  override suspend fun invalidateByCategory(id: DbCategory.Id) =
+      withContext(context = Dispatchers.Default) {
+        val key = QueryByCategory(categoryId = id)
+        queryByCategory.key(key).clear()
       }
 
   override suspend fun invalidateByRepeat(id: DbRepeat.Id) =
       withContext(context = Dispatchers.Default) {
-        val key =
-            QueryByRepeat(
-                repeatId = id,
-            )
-
+        val key = QueryByRepeat(repeatId = id)
         queryByRepeat.key(key).clear()
       }
 
@@ -135,22 +141,20 @@ internal constructor(
 
   override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
       withContext(context = Dispatchers.Default) {
-        val key =
-            QueryByIdKey(
-                transactionId = id,
-            )
-
+        val key = QueryByIdKey(transactionId = id)
         return@withContext queryByIdCache.key(key).call(id)
       }
 
   override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
       withContext(context = Dispatchers.Default) {
-        val key =
-            QueryByRepeat(
-                repeatId = id,
-            )
-
+        val key = QueryByRepeat(repeatId = id)
         return@withContext queryByRepeat.key(key).call(id)
+      }
+
+  override suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction> =
+      withContext(context = Dispatchers.Default) {
+        val key = QueryByCategory(categoryId = id)
+        return@withContext queryByCategory.key(key).call(id)
       }
 
   override suspend fun queryByRepeatOnDates(
@@ -206,6 +210,10 @@ internal constructor(
 
   private data class QueryByRepeat(
       val repeatId: DbRepeat.Id,
+  )
+
+  private data class QueryByCategory(
+      val categoryId: DbCategory.Id,
   )
 
   private data class QueryByRepeatOnDates(

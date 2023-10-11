@@ -18,11 +18,13 @@ package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.util.contains
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
+import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
@@ -49,6 +51,8 @@ internal constructor(
     private val categoryLoader: CategoryLoader,
     private val defaultCategoryId: DbCategory.Id,
     private val showAllTransactions: Boolean,
+    private val transactionQueryDao: TransactionQueryDao,
+    private val transactionQueryCache: TransactionQueryDao.Cache,
 ) :
     TransactionViewState by state,
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
@@ -155,6 +159,23 @@ internal constructor(
 
   override fun List<DbTransaction>.sort(): List<DbTransaction> {
     return this.sortedByDescending { it.date }
+  }
+
+  override suspend fun loadItems(force: Boolean): ResultWrapper<List<DbTransaction>> {
+    val category = defaultCategoryId
+    return if (category.isEmpty) super.loadItems(force)
+    else {
+      // Speed up DB work by only loading relevant category
+      try {
+        if (force) {
+          transactionQueryCache.invalidateByCategory(category)
+        }
+        val items = transactionQueryDao.queryByCategory(category)
+        ResultWrapper.success(items)
+      } catch (e: Throwable) {
+        ResultWrapper.failure(e)
+      }
+    }
   }
 
   override fun onGenerateItemsBasedOnAllItems(

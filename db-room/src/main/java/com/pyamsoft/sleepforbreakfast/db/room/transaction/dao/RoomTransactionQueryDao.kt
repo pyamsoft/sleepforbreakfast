@@ -21,6 +21,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.db.Maybe
+import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -37,7 +38,9 @@ internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
 
   @CheckResult
   @Transaction
-  @Query("""SELECT * FROM ${RoomDbTransaction.TABLE_NAME}""")
+  @Query("""
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+""")
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
 
   final override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
@@ -56,6 +59,17 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   LIMIT 1
 """)
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
+
+  final override suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction> =
+      withContext(context = Dispatchers.Default) { daoQueryByCategory("%${id.raw}%") }
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+  WHERE ${RoomDbTransaction.COLUMN_CATEGORY_ID} LIKE :idQuery
+""")
+  internal abstract suspend fun daoQueryByCategory(idQuery: String): List<RoomDbTransaction>
 
   final override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
       withContext(context = Dispatchers.Default) { daoQueryByRepeat(id) }
@@ -81,10 +95,10 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   @Transaction
   @Query(
       """
-      SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
-        WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
-        AND ${RoomDbTransaction.COLUMN_REPEAT_DATE} in (:dates)
-      """)
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+  WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
+  AND ${RoomDbTransaction.COLUMN_REPEAT_DATE} in (:dates)
+""")
   internal abstract suspend fun daoQueryByRepeatOnDates(
       id: DbRepeat.Id,
       dates: List<LocalDate>,
