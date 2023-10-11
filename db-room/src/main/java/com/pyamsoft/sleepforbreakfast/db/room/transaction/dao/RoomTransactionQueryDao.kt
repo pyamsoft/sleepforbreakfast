@@ -61,7 +61,13 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 
   final override suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction> =
-      withContext(context = Dispatchers.Default) { daoQueryByCategory("%${id.raw}%") }
+      withContext(context = Dispatchers.Default) {
+        if (id.isEmpty) {
+          daoQueryNoCategories()
+        } else {
+          daoQueryByCategory("%${id.raw}%")
+        }
+      }
 
   @CheckResult
   @Query(
@@ -70,6 +76,15 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   WHERE ${RoomDbTransaction.COLUMN_CATEGORY_ID} LIKE :idQuery
 """)
   internal abstract suspend fun daoQueryByCategory(idQuery: String): List<RoomDbTransaction>
+
+  @CheckResult
+  @Query(
+      """
+SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
+  WHERE ${RoomDbTransaction.COLUMN_CATEGORY_ID} = ''
+  OR ${RoomDbTransaction.COLUMN_CATEGORY_ID} = NULL
+""")
+  internal abstract suspend fun daoQueryNoCategories(): List<RoomDbTransaction>
 
   final override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
       withContext(context = Dispatchers.Default) { daoQueryByRepeat(id) }
