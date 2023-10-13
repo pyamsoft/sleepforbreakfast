@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.spending.automatic.handlers
 
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DESCRIPTION
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
@@ -24,8 +23,7 @@ import com.pyamsoft.sleepforbreakfast.spending.automatic.EarnAutomaticHandler
 import javax.inject.Inject
 
 /** When you pay someone on Venmo but they request you to */
-internal class VenmoReceiveRequestedAutomaticHandler @Inject internal constructor() :
-    EarnAutomaticHandler() {
+internal class VenmoReceiveRequested @Inject internal constructor() : EarnAutomaticHandler() {
 
   override fun getRegex(): Regex {
     return VENMO_WALLET_REGEX
@@ -35,21 +33,12 @@ internal class VenmoReceiveRequestedAutomaticHandler @Inject internal constructo
     return packageName == "com.venmo"
   }
 
-  override suspend fun getCategories(): List<DbCategory.Id> {
-    return emptyList()
-  }
-
   companion object {
 
     private const val MERCHANT_GROUP = "(?<$CAPTURE_NAME_MERCHANT>.*)"
     private const val DESCRIPTION_GROUP = "(?<$CAPTURE_NAME_DESCRIPTION>.*)"
-    /**
-     * Venmo posts messages like
-     *
-     * Tom pair you $123.45 - Note about payment here - You now have $250 in your Venmo account
-     *
-     * We can look for that notification text and parse the values out
-     */
+
+    /** Tom paid you $123.45 - Note about payment here - You now have $250 in your Venmo account */
     private val VENMO_WALLET_REGEX =
         "$MERCHANT_GROUP paid you $CAPTURE_GROUP_AMOUNT - $DESCRIPTION_GROUP - You now have \$"
             .toRegex(RegexOption.MULTILINE)

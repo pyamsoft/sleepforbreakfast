@@ -38,6 +38,20 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
         null
       }
 
+  @CheckResult
+  private fun getTitle(
+      title: CharSequence,
+      bigTitle: CharSequence,
+  ): CharSequence {
+    return if (title.isNotBlank()) {
+      title
+    } else if (bigTitle.isNotBlank()) {
+      bigTitle
+    } else {
+      DEFAULT_TITLE
+    }
+  }
+
   final override suspend fun extract(bundle: Bundle): PaymentNotification? {
     val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
     val bigText = bundle.getCharSequence(NotificationCompat.EXTRA_BIG_TEXT, "")
@@ -101,25 +115,11 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     )
   }
 
-  @CheckResult
-  private fun getTitle(
-      title: CharSequence,
-      bigTitle: CharSequence,
-  ): CharSequence {
-    return if (title.isNotBlank()) {
-      title
-    } else if (bigTitle.isNotBlank()) {
-      bigTitle
-    } else {
-      DEFAULT_TITLE
-    }
-  }
+  @CheckResult protected open suspend fun getCategories(): List<DbCategory.Id> = emptyList()
 
   @CheckResult protected abstract fun getRegex(): Regex
 
   @CheckResult protected abstract fun getType(): DbTransaction.Type
-
-  @CheckResult protected abstract suspend fun getCategories(): List<DbCategory.Id>
 
   companion object {
     private const val DEFAULT_TITLE = "Automatic Spend Transaction"

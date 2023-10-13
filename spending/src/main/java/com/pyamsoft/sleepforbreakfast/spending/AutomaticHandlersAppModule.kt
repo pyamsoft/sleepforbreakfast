@@ -16,12 +16,13 @@
 
 package com.pyamsoft.sleepforbreakfast.spending
 
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEmailAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.GoogleWalletAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoPayRequestedAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoPayUnpromptedAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveRequestedAutomaticHandler
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveUnpromptedAutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankAppSpend
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEmailEarn
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.GoogleWalletSpend
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveRequested
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveUnprompted
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoSpendRequested
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoSpendUnprompted
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
@@ -32,42 +33,35 @@ abstract class AutomaticHandlersAppModule {
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindChaseEmailHandler(
-      impl: ChaseBankEmailAutomaticHandler
-  ): AutomaticHandler
+  internal abstract fun bindChaseEmailHandler(impl: ChaseBankAppSpend): AutomaticHandler
 
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindGoogleWalletHandler(
-      impl: GoogleWalletAutomaticHandler
-  ): AutomaticHandler
+  internal abstract fun bindGoogleWalletHandler(impl: GoogleWalletSpend): AutomaticHandler
 
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindVenmoPayUnprompted(
-      impl: VenmoPayUnpromptedAutomaticHandler
-  ): AutomaticHandler
+  internal abstract fun bindVenmoPayUnprompted(impl: VenmoSpendUnprompted): AutomaticHandler
 
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindVenmoPayRequested(
-      impl: VenmoPayRequestedAutomaticHandler
-  ): AutomaticHandler
+  internal abstract fun bindVenmoPayRequested(impl: VenmoSpendRequested): AutomaticHandler
 
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindVenmoReceiveUnprompted(
-      impl: VenmoReceiveRequestedAutomaticHandler
-  ): AutomaticHandler
+  internal abstract fun bindVenmoReceiveUnprompted(impl: VenmoReceiveRequested): AutomaticHandler
 
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindVenmoReceiveRequested(
-      impl: VenmoReceiveUnpromptedAutomaticHandler
-  ): AutomaticHandler
+  internal abstract fun bindVenmoReceiveRequested(impl: VenmoReceiveUnprompted): AutomaticHandler
+
+  @Binds
+  @IntoSet
+  @SpendingApi
+  internal abstract fun bindChaseBankEarnEmail(impl: ChaseBankEmailEarn): AutomaticHandler
 }
