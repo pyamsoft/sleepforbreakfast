@@ -29,7 +29,11 @@ import javax.inject.Inject
  */
 internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getPossibleRegexes() = listOf(CHASE_ALERT_EMAIL_REGEX)
+  override fun getPossibleRegexes() =
+      listOf(
+          CHASE_ALERT_EMAIL_REGEX_1,
+          CHASE_ALERT_EMAIL_REGEX_2,
+      )
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.chase.sig.android"
@@ -48,8 +52,18 @@ internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomatic
      * Chase Freedom: You made an online, phone, or mail transaction of $2.00 with My Favorite
      * Merchant on Oct 7, 2023 at 1:23PM ET
      */
-    private val CHASE_ALERT_EMAIL_REGEX =
+    private val CHASE_ALERT_EMAIL_REGEX_1 =
         "${ACCOUNT_GROUP}: You made an online, phone, or mail transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP on ${DATE_GROUP}."
+            .toRegex(RegexOption.MULTILINE)
+
+    /**
+     * You made an online, phone, or mail transaction
+     *
+     * Chase Freedom: You made a $2.00 transaction with My Favorite Merchant on Oct 7, 2023 at
+     * 1:23PM ET
+     */
+    private val CHASE_ALERT_EMAIL_REGEX_2 =
+        "${ACCOUNT_GROUP}: You made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on ${DATE_GROUP}."
             .toRegex(RegexOption.MULTILINE)
   }
 }
