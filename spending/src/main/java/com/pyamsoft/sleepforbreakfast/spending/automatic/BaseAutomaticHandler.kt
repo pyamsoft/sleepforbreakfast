@@ -52,14 +52,15 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     }
   }
 
-  final override suspend fun extract(bundle: Bundle): PaymentNotification? {
-    val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
-    val bigText = bundle.getCharSequence(NotificationCompat.EXTRA_BIG_TEXT, "")
-    val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
-    val bigTitle = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE_BIG, "")
-
-    val regex = getRegex()
-    val payText: CharSequence =
+  @CheckResult
+  private suspend fun handleRegex(
+      regex: Regex,
+      text: CharSequence,
+      bigText: CharSequence,
+      title: CharSequence,
+      bigTitle: CharSequence,
+  ): PaymentNotification? {
+    val payText =
         if (regex.containsMatchIn(text)) {
           text
         } else if (regex.containsMatchIn(bigText)) {
@@ -67,12 +68,12 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
         } else {
           Timber.w {
             "Could not match notification: ${mapOf(
-                "text" to text,
-                "bigText" to bigText,
-                "title" to title,
-                "bigTitle" to bigTitle,
-                "regex" to regex.pattern,
-          )}"
+                        "text" to text,
+                        "bigText" to bigText,
+                        "title" to title,
+                        "bigTitle" to bigTitle,
+                        "regex" to regex.pattern,
+                    )}"
           }
           return null
         }
@@ -115,9 +116,41 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     )
   }
 
+  final override suspend fun extract(bundle: Bundle): PaymentNotification? {
+    val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
+    val bigText = bundle.getCharSequence(NotificationCompat.EXTRA_BIG_TEXT, "")
+    val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
+    val bigTitle = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE_BIG, "")
+
+    val regexList = getPossibleRegexes()
+    for (regex in regexList) {
+      val result =
+          handleRegex(
+              regex = regex,
+              text = text,
+              bigText = bigText,
+              title = title,
+              bigTitle = bigTitle,
+          )
+      if (result != null) {
+        return result
+      }
+    }
+
+    Timber.w {
+      "No regexes handled notification: ${mapOf(
+          "text" to text,
+          "bigText" to bigText,
+          "title" to title,
+          "bigTitle" to bigTitle,
+      )}"
+    }
+    return null
+  }
+
   @CheckResult protected open suspend fun getCategories(): List<DbCategory.Id> = emptyList()
 
-  @CheckResult protected abstract fun getRegex(): Regex
+  @CheckResult protected abstract fun getPossibleRegexes(): List<Regex>
 
   @CheckResult protected abstract fun getType(): DbTransaction.Type
 

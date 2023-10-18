@@ -25,9 +25,7 @@ import javax.inject.Inject
 /** When you pay someone on Venmo but they request you to */
 internal class VenmoSpendRequested @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getRegex(): Regex {
-    return VENMO_WALLET_REGEX
-  }
+  override fun getPossibleRegexes() = listOf(VENMO_WALLET_REGEX)
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.venmo"

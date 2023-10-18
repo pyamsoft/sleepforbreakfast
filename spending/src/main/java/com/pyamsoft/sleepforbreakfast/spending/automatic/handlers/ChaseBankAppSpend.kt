@@ -29,9 +29,7 @@ import javax.inject.Inject
  */
 internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getRegex(): Regex {
-    return CHASE_ALERT_EMAIL_REGEX
-  }
+  override fun getPossibleRegexes() = listOf(CHASE_ALERT_EMAIL_REGEX)
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.chase.sig.android"
