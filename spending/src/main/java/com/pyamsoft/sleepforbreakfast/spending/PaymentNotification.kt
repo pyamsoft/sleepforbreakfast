@@ -23,7 +23,7 @@ internal data class PaymentNotification(
     val title: String,
     val text: String,
     val type: DbTransaction.Type,
-    val categories: List<DbCategory.Id>,
+    val categories: Collection<DbCategory.Id>,
     val amount: Long,
     val optionalAccount: String,
     val optionalDate: String,

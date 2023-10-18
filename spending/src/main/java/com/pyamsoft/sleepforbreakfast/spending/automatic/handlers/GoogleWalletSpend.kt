@@ -24,7 +24,7 @@ import javax.inject.Inject
 /** Google wallet notifications come from Google Play Services */
 internal class GoogleWalletSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getPossibleRegexes() = listOf(GOOGLE_WALLET_REGEX)
+  override fun getPossibleRegexes() = setOf(GOOGLE_WALLET_REGEX)
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.google.android.gms"

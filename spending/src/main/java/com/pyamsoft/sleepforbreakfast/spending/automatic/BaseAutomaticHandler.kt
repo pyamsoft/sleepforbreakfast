@@ -148,9 +148,9 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     return null
   }
 
-  @CheckResult protected open suspend fun getCategories(): List<DbCategory.Id> = emptyList()
+  @CheckResult protected open suspend fun getCategories(): Set<DbCategory.Id> = emptySet()
 
-  @CheckResult protected abstract fun getPossibleRegexes(): List<Regex>
+  @CheckResult protected abstract fun getPossibleRegexes(): Collection<Regex>
 
   @CheckResult protected abstract fun getType(): DbTransaction.Type
 

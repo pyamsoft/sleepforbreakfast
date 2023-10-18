@@ -210,17 +210,7 @@ interface DbAutomatic {
 }
 
 @CheckResult
-fun DbAutomatic.addCategory(category: DbCategory): DbAutomatic {
-  return this.addCategory(id = category.id)
-}
-
-@CheckResult
-fun DbAutomatic.removeCategory(category: DbCategory): DbAutomatic {
-  return this.removeCategory(id = category.id)
-}
-
-@CheckResult
-fun DbAutomatic.replaceCategories(categories: List<DbCategory.Id>): DbAutomatic {
+fun DbAutomatic.replaceCategories(categories: Collection<DbCategory.Id>): DbAutomatic {
   var self = this.clearCategories()
 
   for (cat in categories) {

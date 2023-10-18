@@ -30,7 +30,7 @@ import javax.inject.Inject
 internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
   override fun getPossibleRegexes() =
-      listOf(
+      setOf(
           CHASE_ALERT_EMAIL_REGEX_1,
           CHASE_ALERT_EMAIL_REGEX_2,
       )
