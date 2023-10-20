@@ -22,6 +22,7 @@ import androidx.lifecycle.Lifecycle
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Subcomponent
+import java.util.Locale
 
 @Subcomponent(
     modules =
@@ -40,6 +41,7 @@ internal interface HomeComponent {
     @CheckResult
     fun create(
         @BindsInstance activity: Activity,
+        @BindsInstance locale: Locale,
         @BindsInstance lifecycle: Lifecycle,
     ): HomeComponent
   }

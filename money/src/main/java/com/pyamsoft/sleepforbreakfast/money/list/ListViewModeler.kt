@@ -165,7 +165,6 @@ protected constructor(
 
       state.loadingState.value = LoadingState.LOADING
       loadItems(force)
-          .onSuccess { Timber.d { "Loaded items list: $it" } }
           .onSuccess { items ->
             allItems.value = items
             state.itemError.value = null

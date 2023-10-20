@@ -172,6 +172,15 @@ private fun rememberCategories(
 }
 
 @Composable
+@CheckResult
+private fun rememberRange(
+    map: SnapshotStateMap<HomeViewState.DayRange, Set<DbTransaction>>,
+    range: HomeViewState.DayRange,
+): Set<DbTransaction> {
+  return remember(map, range) { map.getOrElse(range) { emptySet() } }
+}
+
+@Composable
 private fun HomeCategories(
     modifier: Modifier = Modifier,
     state: HomeViewState,
@@ -183,6 +192,7 @@ private fun HomeCategories(
   val loading by state.loading.collectAsStateWithLifecycle()
   val categories = state.categories.collectAsStateListWithLifecycle()
   val transactionsByCategory = state.transactionsByCategory.collectAsStateMapWithLifecycle()
+  val transactionsByRange = state.transactionsByDateRange.collectAsStateMapWithLifecycle()
 
   val today = remember(clock) { LocalDate.now(clock) }
   val dayRange = remember(clock, today) { LocalDate.now(clock).toDateRange(today) }
@@ -234,7 +244,7 @@ private fun HomeCategories(
           ) {
             item {
               DateBreakdown(
-                  transactions = emptySet(), // TODO transaction amounts
+                  transactions = rememberRange(transactionsByRange, HomeViewState.DayRange.DAY),
                   range = dayRange,
                   onOpen = onOpenBreakdown,
               )
@@ -242,7 +252,7 @@ private fun HomeCategories(
 
             item {
               DateBreakdown(
-                  transactions = emptySet(), // TODO transaction amounts
+                  transactions = rememberRange(transactionsByRange, HomeViewState.DayRange.WEEK),
                   range = weekRange,
                   onOpen = onOpenBreakdown,
               )
@@ -250,7 +260,7 @@ private fun HomeCategories(
 
             item {
               DateBreakdown(
-                  transactions = emptySet(), // TODO transaction amounts
+                  transactions = rememberRange(transactionsByRange, HomeViewState.DayRange.MONTH),
                   range = monthRange,
                   onOpen = onOpenBreakdown,
               )

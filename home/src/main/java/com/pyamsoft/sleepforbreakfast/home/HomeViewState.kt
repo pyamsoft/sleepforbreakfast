@@ -31,6 +31,13 @@ interface HomeViewState : UiViewState {
   val isNotificationListenerEnabled: StateFlow<Boolean>
   val categories: StateFlow<List<DbCategory>>
   val transactionsByCategory: StateFlow<Map<DbCategory.Id, Set<DbTransaction>>>
+  val transactionsByDateRange: StateFlow<Map<DayRange, Set<DbTransaction>>>
+
+  enum class DayRange {
+    DAY,
+    WEEK,
+    MONTH
+  }
 }
 
 @Stable
@@ -40,4 +47,6 @@ class MutableHomeViewState @Inject internal constructor() : HomeViewState {
   override val categories = MutableStateFlow(emptyList<DbCategory>())
   override val transactionsByCategory =
       MutableStateFlow(emptyMap<DbCategory.Id, Set<DbTransaction>>())
+  override val transactionsByDateRange =
+      MutableStateFlow(emptyMap<HomeViewState.DayRange, Set<DbTransaction>>())
 }

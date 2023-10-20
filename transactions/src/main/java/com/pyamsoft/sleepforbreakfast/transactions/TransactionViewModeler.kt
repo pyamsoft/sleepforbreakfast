@@ -134,7 +134,7 @@ internal constructor(
 
   override suspend fun loadItems(force: Boolean): ResultWrapper<List<DbTransaction>> {
     val category = defaultCategoryId
-    return if (category.isEmpty) super.loadItems(force)
+    return if (showAllTransactions) super.loadItems(force)
     else {
       // Speed up DB work by only loading relevant category
       try {
@@ -170,18 +170,19 @@ internal constructor(
   }
 
   @CheckResult
-  private fun Sequence<DbTransaction>.filterBySearch(search: String): Sequence<DbTransaction> {
-    if (search.isBlank()) {
-      return this
-    }
+  private fun Sequence<DbTransaction>.filterBySearch(search: String): Sequence<DbTransaction> =
+      filter { t ->
+        if (search.isBlank()) {
+          return@filter true
+        }
 
-    return filter { isMatchingSearch(it, search) }
-  }
+        return@filter isMatchingSearch(t, search)
+      }
 
   @CheckResult
-  private fun Sequence<DbTransaction>.filterByDateRange(): Sequence<DbTransaction> {
-    val range = dateRange ?: return this
-    return filter { t -> t.date.toLocalDate().let { it >= range.from && it <= range.to } }
+  private fun Sequence<DbTransaction>.filterByDateRange(): Sequence<DbTransaction> = filter { t ->
+    val range = dateRange ?: return@filter true
+    return@filter t.date.toLocalDate().let { it >= range.from && it <= range.to }
   }
 
   override fun onGenerateItemsBasedOnAllItems(

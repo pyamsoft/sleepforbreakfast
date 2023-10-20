@@ -111,11 +111,9 @@ private fun Totals(
       }
 
   val totalPrice =
-      remember(
-          transactions,
-          totalAmount,
-      ) {
-        if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
+      remember(totalAmount) {
+        val t = abs(totalAmount)
+        return@remember if (t == 0L) "$0.00" else MoneyVisualTransformation.format(t)
       }
 
   val title =

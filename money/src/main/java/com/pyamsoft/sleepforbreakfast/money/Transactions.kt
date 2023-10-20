@@ -25,10 +25,12 @@ fun Collection<DbTransaction>.calculateTotalTransactionAmount(): Long {
   val self = this
   var total: Long = 0
   for (transaction in self) {
-    total +=
+    total =
         when (transaction.type) {
-          DbTransaction.Type.SPEND -> -transaction.amountInCents
-          DbTransaction.Type.EARN -> +transaction.amountInCents
+          DbTransaction.Type.SPEND -> {
+            total - transaction.amountInCents
+          }
+          DbTransaction.Type.EARN -> total + transaction.amountInCents
         }
   }
 

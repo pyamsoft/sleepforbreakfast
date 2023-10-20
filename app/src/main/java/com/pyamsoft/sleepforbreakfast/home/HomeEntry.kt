@@ -28,10 +28,16 @@ import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
+import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import java.time.Clock
+import java.util.Locale
 import javax.inject.Inject
 
-internal class HomeInjector @Inject internal constructor() : ComposableInjector() {
+internal class HomeInjector
+@Inject
+internal constructor(
+    private val locale: Locale,
+) : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: HomeViewModeler? = null
 
@@ -39,6 +45,7 @@ internal class HomeInjector @Inject internal constructor() : ComposableInjector(
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusHome()
         .create(
+            locale = locale,
             activity = activity,
             lifecycle = activity.lifecycle,
         )
@@ -68,7 +75,12 @@ internal fun HomeEntry(
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
 ) {
-  val component = rememberComposableInjector { HomeInjector() }
+  val locale = rememberCurrentLocale()
+  val component = rememberComposableInjector {
+    HomeInjector(
+        locale = locale,
+    )
+  }
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 

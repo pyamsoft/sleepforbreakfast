@@ -26,6 +26,11 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.home.notification.NotificationListenerStatus
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
+import java.time.Clock
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
+import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -38,6 +43,8 @@ class HomeViewModeler
 @Inject
 internal constructor(
     override val state: MutableHomeViewState,
+    private val locale: Locale,
+    private val clock: Clock,
     private val listenerStatus: NotificationListenerStatus,
     private val categoryLoader: CategoryLoader,
     private val transactionQueryDao: TransactionQueryDao,
@@ -67,6 +74,40 @@ internal constructor(
     }
   }
 
+  private fun MutableMap<HomeViewState.DayRange, MutableSet<DbTransaction>>.breakdown(
+      transaction: DbTransaction,
+      today: LocalDate,
+      startOfWeek: LocalDate,
+      startOfMonth: LocalDate,
+  ) {
+    val date = transaction.date.toLocalDate()
+    if (date >= today) {
+      getOrPut(HomeViewState.DayRange.DAY) { mutableSetOf() }.add(transaction)
+    }
+    if (date >= startOfWeek) {
+      getOrPut(HomeViewState.DayRange.WEEK) { mutableSetOf() }.add(transaction)
+    }
+    if (date >= startOfMonth) {
+      getOrPut(HomeViewState.DayRange.MONTH) { mutableSetOf() }.add(transaction)
+    }
+  }
+
+  private fun MutableMap<DbCategory.Id, MutableSet<DbTransaction>>.categorize(
+      transaction: DbTransaction
+  ) {
+    if (transaction.categories.isEmpty()) {
+      // If no categories add this Transaction to the Uncategorized
+      getOrPut(DbCategory.Id.EMPTY) { mutableSetOf() }.add(transaction)
+    } else {
+      for (c in transaction.categories) {
+        // Avoid a bug where the empty shows up
+        if (!c.isEmpty) {
+          getOrPut(c) { mutableSetOf() }.add(transaction)
+        }
+      }
+    }
+  }
+
   private suspend fun CoroutineScope.load() {
     val scope = this
 
@@ -86,21 +127,26 @@ internal constructor(
     jobs.add(
         scope.async(context = Dispatchers.Default) {
           val transactions = fetchTransactions()
-          val map = mutableMapOf<DbCategory.Id, MutableSet<DbTransaction>>()
+
+          val today = LocalDate.now(clock)
+          val firstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
+          val startOfWeek = today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+          val startOfMonth = today.withDayOfMonth(1)
+
+          val cats = mutableMapOf<DbCategory.Id, MutableSet<DbTransaction>>()
+          val breaks = mutableMapOf<HomeViewState.DayRange, MutableSet<DbTransaction>>()
           for (t in transactions) {
-            if (t.categories.isEmpty()) {
-              // If no categories add this Transaction to the Uncategorized
-              map.getOrPut(DbCategory.Id.EMPTY) { mutableSetOf() }.add(t)
-            } else {
-              for (c in t.categories) {
-                // Avoid a bug where the empty shows up
-                if (!c.isEmpty) {
-                  map.getOrPut(c) { mutableSetOf() }.add(t)
-                }
-              }
-            }
+            cats.categorize(transaction = t)
+            breaks.breakdown(
+                transaction = t,
+                today = today,
+                startOfWeek = startOfWeek,
+                startOfMonth = startOfMonth,
+            )
           }
-          state.transactionsByCategory.value = map
+
+          state.transactionsByCategory.value = cats
+          state.transactionsByDateRange.value = breaks
         },
     )
 
