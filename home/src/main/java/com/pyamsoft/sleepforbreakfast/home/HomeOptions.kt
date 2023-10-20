@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -42,8 +43,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
+import com.pyamsoft.pydroid.ui.uri.rememberUriHandler
 import com.pyamsoft.sleepforbreakfast.core.PRIVACY_POLICY_URL
 import com.pyamsoft.sleepforbreakfast.ui.appendLink
+
+private const val PRIVACY_POLICY_TAG = "privacy_policy"
+private const val PRIVACY_POLICY_TEXT = "Privacy Policy"
 
 @Composable
 internal fun HomeOptions(
@@ -66,6 +71,8 @@ internal fun HomeOptions(
   val highAlpha = if (isNotificationListenerEnabled) ContentAlpha.medium else ContentAlpha.high
   val mediumAlpha =
       if (isNotificationListenerEnabled) ContentAlpha.disabled else ContentAlpha.medium
+
+  val uriHandler = rememberUriHandler()
 
   Box(
       modifier = modifier.padding(MaterialTheme.keylines.content),
@@ -162,9 +169,9 @@ internal fun HomeOptions(
                   append(" single stated purpose.")
                   append(" View our ")
                   appendLink(
-                      tag = "FAQ",
+                      tag = PRIVACY_POLICY_TAG,
                       linkColor = linkColor,
-                      text = "Privacy Policy",
+                      text = PRIVACY_POLICY_TEXT,
                       url = PRIVACY_POLICY_URL,
                   )
                   append(" for more details.")
@@ -172,10 +179,20 @@ internal fun HomeOptions(
               }
             }
 
-        Text(
+        ClickableText(
             modifier = Modifier.padding(top = MaterialTheme.keylines.typography),
             text = privacyDisclaimer,
             style = MaterialTheme.typography.caption,
+            onClick = { start ->
+              privacyDisclaimer
+                  .getStringAnnotations(
+                      tag = PRIVACY_POLICY_TAG,
+                      start = start,
+                      end = start + PRIVACY_POLICY_TEXT.length,
+                  )
+                  .firstOrNull()
+                  ?.also { uriHandler.openUri(it.item) }
+            },
         )
       }
     }
