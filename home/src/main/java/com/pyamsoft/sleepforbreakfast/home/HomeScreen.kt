@@ -17,9 +17,11 @@
 package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.annotation.CheckResult
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,6 +34,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -40,6 +43,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
@@ -48,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
@@ -61,6 +66,7 @@ import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
+import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
@@ -174,6 +180,7 @@ private fun HomeCategories(
     onOpenCategory: (DbCategory) -> Unit,
     onOpenBreakdown: (TransactionDateRange) -> Unit,
 ) {
+  val loading by state.loading.collectAsStateWithLifecycle()
   val categories = state.categories.collectAsStateListWithLifecycle()
   val transactionsByCategory = state.transactionsByCategory.collectAsStateMapWithLifecycle()
 
@@ -211,68 +218,89 @@ private fun HomeCategories(
       )
     }
 
-    LazyRow(
+    Crossfade(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
-    ) {
-      item {
-        DateBreakdown(
-            transactions = emptySet(), // TODO transaction amounts
-            range = dayRange,
-            onOpen = onOpenBreakdown,
-        )
-      }
+        label = "Loading",
+        targetState = loading,
+    ) { load ->
+      if (load == LoadingState.DONE) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+          LazyRow(
+              modifier = Modifier.fillMaxWidth(),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
+          ) {
+            item {
+              DateBreakdown(
+                  transactions = emptySet(), // TODO transaction amounts
+                  range = dayRange,
+                  onOpen = onOpenBreakdown,
+              )
+            }
 
-      item {
-        DateBreakdown(
-            transactions = emptySet(), // TODO transaction amounts
-            range = weekRange,
-            onOpen = onOpenBreakdown,
-        )
-      }
+            item {
+              DateBreakdown(
+                  transactions = emptySet(), // TODO transaction amounts
+                  range = weekRange,
+                  onOpen = onOpenBreakdown,
+              )
+            }
 
-      item {
-        DateBreakdown(
-            transactions = emptySet(), // TODO transaction amounts
-            range = monthRange,
-            onOpen = onOpenBreakdown,
-        )
-      }
-    }
+            item {
+              DateBreakdown(
+                  transactions = emptySet(), // TODO transaction amounts
+                  range = monthRange,
+                  onOpen = onOpenBreakdown,
+              )
+            }
+          }
 
-    LazyRow(
-        modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.keylines.content),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
-    ) {
-      item {
-        val uncategorizedTransactions =
-            rememberCategories(
-                transactionsByCategory,
-                DbCategory.Id.EMPTY,
-            )
-        Category(
-            category = DbCategory.NONE,
-            onOpen = onOpenCategory,
-            transactions = uncategorizedTransactions,
-        )
-      }
+          LazyRow(
+              modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.keylines.content),
+              verticalAlignment = Alignment.CenterVertically,
+              horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
+          ) {
+            item {
+              val uncategorizedTransactions =
+                  rememberCategories(
+                      transactionsByCategory,
+                      DbCategory.Id.EMPTY,
+                  )
+              Category(
+                  category = DbCategory.NONE,
+                  onOpen = onOpenCategory,
+                  transactions = uncategorizedTransactions,
+              )
+            }
 
-      items(
-          items = categories,
-          key = { it.id.raw },
-      ) { category ->
-        val transactions =
-            rememberCategories(
-                transactionsByCategory,
-                category.id,
-            )
-        Category(
-            category = category,
-            onOpen = onOpenCategory,
-            transactions = transactions,
-        )
+            items(
+                items = categories,
+                key = { it.id.raw },
+            ) { category ->
+              val transactions =
+                  rememberCategories(
+                      transactionsByCategory,
+                      category.id,
+                  )
+              Category(
+                  category = category,
+                  onOpen = onOpenCategory,
+                  transactions = transactions,
+              )
+            }
+          }
+        }
+      } else {
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+            contentAlignment = Alignment.Center,
+        ) {
+          CircularProgressIndicator(
+              modifier = Modifier.size(80.dp),
+          )
+        }
       }
     }
   }
