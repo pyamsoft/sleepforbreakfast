@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface TransactionViewState : ListViewState<DbTransaction> {
+  val showActionButton: StateFlow<Boolean>
   val category: StateFlow<DbCategory?>
 
   val addParams: StateFlow<TransactionAddParams?>
@@ -36,8 +37,12 @@ interface TransactionViewState : ListViewState<DbTransaction> {
 }
 
 @Stable
-class MutableTransactionViewState @Inject internal constructor() :
-    TransactionViewState, MutableListViewState<DbTransaction>() {
+class MutableTransactionViewState
+@Inject
+internal constructor(
+    showAllTransactions: Boolean,
+) : TransactionViewState, MutableListViewState<DbTransaction>() {
+  override val showActionButton = MutableStateFlow(!showAllTransactions)
   override val category = MutableStateFlow<DbCategory?>(null)
 
   override val addParams = MutableStateFlow<TransactionAddParams?>(null)

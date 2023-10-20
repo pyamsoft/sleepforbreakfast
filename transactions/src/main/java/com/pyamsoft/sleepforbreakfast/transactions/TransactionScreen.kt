@@ -70,6 +70,7 @@ fun TransactionScreen(
     onSearchToggled: () -> Unit,
     onSearchUpdated: (String) -> Unit,
 ) {
+  val showActionButton by state.showActionButton.collectAsStateWithLifecycle()
   val currentCategory by state.category.collectAsStateWithLifecycle()
   val loading by state.loadingState.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
@@ -80,7 +81,7 @@ fun TransactionScreen(
       modifier = modifier,
       loading = loading,
       actionButtonBackgroundColor = LocalCategoryColor.current,
-      showActionButton = true,
+      showActionButton = showActionButton,
       recentlyDeletedItem = undoable,
       deletedMessage = { "${it.name} Removed" },
       onSnackbarDismissed = onTransactionDeleteFinalized,

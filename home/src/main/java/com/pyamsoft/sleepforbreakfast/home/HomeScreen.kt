@@ -66,11 +66,14 @@ import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.model.atEndOfDay
 import com.pyamsoft.sleepforbreakfast.ui.model.toDateRange
+import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Clock
 import java.time.Duration
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
 import kotlin.math.abs
 
 private enum class ContentTypes {
@@ -176,14 +179,31 @@ private fun HomeCategories(
 
   val today = remember(clock) { LocalDate.now(clock) }
   val dayRange = remember(clock, today) { LocalDate.now(clock).toDateRange(today) }
-  val weekRange = remember(clock, today) { LocalDate.now(clock).minusWeeks(1).toDateRange(today) }
-  val monthRange = remember(clock, today) { LocalDate.now(clock).minusMonths(1).toDateRange(today) }
+  val locale = rememberCurrentLocale()
+
+  val firstDayOfWeek = remember(locale) { WeekFields.of(locale).firstDayOfWeek }
+  val weekRange =
+      remember(
+          clock,
+          today,
+          firstDayOfWeek,
+      ) {
+        today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek)).toDateRange(today)
+      }
+  val monthRange =
+      remember(
+          clock,
+          today,
+          locale,
+      ) {
+        today.withDayOfMonth(1).toDateRange(today)
+      }
 
   Column(
       modifier = modifier.padding(MaterialTheme.keylines.content),
   ) {
     OutlinedButton(
-        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
         onClick = onOpenAllTransactions,
     ) {
       Text(
@@ -193,6 +213,36 @@ private fun HomeCategories(
 
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
+    ) {
+      item {
+        DateBreakdown(
+            transactions = emptySet(), // TODO transaction amounts
+            range = dayRange,
+            onOpen = onOpenBreakdown,
+        )
+      }
+
+      item {
+        DateBreakdown(
+            transactions = emptySet(), // TODO transaction amounts
+            range = weekRange,
+            onOpen = onOpenBreakdown,
+        )
+      }
+
+      item {
+        DateBreakdown(
+            transactions = emptySet(), // TODO transaction amounts
+            range = monthRange,
+            onOpen = onOpenBreakdown,
+        )
+      }
+    }
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.keylines.content),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
     ) {
@@ -222,36 +272,6 @@ private fun HomeCategories(
             category = category,
             onOpen = onOpenCategory,
             transactions = transactions,
-        )
-      }
-    }
-
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
-    ) {
-      item {
-        DateBreakdown(
-            transactions = emptySet(), // TODO transaction amounts
-            range = dayRange,
-            onOpen = onOpenBreakdown,
-        )
-      }
-
-      item {
-        DateBreakdown(
-            transactions = emptySet(), // TODO transaction amounts
-            range = weekRange,
-            onOpen = onOpenBreakdown,
-        )
-      }
-
-      item {
-        DateBreakdown(
-            transactions = emptySet(), // TODO transaction amounts
-            range = monthRange,
-            onOpen = onOpenBreakdown,
         )
       }
     }
