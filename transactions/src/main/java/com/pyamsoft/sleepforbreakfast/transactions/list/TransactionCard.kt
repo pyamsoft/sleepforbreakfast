@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
@@ -59,11 +60,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.format.TextStyle as MonthTextStyle
 
-private val transactionFormatter by lazy {
+private val transactionFormatter: DateTimeFormatter by lazy {
   DateTimeFormatter.ofLocalizedDateTime(
-      FormatStyle.LONG,
-      FormatStyle.SHORT,
-  )
+          FormatStyle.LONG,
+          FormatStyle.SHORT,
+      )
+      .requireNotNull()
 }
 
 @Composable

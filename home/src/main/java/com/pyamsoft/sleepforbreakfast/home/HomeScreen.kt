@@ -57,15 +57,20 @@ import com.pyamsoft.pydroid.ui.util.collectAsStateMapWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
-import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
+import com.pyamsoft.sleepforbreakfast.ui.model.atEndOfDay
+import com.pyamsoft.sleepforbreakfast.ui.model.toDateRange
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
+import java.time.Clock
+import java.time.Duration
+import java.time.LocalDate
 import kotlin.math.abs
 
 private enum class ContentTypes {
@@ -79,6 +84,7 @@ private enum class ContentTypes {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    clock: Clock,
     state: HomeViewState,
     appName: String,
     onOpenSettings: () -> Unit,
@@ -127,9 +133,11 @@ fun HomeScreen(
     ) {
       HomeCategories(
           modifier = Modifier.fillMaxWidth(),
+          clock = clock,
           state = state,
           onOpenAllTransactions = { onOpenAllTransactions(null) },
           onOpenCategory = { onOpenTransactions(it, null) },
+          onOpenBreakdown = onOpenAllTransactions,
       )
     }
 
@@ -158,11 +166,18 @@ private fun rememberCategories(
 private fun HomeCategories(
     modifier: Modifier = Modifier,
     state: HomeViewState,
+    clock: Clock,
     onOpenAllTransactions: () -> Unit,
     onOpenCategory: (DbCategory) -> Unit,
+    onOpenBreakdown: (TransactionDateRange) -> Unit,
 ) {
   val categories = state.categories.collectAsStateListWithLifecycle()
   val transactionsByCategory = state.transactionsByCategory.collectAsStateMapWithLifecycle()
+
+  val today = remember(clock) { LocalDate.now(clock) }
+  val dayRange = remember(clock, today) { LocalDate.now(clock).toDateRange(today) }
+  val weekRange = remember(clock, today) { LocalDate.now(clock).minusWeeks(1).toDateRange(today) }
+  val monthRange = remember(clock, today) { LocalDate.now(clock).minusMonths(1).toDateRange(today) }
 
   Column(
       modifier = modifier.padding(MaterialTheme.keylines.content),
@@ -209,6 +224,111 @@ private fun HomeCategories(
             transactions = transactions,
         )
       }
+    }
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
+    ) {
+      item {
+        DateBreakdown(
+            transactions = emptySet(), // TODO transaction amounts
+            range = dayRange,
+            onOpen = onOpenBreakdown,
+        )
+      }
+
+      item {
+        DateBreakdown(
+            transactions = emptySet(), // TODO transaction amounts
+            range = weekRange,
+            onOpen = onOpenBreakdown,
+        )
+      }
+
+      item {
+        DateBreakdown(
+            transactions = emptySet(), // TODO transaction amounts
+            range = monthRange,
+            onOpen = onOpenBreakdown,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun DateBreakdown(
+    modifier: Modifier = Modifier,
+    transactions: Set<DbTransaction>,
+    range: TransactionDateRange,
+    onOpen: (TransactionDateRange) -> Unit,
+) {
+  val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
+  val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
+  val totalPrice =
+      remember(
+          transactions,
+          totalAmount,
+      ) {
+        if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
+      }
+
+  val zeroPriceColor = MaterialTheme.colors.onPrimary
+  val priceColor =
+      remember(
+          totalDirection,
+          zeroPriceColor,
+      ) {
+        when (totalDirection) {
+          SpendDirection.NONE -> zeroPriceColor
+          SpendDirection.SPEND -> COLOR_SPEND
+          SpendDirection.EARN -> COLOR_EARN
+        }
+      }
+
+  val rangeName =
+      remember(range) {
+        val duration =
+            Duration.between(
+                range.from.atStartOfDay(),
+                range.to.atEndOfDay(),
+            )
+        if (duration.toDays() <= 1) {
+          return@remember "Recent Day's Transactions"
+        }
+
+        if (duration.toDays() <= 7) {
+          return@remember "Recent Week's Transactions"
+        }
+
+        return@remember "Recent Month's Transactions"
+      }
+
+  Card(
+      modifier = modifier,
+      elevation = CardDefaults.Elevation,
+  ) {
+    Column(
+        modifier = Modifier.clickable { onOpen(range) }.padding(MaterialTheme.keylines.content),
+    ) {
+      Text(
+          style = MaterialTheme.typography.h6,
+          text = rangeName,
+      )
+
+      Text(
+          modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+          style =
+              MaterialTheme.typography.body2.copy(
+                  color =
+                      priceColor.copy(
+                          alpha = ContentAlpha.disabled,
+                      ),
+              ),
+          text = totalPrice,
+      )
     }
   }
 }

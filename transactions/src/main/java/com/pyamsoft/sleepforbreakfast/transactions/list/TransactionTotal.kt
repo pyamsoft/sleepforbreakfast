@@ -24,12 +24,14 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionRange
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import kotlin.math.abs
 
@@ -37,9 +39,8 @@ import kotlin.math.abs
 internal fun TransactionTotal(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+    range: TransactionDateRange?,
     onDismiss: () -> Unit,
-
-    // Search
     onSearchToggle: () -> Unit,
     onSearchChange: (String) -> Unit,
 ) {
@@ -63,6 +64,7 @@ internal fun TransactionTotal(
 
       Totals(
           state = state,
+          range = range,
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggle,
       )
@@ -80,9 +82,8 @@ internal fun TransactionTotal(
 private fun Totals(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+    range: TransactionDateRange?,
     onDismiss: () -> Unit,
-
-    // Search
     onSearchToggle: () -> Unit,
 ) {
   val category by state.category.collectAsStateWithLifecycle()
@@ -90,7 +91,25 @@ private fun Totals(
 
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
   val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
-  val totalRangeNote = remember(transactions) { transactions.calculateTotalTransactionRange() }
+  val totalRangeNote =
+      remember(
+          transactions,
+          range,
+      ) {
+        if (range == null) {
+          return@remember transactions.calculateTotalTransactionRange()
+        }
+
+        if (range.from == range.to) {
+          val dateString = DATE_FORMATTER.format(range.from)
+          return@remember "On $dateString"
+        }
+
+        val firstDateString = DATE_FORMATTER.format(range.from)
+        val lastDateString = DATE_FORMATTER.format(range.to)
+        return@remember "From $firstDateString to $lastDateString"
+      }
+
   val totalPrice =
       remember(
           transactions,

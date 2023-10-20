@@ -32,10 +32,12 @@ import com.pyamsoft.sleepforbreakfast.main.settings.SettingsDialog
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
+import java.time.Clock
 
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
+    clock: Clock,
     appName: String,
     state: MainViewState,
     onOpenSettings: () -> Unit,
@@ -59,6 +61,7 @@ fun MainScreen(
       if (p == null) {
         HomeEntry(
             modifier = Modifier.fillMaxSize().padding(pv),
+            clock = clock,
             appName = appName,
             onOpenTransactions = onOpenTransactions,
             onOpenAllTransactions = onOpenAllTransactions,
@@ -72,7 +75,6 @@ fun MainScreen(
             TransactionEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 page = p,
-                dateRange = null,
                 onDismiss = onClosePage,
             )
           }

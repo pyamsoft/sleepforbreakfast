@@ -16,11 +16,14 @@
 
 package com.pyamsoft.sleepforbreakfast.money
 
+import com.pyamsoft.pydroid.core.requireNotNull
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-val dateFormatter: DateTimeFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
+val DATE_FORMATTER: DateTimeFormatter by lazy {
+  DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).requireNotNull()
+}
 
-val timeFormatter: DateTimeFormatter by lazy {
-  DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+val TIME_FORMATTER: DateTimeFormatter by lazy {
+  DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).requireNotNull()
 }

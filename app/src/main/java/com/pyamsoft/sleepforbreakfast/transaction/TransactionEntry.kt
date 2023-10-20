@@ -38,27 +38,24 @@ import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
-import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
-import java.time.Clock
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import javax.inject.Inject
 
 internal class TransactionInjector
 @Inject
 internal constructor(
     private val page: MainPage.Transactions,
-    private val dateRange: TransactionDateRange?,
 ) : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
-  @JvmField @Inject internal var clock: Clock? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusTransactions()
         .create(
-            dateRange = dateRange,
+            dateRange = page.range,
             categoryId = page.categoryId,
             showAllTransactions = page.showAllTransactions,
         )
@@ -67,7 +64,6 @@ internal constructor(
 
   override fun onDispose() {
     viewModel = null
-    clock = null
   }
 }
 
@@ -84,13 +80,11 @@ private fun MountHooks(
 internal fun TransactionEntry(
     modifier: Modifier = Modifier,
     page: MainPage.Transactions,
-    dateRange: TransactionDateRange?,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
     TransactionInjector(
         page = page,
-        dateRange = dateRange,
     )
   }
   val viewModel = rememberNotNull(component.viewModel)
@@ -126,6 +120,7 @@ internal fun TransactionEntry(
     TransactionScreen(
         modifier = modifier,
         state = viewModel,
+        range = page.range,
 
         // Dismiss
         onDismiss = onDismiss,

@@ -37,14 +37,11 @@ import com.pyamsoft.pydroid.ui.util.rememberAsStateList
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
+import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-
-private val repeatFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
 
 @Composable
 internal fun RepeatCard(
@@ -84,7 +81,7 @@ internal fun RepeatCard(
       }
 
   val startDate = repeat.firstDay
-  val startDateString = remember(startDate) { repeatFormatter.format(startDate) }
+  val startDateString = remember(startDate) { DATE_FORMATTER.format(startDate) }
 
   Card(
       modifier = modifier,

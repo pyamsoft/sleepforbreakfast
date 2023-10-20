@@ -36,12 +36,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
-import com.pyamsoft.sleepforbreakfast.money.dateFormatter
+import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
@@ -219,7 +218,7 @@ fun TransactionAutoScreen(
                   contentType = AutoContentTypes.CREATED_DATE,
               ) {
                 val dateString =
-                    remember(date) { dateFormatter.format(date) }
+                    remember(date) { DATE_FORMATTER.format(date) }
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()

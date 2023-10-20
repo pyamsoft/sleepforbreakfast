@@ -99,7 +99,10 @@ internal constructor(
   ) {
     state.page.value =
         MainPage.Transactions(
-            categoryId = DbCategory.Id.EMPTY, showAllTransactions = true, range = range)
+            categoryId = DbCategory.Id.EMPTY,
+            showAllTransactions = true,
+            range = range,
+        )
   }
 
   fun handleOpenRepeats() {

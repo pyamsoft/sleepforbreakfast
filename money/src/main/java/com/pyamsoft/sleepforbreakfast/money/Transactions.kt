@@ -19,10 +19,6 @@ package com.pyamsoft.sleepforbreakfast.money
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-
-private val dateRangeFormatter by lazy { DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG) }
 
 @CheckResult
 fun Collection<DbTransaction>.calculateTotalTransactionAmount(): Long {
@@ -64,11 +60,11 @@ fun Collection<DbTransaction>.calculateTotalTransactionRange(): String {
 
   // If we only have one transaction
   if (last == null || last.date == first.date) {
-    val dateString = dateRangeFormatter.format(first.date)
-    return "From $dateString"
+    val dateString = DATE_FORMATTER.format(first.date)
+    return "On $dateString"
   }
 
-  val firstDateString = dateRangeFormatter.format(first.date)
-  val lastDateString = dateRangeFormatter.format(last.date)
+  val firstDateString = DATE_FORMATTER.format(first.date)
+  val lastDateString = DATE_FORMATTER.format(last.date)
   return "From $lastDateString to $firstDateString"
 }

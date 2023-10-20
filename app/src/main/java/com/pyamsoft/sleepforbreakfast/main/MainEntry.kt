@@ -36,6 +36,7 @@ import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.LocalTransactionObserver
 import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.observer.TransactionObserver
+import java.time.Clock
 import javax.inject.Inject
 
 internal class MainInjector @Inject internal constructor() : ComposableInjector() {
@@ -43,6 +44,7 @@ internal class MainInjector @Inject internal constructor() : ComposableInjector(
   @JvmField @Inject internal var transactionObserver: TransactionObserver? = null
   @JvmField @Inject internal var categoryObserver: CategoryObserver? = null
   @JvmField @Inject internal var viewModel: MainViewModeler? = null
+  @JvmField @Inject internal var clock: Clock? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity).inject(this)
@@ -52,6 +54,7 @@ internal class MainInjector @Inject internal constructor() : ComposableInjector(
     viewModel = null
     categoryObserver = null
     transactionObserver = null
+    clock = null
   }
 }
 
@@ -77,6 +80,7 @@ internal fun MainEntry(
   val viewModel = rememberNotNull(component.viewModel)
   val categoryObserver = rememberNotNull(component.categoryObserver)
   val transactionObserver = rememberNotNull(component.transactionObserver)
+  val clock = rememberNotNull(component.clock)
 
   val page by viewModel.page.collectAsStateWithLifecycle()
   val isDarkIcons = remember(page) { page == null }
@@ -98,12 +102,15 @@ internal fun MainEntry(
   ) {
     MainScreen(
         modifier = modifier,
+        clock = clock,
         appName = appName,
         state = viewModel,
         onOpenSettings = { viewModel.handleOpenSettings() },
         onCloseSettings = { viewModel.handleCloseSettings() },
         onClosePage = { viewModel.handleClosePage() },
-        onOpenTransactions = { category, range -> viewModel.handleOpenTransactions(category, range) },
+        onOpenTransactions = { category, range ->
+          viewModel.handleOpenTransactions(category, range)
+        },
         onOpenAllTransactions = { viewModel.handleOpenAllTransactions(it) },
         onOpenRepeats = { viewModel.handleOpenRepeats() },
         onOpenCategories = { viewModel.handleOpenCategory() },

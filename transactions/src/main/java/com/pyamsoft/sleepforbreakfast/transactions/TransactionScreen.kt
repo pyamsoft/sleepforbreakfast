@@ -40,6 +40,7 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionOrHeader
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionTotal
 import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWithHeaders
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 
 private enum class ContentTypes {
@@ -53,6 +54,7 @@ private enum class ContentTypes {
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
+    range: TransactionDateRange?,
     onDismiss: () -> Unit,
 
     // Action
@@ -89,9 +91,8 @@ fun TransactionScreen(
       TransactionTotal(
           modifier = Modifier.fillMaxWidth().padding(pv),
           state = state,
+          range = range,
           onDismiss = onDismiss,
-
-          // Search
           onSearchToggle = onSearchToggled,
           onSearchChange = onSearchUpdated,
       )

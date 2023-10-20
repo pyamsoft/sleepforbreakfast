@@ -28,6 +28,7 @@ import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
+import java.time.Clock
 import javax.inject.Inject
 
 internal class HomeInjector @Inject internal constructor() : ComposableInjector() {
@@ -59,6 +60,7 @@ private fun MountHooks(viewModel: HomeViewModeler) {
 @Composable
 internal fun HomeEntry(
     modifier: Modifier = Modifier,
+    clock: Clock,
     appName: String,
     onOpenSettings: () -> Unit,
     onOpenRepeats: () -> Unit,
@@ -76,6 +78,7 @@ internal fun HomeEntry(
 
   HomeScreen(
       modifier = modifier,
+      clock = clock,
       state = viewModel,
       appName = appName,
       onOpenSettings = onOpenSettings,

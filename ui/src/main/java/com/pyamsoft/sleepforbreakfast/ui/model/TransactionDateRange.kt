@@ -16,7 +16,7 @@ internal constructor(
   @CheckResult
   fun toBundleable(): Pair<Long, Long> {
     val fromSeconds = from.atStartOfDay().toEpochSecond(ZoneOffset.UTC)
-    val toSeconds = to.atStartOfDay().plusDays(1).minusMinutes(1).toEpochSecond(ZoneOffset.UTC)
+    val toSeconds = to.atEndOfDay().toEpochSecond(ZoneOffset.UTC)
     return fromSeconds to toSeconds
   }
 
@@ -42,7 +42,7 @@ internal constructor(
 }
 
 @CheckResult
-fun LocalDate.toRange(to: LocalDate): TransactionDateRange {
+fun LocalDate.toDateRange(to: LocalDate): TransactionDateRange {
   return TransactionDateRange(
       from = this,
       to = to,

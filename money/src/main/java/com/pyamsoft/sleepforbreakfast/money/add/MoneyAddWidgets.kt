@@ -65,7 +65,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.theme.success
 import com.pyamsoft.pydroid.ui.defaults.CardDefaults
@@ -73,10 +72,10 @@ import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.money.dateFormatter
+import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
-import com.pyamsoft.sleepforbreakfast.money.timeFormatter
+import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -239,7 +238,7 @@ fun DatePicker(
     date: LocalDate,
     onOpenDateDialog: () -> Unit,
 ) {
-  val justDate = remember(date) { dateFormatter.format(date) }
+  val justDate = remember(date) { DATE_FORMATTER.format(date) }
 
   Text(
       modifier = modifier.clickable { onOpenDateDialog() },
@@ -255,7 +254,7 @@ fun TimePicker(
     time: LocalTime,
     onOpenTimeDialog: () -> Unit,
 ) {
-  val justTime = remember(time) { timeFormatter.format(time) }
+  val justTime = remember(time) { TIME_FORMATTER.format(time) }
 
   Text(
       modifier = modifier.clickable { onOpenTimeDialog() },
