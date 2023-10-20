@@ -21,7 +21,11 @@ import androidx.annotation.CheckResult
 
 internal interface AutomaticHandler {
 
-  @CheckResult suspend fun extract(bundle: Bundle): PaymentNotification?
+  @CheckResult
+  suspend fun extract(
+      packageName: String,
+      bundle: Bundle,
+  ): PaymentNotification?
 
   @CheckResult fun canExtract(packageName: String): Boolean
 }

@@ -29,9 +29,9 @@ import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.main.settings.SettingsDialog
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 
 @Composable
 fun MainScreen(
@@ -41,8 +41,8 @@ fun MainScreen(
     onOpenSettings: () -> Unit,
     onCloseSettings: () -> Unit,
     onClosePage: () -> Unit,
-    onOpenTransactions: (DbCategory) -> Unit,
-    onOpenAllTransactions: () -> Unit,
+    onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
+    onOpenAllTransactions: (TransactionDateRange?) -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
@@ -72,6 +72,7 @@ fun MainScreen(
             TransactionEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 page = p,
+                dateRange = null,
                 onDismiss = onClosePage,
             )
           }

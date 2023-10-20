@@ -57,6 +57,7 @@ import com.pyamsoft.pydroid.ui.util.collectAsStateMapWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
@@ -82,8 +83,8 @@ fun HomeScreen(
     appName: String,
     onOpenSettings: () -> Unit,
     onOpenNotificationListenerSettings: () -> Unit,
-    onOpenAllTransactions: () -> Unit,
-    onOpenTransactions: (DbCategory) -> Unit,
+    onOpenAllTransactions: (TransactionDateRange?) -> Unit,
+    onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
@@ -127,8 +128,8 @@ fun HomeScreen(
       HomeCategories(
           modifier = Modifier.fillMaxWidth(),
           state = state,
-          onOpenAllTransactions = onOpenAllTransactions,
-          onOpenCategory = onOpenTransactions,
+          onOpenAllTransactions = { onOpenAllTransactions(null) },
+          onOpenCategory = { onOpenTransactions(it, null) },
       )
     }
 

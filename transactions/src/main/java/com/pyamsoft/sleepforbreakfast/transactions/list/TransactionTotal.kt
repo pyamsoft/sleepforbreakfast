@@ -25,32 +25,23 @@ import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
-import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionRange
+import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
+import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
-import java.time.Clock
 import kotlin.math.abs
 
 @Composable
 internal fun TransactionTotal(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
-    clock: Clock,
     onDismiss: () -> Unit,
 
     // Search
     onSearchToggle: () -> Unit,
     onSearchChange: (String) -> Unit,
-
-    // Breakdown
-    onBreakdownToggle: () -> Unit,
-    onBreakdownChange: (BreakdownRange) -> Unit,
-
-    // Chart
-    onChartToggle: () -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -74,8 +65,6 @@ internal fun TransactionTotal(
           state = state,
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggle,
-          onBreakdownToggle = onBreakdownToggle,
-          onChartToggle = onChartToggle,
       )
     }
 
@@ -83,18 +72,6 @@ internal fun TransactionTotal(
         state = state,
         onToggle = onSearchToggle,
         onChange = onSearchChange,
-    )
-
-    PeriodBreakdownBar(
-        state = state,
-        onToggle = onBreakdownToggle,
-        onChange = onBreakdownChange,
-    )
-
-    SpendingChartBar(
-        state = state,
-        clock = clock,
-        onToggle = onChartToggle,
     )
   }
 }
@@ -107,12 +84,6 @@ private fun Totals(
 
     // Search
     onSearchToggle: () -> Unit,
-
-    // Breakdown
-    onBreakdownToggle: () -> Unit,
-
-    // Chart
-    onChartToggle: () -> Unit,
 ) {
   val category by state.category.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
@@ -186,8 +157,6 @@ private fun Totals(
             modifier = Modifier.weight(1F),
             state = state,
             onSearchToggle = onSearchToggle,
-            onBreakdownToggle = onBreakdownToggle,
-            onChartToggle = onChartToggle,
         )
       },
       currentCategory = DbCategory.Id.EMPTY,

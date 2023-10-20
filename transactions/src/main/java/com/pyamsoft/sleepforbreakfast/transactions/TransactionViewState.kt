@@ -23,7 +23,6 @@ import com.pyamsoft.sleepforbreakfast.money.list.ListViewState
 import com.pyamsoft.sleepforbreakfast.money.list.MutableListViewState
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
-import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,11 +33,6 @@ interface TransactionViewState : ListViewState<DbTransaction> {
 
   val addParams: StateFlow<TransactionAddParams?>
   val deleteParams: StateFlow<TransactionDeleteParams?>
-
-  val isBreakdownOpen: StateFlow<Boolean>
-  val breakdown: StateFlow<BreakdownRange?>
-
-  val isChartOpen: StateFlow<Boolean>
 }
 
 @Stable
@@ -48,9 +42,4 @@ class MutableTransactionViewState @Inject internal constructor() :
 
   override val addParams = MutableStateFlow<TransactionAddParams?>(null)
   override val deleteParams = MutableStateFlow<TransactionDeleteParams?>(null)
-
-  override val isBreakdownOpen = MutableStateFlow(false)
-  override val breakdown = MutableStateFlow<BreakdownRange?>(null)
-
-  override val isChartOpen = MutableStateFlow(false)
 }

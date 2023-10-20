@@ -39,7 +39,7 @@ internal constructor(
     // handle the same packagename, like Venmo
     for (handler in handlers) {
       if (handler.canExtract(packageName)) {
-        val result = handler.extract(bundle)
+        val result = handler.extract(packageName, bundle)
         if (result != null) {
           return result
         }

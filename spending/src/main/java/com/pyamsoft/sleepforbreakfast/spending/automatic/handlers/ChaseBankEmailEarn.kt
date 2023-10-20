@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic.handlers
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DATE
+import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.automatic.EarnAutomaticHandler
 import javax.inject.Inject
 
@@ -30,8 +31,7 @@ internal class ChaseBankEmailEarn @Inject internal constructor() : EarnAutomatic
   override fun getPossibleRegexes() = setOf(CHASE_ALERT_EMAIL_REGEX)
 
   override fun canExtract(packageName: String): Boolean {
-    // TODO What are common email packages
-    return packageName.isNotBlank()
+    return packageName in COMMON_EMAIL_PACKAGES
   }
 
   companion object {

@@ -36,9 +36,9 @@ import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
 import java.time.Clock
@@ -48,6 +48,7 @@ internal class TransactionInjector
 @Inject
 internal constructor(
     private val page: MainPage.Transactions,
+    private val dateRange: TransactionDateRange?,
 ) : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
@@ -57,6 +58,7 @@ internal constructor(
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusTransactions()
         .create(
+            dateRange = dateRange,
             categoryId = page.categoryId,
             showAllTransactions = page.showAllTransactions,
         )
@@ -82,15 +84,16 @@ private fun MountHooks(
 internal fun TransactionEntry(
     modifier: Modifier = Modifier,
     page: MainPage.Transactions,
+    dateRange: TransactionDateRange?,
     onDismiss: () -> Unit,
 ) {
   val component = rememberComposableInjector {
     TransactionInjector(
         page = page,
+        dateRange = dateRange,
     )
   }
   val viewModel = rememberNotNull(component.viewModel)
-  val clock = rememberNotNull(component.clock)
 
   val addParams by viewModel.addParams.collectAsStateWithLifecycle()
   val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
@@ -123,7 +126,6 @@ internal fun TransactionEntry(
     TransactionScreen(
         modifier = modifier,
         state = viewModel,
-        clock = clock,
 
         // Dismiss
         onDismiss = onDismiss,
@@ -140,13 +142,6 @@ internal fun TransactionEntry(
         // Search
         onSearchToggled = { viewModel.handleToggleSearch() },
         onSearchUpdated = { viewModel.handleSearchUpdated(it) },
-
-        // Breakdown
-        onBreakdownToggled = { viewModel.handleToggleBreakdown() },
-        onBreakdownChange = { viewModel.handleSetBreakdownRange(it) },
-
-        // Chart
-        onChartToggled = { viewModel.handleToggleChart() },
     )
 
     addParams?.also { p ->

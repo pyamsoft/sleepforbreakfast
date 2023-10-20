@@ -27,6 +27,7 @@ import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import javax.inject.Inject
 
 internal class HomeInjector @Inject internal constructor() : ComposableInjector() {
@@ -62,8 +63,8 @@ internal fun HomeEntry(
     onOpenSettings: () -> Unit,
     onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
-    onOpenAllTransactions: () -> Unit,
-    onOpenTransactions: (DbCategory) -> Unit,
+    onOpenAllTransactions: (TransactionDateRange?) -> Unit,
+    onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
 ) {
   val component = rememberComposableInjector { HomeInjector() }
   val viewModel = rememberNotNull(component.viewModel)

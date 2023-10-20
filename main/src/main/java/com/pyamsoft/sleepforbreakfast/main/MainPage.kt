@@ -19,7 +19,9 @@ package com.pyamsoft.sleepforbreakfast.main
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 
 @Stable
 sealed interface MainPage {
@@ -29,22 +31,43 @@ sealed interface MainPage {
   data class Transactions(
       val categoryId: DbCategory.Id,
       val showAllTransactions: Boolean,
+      val range: TransactionDateRange?,
   ) : MainPage {
 
     @CheckResult
-    fun asSaveable(): String {
-      return "$categoryId|$showAllTransactions"
+    fun toBundleable(): String {
+      val s = "$categoryId|$showAllTransactions"
+      val rangeData = range?.toBundleable()
+      return if (rangeData == null) s
+      else {
+        "$s|${rangeData.first}|${rangeData.second}"
+      }
     }
 
     companion object {
 
       @JvmStatic
       @CheckResult
-      fun fromSaveable(s: String): MainPage.Transactions {
+      fun fromBundleable(s: String): MainPage.Transactions {
         val split = s.split("|")
+        val rangeDataFrom = split.getOrNull(2)
+        val rangeDataTo = split.getOrNull(3)
         return Transactions(
             categoryId = DbCategory.Id(split[0]),
             showAllTransactions = split[1].toBooleanStrict(),
+            range =
+                if (rangeDataFrom == null || rangeDataTo == null) null
+                else {
+                  try {
+                    TransactionDateRange.fromBundleable(
+                        from = rangeDataFrom.toLong(),
+                        to = rangeDataTo.toLong(),
+                    )
+                  } catch (e: Throwable) {
+                    Timber.e(e) { "Failed to restore range data from bundle" }
+                    null
+                  }
+                },
         )
       }
     }

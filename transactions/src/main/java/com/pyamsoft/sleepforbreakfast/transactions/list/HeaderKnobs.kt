@@ -16,12 +16,6 @@ internal fun HeaderKnobs(
 
     // Search
     onSearchToggle: () -> Unit,
-
-    // Breakdown
-    onBreakdownToggle: () -> Unit,
-
-    // Chart
-    onChartToggle: () -> Unit,
 ) {
   Row(
       modifier = modifier.fillMaxWidth(),
@@ -31,16 +25,6 @@ internal fun HeaderKnobs(
     Search(
         state = state,
         onToggle = onSearchToggle,
-    )
-
-    PeriodBreakdown(
-        state = state,
-        onToggle = onBreakdownToggle,
-    )
-
-    SpendingChart(
-        state = state,
-        onToggle = onChartToggle,
     )
   }
 }

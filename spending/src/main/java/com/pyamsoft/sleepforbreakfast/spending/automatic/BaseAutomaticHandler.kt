@@ -54,6 +54,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
 
   @CheckResult
   private suspend fun handleRegex(
+      packageName: String,
       regex: Regex,
       text: CharSequence,
       bigText: CharSequence,
@@ -68,6 +69,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
         } else {
           Timber.w {
             "Could not match notification: ${mapOf(
+                        "package" to packageName,
                         "text" to text,
                         "bigText" to bigText,
                         "title" to title,
@@ -116,7 +118,10 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     )
   }
 
-  final override suspend fun extract(bundle: Bundle): PaymentNotification? {
+  final override suspend fun extract(
+      packageName: String,
+      bundle: Bundle,
+  ): PaymentNotification? {
     val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
     val bigText = bundle.getCharSequence(NotificationCompat.EXTRA_BIG_TEXT, "")
     val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
@@ -126,6 +131,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     for (regex in regexList) {
       val result =
           handleRegex(
+              packageName = packageName,
               regex = regex,
               text = text,
               bigText = bigText,

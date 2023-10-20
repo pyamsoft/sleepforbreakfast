@@ -34,8 +34,6 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
-import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionHeader
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionOrHeader
@@ -43,7 +41,6 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionTotal
 import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWithHeaders
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
-import java.time.Clock
 
 private enum class ContentTypes {
   HEADER,
@@ -56,7 +53,6 @@ private enum class ContentTypes {
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     state: TransactionViewState,
-    clock: Clock,
     onDismiss: () -> Unit,
 
     // Action
@@ -71,13 +67,6 @@ fun TransactionScreen(
     // Search
     onSearchToggled: () -> Unit,
     onSearchUpdated: (String) -> Unit,
-
-    // Breakdown
-    onBreakdownToggled: () -> Unit,
-    onBreakdownChange: (BreakdownRange) -> Unit,
-
-    // Chart
-    onChartToggled: () -> Unit,
 ) {
   val currentCategory by state.category.collectAsStateWithLifecycle()
   val loading by state.loadingState.collectAsStateWithLifecycle()
@@ -100,19 +89,11 @@ fun TransactionScreen(
       TransactionTotal(
           modifier = Modifier.fillMaxWidth().padding(pv),
           state = state,
-          clock = clock,
           onDismiss = onDismiss,
 
           // Search
           onSearchToggle = onSearchToggled,
           onSearchChange = onSearchUpdated,
-
-          // Breakdown
-          onBreakdownToggle = onBreakdownToggled,
-          onBreakdownChange = onBreakdownChange,
-
-          // Chart
-          onChartToggle = onChartToggled,
       )
 
       LazyColumn {

@@ -30,3 +30,13 @@ internal const val CAPTURE_NAME_DESCRIPTION = "description"
 internal const val CAPTURE_GROUP_AMOUNT = "(?<$CAPTURE_NAME_AMOUNT>\\$[\\d\\.,]+)"
 
 @JvmField internal val REGEX_FILTER_ONLY_DIGITS = Regex("[^\\d+]")
+
+// TODO What are common email packages
+@JvmField
+internal val COMMON_EMAIL_PACKAGES =
+    setOf(
+        // FairEmail
+        "eu.faircode.email",
+        // Gmail
+        "com.google.android.gm",
+    )

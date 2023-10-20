@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transaction
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Subcomponent
@@ -37,6 +38,7 @@ internal interface TransactionComponent {
 
     @CheckResult
     fun create(
+        @BindsInstance dateRange: TransactionDateRange?,
         @BindsInstance categoryId: DbCategory.Id,
         @BindsInstance showAllTransactions: Boolean,
     ): TransactionComponent

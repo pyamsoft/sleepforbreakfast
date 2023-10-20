@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
-import com.pyamsoft.sleepforbreakfast.transactions.list.BreakdownRange
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
 import javax.inject.Inject
@@ -38,7 +38,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TransactionViewModeler
@@ -46,11 +45,12 @@ class TransactionViewModeler
 internal constructor(
     state: MutableTransactionViewState,
     interactor: TransactionInteractor,
+    private val defaultCategoryId: DbCategory.Id,
+    private val dateRange: TransactionDateRange?,
+    private val showAllTransactions: Boolean,
     private val enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
     private val categoryLoader: CategoryLoader,
-    private val defaultCategoryId: DbCategory.Id,
-    private val showAllTransactions: Boolean,
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
 ) :
@@ -93,38 +93,9 @@ internal constructor(
           state.deleteParams.value?.let { jsonParser.toJson(it.toJson()) }
         }
         .also { add(it) }
-
-    registry
-        .registerProvider(KEY_BREAKDOWN_RANGE) {
-          state.breakdown.value?.let { jsonParser.toJson(it.toJson()) }
-        }
-        .also { add(it) }
-
-    registry
-        .registerProvider(KEY_IS_BREAKDOWN_OPEN) { state.isBreakdownOpen.value }
-        .also { add(it) }
-
-    registry.registerProvider(KEY_IS_CHART_OPEN) { state.isChartOpen.value }.also { add(it) }
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
-    registry
-        .consumeRestored(KEY_BREAKDOWN_RANGE)
-        ?.let { it as String }
-        ?.let { jsonParser.fromJson<BreakdownRange.Json>(it) }
-        ?.fromJson()
-        ?.also { handleSetBreakdownRange(it) }
-
-    registry
-        .consumeRestored(KEY_IS_BREAKDOWN_OPEN)
-        ?.let { it as Boolean }
-        ?.also { state.isBreakdownOpen.value = it }
-
-    registry
-        .consumeRestored(KEY_IS_CHART_OPEN)
-        ?.let { it as Boolean }
-        ?.also { state.isChartOpen.value = it }
-
     registry
         .consumeRestored(KEY_ADD_PARAMS)
         ?.let { it as String }
@@ -178,6 +149,41 @@ internal constructor(
     }
   }
 
+  @CheckResult
+  private fun Sequence<DbTransaction>.filterByCategory(
+      category: DbCategory
+  ): Sequence<DbTransaction> = filter { t ->
+    // If we are showing all transactions, don't filter
+    if (showAllTransactions) {
+      return@filter true
+    }
+
+    // The NONE category captures everything
+    if (category.id.isEmpty) {
+      // Either no categories
+      // Or one category, where the category is empty
+      return@filter t.categories.isEmpty() || t.categories.size == 1 && t.categories.first().isEmpty
+    }
+
+    // This includes the category in its list of categories
+    return@filter t.categories.contains { it == category.id }
+  }
+
+  @CheckResult
+  private fun Sequence<DbTransaction>.filterBySearch(search: String): Sequence<DbTransaction> {
+    if (search.isBlank()) {
+      return this
+    }
+
+    return filter { isMatchingSearch(it, search) }
+  }
+
+  @CheckResult
+  private fun Sequence<DbTransaction>.filterByDateRange(): Sequence<DbTransaction> {
+    val range = dateRange ?: return this
+    return filter { t -> t.date.toLocalDate().let { it >= range.from && it <= range.to } }
+  }
+
   override fun onGenerateItemsBasedOnAllItems(
       scope: CoroutineScope,
       allItems: StateFlow<List<DbTransaction>>
@@ -187,62 +193,30 @@ internal constructor(
         combineTransform(
                 allItems,
                 state.search,
-                state.breakdown,
-            ) { all, search, breakdown ->
+            ) { all, search ->
               enforcer.assertOffMainThread()
 
               emit(
                   ItemPayload(
                       transactions = all,
                       search = search,
-                      range = breakdown,
                   ),
               )
             }
-            // Enforcee in background
+            // Enforce in background
             .flowOn(context = Dispatchers.Default)
 
     scope.launch(context = Dispatchers.Default) {
-      combined.collect { (all, search, range) ->
+      combined.collect { (all, search) ->
         enforcer.assertOffMainThread()
 
         val category = loadTargetCategory()
 
         state.items.value =
             all.asSequence()
-                .filter { t ->
-                  // If we are showing all transactions, don't filter
-                  if (showAllTransactions) {
-                    return@filter true
-                  }
-
-                  // The NONE category captures everything
-                  if (category.id.isEmpty) {
-                    // Either no categories
-                    return@filter t.categories.isEmpty() ||
-                        // Or one category, where the category is empty
-                        t.categories.size == 1 && t.categories.first().isEmpty
-                  } else {
-                    // This includes the category in its list of categories
-                    return@filter t.categories.contains { it == category.id }
-                  }
-                }
-                // Filter by search query
-                .run {
-                  if (search.isNotBlank()) {
-                    filter { isMatchingSearch(it, search) }
-                  } else {
-                    this
-                  }
-                }
-                // Filter by search query
-                .run {
-                  if (range != null) {
-                    filter { it.date.toLocalDate().let { d -> d >= range.start && d <= range.end } }
-                  } else {
-                    this
-                  }
-                }
+                .filterByCategory(category)
+                .filterByDateRange()
+                .filterBySearch(search)
                 .toList()
                 .sort()
       }
@@ -286,35 +260,13 @@ internal constructor(
     state.deleteParams.value = null
   }
 
-  fun handleToggleBreakdown() {
-    state.isBreakdownOpen.update { !it }
-  }
-
-  fun handleSetBreakdownRange(range: BreakdownRange) {
-    state.breakdown.value = range
-  }
-
-  fun handleClearBreakdownRange() {
-    state.breakdown.value = null
-  }
-
-  fun handleToggleChart() {
-    state.isChartOpen.update { !it }
-  }
-
   private data class ItemPayload(
       val transactions: List<DbTransaction>,
       val search: String,
-      val range: BreakdownRange?,
   )
 
   companion object {
     private const val KEY_ADD_PARAMS = "key_add_params"
     private const val KEY_DELETE_PARAMS = "key_delete_params"
-
-    private const val KEY_IS_BREAKDOWN_OPEN = "key_is_breakdown"
-    private const val KEY_BREAKDOWN_RANGE = "key_breakdown_range"
-
-    private const val KEY_IS_CHART_OPEN = "key_is_chart"
   }
 }

@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.main
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import javax.inject.Inject
 
 class MainViewModeler
@@ -43,7 +44,7 @@ internal constructor(
                 return@registerProvider when (p) {
                   is MainPage.Category,
                   is MainPage.Repeat -> p::class.java.name
-                  is MainPage.Transactions -> p.asSaveable()
+                  is MainPage.Transactions -> p.toBundleable()
                 }
               }
             }
@@ -66,7 +67,7 @@ internal constructor(
             MainPage.Category::class.java.name -> MainPage.Category
             MainPage.Repeat::class.java.name -> MainPage.Repeat
             // Assume P is a category ID as a String
-            else -> MainPage.Transactions.fromSaveable(p)
+            else -> MainPage.Transactions.fromBundleable(p)
           }
         }
         ?.also { s.page.value = it }
@@ -84,20 +85,21 @@ internal constructor(
     state.page.value = null
   }
 
-  fun handleOpenTransactions(category: DbCategory) {
+  fun handleOpenTransactions(category: DbCategory, range: TransactionDateRange?) {
     state.page.value =
         MainPage.Transactions(
             categoryId = category.id,
             showAllTransactions = false,
+            range = range,
         )
   }
 
-  fun handleOpenAllTransactions() {
+  fun handleOpenAllTransactions(
+      range: TransactionDateRange?,
+  ) {
     state.page.value =
         MainPage.Transactions(
-            categoryId = DbCategory.Id.EMPTY,
-            showAllTransactions = true,
-        )
+            categoryId = DbCategory.Id.EMPTY, showAllTransactions = true, range = range)
   }
 
   fun handleOpenRepeats() {
