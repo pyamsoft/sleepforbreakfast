@@ -37,7 +37,7 @@ buildscript {
     dagger = "2.48"
 
     // Room
-    room = "2.5.2"
+    room = "2.6.0"
 
     // Jobs
     workmanager = "2.8.1"
