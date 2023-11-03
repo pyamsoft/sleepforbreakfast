@@ -33,22 +33,30 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionQue
 internal interface RoomSleepDb {
 
   // Transactions
-  @get:CheckResult val roomTransactionQueryDao: RoomTransactionQueryDao
-  @get:CheckResult val roomTransactionInsertDao: RoomTransactionInsertDao
-  @get:CheckResult val roomTransactionDeleteDao: RoomTransactionDeleteDao
+  @CheckResult fun roomTransactionQueryDao(): RoomTransactionQueryDao
+
+  @CheckResult fun roomTransactionInsertDao(): RoomTransactionInsertDao
+
+  @CheckResult fun roomTransactionDeleteDao(): RoomTransactionDeleteDao
 
   // Category
-  @get:CheckResult val roomCategoryQueryDao: RoomCategoryQueryDao
-  @get:CheckResult val roomCategoryInsertDao: RoomCategoryInsertDao
-  @get:CheckResult val roomCategoryDeleteDao: RoomCategoryDeleteDao
+  @CheckResult fun roomCategoryQueryDao(): RoomCategoryQueryDao
+
+  @CheckResult fun roomCategoryInsertDao(): RoomCategoryInsertDao
+
+  @CheckResult fun roomCategoryDeleteDao(): RoomCategoryDeleteDao
 
   // Repeat
-  @get:CheckResult val roomRepeatQueryDao: RoomRepeatQueryDao
-  @get:CheckResult val roomRepeatInsertDao: RoomRepeatInsertDao
-  @get:CheckResult val roomRepeatDeleteDao: RoomRepeatDeleteDao
+  @CheckResult fun roomRepeatQueryDao(): RoomRepeatQueryDao
+
+  @CheckResult fun roomRepeatInsertDao(): RoomRepeatInsertDao
+
+  @CheckResult fun roomRepeatDeleteDao(): RoomRepeatDeleteDao
 
   // Automatic
-  @get:CheckResult val roomAutomaticQueryDao: RoomAutomaticQueryDao
-  @get:CheckResult val roomAutomaticInsertDao: RoomAutomaticInsertDao
-  @get:CheckResult val roomAutomaticDeleteDao: RoomAutomaticDeleteDao
+  @CheckResult fun roomAutomaticQueryDao(): RoomAutomaticQueryDao
+
+  @CheckResult fun roomAutomaticInsertDao(): RoomAutomaticInsertDao
+
+  @CheckResult fun roomAutomaticDeleteDao(): RoomAutomaticDeleteDao
 }

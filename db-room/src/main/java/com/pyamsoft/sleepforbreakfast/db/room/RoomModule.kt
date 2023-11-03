@@ -69,7 +69,7 @@ abstract class RoomModule {
     @Provides
     @JvmStatic
     internal fun provideRoomTransactionQueryDao(@InternalApi db: RoomSleepDb): TransactionQueryDao {
-      return db.roomTransactionQueryDao
+      return db.roomTransactionQueryDao()
     }
 
     @DbApi
@@ -78,7 +78,7 @@ abstract class RoomModule {
     internal fun provideRoomTransactionInsertDao(
         @InternalApi db: RoomSleepDb
     ): TransactionInsertDao {
-      return db.roomTransactionInsertDao
+      return db.roomTransactionInsertDao()
     }
 
     @DbApi
@@ -87,7 +87,7 @@ abstract class RoomModule {
     internal fun provideRoomTransactionDeleteDao(
         @InternalApi db: RoomSleepDb
     ): TransactionDeleteDao {
-      return db.roomTransactionDeleteDao
+      return db.roomTransactionDeleteDao()
     }
 
     // DbCategory
@@ -95,21 +95,21 @@ abstract class RoomModule {
     @Provides
     @JvmStatic
     internal fun provideRoomCategoryQueryDao(@InternalApi db: RoomSleepDb): CategoryQueryDao {
-      return db.roomCategoryQueryDao
+      return db.roomCategoryQueryDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
     internal fun provideRoomCategoryInsertDao(@InternalApi db: RoomSleepDb): CategoryInsertDao {
-      return db.roomCategoryInsertDao
+      return db.roomCategoryInsertDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
     internal fun provideRoomCategoryDeleteDao(@InternalApi db: RoomSleepDb): CategoryDeleteDao {
-      return db.roomCategoryDeleteDao
+      return db.roomCategoryDeleteDao()
     }
 
     // DbRepeat
@@ -117,21 +117,21 @@ abstract class RoomModule {
     @Provides
     @JvmStatic
     internal fun provideRoomRepeatQueryDao(@InternalApi db: RoomSleepDb): RepeatQueryDao {
-      return db.roomRepeatQueryDao
+      return db.roomRepeatQueryDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
     internal fun provideRoomRepeatInsertDao(@InternalApi db: RoomSleepDb): RepeatInsertDao {
-      return db.roomRepeatInsertDao
+      return db.roomRepeatInsertDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
     internal fun provideRoomRepeatDeleteDao(@InternalApi db: RoomSleepDb): RepeatDeleteDao {
-      return db.roomRepeatDeleteDao
+      return db.roomRepeatDeleteDao()
     }
 
     // DbAutomatic
@@ -139,21 +139,21 @@ abstract class RoomModule {
     @Provides
     @JvmStatic
     internal fun provideRoomAutomaticQueryDao(@InternalApi db: RoomSleepDb): AutomaticQueryDao {
-      return db.roomAutomaticQueryDao
+      return db.roomAutomaticQueryDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
     internal fun provideRoomAutomaticInsertDao(@InternalApi db: RoomSleepDb): AutomaticInsertDao {
-      return db.roomAutomaticInsertDao
+      return db.roomAutomaticInsertDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
     internal fun provideRoomAutomaticDeleteDao(@InternalApi db: RoomSleepDb): AutomaticDeleteDao {
-      return db.roomAutomaticDeleteDao
+      return db.roomAutomaticDeleteDao()
     }
   }
 }
