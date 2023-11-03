@@ -70,14 +70,14 @@ import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
-import com.pyamsoft.sleepforbreakfast.ui.model.atEndOfDay
 import com.pyamsoft.sleepforbreakfast.ui.model.toDateRange
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Clock
-import java.time.Duration
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 import kotlin.math.abs
@@ -194,28 +194,6 @@ private fun HomeCategories(
   val transactionsByCategory = state.transactionsByCategory.collectAsStateMapWithLifecycle()
   val transactionsByRange = state.transactionsByDateRange.collectAsStateMapWithLifecycle()
 
-  val today = remember(clock) { LocalDate.now(clock) }
-  val dayRange = remember(clock, today) { LocalDate.now(clock).toDateRange(today) }
-  val locale = rememberCurrentLocale()
-
-  val firstDayOfWeek = remember(locale) { WeekFields.of(locale).firstDayOfWeek }
-  val weekRange =
-      remember(
-          clock,
-          today,
-          firstDayOfWeek,
-      ) {
-        today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek)).toDateRange(today)
-      }
-  val monthRange =
-      remember(
-          clock,
-          today,
-          locale,
-      ) {
-        today.withDayOfMonth(1).toDateRange(today)
-      }
-
   Column(
       modifier = modifier.padding(MaterialTheme.keylines.content),
   ) {
@@ -245,7 +223,8 @@ private fun HomeCategories(
             item {
               DateBreakdown(
                   transactions = rememberRange(transactionsByRange, HomeViewState.DayRange.DAY),
-                  range = dayRange,
+                  clock = clock,
+                  type = DateBreakdownType.DAILY,
                   onOpen = onOpenBreakdown,
               )
             }
@@ -253,7 +232,8 @@ private fun HomeCategories(
             item {
               DateBreakdown(
                   transactions = rememberRange(transactionsByRange, HomeViewState.DayRange.WEEK),
-                  range = weekRange,
+                  clock = clock,
+                  type = DateBreakdownType.WEEKLY,
                   onOpen = onOpenBreakdown,
               )
             }
@@ -261,7 +241,8 @@ private fun HomeCategories(
             item {
               DateBreakdown(
                   transactions = rememberRange(transactionsByRange, HomeViewState.DayRange.MONTH),
-                  range = monthRange,
+                  clock = clock,
+                  type = DateBreakdownType.MONTHLY,
                   onOpen = onOpenBreakdown,
               )
             }
@@ -316,11 +297,18 @@ private fun HomeCategories(
   }
 }
 
+enum class DateBreakdownType {
+  DAILY,
+  WEEKLY,
+  MONTHLY,
+}
+
 @Composable
 private fun DateBreakdown(
     modifier: Modifier = Modifier,
     transactions: Set<DbTransaction>,
-    range: TransactionDateRange,
+    clock: Clock,
+    type: DateBreakdownType,
     onOpen: (TransactionDateRange) -> Unit,
 ) {
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
@@ -346,30 +334,51 @@ private fun DateBreakdown(
         }
       }
 
+  val today = remember(clock) { LocalDate.now(clock) }
+
   val rangeName =
-      remember(range) {
-        val duration =
-            Duration.between(
-                range.from.atStartOfDay(),
-                range.to.atEndOfDay(),
-            )
-        if (duration.toDays() <= 1) {
-          return@remember "Recent Day's Transactions"
+      remember(type) {
+        when (type) {
+          DateBreakdownType.DAILY -> "Transcations Today"
+          DateBreakdownType.WEEKLY -> "Transcations This Week"
+          DateBreakdownType.MONTHLY -> "Transactions This Month"
         }
-
-        if (duration.toDays() <= 7) {
-          return@remember "Recent Week's Transactions"
-        }
-
-        return@remember "Recent Month's Transactions"
       }
+
+  val locale = rememberCurrentLocale()
+  val startOfRange =
+      remember(
+          type,
+          clock,
+          today,
+          locale,
+      ) {
+        when (type) {
+          DateBreakdownType.DAILY -> LocalDate.now(clock)
+          DateBreakdownType.WEEKLY -> {
+            val firstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
+            today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+          }
+          DateBreakdownType.MONTHLY -> today.withDayOfMonth(1)
+        }
+      }
+
+  val dateRange =
+      remember(
+          startOfRange,
+          today,
+      ) {
+        startOfRange.toDateRange(today)
+      }
+
+  val dateRangeFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT) }
 
   Card(
       modifier = modifier,
       elevation = CardDefaults.Elevation,
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(range) }.padding(MaterialTheme.keylines.content),
+        modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content),
     ) {
       Text(
           style = MaterialTheme.typography.h6,
@@ -377,9 +386,28 @@ private fun DateBreakdown(
       )
 
       Text(
+          style = MaterialTheme.typography.caption,
+          text =
+              remember(
+                  today,
+                  type,
+                  dateRange,
+                  dateRangeFormatter,
+              ) {
+                if (type == DateBreakdownType.DAILY) {
+                  return@remember dateRangeFormatter.format(today)
+                } else {
+                  val start = dateRangeFormatter.format(dateRange.from)
+                  val end = dateRangeFormatter.format(dateRange.to)
+                  return@remember "$start - $end"
+                }
+              },
+      )
+
+      Text(
           modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
           style =
-              MaterialTheme.typography.body2.copy(
+              MaterialTheme.typography.body1.copy(
                   color =
                       priceColor.copy(
                           alpha = ContentAlpha.disabled,
@@ -470,7 +498,7 @@ private fun Category(
       Text(
           modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
           style =
-              MaterialTheme.typography.body2.copy(
+              MaterialTheme.typography.body1.copy(
                   color =
                       priceColor.copy(
                           alpha = ContentAlpha.disabled,
@@ -556,7 +584,8 @@ private fun IconOption(
                   color =
                       MaterialTheme.colors.onPrimary.copy(
                           alpha = ContentAlpha.medium,
-                      )),
+                      ),
+              ),
       )
     }
   }
