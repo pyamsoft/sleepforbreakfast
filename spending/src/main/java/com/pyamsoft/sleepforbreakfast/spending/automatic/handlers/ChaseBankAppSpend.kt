@@ -76,11 +76,11 @@ internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomatic
             .toRegex(RegexOption.MULTILINE)
 
     /**
-     * Chase Freedom: You made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023
-     * at 1:23PM ET Merchant My Favorite Merchant Amount $2.00
+     * You made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023
+     * at 1:23PM ET Merchant My Favorite Merchant Amount
      */
     private val CHASE_ALERT_4 =
-        "${ACCOUNT_GROUP}: You made a $CAPTURE_GROUP_AMOUNT transaction Account $ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount $CAPTURE_GROUP_AMOUNT"
+        "You made a $CAPTURE_GROUP_AMOUNT transaction Account $ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount"
             .toRegex(RegexOption.MULTILINE)
   }
 }
