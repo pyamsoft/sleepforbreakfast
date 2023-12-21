@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 

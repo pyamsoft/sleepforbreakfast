@@ -28,7 +28,6 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler

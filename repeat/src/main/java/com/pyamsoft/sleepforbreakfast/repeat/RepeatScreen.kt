@@ -29,7 +29,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 private enum class ContentTypes {

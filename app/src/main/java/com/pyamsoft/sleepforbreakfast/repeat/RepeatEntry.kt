@@ -43,7 +43,6 @@ import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.list.Search
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddEntry

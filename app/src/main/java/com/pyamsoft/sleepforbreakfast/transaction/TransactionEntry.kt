@@ -40,7 +40,6 @@ import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
-import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import javax.inject.Inject
 
 internal class TransactionInjector

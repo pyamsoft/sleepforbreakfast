@@ -146,8 +146,7 @@ fun TransactionRepeatInfoScreen(
               item(
                   contentType = RepeatContentTypes.CREATED_DATE,
               ) {
-                val dateString =
-                    remember(date) { DATE_FORMATTER.format(date) }
+                val dateString = remember(date) { DATE_FORMATTER.format(date) }
                 Text(
                     modifier =
                         Modifier.fillMaxWidth()
