@@ -449,7 +449,7 @@ private fun CategoryChip(
           unselectedTextColor,
           selectedTextColor,
       ) {
-        if (isSelected) unselectedTextColor else selectedTextColor
+        if (isSelected) selectedTextColor else unselectedTextColor
       }
   Text(
       modifier =
