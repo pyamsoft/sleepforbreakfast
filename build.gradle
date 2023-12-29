@@ -27,7 +27,7 @@ buildscript {
     pydroid = "26.9.3"
 
     // Kotlin
-    kotlin = "1.9.22"
+    kotlin = "1.9.21"
     coroutines = "1.7.3"
 
     // Leak Canary
