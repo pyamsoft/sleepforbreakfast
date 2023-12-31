@@ -26,15 +26,26 @@ import javax.inject.Inject
 /**
  * Chase Bank can be configured to send email alerts when you receive direct deposit into an account
  */
-internal class ChaseBankEmailEarn @Inject internal constructor() : EarnAutomaticHandler() {
+internal class ChaseBankEarn @Inject internal constructor() : EarnAutomaticHandler() {
 
   override fun getPossibleRegexes() = setOf(CHASE_ALERT_EMAIL_REGEX)
 
   override fun canExtract(packageName: String): Boolean {
-    return packageName in COMMON_EMAIL_PACKAGES
+    return if (WATCH_CHASE_APP) {
+      packageName == "com.chase.sig.android"
+    } else {
+      packageName in COMMON_EMAIL_PACKAGES
+    }
   }
 
   companion object {
+
+    /**
+     * Watch the Chase App instead of email stream
+     *
+     * Sometimes the chase app doesn't post a push notification but we always get emails
+     */
+    private const val WATCH_CHASE_APP = false
 
     private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>\\.\\.\\.\\d\\d\\d\\d)"
     private const val DATE_GROUP =

@@ -16,8 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.spending
 
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankAppSpend
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEmailEarn
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankSpend
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEarn
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.GoogleWalletSpend
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveRequested
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveUnprompted
@@ -33,7 +33,7 @@ abstract class AutomaticHandlersAppModule {
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindChaseEmailHandler(impl: ChaseBankAppSpend): AutomaticHandler
+  internal abstract fun bindChaseEmailHandler(impl: ChaseBankSpend): AutomaticHandler
 
   @Binds
   @IntoSet
@@ -63,5 +63,5 @@ abstract class AutomaticHandlersAppModule {
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindChaseBankEarnEmail(impl: ChaseBankEmailEarn): AutomaticHandler
+  internal abstract fun bindChaseBankEarnEmail(impl: ChaseBankEarn): AutomaticHandler
 }

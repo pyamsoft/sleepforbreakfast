@@ -20,6 +20,7 @@ import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DATE
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
+import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ import javax.inject.Inject
  * Chase Bank app can be set up in Alert settings to post a notification each time you spend X
  * amount on a card.
  */
-internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomaticHandler() {
+internal class ChaseBankSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
   override fun getPossibleRegexes() =
       setOf(
@@ -41,10 +42,21 @@ internal class ChaseBankAppSpend @Inject internal constructor() : SpendAutomatic
       )
 
   override fun canExtract(packageName: String): Boolean {
-    return packageName == "com.chase.sig.android"
+    return if (WATCH_CHASE_APP) {
+      packageName == "com.chase.sig.android"
+    } else {
+      packageName in COMMON_EMAIL_PACKAGES
+    }
   }
 
   companion object {
+
+    /**
+     * Watch the Chase App instead of email stream
+     *
+     * Sometimes the chase app doesn't post a push notification but we always get emails
+     */
+    private const val WATCH_CHASE_APP = false
 
     private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
     private const val DATE_GROUP =
