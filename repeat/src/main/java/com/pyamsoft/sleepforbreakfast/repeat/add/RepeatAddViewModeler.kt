@@ -23,7 +23,6 @@ import com.pyamsoft.sleepforbreakfast.db.repeat.replaceTransactionCategories
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.repeat.RepeatInteractor
-import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import java.time.Clock
 import java.time.LocalDate
@@ -138,7 +137,7 @@ internal constructor(
   }
 
   override suspend fun onNewCreated(data: DbRepeat) {
-    workerQueue.enqueue(type = WorkJobType.ONESHOT_CREATE_TRANSACTIONS)
+    // TODO
   }
 
   fun handleCategoryAdded(category: DbCategory) {

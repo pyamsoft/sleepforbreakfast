@@ -83,31 +83,6 @@ internal constructor(
     return cleaned
   }
 
-  private suspend fun loadRepeat(transaction: DbTransaction) {
-    if (transaction.repeatId == null) {
-      state.existingRepeat.value = null
-      state.loadingRepeat.value = LoadingState.DONE
-      return
-    }
-
-    state.loadingRepeat.value = LoadingState.LOADING
-    interactor
-        .loadRepeat(transaction)
-        .onSuccess {
-          when (it) {
-            is Maybe.Data -> {
-              state.existingRepeat.value = it.data
-            }
-            is Maybe.None -> {
-              state.existingRepeat.value = null
-            }
-          }
-        }
-        .onFailure { Timber.e(it) { "Error getting repeat data" } }
-        .onFailure { state.existingRepeat.value = null }
-        .onFinally { state.loadingRepeat.value = LoadingState.DONE }
-  }
-
   private suspend fun loadAuto(transaction: DbTransaction) {
     if (transaction.automaticId == null) {
       state.existingAuto.value = null
@@ -158,7 +133,6 @@ internal constructor(
 
     handleReset()
 
-    launch(context = Dispatchers.Default) { loadRepeat(result) }
     launch(context = Dispatchers.Default) { loadAuto(result) }
   }
 
@@ -180,11 +154,6 @@ internal constructor(
         ?.also { state.isTimeDialogOpen.value = it }
 
     registry
-        .consumeRestored(KEY_IS_REPEAT_OPEN)
-        ?.let { it as Boolean }
-        ?.also { state.isRepeatOpen.value = it }
-
-    registry
         .consumeRestored(KEY_IS_AUTO_OPEN)
         ?.let { it as Boolean }
         ?.also { state.isAutoOpen.value = it }
@@ -202,8 +171,6 @@ internal constructor(
     registry.registerProvider(KEY_DATE_DIALOG) { state.isDateDialogOpen.value }.also { add(it) }
 
     registry.registerProvider(KEY_TIME_DIALOG) { state.isTimeDialogOpen.value }.also { add(it) }
-
-    registry.registerProvider(KEY_IS_REPEAT_OPEN) { state.isRepeatOpen.value }.also { add(it) }
 
     registry.registerProvider(KEY_IS_AUTO_OPEN) { state.isAutoOpen.value }.also { add(it) }
   }
@@ -238,7 +205,6 @@ internal constructor(
       }
     }
 
-    handleCloseRepeatInfo()
     handleCloseAutoInfo()
     handleCloseDateDialog()
     handleCloseTimeDialog()
@@ -284,14 +250,6 @@ internal constructor(
     state.categories.update { list -> list.filterNot { it == category.id } }
   }
 
-  fun handleOpenRepeatInfo() {
-    state.isRepeatOpen.value = true
-  }
-
-  fun handleCloseRepeatInfo() {
-    state.isRepeatOpen.value = false
-  }
-
   fun handleOpenAutoInfo() {
     state.isAutoOpen.value = true
   }
@@ -303,7 +261,6 @@ internal constructor(
   companion object {
     private const val KEY_DATE_DIALOG = "key_date_dialog"
     private const val KEY_TIME_DIALOG = "key_time_dialog"
-    private const val KEY_IS_REPEAT_OPEN = "key_is_repeat_open"
     private const val KEY_IS_AUTO_OPEN = "key_is_auto_open"
 
     private const val KEY_DATE = "key_date"

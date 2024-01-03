@@ -42,8 +42,7 @@ internal constructor(
                 return@registerProvider null
               } else {
                 return@registerProvider when (p) {
-                  is MainPage.Category,
-                  is MainPage.Repeat -> p::class.java.name
+                  is MainPage.Category -> p::class.java.name
                   is MainPage.Transactions -> p.toBundleable()
                 }
               }
@@ -65,7 +64,6 @@ internal constructor(
         ?.let { p ->
           return@let when (p) {
             MainPage.Category::class.java.name -> MainPage.Category
-            MainPage.Repeat::class.java.name -> MainPage.Repeat
             // Assume P is a category ID as a String
             else -> MainPage.Transactions.fromBundleable(p)
           }
@@ -103,10 +101,6 @@ internal constructor(
             showAllTransactions = true,
             range = range,
         )
-  }
-
-  fun handleOpenRepeats() {
-    state.page.value = MainPage.Repeat
   }
 
   fun handleOpenCategory() {

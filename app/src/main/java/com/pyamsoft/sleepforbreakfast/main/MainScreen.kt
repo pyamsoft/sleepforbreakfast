@@ -29,7 +29,6 @@ import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
 import com.pyamsoft.sleepforbreakfast.main.settings.SettingsDialog
-import com.pyamsoft.sleepforbreakfast.repeat.RepeatEntry
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionEntry
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import java.time.Clock
@@ -45,7 +44,6 @@ fun MainScreen(
     onClosePage: () -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
-    onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsStateWithLifecycle()
@@ -65,7 +63,6 @@ fun MainScreen(
             appName = appName,
             onOpenTransactions = onOpenTransactions,
             onOpenAllTransactions = onOpenAllTransactions,
-            onOpenRepeats = onOpenRepeats,
             onOpenSettings = onOpenSettings,
             onOpenCategories = onOpenCategories,
         )
@@ -75,12 +72,6 @@ fun MainScreen(
             TransactionEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 page = p,
-                onDismiss = onClosePage,
-            )
-          }
-          is MainPage.Repeat -> {
-            RepeatEntry(
-                modifier = Modifier.fillMaxSize().padding(pv),
                 onDismiss = onClosePage,
             )
           }

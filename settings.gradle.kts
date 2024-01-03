@@ -24,8 +24,6 @@ include(":main")
 
 include(":money")
 
-include(":repeat")
-
 include(":spending")
 
 include(":transactions")

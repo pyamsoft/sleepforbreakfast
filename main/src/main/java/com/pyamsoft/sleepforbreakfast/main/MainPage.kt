@@ -73,7 +73,5 @@ sealed interface MainPage {
     }
   }
 
-  @Stable @Immutable data object Repeat : MainPage
-
   @Stable @Immutable data object Category : MainPage
 }

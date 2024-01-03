@@ -18,7 +18,6 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewState
 import com.pyamsoft.sleepforbreakfast.money.add.MutableMoneyAddViewState
@@ -36,10 +35,6 @@ interface TransactionAddViewState : MoneyAddViewState {
   val isTimeDialogOpen: StateFlow<Boolean>
 
   val existingTransaction: StateFlow<DbTransaction?>
-
-  val loadingRepeat: StateFlow<LoadingState>
-  val existingRepeat: StateFlow<DbRepeat?>
-  val isRepeatOpen: StateFlow<Boolean>
 
   val loadingAuto: StateFlow<LoadingState>
   val existingAuto: StateFlow<DbAutomatic?>
@@ -59,10 +54,6 @@ internal constructor(
   override val isTimeDialogOpen = MutableStateFlow(false)
 
   override val existingTransaction = MutableStateFlow<DbTransaction?>(null)
-
-  override val loadingRepeat = MutableStateFlow(LoadingState.NONE)
-  override val existingRepeat = MutableStateFlow<DbRepeat?>(null)
-  override val isRepeatOpen = MutableStateFlow(false)
 
   override val loadingAuto = MutableStateFlow(LoadingState.NONE)
   override val existingAuto = MutableStateFlow<DbAutomatic?>(null)

@@ -20,16 +20,12 @@ import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 
 internal interface TransactionInteractor :
     ListInteractor<DbTransaction.Id, DbTransaction, TransactionChangeEvent> {
-
-  @CheckResult
-  suspend fun loadRepeat(transaction: DbTransaction): ResultWrapper<Maybe<out DbRepeat>>
 
   @CheckResult
   suspend fun loadAuto(transaction: DbTransaction): ResultWrapper<Maybe<out DbAutomatic>>

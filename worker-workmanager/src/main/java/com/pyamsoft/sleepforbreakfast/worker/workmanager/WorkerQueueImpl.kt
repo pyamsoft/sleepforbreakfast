@@ -18,7 +18,6 @@ package com.pyamsoft.sleepforbreakfast.worker.workmanager
 
 import android.content.Context
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.await
@@ -26,8 +25,6 @@ import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.AutomaticSpendingWorker
-import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.RepeatCreateTransactionWorker
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,14 +41,6 @@ internal constructor(
             when (type) {
               WorkJobType.ONESHOT_AUTOMATIC_TRANSACTION ->
                   OneTimeWorkRequestBuilder<AutomaticSpendingWorker>()
-              WorkJobType.REPEAT_CREATE_TRANSACTIONS ->
-                  PeriodicWorkRequestBuilder<RepeatCreateTransactionWorker>(
-                      // Repeat once a day
-                      1L,
-                      TimeUnit.DAYS,
-                  )
-              WorkJobType.ONESHOT_CREATE_TRANSACTIONS ->
-                  OneTimeWorkRequestBuilder<RepeatCreateTransactionWorker>()
             }
 
         val work = builder.addTag(type.name).build()

@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -68,7 +67,6 @@ import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
-import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.model.toDateRange
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
@@ -100,7 +98,6 @@ fun HomeScreen(
     onOpenNotificationListenerSettings: () -> Unit,
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
-    onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
 ) {
   LazyColumn(
@@ -155,7 +152,6 @@ fun HomeScreen(
     ) {
       HomeExtras(
           modifier = Modifier.fillMaxWidth(),
-          onOpenRepeats = onOpenRepeats,
           onOpenCategories = onOpenCategories,
       )
     }
@@ -511,11 +507,7 @@ private fun Category(
 }
 
 @Composable
-private fun HomeExtras(
-    modifier: Modifier = Modifier,
-    onOpenRepeats: () -> Unit,
-    onOpenCategories: () -> Unit
-) {
+private fun HomeExtras(modifier: Modifier = Modifier, onOpenCategories: () -> Unit) {
   Row(
       modifier = modifier.padding(MaterialTheme.keylines.content),
       verticalAlignment = Alignment.CenterVertically,
@@ -525,17 +517,6 @@ private fun HomeExtras(
         onClick = onOpenCategories,
         icon = Icons.Filled.Category,
         title = "View Categories",
-    )
-
-    Spacer(
-        modifier = Modifier.width(MaterialTheme.keylines.content),
-    )
-
-    IconOption(
-        modifier = Modifier.weight(1F),
-        onClick = onOpenRepeats,
-        icon = Icons.Filled.EventRepeat,
-        title = "View Repeats",
     )
   }
 }

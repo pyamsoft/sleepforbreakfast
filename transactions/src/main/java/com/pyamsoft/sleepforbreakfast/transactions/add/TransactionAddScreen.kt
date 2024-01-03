@@ -63,7 +63,6 @@ import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
-import com.pyamsoft.sleepforbreakfast.ui.icons.EventRepeat
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -74,7 +73,7 @@ private enum class AddContentTypes {
   NOTE,
   CATEGORIES,
   SUBMIT,
-  REPEAT,
+  AUTO,
 }
 
 @Composable
@@ -93,8 +92,6 @@ fun TransactionAddScreen(
     onCloseTimeDialog: () -> Unit,
     onCategoryAdded: (DbCategory) -> Unit,
     onCategoryRemoved: (DbCategory) -> Unit,
-    onRepeatInfoOpen: () -> Unit,
-    onRepeatInfoClosed: () -> Unit,
     onAutoInfoOpen: () -> Unit,
     onAutoInfoClosed: () -> Unit,
     onReset: () -> Unit,
@@ -223,7 +220,7 @@ fun TransactionAddScreen(
       }
 
       item(
-          contentType = AddContentTypes.REPEAT,
+          contentType = AddContentTypes.AUTO,
       ) {
         Column(
             modifier =
@@ -231,11 +228,6 @@ fun TransactionAddScreen(
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content),
         ) {
-          RepeatInfo(
-              state = state,
-              onRepeatInfoOpen = onRepeatInfoOpen,
-          )
-
           AutoInfo(
               state = state,
               onAutoInfoOpen = onAutoInfoOpen,
@@ -256,25 +248,6 @@ fun TransactionAddScreen(
     }
 
     val existing by state.existingTransaction.collectAsStateWithLifecycle()
-
-    val isOpenRepeat by state.isRepeatOpen.collectAsStateWithLifecycle()
-    val repeatDate = existing?.repeatCreatedDate
-    if (isOpenRepeat && repeatDate != null) {
-      val loadingRepeat by state.loadingRepeat.collectAsStateWithLifecycle()
-      val repeat by state.existingRepeat.collectAsStateWithLifecycle()
-
-      SurfaceDialog(
-          modifier = Modifier.fillUpToPortraitSize(),
-          onDismiss = onRepeatInfoClosed,
-      ) {
-        TransactionRepeatInfoScreen(
-            repeat = repeat,
-            loading = loadingRepeat,
-            date = repeatDate,
-            onDismiss = onRepeatInfoClosed,
-        )
-      }
-    }
 
     val loadingAuto by state.loadingAuto.collectAsStateWithLifecycle()
     val isOpenAuto by state.isAutoOpen.collectAsStateWithLifecycle()
@@ -318,25 +291,6 @@ fun TransactionAddScreen(
           onDismiss = onCloseTimeDialog,
       )
     }
-  }
-}
-
-@Composable
-private fun RepeatInfo(
-    modifier: Modifier = Modifier,
-    state: TransactionAddViewState,
-    onRepeatInfoOpen: () -> Unit,
-) {
-  val existing by state.existingTransaction.collectAsStateWithLifecycle()
-
-  ExtraBit(
-      modifier = modifier,
-      data = existing,
-      icon = Icons.Filled.EventRepeat,
-      title = "Repeating Info",
-      onClick = onRepeatInfoOpen,
-  ) {
-    it.repeatId != null && it.repeatCreatedDate != null
   }
 }
 

@@ -131,7 +131,6 @@ dependencies {
   implementation(project(":home"))
   implementation(project(":main"))
   implementation(project(":money"))
-  implementation(project(":repeat"))
   implementation(project(":spending"))
   implementation(project(":transactions"))
   implementation(project(":ui"))

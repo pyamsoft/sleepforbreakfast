@@ -105,8 +105,6 @@ internal fun TransactionAddEntry(
         onDateChanged = { viewModel.handleDateChanged(it) },
         onCategoryAdded = { viewModel.handleCategoryAdded(it) },
         onCategoryRemoved = { viewModel.handleCategoryRemoved(it) },
-        onRepeatInfoOpen = { viewModel.handleOpenRepeatInfo() },
-        onRepeatInfoClosed = { viewModel.handleCloseRepeatInfo() },
         onAutoInfoOpen = { viewModel.handleOpenAutoInfo() },
         onAutoInfoClosed = { viewModel.handleCloseAutoInfo() },
         onReset = { viewModel.handleReset() },

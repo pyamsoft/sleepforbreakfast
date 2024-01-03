@@ -112,7 +112,6 @@ internal fun MainEntry(
           viewModel.handleOpenTransactions(category, range)
         },
         onOpenAllTransactions = { viewModel.handleOpenAllTransactions(it) },
-        onOpenRepeats = { viewModel.handleOpenRepeats() },
         onOpenCategories = { viewModel.handleOpenCategory() },
     )
   }

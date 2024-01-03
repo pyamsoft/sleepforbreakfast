@@ -22,8 +22,6 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
@@ -44,7 +42,6 @@ constructor(
     private val transactionDeleteDao: TransactionDeleteDao,
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
-    private val repeatQueryDao: RepeatQueryDao,
     private val autoQueryDao: AutomaticQueryDao,
 ) :
     TransactionInteractor,
@@ -62,22 +59,6 @@ constructor(
           ResultWrapper.success(autoQueryDao.queryById(r))
         } catch (e: Throwable) {
           Timber.e(e) { "Error loading Automatic from transaction: $transaction" }
-          ResultWrapper.failure(e)
-        }
-      }
-
-  override suspend fun loadRepeat(transaction: DbTransaction): ResultWrapper<Maybe<out DbRepeat>> =
-      withContext(context = Dispatchers.Default) {
-        val r = transaction.repeatId
-        if (r == null) {
-          Timber.w { "Transaction has no repeat data: $transaction" }
-          return@withContext ResultWrapper.success(Maybe.None)
-        }
-
-        try {
-          ResultWrapper.success(repeatQueryDao.queryById(r))
-        } catch (e: Throwable) {
-          Timber.e(e) { "Error loading Repeat from transaction: $transaction" }
           ResultWrapper.failure(e)
         }
       }

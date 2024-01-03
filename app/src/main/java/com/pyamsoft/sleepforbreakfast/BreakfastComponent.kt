@@ -30,7 +30,6 @@ import com.pyamsoft.sleepforbreakfast.main.MainActivity
 import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.money.MoneyAppModule
 import com.pyamsoft.sleepforbreakfast.preference.PreferencesImpl
-import com.pyamsoft.sleepforbreakfast.repeat.RepeatAppModule
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandlersAppModule
 import com.pyamsoft.sleepforbreakfast.spending.SpendingAppModule
@@ -56,7 +55,6 @@ import javax.inject.Singleton
             // UI
             TransactionAppModule::class,
             UiAppModule::class,
-            RepeatAppModule::class,
             CategoryAppModule::class,
             MoneyAppModule::class,
 

@@ -22,9 +22,6 @@ import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddComponent
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteComponent
 import com.pyamsoft.sleepforbreakfast.core.ActivityScope
 import com.pyamsoft.sleepforbreakfast.home.HomeComponent
-import com.pyamsoft.sleepforbreakfast.repeat.RepeatComponent
-import com.pyamsoft.sleepforbreakfast.repeat.add.RepeatAddComponent
-import com.pyamsoft.sleepforbreakfast.repeat.delete.RepeatDeleteComponent
 import com.pyamsoft.sleepforbreakfast.transaction.TransactionComponent
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddComponent
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteComponent
@@ -54,13 +51,6 @@ internal interface MainComponent {
   @CheckResult fun plusAddCategory(): CategoryAddComponent.Factory
 
   @CheckResult fun plusDeleteCategory(): CategoryDeleteComponent.Factory
-
-  // Repeat
-  @CheckResult fun plusRepeats(): RepeatComponent.Factory
-
-  @CheckResult fun plusAddRepeat(): RepeatAddComponent.Factory
-
-  @CheckResult fun plusDeleteRepeats(): RepeatDeleteComponent.Factory
 
   // Transactions
   @CheckResult fun plusTransactions(): TransactionComponent.Factory

@@ -70,7 +70,6 @@ internal fun HomeEntry(
     clock: Clock,
     appName: String,
     onOpenSettings: () -> Unit,
-    onOpenRepeats: () -> Unit,
     onOpenCategories: () -> Unit,
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
@@ -96,7 +95,6 @@ internal fun HomeEntry(
       onOpenSettings = onOpenSettings,
       onOpenAllTransactions = onOpenAllTransactions,
       onOpenTransactions = onOpenTransactions,
-      onOpenRepeats = onOpenRepeats,
       onOpenCategories = onOpenCategories,
       onOpenNotificationListenerSettings = {
         viewModel.handleOpenNotificationSettings(scope = scope)
