@@ -19,10 +19,8 @@ package com.pyamsoft.sleepforbreakfast.spending
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankSpend
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEarn
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.GoogleWalletSpend
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveRequested
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoReceiveUnprompted
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoSpendRequested
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoSpendUnprompted
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoEarn
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoSpend
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
@@ -43,22 +41,12 @@ abstract class AutomaticHandlersAppModule {
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindVenmoPayUnprompted(impl: VenmoSpendUnprompted): AutomaticHandler
+  internal abstract fun bindVenmoPayRequested(impl: VenmoSpend): AutomaticHandler
 
   @Binds
   @IntoSet
   @SpendingApi
-  internal abstract fun bindVenmoPayRequested(impl: VenmoSpendRequested): AutomaticHandler
-
-  @Binds
-  @IntoSet
-  @SpendingApi
-  internal abstract fun bindVenmoReceiveUnprompted(impl: VenmoReceiveRequested): AutomaticHandler
-
-  @Binds
-  @IntoSet
-  @SpendingApi
-  internal abstract fun bindVenmoReceiveRequested(impl: VenmoReceiveUnprompted): AutomaticHandler
+  internal abstract fun bindVenmoReceiveUnprompted(impl: VenmoEarn): AutomaticHandler
 
   @Binds
   @IntoSet

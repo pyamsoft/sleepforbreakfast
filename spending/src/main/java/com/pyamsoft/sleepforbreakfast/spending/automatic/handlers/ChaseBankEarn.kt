@@ -28,10 +28,10 @@ import javax.inject.Inject
  */
 internal class ChaseBankEarn @Inject internal constructor() : EarnAutomaticHandler() {
 
-  override fun getPossibleRegexes() = setOf(CHASE_ALERT_EMAIL_REGEX)
+  override fun getPossibleRegexes() = DIRECT_DEPOSITS
 
   override fun canExtract(packageName: String): Boolean {
-    return if (WATCH_CHASE_APP) {
+    return if (WATCH_APP) {
       packageName == "com.chase.sig.android"
     } else {
       packageName in COMMON_EMAIL_PACKAGES
@@ -45,18 +45,22 @@ internal class ChaseBankEarn @Inject internal constructor() : EarnAutomaticHandl
      *
      * Sometimes the chase app doesn't post a push notification but we always get emails
      */
-    private const val WATCH_CHASE_APP = false
+    private const val WATCH_APP = false
 
     private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>\\.\\.\\.\\d\\d\\d\\d)"
     private const val DATE_GROUP =
         "(?<$CAPTURE_NAME_DATE>\\w*\\s\\w*,\\s\\w*\\sat\\s\\w*:\\w*\\s\\w*\\s\\w*)"
 
-    /**
-     * Deposit posted You have a direct deposit of $123.45 Account ending in (...1234) Posted Oct
-     * 12, 2023 at 5:37 AM ET Amount $123.45
-     */
-    private val CHASE_ALERT_EMAIL_REGEX =
-        "Deposit posted .* Account ending in \\($ACCOUNT_GROUP\\) Posted $DATE_GROUP Amount $CAPTURE_GROUP_AMOUNT"
-            .toRegex(RegexOption.MULTILINE)
+    private val DIRECT_DEPOSITS =
+        setOf(
+            /**
+             * From Chase App
+             *
+             * Deposit posted You have a direct deposit of $123.45 Account ending in (...1234)
+             * Posted Oct 12, 2023 at 5:37 AM ET Amount $123.45
+             */
+            "Deposit posted .* Account ending in \\($ACCOUNT_GROUP\\) Posted $DATE_GROUP Amount $CAPTURE_GROUP_AMOUNT"
+                .toRegex(RegexOption.MULTILINE),
+        )
   }
 }

@@ -30,19 +30,10 @@ import javax.inject.Inject
  */
 internal class ChaseBankSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getPossibleRegexes() =
-      setOf(
-          // Credit Card
-          CHASE_ALERT_1,
-          CHASE_ALERT_2,
-          // Debit Card
-          CHASE_ALERT_3,
-          // Repeating Online Transactions
-          CHASE_ALERT_4,
-      )
+  override fun getPossibleRegexes() = CREDIT_ALERTS + DEBIT_ALERTS
 
   override fun canExtract(packageName: String): Boolean {
-    return if (WATCH_CHASE_APP) {
+    return if (WATCH_APP) {
       packageName == "com.chase.sig.android"
     } else {
       packageName in COMMON_EMAIL_PACKAGES
@@ -56,43 +47,64 @@ internal class ChaseBankSpend @Inject internal constructor() : SpendAutomaticHan
      *
      * Sometimes the chase app doesn't post a push notification but we always get emails
      */
-    private const val WATCH_CHASE_APP = false
+    private const val WATCH_APP = false
 
-    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
+    private const val JUST_NUMBER_ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>\\(*\\))"
+    private const val CHASE_PREFIXED_ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
+
     private const val DATE_GROUP =
         "(?<$CAPTURE_NAME_DATE>\\w*\\s\\w*,\\s\\w*\\sat\\s\\w*:\\w*\\s\\w*\\s\\w*)"
     private const val MERCHANT_GROUP = "(?<$CAPTURE_NAME_MERCHANT>.*)"
 
-    /**
-     * Chase Freedom: You made an online, phone, or mail transaction of $2.00 with My Favorite
-     * Merchant on Oct 7, 2023 at 1:23PM ET
-     */
-    private val CHASE_ALERT_1 =
-        "${ACCOUNT_GROUP}: You made an online, phone, or mail transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP on ${DATE_GROUP}."
-            .toRegex(RegexOption.MULTILINE)
+    private val CREDIT_ALERTS =
+        setOf(
+            /**
+             * From Chase App
+             *
+             * Chase Freedom: You made an online, phone, or mail transaction of $2.00 with My
+             * Favorite Merchant on Oct 7, 2023 at 1:23PM ET
+             */
+            "${CHASE_PREFIXED_ACCOUNT_GROUP}: You made an online, phone, or mail transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP on ${DATE_GROUP}."
+                .toRegex(RegexOption.MULTILINE),
 
-    /**
-     * Chase Freedom: You made a $2.00 transaction with My Favorite Merchant on Oct 7, 2023 at
-     * 1:23PM ET
-     */
-    private val CHASE_ALERT_2 =
-        "${ACCOUNT_GROUP}: You made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on ${DATE_GROUP}."
-            .toRegex(RegexOption.MULTILINE)
+            /**
+             * From Chase App
+             *
+             * Chase Freedom: You made a $2.00 transaction with My Favorite Merchant on Oct 7, 2023
+             * at 1:23PM ET
+             */
+            "${CHASE_PREFIXED_ACCOUNT_GROUP}: You made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on ${DATE_GROUP}."
+                .toRegex(RegexOption.MULTILINE),
 
-    /**
-     * Chase account 1234: Your $12.34 debit card transaction to MERCHANT MAN on Oct 20, 2023 at
-     * 10:13AM ET was more than the $1.00 amount in your Alerts settings 1:23PM ET
-     */
-    private val CHASE_ALERT_3 =
-        "${ACCOUNT_GROUP}: Your $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the"
-            .toRegex(RegexOption.MULTILINE)
+            /**
+             * From Email
+             *
+             * You made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023 at
+             * 1:23PM ET Merchant My Favorite Merchant Amount
+             */
+            "You made a $CAPTURE_GROUP_AMOUNT transaction Account $CHASE_PREFIXED_ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount"
+                .toRegex(RegexOption.MULTILINE),
+        )
 
-    /**
-     * You made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023 at 1:23PM ET
-     * Merchant My Favorite Merchant Amount
-     */
-    private val CHASE_ALERT_4 =
-        "You made a $CAPTURE_GROUP_AMOUNT transaction Account $ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount"
-            .toRegex(RegexOption.MULTILINE)
+    private val DEBIT_ALERTS =
+        setOf(
+            /**
+             * From Chase App
+             *
+             * Chase account 1234: Your $12.34 debit card transaction to MERCHANT MAN on Oct 20,
+             * 2023 at 10:13AM ET was more than the $1.00 amount in your Alerts settings 1:23PM ET
+             */
+            "${CHASE_PREFIXED_ACCOUNT_GROUP}: Your $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the"
+                .toRegex(RegexOption.MULTILINE),
+
+            /**
+             * From Email
+             *
+             * Your debit card transaction of $12.34 with My Favorite Merchant Account ending in
+             * (...1234) Made on 2023 at 10:13AM ET
+             */
+            "Your debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $JUST_NUMBER_ACCOUNT_GROUP Made on $DATE_GROUP"
+                .toRegex(RegexOption.MULTILINE),
+        )
   }
 }

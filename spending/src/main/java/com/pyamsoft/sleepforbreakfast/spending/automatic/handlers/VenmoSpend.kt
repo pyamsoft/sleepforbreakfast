@@ -19,26 +19,51 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic.handlers
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DESCRIPTION
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
+import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.automatic.SpendAutomaticHandler
 import javax.inject.Inject
 
 /** When you pay someone on Venmo but they request you to */
-internal class VenmoSpendRequested @Inject internal constructor() : SpendAutomaticHandler() {
+internal class VenmoSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getPossibleRegexes() = setOf(VENMO_WALLET_REGEX)
+  override fun getPossibleRegexes() = VENMO_WALLET
 
   override fun canExtract(packageName: String): Boolean {
-    return packageName == "com.venmo"
+    return if (WATCH_APP) {
+      packageName == "com.venmo"
+    } else {
+      packageName in COMMON_EMAIL_PACKAGES
+    }
   }
 
   companion object {
 
+    /**
+     * Watch the Venmo App instead of email stream
+     *
+     * Sometimes the Venmo app doesn't post a push notification but we always get emails
+     */
+    private const val WATCH_APP = true
+
     private const val MERCHANT_GROUP = "(?<$CAPTURE_NAME_MERCHANT>.*)"
     private const val DESCRIPTION_GROUP = "(?<$CAPTURE_NAME_DESCRIPTION>.*)"
 
-    /** You completed Tom Smith's request for $123.45 - Note about payment here */
-    private val VENMO_WALLET_REGEX =
-        "You completed $MERCHANT_GROUP's request for $CAPTURE_GROUP_AMOUNT - $DESCRIPTION_GROUP"
-            .toRegex(RegexOption.MULTILINE)
+    private val VENMO_WALLET =
+        setOf(
+            /**
+             * From Venmo App You Pay Someone Prompted
+             *
+             * You completed Tom Smith's request for $123.45 - Note about payment here
+             */
+            "You completed $MERCHANT_GROUP's request for $CAPTURE_GROUP_AMOUNT - $DESCRIPTION_GROUP"
+                .toRegex(RegexOption.MULTILINE),
+
+            /**
+             * From Venmo App You Pay Someone Unprompted
+             *
+             * You paid Tom Smith $123.45
+             */
+            "You paid $MERCHANT_GROUP $CAPTURE_GROUP_AMOUNT".toRegex(RegexOption.MULTILINE),
+        )
   }
 }
