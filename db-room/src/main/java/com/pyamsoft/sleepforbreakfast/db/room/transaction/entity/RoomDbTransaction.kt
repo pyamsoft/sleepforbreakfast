@@ -24,9 +24,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
-import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -43,14 +41,6 @@ import java.time.LocalDateTime
                 onDelete = ForeignKey.CASCADE,
             ),
 
-            // Link DbRepeat entries to the Transactions they create
-            ForeignKey(
-                entity = RoomDbRepeat::class,
-                parentColumns = [RoomDbRepeat.COLUMN_ID],
-                childColumns = [RoomDbTransaction.COLUMN_REPEAT_ID],
-                onDelete = ForeignKey.CASCADE,
-            ),
-
             // TODO Peter: How do we FK on many category IDs?
         ],
 )
@@ -64,8 +54,6 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_AMOUNT_IN_CENTS) val dbAmountInCents: Long,
     @JvmField @ColumnInfo(name = COLUMN_DATE) val dbDate: LocalDateTime,
     @JvmField @ColumnInfo(name = COLUMN_NOTE) val dbNote: String,
-    @JvmField @ColumnInfo(name = COLUMN_REPEAT_ID, index = true) val dbRepeatId: DbRepeat.Id?,
-    @JvmField @ColumnInfo(name = COLUMN_REPEAT_DATE, index = true) val dbRepeatDate: LocalDate?,
     @JvmField
     @ColumnInfo(name = COLUMN_AUTOMATIC_ID, index = true)
     val dbAutomaticId: DbAutomatic.Id?,
@@ -92,10 +80,6 @@ internal constructor(
   @Ignore override val date = dbDate
 
   @Ignore override val note = dbNote
-
-  @Ignore override val repeatId = dbRepeatId
-
-  @Ignore override val repeatCreatedDate = dbRepeatDate
 
   @Ignore override val automaticId = dbAutomaticId
 
@@ -142,16 +126,6 @@ internal constructor(
   }
 
   @Ignore
-  override fun repeatId(id: DbRepeat.Id): DbTransaction {
-    return this.copy(dbRepeatId = id)
-  }
-
-  @Ignore
-  override fun repeatCreatedDate(date: LocalDate): DbTransaction {
-    return this.copy(dbRepeatDate = date)
-  }
-
-  @Ignore
   override fun automaticId(id: DbAutomatic.Id): DbTransaction {
     return this.copy(dbAutomaticId = id)
   }
@@ -181,10 +155,6 @@ internal constructor(
 
     @Ignore internal const val COLUMN_NOTE = "note"
 
-    @Ignore internal const val COLUMN_REPEAT_ID = "repeat_id"
-
-    @Ignore internal const val COLUMN_REPEAT_DATE = "repeat_date"
-
     @Ignore internal const val COLUMN_AUTOMATIC_ID = "automatic_id"
 
     @Ignore internal const val COLUMN_AUTOMATIC_DATE = "automatic_date"
@@ -204,8 +174,6 @@ internal constructor(
             item.amountInCents,
             item.date,
             item.note,
-            item.repeatId,
-            item.repeatCreatedDate,
             item.automaticId,
             item.automaticCreatedDate,
         )

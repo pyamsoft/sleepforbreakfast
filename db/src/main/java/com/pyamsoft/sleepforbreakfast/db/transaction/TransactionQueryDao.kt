@@ -20,8 +20,6 @@ import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
-import java.time.LocalDate
 
 interface TransactionQueryDao : DbQuery<DbTransaction> {
 
@@ -29,25 +27,10 @@ interface TransactionQueryDao : DbQuery<DbTransaction> {
 
   @CheckResult suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction>
 
-  @CheckResult suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction>
-
-  @CheckResult
-  suspend fun queryByRepeatOnDates(
-      id: DbRepeat.Id,
-      dates: Collection<LocalDate>,
-  ): Set<DbTransaction>
-
   interface Cache : DbQuery.Cache {
 
     suspend fun invalidateById(id: DbTransaction.Id)
 
     suspend fun invalidateByCategory(id: DbCategory.Id)
-
-    suspend fun invalidateByRepeat(id: DbRepeat.Id)
-
-    suspend fun invalidateByRepeatOnDates(
-        id: DbRepeat.Id,
-        dates: Collection<LocalDate>,
-    )
   }
 }

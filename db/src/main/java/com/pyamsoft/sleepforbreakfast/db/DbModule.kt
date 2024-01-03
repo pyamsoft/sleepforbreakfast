@@ -31,12 +31,6 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategoriesImpl
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDb
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDbImpl
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatDeleteDao
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatInsertDao
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatQueryDao
-import com.pyamsoft.sleepforbreakfast.db.repeat.RepeatRealtime
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDbImpl
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
@@ -65,8 +59,6 @@ abstract class DbModule {
 
   @Binds @CheckResult internal abstract fun bindCategoryDb(impl: CategoryDbImpl): CategoryDb
 
-  @Binds @CheckResult internal abstract fun bindRepeatDb(impl: RepeatDbImpl): RepeatDb
-
   @Binds @CheckResult internal abstract fun bindAutomaticDb(impl: AutomaticDbImpl): AutomaticDb
 
   // Caches
@@ -77,10 +69,6 @@ abstract class DbModule {
   @Binds
   @CheckResult
   internal abstract fun bindCategoryCache(impl: CategoryDbImpl): CategoryQueryDao.Cache
-
-  @Binds
-  @CheckResult
-  internal abstract fun bindRepeatCache(impl: RepeatDbImpl): RepeatQueryDao.Cache
 
   @Binds
   @CheckResult
@@ -162,43 +150,6 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideCategoryDeleteDao(@InternalApi db: CategoryDb): CategoryDeleteDao {
-      return db.deleteDao
-    }
-
-    // DbRepeat
-    @JvmStatic
-    @Provides
-    @CheckResult
-    @InternalApi
-    internal fun provideRepeatDb(db: SleepDb): RepeatDb {
-      return db.repeats
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideRepeatRealtimeDao(@InternalApi db: RepeatDb): RepeatRealtime {
-      return db.realtime
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideRepeatQueryDao(@InternalApi db: RepeatDb): RepeatQueryDao {
-      return db.queryDao
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideRepeatInsertDao(@InternalApi db: RepeatDb): RepeatInsertDao {
-      return db.insertDao
-    }
-
-    @JvmStatic
-    @Provides
-    @CheckResult
-    internal fun provideRepeatDeleteDao(@InternalApi db: RepeatDb): RepeatDeleteDao {
       return db.deleteDao
     }
 

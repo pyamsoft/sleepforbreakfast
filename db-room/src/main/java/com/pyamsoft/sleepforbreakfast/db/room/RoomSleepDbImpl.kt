@@ -18,17 +18,17 @@ package com.pyamsoft.sleepforbreakfast.db.room
 
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
+import androidx.room.DeleteTable
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.converter.DbAutomaticIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
-import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatIdConverter
-import com.pyamsoft.sleepforbreakfast.db.room.repeat.converter.DbRepeatTypeConverter
-import com.pyamsoft.sleepforbreakfast.db.room.repeat.entity.RoomDbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbCategoriesListConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionTypeConverter
@@ -36,12 +36,11 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 4,
+    version = 5,
     entities =
         [
             RoomDbTransaction::class,
             RoomDbCategory::class,
-            RoomDbRepeat::class,
             RoomDbAutomatic::class,
         ],
     autoMigrations =
@@ -63,6 +62,13 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
                 from = 3,
                 to = 4,
             ),
+
+            // Remove this after dev is done and set everything back to 1
+            AutoMigration(
+                from = 4,
+                to = 5,
+                spec = DropRepeatVersion4To5::class,
+            ),
         ],
 )
 @TypeConverters(
@@ -74,7 +80,22 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
     DbTransactionTypeConverter::class,
     DbCategoryIdConverter::class,
     DbAutomaticIdConverter::class,
-    DbRepeatIdConverter::class,
-    DbRepeatTypeConverter::class,
 )
 internal abstract class RoomSleepDbImpl internal constructor() : RoomDatabase(), RoomSleepDb
+
+@DeleteColumn.Entries(
+    DeleteColumn(
+        tableName = "room_transactions_table",
+        columnName = "repeat_id",
+    ),
+    DeleteColumn(
+        tableName = "room_transactions_table",
+        columnName = "repeat_date",
+    ),
+)
+@DeleteTable.Entries(
+    DeleteTable(
+        tableName = "room_repeats_table",
+    ),
+)
+internal class DropRepeatVersion4To5 : AutoMigrationSpec

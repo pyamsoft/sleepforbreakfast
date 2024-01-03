@@ -22,11 +22,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
-import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -85,37 +83,4 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   OR ${RoomDbTransaction.COLUMN_CATEGORY_ID} = NULL
 """)
   internal abstract suspend fun daoQueryNoCategories(): List<RoomDbTransaction>
-
-  final override suspend fun queryByRepeat(id: DbRepeat.Id): List<DbTransaction> =
-      withContext(context = Dispatchers.Default) { daoQueryByRepeat(id) }
-
-  @CheckResult
-  @Transaction
-  @Query(
-      """
-SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
-  WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
-""")
-  internal abstract suspend fun daoQueryByRepeat(id: DbRepeat.Id): List<RoomDbTransaction>
-
-  final override suspend fun queryByRepeatOnDates(
-      id: DbRepeat.Id,
-      dates: Collection<LocalDate>
-  ): Set<DbTransaction> =
-      withContext(context = Dispatchers.Default) {
-        return@withContext daoQueryByRepeatOnDates(id, dates.toList()).toSet()
-      }
-
-  @CheckResult
-  @Transaction
-  @Query(
-      """
-SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
-  WHERE ${RoomDbTransaction.COLUMN_REPEAT_ID} = :id
-  AND ${RoomDbTransaction.COLUMN_REPEAT_DATE} in (:dates)
-""")
-  internal abstract suspend fun daoQueryByRepeatOnDates(
-      id: DbRepeat.Id,
-      dates: List<LocalDate>,
-  ): List<RoomDbTransaction>
 }

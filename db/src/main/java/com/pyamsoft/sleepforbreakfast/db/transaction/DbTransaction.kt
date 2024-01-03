@@ -21,7 +21,6 @@ import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.repeat.DbRepeat
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -45,10 +44,6 @@ interface DbTransaction {
 
   @get:CheckResult val note: String
 
-  @get:CheckResult val repeatId: DbRepeat.Id?
-
-  @get:CheckResult val repeatCreatedDate: LocalDate?
-
   @get:CheckResult val automaticId: DbAutomatic.Id?
 
   @get:CheckResult val automaticCreatedDate: LocalDate?
@@ -68,10 +63,6 @@ interface DbTransaction {
   @CheckResult fun type(type: Type): DbTransaction
 
   @CheckResult fun note(note: String): DbTransaction
-
-  @CheckResult fun repeatId(id: DbRepeat.Id): DbTransaction
-
-  @CheckResult fun repeatCreatedDate(date: LocalDate): DbTransaction
 
   @CheckResult fun automaticId(id: DbAutomatic.Id): DbTransaction
 
@@ -101,8 +92,6 @@ interface DbTransaction {
       override val amountInCents: Long = 0,
       override val type: Type = Type.SPEND,
       override val note: String = "",
-      override val repeatId: DbRepeat.Id? = null,
-      override val repeatCreatedDate: LocalDate? = null,
       override val automaticId: DbAutomatic.Id? = null,
       override val automaticCreatedDate: LocalDate? = null,
   ) : DbTransaction {
@@ -140,14 +129,6 @@ interface DbTransaction {
 
     override fun note(note: String): DbTransaction {
       return this.copy(note = note)
-    }
-
-    override fun repeatId(id: DbRepeat.Id): DbTransaction {
-      return this.copy(repeatId = id)
-    }
-
-    override fun repeatCreatedDate(date: LocalDate): DbTransaction {
-      return this.copy(repeatCreatedDate = date)
     }
 
     override fun automaticId(id: DbAutomatic.Id): DbTransaction {
