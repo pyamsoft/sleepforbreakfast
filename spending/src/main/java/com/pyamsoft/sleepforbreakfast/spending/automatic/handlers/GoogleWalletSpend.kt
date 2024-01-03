@@ -24,7 +24,7 @@ import javax.inject.Inject
 /** Google wallet notifications come from Google Play Services */
 internal class GoogleWalletSpend @Inject internal constructor() : SpendAutomaticHandler() {
 
-  override fun getPossibleRegexes() = setOf(GOOGLE_WALLET_REGEX)
+  override fun getPossibleRegexes() = GOOGLE_WALLET
 
   override fun canExtract(packageName: String): Boolean {
     return packageName == "com.google.android.gms"
@@ -34,8 +34,10 @@ internal class GoogleWalletSpend @Inject internal constructor() : SpendAutomatic
 
     private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>.* •••• \\d\\d\\d\\d)"
 
-    /** $123.45 with Amex •••• 1234 */
-    private val GOOGLE_WALLET_REGEX =
-        "$CAPTURE_GROUP_AMOUNT with $ACCOUNT_GROUP".toRegex(RegexOption.MULTILINE)
+    private val GOOGLE_WALLET =
+        setOf(
+            /** $123.45 with Amex •••• 1234 */
+            "$CAPTURE_GROUP_AMOUNT with $ACCOUNT_GROUP".toRegex(RegexOption.MULTILINE),
+        )
   }
 }
