@@ -16,8 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.spending
 
-import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankSpend
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankEarn
+import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.ChaseBankSpend
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.GoogleWalletSpend
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoEarn
 import com.pyamsoft.sleepforbreakfast.spending.automatic.handlers.VenmoSpend
