@@ -34,4 +34,6 @@ abstract class SpendingAppModule {
   internal abstract fun bindSpendingHandler(
       impl: SpendingTrackerHandlerImpl
   ): SpendingTrackerHandler
+
+  @Binds @CheckResult internal abstract fun bindTester(impl: DefaultSpendingTester): SpendingTester
 }

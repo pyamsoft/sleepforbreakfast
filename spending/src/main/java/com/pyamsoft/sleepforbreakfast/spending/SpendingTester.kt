@@ -16,19 +16,18 @@
 
 package com.pyamsoft.sleepforbreakfast.spending
 
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.spending.automatic.BaseAutomaticHandler
+import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
+import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
+import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 
-internal data class PaymentNotification(
-    val regexMatch: BaseAutomaticHandler.RegexMatch,
-    val title: String,
-    val text: String,
-    val type: DbTransaction.Type,
-    val categories: Collection<DbCategory.Id>,
-    val amount: Long,
-    val optionalAccount: String,
-    val optionalDate: String,
-    val optionalMerchant: String,
-    val optionalDescription: String,
-)
+interface SpendingTester {
+
+  @CheckResult
+  suspend fun testText(notificationWithRegexes: DbNotificationWithRegexes, text: String): Result?
+
+  data class Result(
+      val notification: DbNotification.Id,
+      val matching: Collection<DbNotificationMatchRegex.Id>
+  )
+}

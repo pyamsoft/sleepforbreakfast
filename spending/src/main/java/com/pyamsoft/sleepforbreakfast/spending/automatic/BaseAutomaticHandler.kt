@@ -55,12 +55,13 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
   @CheckResult
   private suspend fun handleRegex(
       packageName: String,
-      regex: Regex,
+      regexMatch: RegexMatch,
       text: CharSequence,
       bigText: CharSequence,
       title: CharSequence,
       bigTitle: CharSequence,
   ): PaymentNotification? {
+    val regex = regexMatch.regex
     val payText =
         if (regex.containsMatchIn(text)) {
           text
@@ -106,6 +107,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     val optionalDescription = captureGroups.extractGroup(CAPTURE_NAME_DESCRIPTION).orEmpty()
 
     return PaymentNotification(
+        regexMatch = regexMatch,
         title = name.toString(),
         text = capture.value,
         type = getType(),
@@ -132,7 +134,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
       val result =
           handleRegex(
               packageName = packageName,
-              regex = regex,
+              regexMatch = regex,
               text = text,
               bigText = bigText,
               title = title,
@@ -156,9 +158,14 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
 
   @CheckResult protected open suspend fun getCategories(): Set<DbCategory.Id> = emptySet()
 
-  @CheckResult protected abstract fun getPossibleRegexes(): Collection<Regex>
+  @CheckResult protected abstract fun getPossibleRegexes(): Collection<RegexMatch>
 
   @CheckResult protected abstract fun getType(): DbTransaction.Type
+
+  data class RegexMatch(
+      val id: String,
+      val regex: Regex,
+  )
 
   companion object {
     private const val DEFAULT_TITLE = "Automatic Spend Transaction"

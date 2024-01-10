@@ -27,14 +27,15 @@ private constructor(
 ) : BaseAutomaticHandler() {
 
   private val regexes by lazy {
-    notification.matchRegexes
-        .asSequence()
-        .map { it.text }
-        .map { it.toRegex(RegexOption.MULTILINE) }
-        .toSet()
+    notification.matchRegexes.map { n ->
+      RegexMatch(
+          id = n.id.raw,
+          regex = n.text.toRegex(RegexOption.MULTILINE),
+      )
+    }
   }
 
-  override fun getPossibleRegexes(): Collection<Regex> {
+  override fun getPossibleRegexes(): Collection<RegexMatch> {
     return regexes
   }
 

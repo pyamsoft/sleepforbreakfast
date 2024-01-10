@@ -25,11 +25,13 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import java.time.Clock
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
+@Singleton
 internal class SystemCategoriesImpl
 @Inject
 internal constructor(
