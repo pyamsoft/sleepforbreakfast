@@ -131,15 +131,22 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
 
     val regexList = getPossibleRegexes()
     for (regex in regexList) {
+      // If regex is bad, we catch and result NULL
       val result =
-          handleRegex(
-              packageName = packageName,
-              regexMatch = regex,
-              text = text,
-              bigText = bigText,
-              title = title,
-              bigTitle = bigTitle,
-          )
+          try {
+            handleRegex(
+                packageName = packageName,
+                regexMatch = regex,
+                text = text,
+                bigText = bigText,
+                title = title,
+                bigTitle = bigTitle,
+            )
+          } catch (e: Throwable) {
+            Timber.e(e) { "Failed to compile regex" }
+            null
+          }
+
       if (result != null) {
         return result
       }
