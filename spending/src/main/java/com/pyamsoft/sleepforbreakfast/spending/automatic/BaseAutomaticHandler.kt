@@ -184,6 +184,6 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
   )
 
   companion object {
-    private const val DEFAULT_TITLE = "Automatic Spend Transaction"
+    private const val DEFAULT_TITLE = "Automatic Transaction"
   }
 }
