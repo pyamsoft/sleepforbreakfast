@@ -136,11 +136,6 @@ class SleepForBreakfast : Application() {
             "https://github.com/google/dagger",
             "A fast dependency injector for Android and Java.",
         )
-        add(
-            "Accompanist System UI Controller",
-            "https://google.github.io/accompanist/systemuicontroller/",
-            "System UI Controller provides easy-to-use utilities for updating the System UI bar colors within Jetpack Compose.",
-        )
 
         add(
             "Vico",

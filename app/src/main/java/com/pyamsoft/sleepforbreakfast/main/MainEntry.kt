@@ -71,7 +71,7 @@ private fun MountHooks(
 }
 
 @Composable
-internal fun MainEntry(
+internal fun ComponentActivity.MainEntry(
     modifier: Modifier = Modifier,
     appName: String,
     theme: Theming.Mode,

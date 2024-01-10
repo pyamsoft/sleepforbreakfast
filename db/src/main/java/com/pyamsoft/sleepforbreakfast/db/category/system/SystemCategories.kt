@@ -30,7 +30,7 @@ interface SystemCategories {
 @CheckResult
 suspend fun SystemCategories.ensure() =
     withContext(context = Dispatchers.Default) {
-      for (cat in RequiredCategories.values()) {
+      for (cat in RequiredCategories.entries) {
         create(cat).also { c ->
           if (c == null) {
             Timber.w { "Failed to ensure creation of system category: $cat" }
