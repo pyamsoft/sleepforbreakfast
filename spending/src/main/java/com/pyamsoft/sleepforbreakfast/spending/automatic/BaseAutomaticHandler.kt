@@ -148,6 +148,15 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
           }
 
       if (result != null) {
+        Timber.d {
+          "Notification handled! ${mapOf(
+              "text" to text,
+              "bigText" to bigText,
+              "title" to title,
+              "bigTitle" to bigTitle,
+              "result" to result,
+          )}"
+        }
         return result
       }
     }
