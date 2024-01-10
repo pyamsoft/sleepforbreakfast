@@ -66,10 +66,11 @@ interface DbNotificationMatchRegex {
     fun create(
         notificationId: DbNotification.Id,
         clock: Clock,
-        text: String = ""
+        text: String,
+        id: Id = Id(IdGenerator.generate()),
     ): DbNotificationMatchRegex {
       return Impl(
-          id = Id(IdGenerator.generate()),
+          id = id,
           createdAt = LocalDateTime.now(clock),
           notificationId = notificationId,
           text = text,

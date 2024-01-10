@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "86aa201b0b411c2b4dbc0b4e9396d0cc",
+    "identityHash": "575b289a27e1588fbe2dc5f4aeec3ac2",
     "entities": [
       {
         "tableName": "room_transactions_table",
@@ -294,7 +294,7 @@
       },
       {
         "tableName": "room_notification_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `created_at` TEXT NOT NULL, `name` TEXT NOT NULL, `note` INTEGER NOT NULL, `watch_packages` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `created_at` TEXT NOT NULL, `name` TEXT NOT NULL, `note` INTEGER NOT NULL, `type` TEXT NOT NULL, `watch_packages` TEXT NOT NULL, `is_untouched_system` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "dbId",
@@ -321,9 +321,21 @@
             "notNull": true
           },
           {
+            "fieldPath": "dbType",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "dbWatchPackages",
             "columnName": "watch_packages",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dbIsUntouchedSystem",
+            "columnName": "is_untouched_system",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -388,7 +400,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '86aa201b0b411c2b4dbc0b4e9396d0cc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '575b289a27e1588fbe2dc5f4aeec3ac2')"
     ]
   }
 }

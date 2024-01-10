@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.db.notification
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
+import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.Clock
 import java.time.LocalDateTime
 
@@ -35,6 +36,10 @@ interface DbNotification {
 
   @get:CheckResult val enabled: Boolean
 
+  @get:CheckResult val isUntouchedFromSystem: Boolean
+
+  @get:CheckResult val type: DbTransaction.Type
+
   @CheckResult fun name(name: String): DbNotification
 
   @CheckResult fun enable(): DbNotification
@@ -44,6 +49,12 @@ interface DbNotification {
   @CheckResult fun addActOnPackageName(packageName: String): DbNotification
 
   @CheckResult fun removeActOnPackageName(packageName: String): DbNotification
+
+  @CheckResult fun markSpend(): DbNotification
+
+  @CheckResult fun markEarn(): DbNotification
+
+  @CheckResult fun markTaintedByUser(): DbNotification
 
   data class Id(@get:CheckResult val raw: String) {
 
@@ -61,6 +72,8 @@ interface DbNotification {
       override val name: String,
       override val actOnPackageNames: Collection<String>,
       override val enabled: Boolean,
+      override val type: DbTransaction.Type,
+      override val isUntouchedFromSystem: Boolean,
   ) : DbNotification {
 
     override fun name(name: String): DbNotification {
@@ -86,6 +99,18 @@ interface DbNotification {
           actOnPackageNames = this.actOnPackageNames.filterNot { it == packageName },
       )
     }
+
+    override fun markEarn(): DbNotification {
+      return this.copy(type = DbTransaction.Type.EARN)
+    }
+
+    override fun markSpend(): DbNotification {
+      return this.copy(type = DbTransaction.Type.SPEND)
+    }
+
+    override fun markTaintedByUser(): DbNotification {
+      return this.copy(isUntouchedFromSystem = false)
+    }
   }
 
   companion object {
@@ -95,15 +120,20 @@ interface DbNotification {
     @JvmOverloads
     fun create(
         clock: Clock,
-        name: String = "",
-        actOnPackageNames: Collection<String> = emptySet(),
+        actOnPackageNames: Collection<String>,
+        type: DbTransaction.Type,
+        name: String,
         enabled: Boolean = true,
+        isUntouchedFromSystem: Boolean = true,
+        id: Id = Id(IdGenerator.generate()),
     ): DbNotification {
       return Impl(
-          id = Id(IdGenerator.generate()),
+          id = id,
           createdAt = LocalDateTime.now(clock),
           name = name,
           actOnPackageNames = actOnPackageNames,
+          type = type,
+          isUntouchedFromSystem = isUntouchedFromSystem,
           enabled = enabled,
       )
     }

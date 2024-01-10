@@ -17,9 +17,10 @@
 package com.pyamsoft.sleepforbreakfast.spending.automatic
 
 import android.os.Bundle
+import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
 import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
-import com.pyamsoft.sleepforbreakfast.spending.SpendingApi
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,9 +28,13 @@ import javax.inject.Singleton
 internal class AutomaticManagerImpl
 @Inject
 internal constructor(
-    // Need to use MutableSet instead of Set because of Java -> Kotlin fun.
-    @SpendingApi private val handlers: MutableSet<AutomaticHandler>,
+    private val queryDao: NotificationQueryDao,
 ) : AutomaticManager {
+
+  @CheckResult
+  private suspend fun collectNotificationHandlers(): Collection<AutomaticHandler> {
+    return queryDao.query().map { DbAutomaticHandler.create(it) }
+  }
 
   override suspend fun extractPayment(
       packageName: String,
@@ -37,6 +42,8 @@ internal constructor(
   ): PaymentNotification? {
     // This loop continues until we find a result since multiple handlers may
     // handle the same packagename, like Venmo
+    val handlers = collectNotificationHandlers()
+
     for (handler in handlers) {
       if (handler.canExtract(packageName)) {
         val result = handler.extract(packageName, bundle)

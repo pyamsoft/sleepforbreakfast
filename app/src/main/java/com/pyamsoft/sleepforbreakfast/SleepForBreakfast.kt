@@ -27,6 +27,7 @@ import com.pyamsoft.pydroid.ui.installPYDroid
 import com.pyamsoft.pydroid.util.isDebugMode
 import com.pyamsoft.sleepforbreakfast.core.PRIVACY_POLICY_URL
 import com.pyamsoft.sleepforbreakfast.core.TERMS_CONDITIONS_URL
+import com.pyamsoft.sleepforbreakfast.spending.guaranteed.GuaranteedSpending
 import com.pyamsoft.sleepforbreakfast.work.enqueueAppWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 class SleepForBreakfast : Application() {
 
   @Inject @JvmField internal var workerQueue: WorkerQueue? = null
+  @Inject @JvmField internal var guaranteedSpending: GuaranteedSpending? = null
 
   @CheckResult
   private fun initPYDroid(): ModuleProvider {
@@ -83,7 +85,10 @@ class SleepForBreakfast : Application() {
     // Coroutine start up is slow. What we can do instead is create a handler, which is cheap, and
     // post to the main thread to defer this work until after start up is done
     Handler(Looper.getMainLooper()).post {
-      MainScope().launch(context = Dispatchers.Default) { workerQueue?.enqueueAppWork() }
+      MainScope().launch(context = Dispatchers.Default) {
+        guaranteedSpending?.ensureExistsInDatabase()
+        workerQueue?.enqueueAppWork()
+      }
     }
   }
 
