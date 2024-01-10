@@ -138,21 +138,27 @@ abstract class RoomModule {
     @DbApi
     @Provides
     @JvmStatic
-    internal fun provideRoomNotificationQueryDao(@InternalApi db: RoomSleepDb): NotificationQueryDao {
+    internal fun provideRoomNotificationQueryDao(
+        @InternalApi db: RoomSleepDb
+    ): NotificationQueryDao {
       return db.roomNotificationQueryDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
-    internal fun provideRoomNotificationInsertDao(@InternalApi db: RoomSleepDb): NotificationInsertDao {
+    internal fun provideRoomNotificationInsertDao(
+        @InternalApi db: RoomSleepDb
+    ): NotificationInsertDao {
       return db.roomNotificationInsertDao()
     }
 
     @DbApi
     @Provides
     @JvmStatic
-    internal fun provideRoomNotificationDeleteDao(@InternalApi db: RoomSleepDb): NotificationDeleteDao {
+    internal fun provideRoomNotificationDeleteDao(
+        @InternalApi db: RoomSleepDb
+    ): NotificationDeleteDao {
       return db.roomNotificationDeleteDao()
     }
   }

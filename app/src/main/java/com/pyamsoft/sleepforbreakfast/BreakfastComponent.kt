@@ -31,8 +31,8 @@ import com.pyamsoft.sleepforbreakfast.main.MainComponent
 import com.pyamsoft.sleepforbreakfast.money.MoneyAppModule
 import com.pyamsoft.sleepforbreakfast.preference.PreferencesImpl
 import com.pyamsoft.sleepforbreakfast.service.SpendingTrackerService
-import com.pyamsoft.sleepforbreakfast.spending.guaranteed.SpendingGuaranteeAppModule
 import com.pyamsoft.sleepforbreakfast.spending.SpendingAppModule
+import com.pyamsoft.sleepforbreakfast.spending.guaranteed.SpendingGuaranteeAppModule
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionAppModule
 import com.pyamsoft.sleepforbreakfast.ui.UiAppModule
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkManagerAppModule

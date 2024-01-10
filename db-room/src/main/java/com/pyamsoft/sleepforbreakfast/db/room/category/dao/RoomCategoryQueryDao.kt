@@ -39,8 +39,7 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
       """
       SELECT * FROM ${RoomDbCategory.TABLE_NAME}
       WHERE ${RoomDbCategory.COLUMN_ARCHIVED} = 0
-      """
-  )
+      """)
   internal abstract suspend fun daoQuery(): List<RoomDbCategory>
 
   final override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =

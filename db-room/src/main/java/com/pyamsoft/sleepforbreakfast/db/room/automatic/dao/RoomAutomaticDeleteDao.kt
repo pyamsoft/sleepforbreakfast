@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.db.room.automatic.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_DELETE_INVALID

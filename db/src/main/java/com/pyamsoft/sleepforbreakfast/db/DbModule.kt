@@ -67,7 +67,9 @@ abstract class DbModule {
 
   @Binds @CheckResult internal abstract fun bindAutomaticDb(impl: AutomaticDbImpl): AutomaticDb
 
-  @Binds @CheckResult internal abstract fun bindNotificationDb(impl: NotificationDbImpl): NotificationDb
+  @Binds
+  @CheckResult
+  internal abstract fun bindNotificationDb(impl: NotificationDbImpl): NotificationDb
 
   // Caches
   @Binds
