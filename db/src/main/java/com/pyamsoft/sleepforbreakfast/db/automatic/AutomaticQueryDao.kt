@@ -39,6 +39,8 @@ interface AutomaticQueryDao : DbQuery<DbAutomatic> {
 
     suspend fun invalidateById(id: DbAutomatic.Id)
 
+    suspend fun invalidateUnused()
+
     suspend fun invalidateByNotification(
         notificationId: Int,
         notificationKey: String,

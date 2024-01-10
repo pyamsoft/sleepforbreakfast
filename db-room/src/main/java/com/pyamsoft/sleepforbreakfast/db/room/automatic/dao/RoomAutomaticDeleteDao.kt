@@ -19,8 +19,10 @@ package com.pyamsoft.sleepforbreakfast.db.room.automatic.dao
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
+import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_DELETE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,10 +30,10 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomAutomaticDeleteDao : AutomaticDeleteDao {
 
-  override suspend fun delete(o: DbAutomatic): Boolean =
+  final override suspend fun delete(o: DbAutomatic): Boolean =
       withContext(context = Dispatchers.Default) {
         val roomAutomatic = RoomDbAutomatic.create(o)
-        return@withContext daoDelete(roomAutomatic) > 0
+        return@withContext daoDelete(roomAutomatic) > ROOM_ROW_COUNT_DELETE_INVALID
       }
 
   @Delete @CheckResult internal abstract fun daoDelete(symbol: RoomDbAutomatic): Int

@@ -14,36 +14,37 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.room.category.dao
+package com.pyamsoft.sleepforbreakfast.db.room.notification.dao
 
 import androidx.annotation.CheckResult
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.pyamsoft.sleepforbreakfast.db.Maybe
-import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
+import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
+import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
+import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotification
+import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationWithRegexes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Dao
-internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
+internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
 
-  final override suspend fun query(): List<DbCategory> =
+  final override suspend fun query(): List<DbNotificationWithRegexes> =
       withContext(context = Dispatchers.Default) { daoQuery() }
 
   @CheckResult
   @Transaction
-  @Query(
-      """
-      SELECT * FROM ${RoomDbCategory.TABLE_NAME}
-      WHERE ${RoomDbCategory.COLUMN_ARCHIVED} = 0
-      """
-  )
-  internal abstract suspend fun daoQuery(): List<RoomDbCategory>
+  @Query("""
+      SELECT * FROM ${RoomDbNotification.TABLE_NAME}
+      """)
+  internal abstract suspend fun daoQuery(): List<RoomDbNotificationWithRegexes>
 
-  final override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
+  final override suspend fun queryById(
+      id: DbNotification.Id
+  ): Maybe<out DbNotificationWithRegexes> =
       withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
@@ -51,12 +52,13 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
         }
       }
 
+  @Transaction
   @CheckResult
   @Query(
       """
-SELECT * FROM ${RoomDbCategory.TABLE_NAME}
-  WHERE ${RoomDbCategory.COLUMN_ID} = :id
+SELECT * FROM ${RoomDbNotification.TABLE_NAME}
+  WHERE ${RoomDbNotification.COLUMN_ID} = :id
   LIMIT 1
 """)
-  internal abstract suspend fun daoQueryById(id: DbCategory.Id): RoomDbCategory?
+  internal abstract suspend fun daoQueryById(id: DbNotification.Id): RoomDbNotificationWithRegexes?
 }

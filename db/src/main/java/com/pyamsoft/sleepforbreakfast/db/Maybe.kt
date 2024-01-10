@@ -17,12 +17,12 @@
 package com.pyamsoft.sleepforbreakfast.db
 
 /**
- * Easy optional data type for use with Cachify amonst other things
+ * Easy optional data type for use with Cachify amongst other things
  *
  * Cachify expects non-null data returned, so we use this to signal "empty" results
  */
 sealed class Maybe<T> {
   data class Data<T>(val data: T) : Maybe<T>()
 
-  object None : Maybe<Nothing>()
+  data object None : Maybe<Nothing>()
 }

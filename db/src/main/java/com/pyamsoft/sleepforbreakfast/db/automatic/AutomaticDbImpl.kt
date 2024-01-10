@@ -105,6 +105,9 @@ internal constructor(
         queryByIdCache.clear()
       }
 
+  override suspend fun invalidateUnused() =
+      withContext(context = Dispatchers.Default) { queryUnusedCache.clear() }
+
   override suspend fun invalidateByNotification(
       notificationId: Int,
       notificationKey: String,

@@ -14,13 +14,32 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.room
+package com.pyamsoft.sleepforbreakfast.db.room.notification.converter
 
-/** SQL Row ID constant when an insert operation fails. */
-internal const val ROOM_ROW_ID_INSERT_INVALID = -1L
+import androidx.annotation.CheckResult
+import androidx.room.TypeConverter
 
-/** If an SQL update affects no rows, it returns 0 . */
-internal const val ROOM_ROW_COUNT_UPDATE_INVALID = 0
+internal object DbNotificationWatchPackagesListConverter {
 
-/** If an SQL delete affects no rows, it returns 0 . */
-internal const val ROOM_ROW_COUNT_DELETE_INVALID = 0
+  @JvmStatic
+  @CheckResult
+  @TypeConverter
+  fun toId(id: String?): List<String>? {
+    if (id == null) {
+      return null
+    }
+
+    return id.split("|")
+  }
+
+  @JvmStatic
+  @CheckResult
+  @TypeConverter
+  fun fromId(id: List<String>?): String? {
+    if (id == null) {
+      return null
+    }
+
+    return id.joinToString("|")
+  }
+}

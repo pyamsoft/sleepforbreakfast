@@ -20,6 +20,8 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDb
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDb
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationDb
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import javax.inject.Inject
@@ -31,16 +33,19 @@ internal constructor(
     override val transactions: TransactionDb,
     override val categories: CategoryDb,
     override val automatics: AutomaticDb,
+    override val notifications: NotificationDb,
 
     // Caches
     private val transactionCache: TransactionQueryDao.Cache,
     private val categoryCache: CategoryQueryDao.Cache,
-    private val automaticCache: AutomaticQueryDao.Cache
+    private val automaticCache: AutomaticQueryDao.Cache,
+    private val notificationCache: NotificationQueryDao.Cache
 ) : SleepDb {
 
   override suspend fun invalidate() {
     transactionCache.invalidate()
     categoryCache.invalidate()
     automaticCache.invalidate()
+    notificationCache.invalidate()
   }
 }

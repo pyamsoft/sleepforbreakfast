@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.room
+package com.pyamsoft.sleepforbreakfast.db.notification
 
-/** SQL Row ID constant when an insert operation fails. */
-internal const val ROOM_ROW_ID_INSERT_INVALID = -1L
+import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.db.DbQuery
+import com.pyamsoft.sleepforbreakfast.db.Maybe
 
-/** If an SQL update affects no rows, it returns 0 . */
-internal const val ROOM_ROW_COUNT_UPDATE_INVALID = 0
+interface NotificationQueryDao : DbQuery<DbNotificationWithRegexes> {
 
-/** If an SQL delete affects no rows, it returns 0 . */
-internal const val ROOM_ROW_COUNT_DELETE_INVALID = 0
+  @CheckResult suspend fun queryById(id: DbNotification.Id): Maybe<out DbNotificationWithRegexes>
+
+  interface Cache : DbQuery.Cache {
+
+    suspend fun invalidateById(id: DbNotification.Id)
+  }
+}

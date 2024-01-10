@@ -27,6 +27,9 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationInsertDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
@@ -129,6 +132,28 @@ abstract class RoomModule {
     @JvmStatic
     internal fun provideRoomAutomaticDeleteDao(@InternalApi db: RoomSleepDb): AutomaticDeleteDao {
       return db.roomAutomaticDeleteDao()
+    }
+
+    // DbNotification
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomNotificationQueryDao(@InternalApi db: RoomSleepDb): NotificationQueryDao {
+      return db.roomNotificationQueryDao()
+    }
+
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomNotificationInsertDao(@InternalApi db: RoomSleepDb): NotificationInsertDao {
+      return db.roomNotificationInsertDao()
+    }
+
+    @DbApi
+    @Provides
+    @JvmStatic
+    internal fun provideRoomNotificationDeleteDao(@InternalApi db: RoomSleepDb): NotificationDeleteDao {
+      return db.roomNotificationDeleteDao()
     }
   }
 }

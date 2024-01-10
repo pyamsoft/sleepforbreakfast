@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db.room
+package com.pyamsoft.sleepforbreakfast.db.notification
 
-/** SQL Row ID constant when an insert operation fails. */
-internal const val ROOM_ROW_ID_INSERT_INVALID = -1L
+sealed class NotificationChangeEvent {
 
-/** If an SQL update affects no rows, it returns 0 . */
-internal const val ROOM_ROW_COUNT_UPDATE_INVALID = 0
+  data class Insert(val notification: DbNotificationWithRegexes) : NotificationChangeEvent()
 
-/** If an SQL delete affects no rows, it returns 0 . */
-internal const val ROOM_ROW_COUNT_DELETE_INVALID = 0
+  data class Update(val notification: DbNotificationWithRegexes) : NotificationChangeEvent()
+
+  data class Delete(val notification: DbNotificationWithRegexes) : NotificationChangeEvent()
+}

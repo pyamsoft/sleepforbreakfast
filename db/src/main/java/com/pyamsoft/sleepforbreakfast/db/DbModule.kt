@@ -31,6 +31,12 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategoriesImpl
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationDb
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationDbImpl
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationInsertDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
+import com.pyamsoft.sleepforbreakfast.db.notification.NotificationRealtime
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDbImpl
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
@@ -61,6 +67,8 @@ abstract class DbModule {
 
   @Binds @CheckResult internal abstract fun bindAutomaticDb(impl: AutomaticDbImpl): AutomaticDb
 
+  @Binds @CheckResult internal abstract fun bindNotificationDb(impl: NotificationDbImpl): NotificationDb
+
   // Caches
   @Binds
   @CheckResult
@@ -72,7 +80,11 @@ abstract class DbModule {
 
   @Binds
   @CheckResult
-  internal abstract fun bindutomaticCache(impl: AutomaticDbImpl): AutomaticQueryDao.Cache
+  internal abstract fun bindAutomaticCache(impl: AutomaticDbImpl): AutomaticQueryDao.Cache
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindNotificationCache(impl: NotificationDbImpl): NotificationQueryDao.Cache
 
   @Module
   companion object {
@@ -187,6 +199,51 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideAutomaticDeleteDao(@InternalApi db: AutomaticDb): AutomaticDeleteDao {
+      return db.deleteDao
+    }
+
+    // DbNotification
+    @JvmStatic
+    @Provides
+    @CheckResult
+    @InternalApi
+    internal fun provideNotificationDb(db: SleepDb): NotificationDb {
+      return db.notifications
+    }
+
+    @JvmStatic
+    @Provides
+    @CheckResult
+    internal fun provideNotificationRealtimeDao(
+        @InternalApi db: NotificationDb
+    ): NotificationRealtime {
+      return db.realtime
+    }
+
+    @JvmStatic
+    @Provides
+    @CheckResult
+    internal fun provideNotificationQueryDao(
+        @InternalApi db: NotificationDb
+    ): NotificationQueryDao {
+      return db.queryDao
+    }
+
+    @JvmStatic
+    @Provides
+    @CheckResult
+    internal fun provideNotificationInsertDao(
+        @InternalApi db: NotificationDb
+    ): NotificationInsertDao {
+      return db.insertDao
+    }
+
+    @JvmStatic
+    @Provides
+    @CheckResult
+    internal fun provideNotificationDeleteDao(
+        @InternalApi db: NotificationDb
+    ): NotificationDeleteDao {
       return db.deleteDao
     }
   }

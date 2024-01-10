@@ -14,23 +14,33 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.db
+package com.pyamsoft.sleepforbreakfast.db.room.notification.converter
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticDb
-import com.pyamsoft.sleepforbreakfast.db.category.CategoryDb
-import com.pyamsoft.sleepforbreakfast.db.notification.NotificationDb
-import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDb
+import androidx.room.TypeConverter
+import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 
-interface SleepDb {
+internal object DbNotificationMatchRegexIdConverter {
 
-  @get:CheckResult val transactions: TransactionDb
+  @JvmStatic
+  @CheckResult
+  @TypeConverter
+  fun toId(id: String?): DbNotificationMatchRegex.Id? {
+    if (id == null) {
+      return null
+    }
 
-  @get:CheckResult val categories: CategoryDb
+    return id.let { DbNotificationMatchRegex.Id(it) }
+  }
 
-  @get:CheckResult val automatics: AutomaticDb
+  @JvmStatic
+  @CheckResult
+  @TypeConverter
+  fun fromId(id: DbNotificationMatchRegex.Id?): String? {
+    if (id == null) {
+      return null
+    }
 
-  @get:CheckResult val notifications: NotificationDb
-
-  suspend fun invalidate()
+    return id.raw
+  }
 }

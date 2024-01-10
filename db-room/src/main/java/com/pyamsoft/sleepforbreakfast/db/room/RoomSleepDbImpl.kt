@@ -29,6 +29,11 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.converter.DbCategoryIdCon
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateConverter
 import com.pyamsoft.sleepforbreakfast.db.room.converter.LocalDateTimeConverter
+import com.pyamsoft.sleepforbreakfast.db.room.notification.converter.DbNotificationIdConverter
+import com.pyamsoft.sleepforbreakfast.db.room.notification.converter.DbNotificationMatchRegexIdConverter
+import com.pyamsoft.sleepforbreakfast.db.room.notification.converter.DbNotificationWatchPackagesListConverter
+import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotification
+import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbCategoriesListConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionIdConverter
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.converter.DbTransactionTypeConverter
@@ -36,12 +41,14 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
 
 @Database(
     exportSchema = true,
-    version = 5,
+    version = 6,
     entities =
         [
             RoomDbTransaction::class,
             RoomDbCategory::class,
             RoomDbAutomatic::class,
+            RoomDbNotification::class,
+            RoomDbNotificationMatchRegex::class,
         ],
     autoMigrations =
         [
@@ -69,17 +76,35 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransacti
                 to = 5,
                 spec = DropRepeatVersion4To5::class,
             ),
+
+            // Remove this after dev is done and set everything back to 1
+            AutoMigration(
+                from = 5,
+                to = 6,
+            ),
         ],
 )
 @TypeConverters(
-    // Version 1
-    DbCategoriesListConverter::class,
+    /** Version 1 ==== */
+    // Common
     LocalDateTimeConverter::class,
     LocalDateConverter::class,
+
+    // Category
+    DbCategoryIdConverter::class,
+
+    // Transaction
     DbTransactionIdConverter::class,
     DbTransactionTypeConverter::class,
-    DbCategoryIdConverter::class,
+    DbCategoriesListConverter::class,
+
+    // Automatic
     DbAutomaticIdConverter::class,
+
+    // Notification
+    DbNotificationIdConverter::class,
+    DbNotificationMatchRegexIdConverter::class,
+    DbNotificationWatchPackagesListConverter::class,
 )
 internal abstract class RoomSleepDbImpl internal constructor() : RoomDatabase(), RoomSleepDb
 

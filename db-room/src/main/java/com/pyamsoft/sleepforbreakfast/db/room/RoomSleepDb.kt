@@ -23,6 +23,9 @@ import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticQueryDa
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.category.dao.RoomCategoryQueryDao
+import com.pyamsoft.sleepforbreakfast.db.room.notification.dao.RoomNotificationDeleteDao
+import com.pyamsoft.sleepforbreakfast.db.room.notification.dao.RoomNotificationInsertDao
+import com.pyamsoft.sleepforbreakfast.db.room.notification.dao.RoomNotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionQueryDao
@@ -49,4 +52,11 @@ internal interface RoomSleepDb {
   @CheckResult fun roomAutomaticInsertDao(): RoomAutomaticInsertDao
 
   @CheckResult fun roomAutomaticDeleteDao(): RoomAutomaticDeleteDao
+
+  // Notification
+  @CheckResult fun roomNotificationQueryDao(): RoomNotificationQueryDao
+
+  @CheckResult fun roomNotificationInsertDao(): RoomNotificationInsertDao
+
+  @CheckResult fun roomNotificationDeleteDao(): RoomNotificationDeleteDao
 }
