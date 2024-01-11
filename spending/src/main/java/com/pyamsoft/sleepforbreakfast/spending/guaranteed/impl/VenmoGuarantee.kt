@@ -48,7 +48,7 @@ internal constructor(
                 system = true,
                 clock = clock,
                 id = notificationId,
-                name = "Chase Bank Spending",
+                name = "Venmo Spending",
                 actOnPackageNames = setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), "com.venmo"),
                 type = DbTransaction.Type.SPEND,
             ),
