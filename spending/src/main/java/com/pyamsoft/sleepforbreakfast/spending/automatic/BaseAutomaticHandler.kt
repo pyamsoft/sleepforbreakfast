@@ -1,9 +1,9 @@
 /*
- * Copyright 2023 pyamsoft
+ * Copyright 2024 pyamsoft
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * You may obtain a copy of the License at:
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -28,9 +28,7 @@ import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
 internal abstract class BaseAutomaticHandler protected constructor() : AutomaticHandler {
 
   @CheckResult
-  private fun MatchGroupCollection.extractGroup(
-      group: String,
-  ): String? =
+  private fun MatchGroupCollection.extractGroup(group: String): String? =
       try {
         this.get(name = group)?.value?.trim()
       } catch (_: Throwable) {
