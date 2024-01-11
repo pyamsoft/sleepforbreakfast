@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
+import com.pyamsoft.sleepforbreakfast.automatic.AutomaticEntry
 import com.pyamsoft.sleepforbreakfast.category.CategoryEntry
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.home.HomeEntry
@@ -44,7 +45,7 @@ fun MainScreen(
     onClosePage: () -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
-    onOpenCategories: () -> Unit,
+    onOpenPage: (MainPage) -> Unit,
 ) {
   val isSettingsOpen by state.isSettingsOpen.collectAsStateWithLifecycle()
   val page by state.page.collectAsStateWithLifecycle()
@@ -64,7 +65,7 @@ fun MainScreen(
             onOpenTransactions = onOpenTransactions,
             onOpenAllTransactions = onOpenAllTransactions,
             onOpenSettings = onOpenSettings,
-            onOpenCategories = onOpenCategories,
+            onOpenPage = onOpenPage,
         )
       } else {
         when (p) {
@@ -77,6 +78,12 @@ fun MainScreen(
           }
           is MainPage.Category -> {
             CategoryEntry(
+                modifier = Modifier.fillMaxSize().padding(pv),
+                onDismiss = onClosePage,
+            )
+          }
+          is MainPage.Automatic -> {
+            AutomaticEntry(
                 modifier = Modifier.fillMaxSize().padding(pv),
                 onDismiss = onClosePage,
             )

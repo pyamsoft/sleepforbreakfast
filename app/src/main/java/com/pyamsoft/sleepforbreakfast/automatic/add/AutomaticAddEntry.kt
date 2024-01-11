@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.home
+package com.pyamsoft.sleepforbreakfast.automatic.add
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
@@ -26,29 +26,22 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.main.MainPage
-import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
-import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
-import java.time.Clock
-import java.util.Locale
+import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
-internal class HomeInjector
+internal class AutomaticAddInjector
 @Inject
 internal constructor(
-    private val locale: Locale,
+    private val params: AutomaticAddParams,
 ) : ComposableInjector() {
 
-  @JvmField @Inject internal var viewModel: HomeViewModeler? = null
+  @JvmField @Inject internal var viewModel: AutomaticAddViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
-        .plusHome()
+        .plusAddAutomatic()
         .create(
-            locale = locale,
-            activity = activity,
-            lifecycle = activity.lifecycle,
+            params = params,
         )
         .inject(this)
   }
@@ -59,28 +52,29 @@ internal constructor(
 }
 
 @Composable
-private fun MountHooks(viewModel: HomeViewModeler) {
+private fun MountHooks(viewModel: AutomaticAddViewModeler) {
   SaveStateDisposableEffect(viewModel)
 
-  LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
+  LaunchedEffect(viewModel) {
+    viewModel.bind(
+        scope = this,
+        force = false,
+    )
+  }
 }
 
 @Composable
-internal fun HomeEntry(
+internal fun AutomaticAddEntry(
     modifier: Modifier = Modifier,
-    clock: Clock,
-    appName: String,
-    onOpenSettings: () -> Unit,
-    onOpenPage: (MainPage) -> Unit,
-    onOpenAllTransactions: (TransactionDateRange?) -> Unit,
-    onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
+    params: AutomaticAddParams,
+    onDismiss: () -> Unit,
 ) {
-  val locale = rememberCurrentLocale()
   val component = rememberComposableInjector {
-    HomeInjector(
-        locale = locale,
+    AutomaticAddInjector(
+        params = params,
     )
   }
+
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 
@@ -88,18 +82,21 @@ internal fun HomeEntry(
       viewModel = viewModel,
   )
 
-  HomeScreen(
+  SurfaceDialog(
       modifier = modifier,
-      clock = clock,
-      state = viewModel,
-      appName = appName,
-      onOpenSettings = onOpenSettings,
-      onOpenAllTransactions = onOpenAllTransactions,
-      onOpenTransactions = onOpenTransactions,
-      onOpenCategories = { onOpenPage(MainPage.Category) },
-      onOpenAutomatics = { onOpenPage(MainPage.Automatic) },
-      onOpenNotificationListenerSettings = {
-        viewModel.handleOpenNotificationSettings(scope = scope)
-      },
-  )
+      onDismiss = onDismiss,
+  ) {
+    AutomaticAddScreen(
+        state = viewModel,
+        onDismiss = onDismiss,
+        onNameChanged = { viewModel.handleNameChanged(it) },
+        onReset = { viewModel.handleReset() },
+        onSubmit = {
+          viewModel.handleSubmit(
+              scope = scope,
+              onDismissAfterUpdated = onDismiss,
+          )
+        },
+    )
+  }
 }

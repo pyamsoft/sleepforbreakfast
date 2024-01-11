@@ -74,4 +74,6 @@ sealed interface MainPage {
   }
 
   @Stable @Immutable data object Category : MainPage
+
+  @Stable @Immutable data object Automatic : MainPage
 }

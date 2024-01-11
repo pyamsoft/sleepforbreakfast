@@ -22,6 +22,7 @@ import android.content.Context
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.ui.theme.Theming
+import com.pyamsoft.sleepforbreakfast.automatic.AutomaticAppModule
 import com.pyamsoft.sleepforbreakfast.category.CategoryAppModule
 import com.pyamsoft.sleepforbreakfast.db.DbModule
 import com.pyamsoft.sleepforbreakfast.db.DbPreferences
@@ -57,6 +58,7 @@ import javax.inject.Singleton
             UiAppModule::class,
             CategoryAppModule::class,
             MoneyAppModule::class,
+            AutomaticAppModule::class,
 
             // DB
             DbModule::class,

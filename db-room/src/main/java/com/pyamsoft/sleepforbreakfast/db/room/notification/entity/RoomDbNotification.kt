@@ -33,6 +33,7 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_NAME) val dbName: String,
     @JvmField @ColumnInfo(name = COLUMN_ENABLED) val dbEnabled: Boolean,
     @JvmField @ColumnInfo(name = COLUMN_TYPE) val dbType: DbTransaction.Type,
+    @JvmField @ColumnInfo(name = COLUMN_SYSTEM) val dbSystem: Boolean,
     @JvmField @ColumnInfo(name = COLUMN_WATCH_PACKAGES) val dbWatchPackages: List<String>,
     @JvmField @ColumnInfo(name = COLUMN_IS_UNTOUCHED_SYSTEM) val dbIsUntouchedSystem: Boolean,
 ) : DbNotification {
@@ -44,6 +45,8 @@ internal constructor(
   @Ignore override val name = dbName
 
   @Ignore override val enabled = dbEnabled
+
+  @Ignore override val system = dbSystem
 
   @Ignore override val type = dbType
 
@@ -57,35 +60,20 @@ internal constructor(
   }
 
   @Ignore
-  override fun enable(): DbNotification {
-    return this.copy(dbEnabled = true)
+  override fun enabled(enabled: Boolean): DbNotification {
+    return this.copy(dbEnabled = enabled)
   }
 
   @Ignore
-  override fun disable(): DbNotification {
-    return this.copy(dbEnabled = false)
-  }
-
-  @Ignore
-  override fun addActOnPackageName(packageName: String): DbNotification {
-    return this.copy(dbWatchPackages = this.dbWatchPackages + packageName)
-  }
-
-  @Ignore
-  override fun removeActOnPackageName(packageName: String): DbNotification {
+  override fun actOnPackageName(packageNames: Collection<String>): DbNotification {
     return this.copy(
-        dbWatchPackages = this.dbWatchPackages.filterNot { it == packageName },
+        dbWatchPackages = packageNames.toList(),
     )
   }
 
   @Ignore
-  override fun markEarn(): DbNotification {
-    return this.copy(dbType = DbTransaction.Type.EARN)
-  }
-
-  @Ignore
-  override fun markSpend(): DbNotification {
-    return this.copy(dbType = DbTransaction.Type.SPEND)
+  override fun type(type: DbTransaction.Type): DbNotification {
+    return this.copy(dbType = type)
   }
 
   @Ignore
@@ -107,6 +95,8 @@ internal constructor(
 
     @Ignore internal const val COLUMN_TYPE = "type"
 
+    @Ignore internal const val COLUMN_SYSTEM = "system"
+
     @Ignore internal const val COLUMN_IS_UNTOUCHED_SYSTEM = "is_untouched_system"
 
     @Ignore internal const val COLUMN_WATCH_PACKAGES = "watch_packages"
@@ -123,6 +113,7 @@ internal constructor(
             item.name,
             item.enabled,
             item.type,
+            item.system,
             item.actOnPackageNames.toList(),
             item.isUntouchedFromSystem,
         )

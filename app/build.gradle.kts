@@ -122,6 +122,7 @@ dependencies {
   // This pulls in all the UI bits too, which is a little lame.
   implementation("androidx.preference:preference:1.2.1")
 
+  implementation(project(":automatic"))
   implementation(project(":category"))
   implementation(project(":core"))
   implementation(project(":db"))

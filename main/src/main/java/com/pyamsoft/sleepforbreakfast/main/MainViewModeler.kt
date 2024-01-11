@@ -43,6 +43,7 @@ internal constructor(
               } else {
                 return@registerProvider when (p) {
                   is MainPage.Category -> p::class.java.name
+                  is MainPage.Automatic -> p::class.java.name
                   is MainPage.Transactions -> p.toBundleable()
                 }
               }
@@ -103,8 +104,8 @@ internal constructor(
         )
   }
 
-  fun handleOpenCategory() {
-    state.page.value = MainPage.Category
+  fun handleOpenPage(page: MainPage) {
+    state.page.value = page
   }
 
   companion object {

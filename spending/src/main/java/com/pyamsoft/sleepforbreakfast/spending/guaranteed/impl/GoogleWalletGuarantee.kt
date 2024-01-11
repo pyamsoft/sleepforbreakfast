@@ -43,6 +43,7 @@ internal constructor(
     DbNotificationWithRegexes.create(
         notification =
             DbNotification.create(
+                system = true,
                 clock = clock,
                 id = notificationId,
                 name = "Google Wallet Spending",

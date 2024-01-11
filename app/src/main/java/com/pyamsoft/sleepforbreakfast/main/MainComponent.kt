@@ -17,6 +17,9 @@
 package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.automatic.AutomaticComponent
+import com.pyamsoft.sleepforbreakfast.automatic.add.AutomaticAddComponent
+import com.pyamsoft.sleepforbreakfast.automatic.delete.AutomaticDeleteComponent
 import com.pyamsoft.sleepforbreakfast.category.CategoryComponent
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddComponent
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteComponent
@@ -51,6 +54,13 @@ internal interface MainComponent {
   @CheckResult fun plusAddCategory(): CategoryAddComponent.Factory
 
   @CheckResult fun plusDeleteCategory(): CategoryDeleteComponent.Factory
+
+  // Automatic
+  @CheckResult fun plusAutomatic(): AutomaticComponent.Factory
+
+  @CheckResult fun plusAddAutomatic(): AutomaticAddComponent.Factory
+
+  @CheckResult fun plusDeleteAutomatic(): AutomaticDeleteComponent.Factory
 
   // Transactions
   @CheckResult fun plusTransactions(): TransactionComponent.Factory

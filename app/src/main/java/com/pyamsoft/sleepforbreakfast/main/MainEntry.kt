@@ -112,7 +112,7 @@ internal fun ComponentActivity.MainEntry(
           viewModel.handleOpenTransactions(category, range)
         },
         onOpenAllTransactions = { viewModel.handleOpenAllTransactions(it) },
-        onOpenCategories = { viewModel.handleOpenCategory() },
+        onOpenPage = { viewModel.handleOpenPage(it) },
     )
   }
 }

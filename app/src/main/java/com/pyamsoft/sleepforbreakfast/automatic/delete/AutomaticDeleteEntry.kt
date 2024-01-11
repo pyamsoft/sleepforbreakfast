@@ -14,41 +14,36 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.home
+package com.pyamsoft.sleepforbreakfast.automatic.delete
 
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import com.pyamsoft.sleepforbreakfast.main.MainPage
-import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
-import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
-import java.time.Clock
-import java.util.Locale
+import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
 import javax.inject.Inject
 
-internal class HomeInjector
+internal class AutomaticDeleteInjector
 @Inject
 internal constructor(
-    private val locale: Locale,
+    private val params: AutomaticDeleteParams,
 ) : ComposableInjector() {
 
-  @JvmField @Inject internal var viewModel: HomeViewModeler? = null
+  @JvmField @Inject internal var viewModel: AutomaticDeleteViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
-        .plusHome()
+        .plusDeleteAutomatic()
         .create(
-            locale = locale,
-            activity = activity,
-            lifecycle = activity.lifecycle,
+            params = params,
         )
         .inject(this)
   }
@@ -59,47 +54,50 @@ internal constructor(
 }
 
 @Composable
-private fun MountHooks(viewModel: HomeViewModeler) {
+private fun MountHooks(viewModel: AutomaticDeleteViewModeler) {
   SaveStateDisposableEffect(viewModel)
 
-  LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
+  LaunchedEffect(viewModel) {
+    viewModel.bind(
+        scope = this,
+        force = false,
+    )
+  }
 }
 
 @Composable
-internal fun HomeEntry(
+internal fun AutomaticDeleteEntry(
     modifier: Modifier = Modifier,
-    clock: Clock,
-    appName: String,
-    onOpenSettings: () -> Unit,
-    onOpenPage: (MainPage) -> Unit,
-    onOpenAllTransactions: (TransactionDateRange?) -> Unit,
-    onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
+    params: AutomaticDeleteParams,
+    onDismiss: () -> Unit,
 ) {
-  val locale = rememberCurrentLocale()
   val component = rememberComposableInjector {
-    HomeInjector(
-        locale = locale,
+    AutomaticDeleteInjector(
+        params = params,
     )
   }
+
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
+
+  val handleDismiss by rememberUpdatedState(onDismiss)
+
+  val handleSubmit by rememberUpdatedState {
+    viewModel.handleDelete(scope = scope) { handleDismiss() }
+  }
 
   MountHooks(
       viewModel = viewModel,
   )
 
-  HomeScreen(
+  SurfaceDialog(
       modifier = modifier,
-      clock = clock,
-      state = viewModel,
-      appName = appName,
-      onOpenSettings = onOpenSettings,
-      onOpenAllTransactions = onOpenAllTransactions,
-      onOpenTransactions = onOpenTransactions,
-      onOpenCategories = { onOpenPage(MainPage.Category) },
-      onOpenAutomatics = { onOpenPage(MainPage.Automatic) },
-      onOpenNotificationListenerSettings = {
-        viewModel.handleOpenNotificationSettings(scope = scope)
-      },
-  )
+      onDismiss = onDismiss,
+  ) {
+    AutomaticDeleteScreen(
+        state = viewModel,
+        onDismiss = onDismiss,
+        onConfirm = { handleSubmit() },
+    )
+  }
 }

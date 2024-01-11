@@ -36,23 +36,19 @@ interface DbNotification {
 
   @get:CheckResult val enabled: Boolean
 
+  @get:CheckResult val system: Boolean
+
   @get:CheckResult val isUntouchedFromSystem: Boolean
 
   @get:CheckResult val type: DbTransaction.Type
 
   @CheckResult fun name(name: String): DbNotification
 
-  @CheckResult fun enable(): DbNotification
+  @CheckResult fun enabled(enabled: Boolean): DbNotification
 
-  @CheckResult fun disable(): DbNotification
+  @CheckResult fun actOnPackageName(packageNames: Collection<String>): DbNotification
 
-  @CheckResult fun addActOnPackageName(packageName: String): DbNotification
-
-  @CheckResult fun removeActOnPackageName(packageName: String): DbNotification
-
-  @CheckResult fun markSpend(): DbNotification
-
-  @CheckResult fun markEarn(): DbNotification
+  @CheckResult fun type(type: DbTransaction.Type): DbNotification
 
   @CheckResult fun markTaintedByUser(): DbNotification
 
@@ -72,6 +68,7 @@ interface DbNotification {
       override val name: String,
       override val actOnPackageNames: Collection<String>,
       override val enabled: Boolean,
+      override val system: Boolean,
       override val type: DbTransaction.Type,
       override val isUntouchedFromSystem: Boolean,
   ) : DbNotification {
@@ -80,32 +77,16 @@ interface DbNotification {
       return this.copy(name = name)
     }
 
-    override fun enable(): DbNotification {
-      return this.copy(enabled = true)
+    override fun enabled(enabled: Boolean): DbNotification {
+      return this.copy(enabled = enabled)
     }
 
-    override fun disable(): DbNotification {
-      return this.copy(enabled = false)
+    override fun actOnPackageName(packageNames: Collection<String>): DbNotification {
+      return this.copy(actOnPackageNames = packageNames)
     }
 
-    override fun addActOnPackageName(packageName: String): DbNotification {
-      return this.copy(
-          actOnPackageNames = this.actOnPackageNames + packageName,
-      )
-    }
-
-    override fun removeActOnPackageName(packageName: String): DbNotification {
-      return this.copy(
-          actOnPackageNames = this.actOnPackageNames.filterNot { it == packageName },
-      )
-    }
-
-    override fun markEarn(): DbNotification {
-      return this.copy(type = DbTransaction.Type.EARN)
-    }
-
-    override fun markSpend(): DbNotification {
-      return this.copy(type = DbTransaction.Type.SPEND)
+    override fun type(type: DbTransaction.Type): DbNotification {
+      return this.copy(type = type)
     }
 
     override fun markTaintedByUser(): DbNotification {
@@ -123,6 +104,7 @@ interface DbNotification {
         actOnPackageNames: Collection<String>,
         type: DbTransaction.Type,
         name: String,
+        system: Boolean = false,
         enabled: Boolean = true,
         isUntouchedFromSystem: Boolean = true,
         id: Id = Id(IdGenerator.generate()),
@@ -135,6 +117,7 @@ interface DbNotification {
           type = type,
           isUntouchedFromSystem = isUntouchedFromSystem,
           enabled = enabled,
+          system = system,
       )
     }
   }
