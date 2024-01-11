@@ -17,9 +17,12 @@
 package com.pyamsoft.sleepforbreakfast.automatic
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -69,14 +72,40 @@ fun AutomaticScreen(
   ) { automatic ->
     // TODO
     Card(
-        modifier = Modifier.padding(MaterialTheme.keylines.content).fillMaxWidth(),
+        modifier =
+            Modifier.padding(horizontal = MaterialTheme.keylines.content)
+                .padding(bottom = MaterialTheme.keylines.content)
+                .fillMaxWidth()
+                .combinedClickable(
+                    onClick = { onAutomaticClicked(automatic) },
+                    onLongClick = { onAutomaticLongClicked?.invoke(automatic) },
+                ),
         elevation = CardDefaults.Elevation,
         shape = MaterialTheme.shapes.medium,
     ) {
-      Text(
-          text = automatic.notification.name,
-          style = MaterialTheme.typography.h6,
-      )
+      Column(
+          modifier = Modifier.padding(MaterialTheme.keylines.content),
+      ) {
+        Text(
+            modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
+            text = automatic.notification.name,
+            style = MaterialTheme.typography.h6,
+        )
+
+        automatic.matchRegexes.forEach { reg ->
+          Text(
+              modifier = Modifier.padding(bottom = MaterialTheme.keylines.typography),
+              text = reg.text,
+              style =
+                  MaterialTheme.typography.body2.copy(
+                      color =
+                          MaterialTheme.colors.onSurface.copy(
+                              alpha = ContentAlpha.medium,
+                          ),
+                  ),
+          )
+        }
+      }
     }
   }
 }
