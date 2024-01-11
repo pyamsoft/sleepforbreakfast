@@ -38,7 +38,7 @@ interface DbNotification {
 
   @get:CheckResult val system: Boolean
 
-  @get:CheckResult val isUntouchedFromSystem: Boolean
+  @get:CheckResult val taintedOn: LocalDateTime?
 
   @get:CheckResult val type: DbTransaction.Type
 
@@ -50,7 +50,7 @@ interface DbNotification {
 
   @CheckResult fun type(type: DbTransaction.Type): DbNotification
 
-  @CheckResult fun markTaintedByUser(): DbNotification
+  @CheckResult fun markTaintedByUser(date: LocalDateTime): DbNotification
 
   data class Id(@get:CheckResult val raw: String) {
 
@@ -70,7 +70,7 @@ interface DbNotification {
       override val enabled: Boolean,
       override val system: Boolean,
       override val type: DbTransaction.Type,
-      override val isUntouchedFromSystem: Boolean,
+      override val taintedOn: LocalDateTime?,
   ) : DbNotification {
 
     override fun name(name: String): DbNotification {
@@ -89,8 +89,8 @@ interface DbNotification {
       return this.copy(type = type)
     }
 
-    override fun markTaintedByUser(): DbNotification {
-      return this.copy(isUntouchedFromSystem = false)
+    override fun markTaintedByUser(date: LocalDateTime): DbNotification {
+      return if (taintedOn == null) this.copy(taintedOn = date) else this
     }
   }
 
@@ -106,7 +106,6 @@ interface DbNotification {
         name: String,
         system: Boolean = false,
         enabled: Boolean = true,
-        isUntouchedFromSystem: Boolean = true,
         id: Id = Id(IdGenerator.generate()),
     ): DbNotification {
       return Impl(
@@ -115,9 +114,9 @@ interface DbNotification {
           name = name,
           actOnPackageNames = actOnPackageNames,
           type = type,
-          isUntouchedFromSystem = isUntouchedFromSystem,
           enabled = enabled,
           system = system,
+          taintedOn = null,
       )
     }
   }

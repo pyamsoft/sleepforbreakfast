@@ -35,7 +35,7 @@ internal constructor(
     @JvmField @ColumnInfo(name = COLUMN_TYPE) val dbType: DbTransaction.Type,
     @JvmField @ColumnInfo(name = COLUMN_SYSTEM) val dbSystem: Boolean,
     @JvmField @ColumnInfo(name = COLUMN_WATCH_PACKAGES) val dbWatchPackages: List<String>,
-    @JvmField @ColumnInfo(name = COLUMN_IS_UNTOUCHED_SYSTEM) val dbIsUntouchedSystem: Boolean,
+    @JvmField @ColumnInfo(name = COLUMN_IS_UNTOUCHED_SYSTEM) val dbTaintedOn: LocalDateTime?,
 ) : DbNotification {
 
   @Ignore override val id = dbId
@@ -52,7 +52,7 @@ internal constructor(
 
   @Ignore override val actOnPackageNames = dbWatchPackages
 
-  @Ignore override val isUntouchedFromSystem = dbIsUntouchedSystem
+  @Ignore override val taintedOn = dbTaintedOn
 
   @Ignore
   override fun name(name: String): DbNotification {
@@ -77,8 +77,8 @@ internal constructor(
   }
 
   @Ignore
-  override fun markTaintedByUser(): DbNotification {
-    return this.copy(dbIsUntouchedSystem = false)
+  override fun markTaintedByUser(date: LocalDateTime): DbNotification {
+    return if (dbTaintedOn == null) this.copy(dbTaintedOn = date) else this
   }
 
   companion object {
@@ -97,7 +97,7 @@ internal constructor(
 
     @Ignore internal const val COLUMN_SYSTEM = "system"
 
-    @Ignore internal const val COLUMN_IS_UNTOUCHED_SYSTEM = "is_untouched_system"
+    @Ignore internal const val COLUMN_IS_UNTOUCHED_SYSTEM = "tainted_on"
 
     @Ignore internal const val COLUMN_WATCH_PACKAGES = "watch_packages"
 
@@ -115,7 +115,7 @@ internal constructor(
             item.type,
             item.system,
             item.actOnPackageNames.toList(),
-            item.isUntouchedFromSystem,
+            item.taintedOn,
         )
       }
     }

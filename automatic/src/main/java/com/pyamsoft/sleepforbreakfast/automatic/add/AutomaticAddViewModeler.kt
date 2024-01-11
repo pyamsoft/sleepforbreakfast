@@ -33,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 
 class AutomaticAddViewModeler
 @Inject
@@ -57,7 +58,6 @@ internal constructor(
                 clock = clock,
                 system = false,
                 enabled = true,
-                isUntouchedFromSystem = false,
                 actOnPackageNames = emptySet(),
                 name = "",
                 type = DbTransaction.Type.SPEND,
@@ -67,6 +67,8 @@ internal constructor(
         .actOnPackageName(state.actOnPackageNames.value)
         .type(state.type.value)
         .enabled(state.enabled.value)
+        // If we submit the edit, mark the model tainted
+        .markTaintedByUser(LocalDateTime.now(clock))
   }
 
   @CheckResult

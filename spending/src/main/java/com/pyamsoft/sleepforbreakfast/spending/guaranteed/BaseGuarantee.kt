@@ -52,11 +52,14 @@ internal abstract class BaseGuarantee protected constructor() : SpendingGuarante
     when (val existing = query.queryById(notification.notification.id)) {
       is Maybe.Data -> {
         val data = existing.data
-        if (data.notification.isUntouchedFromSystem) {
+        val tainted = data.notification.taintedOn
+        if (tainted == null) {
           Timber.d { "Upsert existing untouched DbNotification: $name" }
           upsert(insert, notification)
         } else {
-          Timber.w { "DbNotification exists but has been user modified, do not upsert. $name" }
+          Timber.w {
+            "DbNotification exists but has been user modified, do not upsert. $name $tainted"
+          }
         }
       }
       Maybe.None -> {
