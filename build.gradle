@@ -46,9 +46,9 @@ buildscript {
     moshi = "1.15.0"
 
     // Compose
-    compose = "1.6.0"
-    composeCompiler = "1.5.8"
-    composeMaterial = "1.6.0"
+    compose = "1.6.2"
+    composeCompiler = "1.5.10"
+    composeMaterial = "1.6.2"
 
     // Charts
     vico = "1.13.1"
