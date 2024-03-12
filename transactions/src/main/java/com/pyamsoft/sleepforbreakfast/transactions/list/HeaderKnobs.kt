@@ -19,28 +19,67 @@ package com.pyamsoft.sleepforbreakfast.transactions.list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.sleepforbreakfast.money.list.Search
+import com.pyamsoft.sleepforbreakfast.money.list.ToggleIcon
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 
 @Composable
 internal fun HeaderKnobs(
     modifier: Modifier,
     state: TransactionViewState,
-
-    // Search
     onSearchToggle: () -> Unit,
+    onDateRangeToggle: () -> Unit,
 ) {
   Row(
       modifier = modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.End,
   ) {
+    DateRange(
+        state = state,
+        onToggle = onDateRangeToggle,
+    )
+
     Search(
         state = state,
         onToggle = onSearchToggle,
+    )
+  }
+}
+
+@Composable
+private fun DateRange(
+    modifier: Modifier = Modifier,
+    state: TransactionViewState,
+    onToggle: () -> Unit,
+) {
+  val dateRange by state.dateRange.collectAsStateWithLifecycle()
+  val isOpen by state.isDateRangeOpen.collectAsStateWithLifecycle()
+  val showUsage = remember(dateRange) { dateRange != null }
+
+  ToggleIcon(
+      modifier = modifier,
+      showUsage = showUsage,
+      onToggle = onToggle,
+  ) {
+    Icon(
+        imageVector = Icons.Filled.CalendarMonth,
+        contentDescription = "Date Range",
+        tint =
+            MaterialTheme.colors.onPrimary.copy(
+                alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
+            ),
     )
   }
 }

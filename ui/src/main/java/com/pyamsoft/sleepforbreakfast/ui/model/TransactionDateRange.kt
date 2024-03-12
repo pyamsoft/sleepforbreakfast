@@ -23,8 +23,7 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 
 @Stable
-data class TransactionDateRange
-internal constructor(
+data class TransactionDateRange(
     val from: LocalDate,
     val to: LocalDate,
 ) {

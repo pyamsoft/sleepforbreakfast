@@ -32,12 +32,14 @@ import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParam
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
+import java.time.LocalDate
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TransactionViewModeler
@@ -46,7 +48,7 @@ internal constructor(
     state: MutableTransactionViewState,
     interactor: TransactionInteractor,
     private val defaultCategoryId: DbCategory.Id,
-    private val dateRange: TransactionDateRange?,
+    private val defaultDateRange: TransactionDateRange?,
     private val showAllTransactions: Boolean,
     private val enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
@@ -179,12 +181,6 @@ internal constructor(
         return@filter isMatchingSearch(t, search)
       }
 
-  @CheckResult
-  private fun Sequence<DbTransaction>.filterByDateRange(): Sequence<DbTransaction> = filter { t ->
-    val range = dateRange ?: return@filter true
-    return@filter t.date.toLocalDate().let { it >= range.from && it <= range.to }
-  }
-
   override fun onGenerateItemsBasedOnAllItems(
       scope: CoroutineScope,
       allItems: StateFlow<List<DbTransaction>>
@@ -194,13 +190,15 @@ internal constructor(
         combineTransform(
                 allItems,
                 state.search,
-            ) { all, search ->
+                state.dateRange,
+            ) { all, search, dateRange ->
               enforcer.assertOffMainThread()
 
               emit(
                   ItemPayload(
                       transactions = all,
                       search = search,
+                      dateRange = dateRange,
                   ),
               )
             }
@@ -208,7 +206,7 @@ internal constructor(
             .flowOn(context = Dispatchers.Default)
 
     scope.launch(context = Dispatchers.Default) {
-      combined.collect { (all, search) ->
+      combined.collect { (all, search, dateRange) ->
         enforcer.assertOffMainThread()
 
         val category = loadTargetCategory()
@@ -216,7 +214,8 @@ internal constructor(
         state.items.value =
             all.asSequence()
                 .filterByCategory(category)
-                .filterByDateRange()
+                .filterByPossibleDateRange(defaultDateRange)
+                .filterByPossibleDateRange(dateRange)
                 .filterBySearch(search)
                 .toList()
                 .sort()
@@ -261,13 +260,34 @@ internal constructor(
     state.deleteParams.value = null
   }
 
+  fun handleToggleDateRange() {
+    state.isDateRangeOpen.update { !it }
+  }
+
+  fun handleDateRangeUpdated(from: LocalDate, to: LocalDate) {
+    state.dateRange.value =
+        TransactionDateRange(
+            from = from,
+            to = to,
+        )
+  }
+
   private data class ItemPayload(
       val transactions: List<DbTransaction>,
       val search: String,
+      val dateRange: TransactionDateRange?,
   )
 
   companion object {
     private const val KEY_ADD_PARAMS = "key_add_params"
     private const val KEY_DELETE_PARAMS = "key_delete_params"
+
+    @CheckResult
+    private fun Sequence<DbTransaction>.filterByPossibleDateRange(
+        range: TransactionDateRange?
+    ): Sequence<DbTransaction> = filter { t ->
+      val r = range ?: return@filter true
+      return@filter t.date.toLocalDate().let { it >= r.from && it <= r.to }
+    }
   }
 }

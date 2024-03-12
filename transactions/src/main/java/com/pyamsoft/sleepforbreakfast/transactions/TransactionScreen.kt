@@ -42,6 +42,8 @@ import com.pyamsoft.sleepforbreakfast.transactions.list.rememberTransactionsWith
 import com.pyamsoft.sleepforbreakfast.ui.list.BasicListScreen
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
+import java.time.Clock
+import java.time.LocalDate
 
 private enum class ContentTypes {
   HEADER,
@@ -53,6 +55,7 @@ private enum class ContentTypes {
 @OptIn(ExperimentalFoundationApi::class)
 fun TransactionScreen(
     modifier: Modifier = Modifier,
+    clock: Clock,
     state: TransactionViewState,
     range: TransactionDateRange?,
     onDismiss: () -> Unit,
@@ -69,6 +72,10 @@ fun TransactionScreen(
     // Search
     onSearchToggled: () -> Unit,
     onSearchUpdated: (String) -> Unit,
+
+    // Date Range
+    onDateRangeToggled: () -> Unit,
+    onDateRangeUpdated: (LocalDate, LocalDate) -> Unit,
 ) {
   val showActionButton by state.showActionButton.collectAsStateWithLifecycle()
   val currentCategory by state.category.collectAsStateWithLifecycle()
@@ -91,11 +98,14 @@ fun TransactionScreen(
     Column {
       TransactionTotal(
           modifier = Modifier.fillMaxWidth().padding(pv),
+          clock = clock,
           state = state,
           range = range,
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggled,
           onSearchChange = onSearchUpdated,
+          onDateRangeToggle = onDateRangeToggled,
+          onDateRangeChange = onDateRangeUpdated,
       )
 
       LazyColumn {

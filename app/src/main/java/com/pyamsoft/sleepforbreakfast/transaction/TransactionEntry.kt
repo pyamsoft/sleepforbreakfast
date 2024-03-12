@@ -40,6 +40,7 @@ import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
+import java.time.Clock
 import javax.inject.Inject
 
 internal class TransactionInjector
@@ -49,6 +50,7 @@ internal constructor(
 ) : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
+  @JvmField @Inject internal var clock: Clock? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
@@ -63,6 +65,7 @@ internal constructor(
 
   override fun onDispose() {
     viewModel = null
+    clock = null
   }
 }
 
@@ -87,6 +90,7 @@ internal fun TransactionEntry(
     )
   }
   val viewModel = rememberNotNull(component.viewModel)
+  val clock = rememberNotNull(component.clock)
 
   val addParams by viewModel.addParams.collectAsStateWithLifecycle()
   val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
@@ -119,6 +123,7 @@ internal fun TransactionEntry(
     TransactionScreen(
         modifier = modifier,
         state = viewModel,
+        clock = clock,
         range = page.range,
 
         // Dismiss
@@ -136,6 +141,10 @@ internal fun TransactionEntry(
         // Search
         onSearchToggled = { viewModel.handleToggleSearch() },
         onSearchUpdated = { viewModel.handleSearchUpdated(it) },
+
+        // Date Range
+        onDateRangeToggled = { viewModel.handleToggleDateRange() },
+        onDateRangeUpdated = { start, end -> viewModel.handleDateRangeUpdated(start, end) },
     )
 
     addParams?.also { p ->

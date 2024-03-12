@@ -26,12 +26,17 @@ import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -45,20 +50,32 @@ import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionRange
+import com.pyamsoft.sleepforbreakfast.money.list.KnobBar
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
+import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
+import java.time.Clock
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
 @Composable
 internal fun TransactionTotal(
     modifier: Modifier = Modifier,
+    clock: Clock,
     state: TransactionViewState,
     range: TransactionDateRange?,
     onDismiss: () -> Unit,
+
+    // Search
     onSearchToggle: () -> Unit,
     onSearchChange: (String) -> Unit,
+
+    // Date Range
+    onDateRangeToggle: () -> Unit,
+    onDateRangeChange: (LocalDate, LocalDate) -> Unit,
 ) {
   Column(
       modifier = modifier,
@@ -83,6 +100,7 @@ internal fun TransactionTotal(
           range = range,
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggle,
+          onDateRangeToggle = onDateRangeToggle,
       )
     }
 
@@ -90,6 +108,13 @@ internal fun TransactionTotal(
         state = state,
         onToggle = onSearchToggle,
         onChange = onSearchChange,
+    )
+
+    DateRangeBar(
+        clock = clock,
+        state = state,
+        onToggle = onDateRangeToggle,
+        onChange = onDateRangeChange,
     )
   }
 }
@@ -101,6 +126,7 @@ private fun Totals(
     range: TransactionDateRange?,
     onDismiss: () -> Unit,
     onSearchToggle: () -> Unit,
+    onDateRangeToggle: () -> Unit,
 ) {
   val category by state.category.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
@@ -179,7 +205,7 @@ private fun Totals(
             onClick = onDismiss,
         ) {
           Icon(
-              imageVector = Icons.Filled.ArrowBack,
+              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Back",
               tint = MaterialTheme.colors.onPrimary,
           )
@@ -190,9 +216,94 @@ private fun Totals(
             modifier = Modifier.weight(1F),
             state = state,
             onSearchToggle = onSearchToggle,
+            onDateRangeToggle = onDateRangeToggle,
         )
       },
       currentCategory = DbCategory.Id.EMPTY,
       categories = remember { mutableStateListOf() },
   )
+}
+
+@Composable
+fun DateRangeBar(
+    modifier: Modifier = Modifier,
+    clock: Clock,
+    state: TransactionViewState,
+    onToggle: () -> Unit,
+    onChange: (LocalDate, LocalDate) -> Unit,
+) {
+  val initialDateRange by state.dateRange.collectAsStateWithLifecycle()
+  val isOpen by state.isDateRangeOpen.collectAsStateWithLifecycle()
+
+  // Upon initial open, we save the date range because modification doesn't take effect until
+  // both are valid
+  val (startDate, setStartDate) = remember { mutableStateOf(initialDateRange?.from) }
+  val (endDate, setEndDate) = remember { mutableStateOf(initialDateRange?.to) }
+
+  val (showStartDatePicker, setShowStartDatePicker) = remember { mutableStateOf(false) }
+  val (showEndDatePicker, setShowEndDatePicker) = remember { mutableStateOf(false) }
+
+  val handleValidDateRangeSelected by rememberUpdatedState { start: LocalDate?, end: LocalDate? ->
+    if (start != null && end != null) {
+      onChange(start, end)
+    }
+  }
+
+  KnobBar(
+      modifier = modifier,
+      isOpen = isOpen,
+      onToggle = onToggle,
+  ) {
+    RangeDatePicker(
+        show = showStartDatePicker,
+        clock = clock,
+        date = startDate,
+        fallbackText = "Set Start Date",
+        onSetShow = { setShowStartDatePicker(it) },
+        onDatePicked = { d ->
+          setStartDate(d)
+          handleValidDateRangeSelected(d, endDate)
+        },
+    )
+
+    RangeDatePicker(
+        modifier = Modifier.padding(start = MaterialTheme.keylines.content),
+        show = showEndDatePicker,
+        clock = clock,
+        date = endDate,
+        fallbackText = "Set End Date",
+        onSetShow = { setShowEndDatePicker(it) },
+        onDatePicked = { d ->
+          setEndDate(d)
+          handleValidDateRangeSelected(startDate, d)
+        },
+    )
+  }
+}
+
+@Composable
+private fun RangeDatePicker(
+    modifier: Modifier = Modifier,
+    show: Boolean,
+    clock: Clock,
+    date: LocalDate?,
+    fallbackText: String,
+    onSetShow: (Boolean) -> Unit,
+    onDatePicked: (LocalDate) -> Unit,
+) {
+  TextButton(
+      modifier = modifier,
+      onClick = { onSetShow(true) },
+  ) {
+    Text(
+        text = date?.format(DateTimeFormatter.ISO_DATE) ?: fallbackText,
+    )
+  }
+
+  if (show) {
+    DatePickerDialog(
+        initialDate = remember { date ?: LocalDate.now(clock) },
+        onDismiss = { onSetShow(false) },
+        onDateSelected = { onDatePicked(it) })
+  }
 }

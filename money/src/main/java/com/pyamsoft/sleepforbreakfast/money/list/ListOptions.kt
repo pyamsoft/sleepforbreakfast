@@ -17,7 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -66,42 +65,7 @@ import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
 import kotlinx.coroutines.flow.filter
 
 @Composable
-fun Search(
-    modifier: Modifier = Modifier,
-    state: ListViewState<*>,
-    onToggle: () -> Unit,
-) {
-  val search by state.search.collectAsStateWithLifecycle()
-  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
-
-  val show = remember(search) { search.isNotBlank() }
-
-  Box(
-      modifier = modifier,
-      contentAlignment = Alignment.BottomEnd,
-  ) {
-    IconButton(
-        onClick = onToggle,
-    ) {
-      Icon(
-          imageVector = Icons.Filled.Search,
-          contentDescription = "Search",
-          tint =
-              MaterialTheme.colors.onPrimary.copy(
-                  alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
-              ),
-      )
-    }
-
-    UsageIndicator(
-        show = show,
-    )
-  }
-}
-
-@Composable
-@OptIn(ExperimentalAnimationApi::class)
-fun UsageIndicator(
+private fun UsageIndicator(
     modifier: Modifier = Modifier,
     show: Boolean,
 ) {
@@ -123,67 +87,6 @@ fun UsageIndicator(
                             percent = 50,
                         ),
                 ),
-    )
-  }
-}
-
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    state: ListViewState<*>,
-    onToggle: () -> Unit,
-    onChange: (String) -> Unit,
-    leadingIcon: @Composable () -> Unit = {},
-    trailingIcon: @Composable () -> Unit = {},
-) {
-  val initialSearch by state.search.collectAsStateWithLifecycle()
-  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
-
-  // Do this so that we can debounce typing events
-  val (search, setSearch) = debouncedOnTextChange(initialSearch, onChange)
-
-  KnobBar(
-      modifier = modifier,
-      isOpen = isOpen,
-      onToggle = onToggle,
-  ) {
-    TextField(
-        modifier = Modifier.weight(1F),
-        value = search,
-        onValueChange = { setSearch(it) },
-        keyboardOptions =
-            remember {
-              KeyboardOptions(
-                  autoCorrect = true,
-                  imeAction = ImeAction.Search,
-              )
-            },
-        leadingIcon = {
-          Icon(
-              imageVector = Icons.Filled.Search,
-              contentDescription = "Search",
-          )
-          leadingIcon()
-        },
-        trailingIcon = {
-          Row(
-              verticalAlignment = Alignment.CenterVertically,
-          ) {
-            Icon(
-                modifier = Modifier.clickable { setSearch("") },
-                imageVector = Icons.Filled.Clear,
-                contentDescription = "Clear",
-            )
-
-            // Extra content
-            trailingIcon()
-          }
-        },
-        label = {
-          Text(
-              text = "Search",
-          )
-        },
     )
   }
 }
@@ -252,4 +155,114 @@ private fun SwipeAway(
       background = {},
       dismissContent = content,
   )
+}
+
+@Composable
+fun ToggleIcon(
+    modifier: Modifier = Modifier,
+    showUsage: Boolean,
+    onToggle: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+  Box(
+      modifier = modifier,
+      contentAlignment = Alignment.BottomEnd,
+  ) {
+    IconButton(
+        onClick = onToggle,
+    ) {
+      content()
+    }
+
+    UsageIndicator(
+        show = showUsage,
+    )
+  }
+}
+
+@Composable
+fun Search(
+    modifier: Modifier = Modifier,
+    state: ListViewState<*>,
+    onToggle: () -> Unit,
+) {
+  val search by state.search.collectAsStateWithLifecycle()
+  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
+  val showUsage = remember(search) { search.isNotBlank() }
+
+  ToggleIcon(
+      modifier = modifier,
+      showUsage = showUsage,
+      onToggle = onToggle,
+  ) {
+    Icon(
+        imageVector = Icons.Filled.Search,
+        contentDescription = "Search",
+        tint =
+            MaterialTheme.colors.onPrimary.copy(
+                alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
+            ),
+    )
+  }
+}
+
+@Composable
+fun SearchBar(
+    modifier: Modifier = Modifier,
+    state: ListViewState<*>,
+    onToggle: () -> Unit,
+    onChange: (String) -> Unit,
+    leadingIcon: @Composable () -> Unit = {},
+    trailingIcon: @Composable () -> Unit = {},
+) {
+  val initialSearch by state.search.collectAsStateWithLifecycle()
+  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
+
+  // Do this so that we can debounce typing events
+  val (search, setSearch) = debouncedOnTextChange(initialSearch, onChange)
+
+  KnobBar(
+      modifier = modifier,
+      isOpen = isOpen,
+      onToggle = onToggle,
+  ) {
+    TextField(
+        modifier = Modifier.weight(1F),
+        value = search,
+        onValueChange = { setSearch(it) },
+        keyboardOptions =
+            remember {
+              KeyboardOptions(
+                  autoCorrect = true,
+                  imeAction = ImeAction.Search,
+              )
+            },
+        leadingIcon = {
+          Icon(
+              imageVector = Icons.Filled.Search,
+              contentDescription = "Search",
+          )
+          leadingIcon()
+        },
+        trailingIcon = {
+          Row(
+              verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Icon(
+                modifier = Modifier.clickable { setSearch("") },
+                imageVector = Icons.Filled.Clear,
+                contentDescription = "Clear",
+            )
+
+            // Extra content
+            trailingIcon()
+          }
+        },
+        label = {
+          Text(
+              text = "Search",
+          )
+        },
+    )
+  }
 }
