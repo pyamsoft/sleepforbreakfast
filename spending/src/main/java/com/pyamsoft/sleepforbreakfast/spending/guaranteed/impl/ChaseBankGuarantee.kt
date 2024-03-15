@@ -182,7 +182,7 @@ internal constructor(
   companion object {
 
     private const val PLAIN_ACCOUNT_GROUP =
-        "(?<$CAPTURE_NAME_ACCOUNT>\\(\\.\\.\\.\\.\\d\\d\\d\\d\\))"
+        "(?<$CAPTURE_NAME_ACCOUNT>\\(.*\\d\\d\\d\\d\\))"
     private const val CHASE_PREFIXED_ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
 
     private const val DATE_GROUP =
