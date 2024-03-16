@@ -28,13 +28,13 @@ buildscript {
 
     // Kotlin
     kotlin = "1.9.22"
-    coroutines = "1.7.3"
+    coroutines = "1.8.0"
 
     // Leak Canary
     leakCanary = "2.13"
 
     // Dagger
-    dagger = "2.50"
+    dagger = "2.51"
 
     // Room
     room = "2.6.1"
@@ -43,15 +43,15 @@ buildscript {
     workmanager = "2.9.0"
 
     // Moshi
-    moshi = "1.15.0"
+    moshi = "1.15.1"
 
     // Compose
-    compose = "1.6.2"
+    compose = "1.6.3"
     composeCompiler = "1.5.10"
-    composeMaterial = "1.6.2"
+    composeMaterial = "1.6.3"
 
     // Charts
-    vico = "1.13.1"
+    vico = "1.14.0"
 
     desugar = "2.0.4"
   }
