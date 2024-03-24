@@ -51,7 +51,7 @@ internal constructor(
                 id = notificationId,
                 name = "Chase Bank Spending",
                 actOnPackageNames =
-                    setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), "com.chase.sig.android"),
+                    setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.chase.sig.android"*/),
                 type = DbTransaction.Type.SPEND,
             ),
         regexes =
@@ -140,7 +140,7 @@ internal constructor(
                 id = notificationId,
                 name = "Chase Bank Earning",
                 actOnPackageNames =
-                    setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), "com.chase.sig.android"),
+                    setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.chase.sig.android"*/),
                 type = DbTransaction.Type.EARN,
             ),
         regexes =

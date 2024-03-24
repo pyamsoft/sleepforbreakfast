@@ -49,7 +49,7 @@ internal constructor(
                 clock = clock,
                 id = notificationId,
                 name = "Venmo Spending",
-                actOnPackageNames = setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), "com.venmo"),
+                actOnPackageNames = setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.venmo"*/),
                 type = DbTransaction.Type.SPEND,
             ),
         regexes =
@@ -91,7 +91,7 @@ internal constructor(
                 clock = clock,
                 id = notificationId,
                 name = "Venmo Earning",
-                actOnPackageNames = setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), "com.venmo"),
+                actOnPackageNames = setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.venmo"*/),
                 type = DbTransaction.Type.EARN,
             ),
         regexes =
