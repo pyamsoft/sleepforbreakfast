@@ -32,7 +32,6 @@ import com.pyamsoft.pydroid.ui.changelog.ChangeLogBuilder
 import com.pyamsoft.pydroid.ui.changelog.ChangeLogProvider
 import com.pyamsoft.pydroid.ui.changelog.buildChangeLog
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
-import com.pyamsoft.pydroid.util.stableLayoutHideNavigation
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.R
 import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
@@ -74,9 +73,6 @@ class MainActivity : AppCompatActivity() {
     val component = ObjectGraph.ApplicationScope.retrieve(this).plusMainComponent().create(this)
     component.inject(this)
     ObjectGraph.ActivityScope.install(this, component)
-
-    // Finally update the View
-    stableLayoutHideNavigation()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
