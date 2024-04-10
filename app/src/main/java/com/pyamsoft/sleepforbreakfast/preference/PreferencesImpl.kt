@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.preference
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.pyamsoft.pydroid.core.ThreadEnforcer
@@ -51,12 +52,16 @@ internal constructor(
     )
   }
 
+  private inline fun setPreference(crossinline block: suspend SharedPreferences.Editor.() -> Unit) {
+    scope.launch(context = Dispatchers.IO) { preferences.edit { block() } }
+  }
+
   override fun listenSystemCategoriesPreloaded(): Flow<Boolean> =
       preferenceBooleanFlow(KEY_DEFAULT_CATEGORIES, false) { preferences }
           .flowOn(context = Dispatchers.IO)
 
   override fun markSystemCategoriesPreloaded() {
-    scope.launch { preferences.edit { putBoolean(KEY_DEFAULT_CATEGORIES, true) } }
+    setPreference { putBoolean(KEY_DEFAULT_CATEGORIES, true) }
   }
 
   companion object {

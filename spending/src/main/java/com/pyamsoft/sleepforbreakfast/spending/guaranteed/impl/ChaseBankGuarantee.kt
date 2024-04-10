@@ -51,7 +51,9 @@ internal constructor(
                 id = notificationId,
                 name = "Chase Bank Spending",
                 actOnPackageNames =
-                    setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.chase.sig.android"*/),
+                    setOf(
+                        *COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.chase.sig.android"*/
+                    ),
                 type = DbTransaction.Type.SPEND,
             ),
         regexes =
@@ -140,7 +142,9 @@ internal constructor(
                 id = notificationId,
                 name = "Chase Bank Earning",
                 actOnPackageNames =
-                    setOf(*COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.chase.sig.android"*/),
+                    setOf(
+                        *COMMON_EMAIL_PACKAGES.toTypedArray(), /*"com.chase.sig.android"*/
+                    ),
                 type = DbTransaction.Type.EARN,
             ),
         regexes =
@@ -181,8 +185,7 @@ internal constructor(
 
   companion object {
 
-    private const val PLAIN_ACCOUNT_GROUP =
-        "(?<$CAPTURE_NAME_ACCOUNT>\\(.*\\d\\d\\d\\d\\))"
+    private const val PLAIN_ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>\\(.*\\d\\d\\d\\d\\))"
     private const val CHASE_PREFIXED_ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
 
     private const val DATE_GROUP =
