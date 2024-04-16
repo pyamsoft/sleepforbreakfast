@@ -116,6 +116,21 @@ internal constructor(
                 ),
 
                 /**
+                 * From Chase App Debit Card
+                 *
+                 * Chase account 1234: You made a $12.34 debit card transaction to MERCHANT MAN on Oct 20,
+                 * 2023 at 10:13AM ET was more than the $1.00 amount in your Alerts settings 1:23PM
+                 * ET
+                 */
+                DbNotificationMatchRegex.create(
+                    id = DbNotificationMatchRegex.Id("f5e2e797-4f40-4534-a2b9-217f37a16909"),
+                    clock = clock,
+                    notificationId = notificationId,
+                    text =
+                    "$CHASE_PREFIXED_ACCOUNT_GROUP: You made a $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the",
+                ),
+
+                /**
                  * From Email Debit Card
                  *
                  * Your debit card transaction of $12.34 with My Favorite Merchant Account ending in
@@ -127,6 +142,20 @@ internal constructor(
                     notificationId = notificationId,
                     text =
                         "Your debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Made on $DATE_GROUP",
+                ),
+
+                /**
+                 * From Email Debit Card
+                 *
+                 * You made a debit card transaction of $12.34 with My Favorite Merchant Account ending in
+                 * (...1234) Made on 2023 at 10:13AM ET
+                 */
+                DbNotificationMatchRegex.create(
+                    id = DbNotificationMatchRegex.Id("0b36cb4f-52f2-44e3-bf4c-2d269161f831"),
+                    clock = clock,
+                    notificationId = notificationId,
+                    text =
+                    "You made a debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Made on $DATE_GROUP",
                 ),
             ),
     )

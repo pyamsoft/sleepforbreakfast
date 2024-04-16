@@ -23,6 +23,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
@@ -38,65 +39,86 @@ import kotlinx.coroutines.withContext
 @Dao
 internal abstract class RoomNotificationInsertDao : NotificationInsertDao {
 
-  // Transaction methods cannot be final
-  @Transaction
-  /* final */ override suspend fun insert(
-      o: DbNotificationWithRegexes
-  ): DbInsert.InsertResult<DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) {
-        val roomNotification = RoomDbNotificationWithRegexes.create(o)
-        return@withContext if (daoQuery(roomNotification.notification.id) == null) {
-          if (daoInsert(roomNotification.notification) != ROOM_ROW_ID_INSERT_INVALID) {
-            if (daoInsert(roomNotification.matchRegexes).all { it != ROOM_ROW_ID_INSERT_INVALID }) {
-              DbInsert.InsertResult.Insert(roomNotification)
+    // Transaction methods cannot be final
+    @Transaction
+    /* final */ override suspend fun insert(
+        o: DbNotificationWithRegexes
+    ): DbInsert.InsertResult<DbNotificationWithRegexes> =
+        withContext(context = Dispatchers.Default) {
+            val roomNotification = RoomDbNotificationWithRegexes.create(o)
+            val existing = daoQuery(roomNotification.notification.id)
+            return@withContext if (existing == null) {
+                if (daoInsert(roomNotification.notification) != ROOM_ROW_ID_INSERT_INVALID) {
+                    if (daoInsert(roomNotification.matchRegexes).all { it != ROOM_ROW_ID_INSERT_INVALID }) {
+                        DbInsert.InsertResult.Insert(roomNotification)
+                    } else {
+                        DbInsert.InsertResult.Fail(
+                            data = roomNotification,
+                            error = IllegalStateException("Unable to update category $roomNotification"),
+                        )
+                    }
+                } else {
+                    DbInsert.InsertResult.Fail(
+                        data = roomNotification,
+                        error = IllegalStateException("Unable to update category $roomNotification"),
+                    )
+                }
             } else {
-              DbInsert.InsertResult.Fail(
-                  data = roomNotification,
-                  error = IllegalStateException("Unable to update category $roomNotification"),
-              )
+                if (daoUpdate(roomNotification.notification) > ROOM_ROW_COUNT_UPDATE_INVALID) {
+                    // Insert any new regexes
+                    val newRegexes = roomNotification.matchRegexes.filter { r ->
+                        val found = existing.dbMatchRegexes.firstOrNull { it.id == r.id }
+                        return@filter found == null
+                    }
+
+                    if (newRegexes.isNotEmpty()) {
+                        if (daoInsert(newRegexes).all { it == ROOM_ROW_ID_INSERT_INVALID }) {
+                            Timber.w { "Failed to insert match regexes for notification ${roomNotification.notification}" }
+                            DbInsert.InsertResult.Fail(
+                                data = roomNotification,
+                                error = IllegalStateException("Unable to update category $roomNotification"),
+                            )
+                        }
+                    }
+
+                    // Update existing regexes
+                    if (daoUpdate(roomNotification.matchRegexes) > ROOM_ROW_COUNT_UPDATE_INVALID) {
+                        DbInsert.InsertResult.Update(roomNotification)
+                    } else {
+                        DbInsert.InsertResult.Fail(
+                            data = roomNotification,
+                            error = IllegalStateException("Unable to update category $roomNotification"),
+                        )
+                    }
+                } else {
+                    DbInsert.InsertResult.Fail(
+                        data = roomNotification,
+                        error = IllegalStateException("Unable to update category $roomNotification"),
+                    )
+                }
             }
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomNotification,
-                error = IllegalStateException("Unable to update category $roomNotification"),
-            )
-          }
-        } else {
-          if (daoUpdate(roomNotification.notification) > ROOM_ROW_COUNT_UPDATE_INVALID) {
-            if (daoUpdate(roomNotification.matchRegexes) > ROOM_ROW_COUNT_UPDATE_INVALID) {
-              DbInsert.InsertResult.Update(roomNotification)
-            } else {
-              DbInsert.InsertResult.Fail(
-                  data = roomNotification,
-                  error = IllegalStateException("Unable to update category $roomNotification"),
-              )
-            }
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomNotification,
-                error = IllegalStateException("Unable to update category $roomNotification"),
-            )
-          }
         }
-      }
 
-  @Insert(onConflict = OnConflictStrategy.ABORT)
-  internal abstract suspend fun daoInsert(symbol: RoomDbNotification): Long
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    internal abstract suspend fun daoInsert(symbol: RoomDbNotification): Long
 
-  @Insert(onConflict = OnConflictStrategy.ABORT)
-  internal abstract suspend fun daoInsert(symbols: List<RoomDbNotificationMatchRegex>): Array<Long>
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    internal abstract suspend fun daoInsert(symbols: List<RoomDbNotificationMatchRegex>): Array<Long>
 
-  @Transaction
-  @CheckResult
-  @Query(
-      """
+    @Transaction
+    @CheckResult
+    @Query(
+        """
         SELECT * FROM ${RoomDbNotification.TABLE_NAME} WHERE
         ${RoomDbNotification.COLUMN_ID} = :id
         LIMIT 1
-        """)
-  internal abstract suspend fun daoQuery(id: DbNotification.Id): RoomDbNotificationWithRegexes?
+        """
+    )
+    internal abstract suspend fun daoQuery(id: DbNotification.Id): RoomDbNotificationWithRegexes?
 
-  @Update internal abstract suspend fun daoUpdate(symbol: RoomDbNotification): Int
+    @Update
+    internal abstract suspend fun daoUpdate(symbol: RoomDbNotification): Int
 
-  @Update internal abstract suspend fun daoUpdate(symbols: List<RoomDbNotificationMatchRegex>): Int
+    @Update
+    internal abstract suspend fun daoUpdate(symbols: List<RoomDbNotificationMatchRegex>): Int
 }
