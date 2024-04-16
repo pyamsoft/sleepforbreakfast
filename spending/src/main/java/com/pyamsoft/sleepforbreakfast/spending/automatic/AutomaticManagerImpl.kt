@@ -45,7 +45,7 @@ internal constructor(
     val handlers = collectNotificationHandlers()
 
     for (handler in handlers) {
-      if (handler.canExtract(packageName)) {
+      if (handler.canExtract(packageName) || TEST_CAN_ALWAYS_EXTRACT) {
         val result = handler.extract(packageName, bundle)
         if (result != null) {
           return result
@@ -54,5 +54,13 @@ internal constructor(
     }
 
     return null
+  }
+
+  companion object {
+
+    /**
+     * Test the regex system by letting it run against ANY package
+     */
+    private const val TEST_CAN_ALWAYS_EXTRACT = true
   }
 }
