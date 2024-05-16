@@ -24,14 +24,14 @@ buildscript {
     compileSdk = 34
 
     // Us
-    pydroid = "27.0.0"
+    pydroid = "27.0.1"
 
     // Kotlin
-    kotlin = "1.9.23"
+    kotlin = "1.9.24"
     coroutines = "1.8.1"
 
     // Leak Canary
-    leakCanary = "2.13"
+    leakCanary = "2.14"
 
     // Dagger
     dagger = "2.51.1"
@@ -46,9 +46,9 @@ buildscript {
     moshi = "1.15.1"
 
     // Compose
-    compose = "1.6.5"
-    composeCompiler = "1.5.11"
-    composeMaterial = "1.6.5"
+    compose = "1.6.7"
+    composeCompiler = "1.5.14"
+    composeMaterial = "1.6.7"
 
     // Charts
     vico = "1.14.0"
