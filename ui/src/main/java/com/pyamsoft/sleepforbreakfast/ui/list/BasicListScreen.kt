@@ -30,9 +30,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.FabPosition
-import androidx.compose.material.FloatingActionButton
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -57,7 +57,7 @@ fun <T : Any> BasicListScreen(
     modifier: Modifier = Modifier,
     loading: LoadingState,
     showActionButton: Boolean,
-    actionButtonBackgroundColor: Color = MaterialTheme.colors.primary,
+    actionButtonBackgroundColor: Color = MaterialTheme.colorScheme.primary,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
     onSnackbarDismissed: () -> Unit,
@@ -128,7 +128,7 @@ private fun AnimatedFab(
     FloatingActionButton(
         modifier = modifier,
         backgroundColor = backgroundColor,
-        contentColor = MaterialTheme.colors.onPrimary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         onClick = onClick,
     ) {
       Icon(

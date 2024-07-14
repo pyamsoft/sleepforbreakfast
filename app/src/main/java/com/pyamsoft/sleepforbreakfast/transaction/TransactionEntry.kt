@@ -18,7 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transaction
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -99,7 +99,7 @@ internal fun TransactionEntry(
 
   val category by viewModel.category.collectAsStateWithLifecycle()
 
-  val defaultColor = MaterialTheme.colors.primary
+  val defaultColor = MaterialTheme.colorScheme.primary
   val color =
       remember(
           category,

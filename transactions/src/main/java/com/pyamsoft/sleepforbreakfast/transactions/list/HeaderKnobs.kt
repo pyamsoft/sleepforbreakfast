@@ -19,11 +19,11 @@ package com.pyamsoft.sleepforbreakfast.transactions.list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material3.ContentAlpha
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.icons.Icons
+import androidx.compose.material3.icons.filled.CalendarMonth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -77,7 +77,7 @@ private fun DateRange(
         imageVector = Icons.Filled.CalendarMonth,
         contentDescription = "Date Range",
         tint =
-            MaterialTheme.colors.onPrimary.copy(
+            MaterialTheme.colorScheme.onPrimary.copy(
                 alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
             ),
     )

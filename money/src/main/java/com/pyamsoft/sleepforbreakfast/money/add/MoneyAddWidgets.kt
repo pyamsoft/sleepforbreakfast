@@ -182,8 +182,8 @@ private fun SpendType(
     onTypeChanged: (DbTransaction.Type) -> Unit,
 ) {
   val shape = MaterialTheme.shapes.small
-  val spendColor = MaterialTheme.colors.error
-  val earnColor = MaterialTheme.colors.success
+  val spendColor = MaterialTheme.colorScheme.error
+  val earnColor = MaterialTheme.colorScheme.success
   val color =
       remember(
           type,
@@ -212,8 +212,8 @@ private fun SpendType(
               shape = shape,
           ),
       elevation = CardDefaults.Elevation,
-      backgroundColor = if (isSelected) color else MaterialTheme.colors.surface,
-      contentColor = if (isSelected) MaterialTheme.colors.onSecondary else color,
+      backgroundColor = if (isSelected) color else MaterialTheme.colorScheme.surface,
+      contentColor = if (isSelected) MaterialTheme.colorScheme.onSecondary else color,
       shape = shape,
   ) {
     Column(
@@ -325,7 +325,7 @@ fun AddSubmit(
         colors =
             ButtonDefaults.buttonColors(
                 backgroundColor = LocalCategoryColor.current,
-                contentColor = MaterialTheme.colors.onPrimary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
     ) {
       Crossfade(
@@ -426,7 +426,7 @@ private fun CategoryChip(
     category: DbCategory,
     isSelected: Boolean,
 ) {
-  val defaultColor = MaterialTheme.colors.secondary
+  val defaultColor = MaterialTheme.colorScheme.secondary
   val backgroundColor =
       remember(
           isSelected,
@@ -441,8 +441,8 @@ private fun CategoryChip(
         }
       }
 
-  val unselectedTextColor = MaterialTheme.colors.onSurface
-  val selectedTextColor = MaterialTheme.colors.onSecondary
+  val unselectedTextColor = MaterialTheme.colorScheme.onSurface
+  val selectedTextColor = MaterialTheme.colorScheme.onSecondary
   val textColor =
       remember(
           isSelected,
@@ -517,7 +517,7 @@ fun AddCategories(
           text = "Categories",
           fontWeight = FontWeight.W700,
           color =
-              MaterialTheme.colors.onSurface.copy(
+              MaterialTheme.colorScheme.onSurface.copy(
                   alpha = ContentAlpha.disabled,
               ),
           style = MaterialTheme.typography.caption,

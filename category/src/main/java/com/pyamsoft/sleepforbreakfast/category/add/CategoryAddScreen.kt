@@ -28,7 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
+import androidx.compose.material3.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -101,7 +101,7 @@ fun CategoryAddScreen(
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
           backgroundColor = LocalCategoryColor.current,
-          contentColor = MaterialTheme.colors.onPrimary,
+          contentColor = MaterialTheme.colorScheme.onPrimary,
           navigationIcon = {
             IconButton(
                 onClick = onDismiss,
@@ -207,7 +207,7 @@ private fun ColorPickerDialog(
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
           backgroundColor = LocalCategoryColor.current,
-          contentColor = MaterialTheme.colors.onPrimary,
+          contentColor = MaterialTheme.colorScheme.onPrimary,
           navigationIcon = {
             IconButton(
                 onClick = onDismiss,

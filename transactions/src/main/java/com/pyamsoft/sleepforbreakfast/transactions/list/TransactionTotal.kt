@@ -23,13 +23,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.ZeroCornerSize
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.icons.Icons
+import androidx.compose.material3.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -181,23 +181,23 @@ private fun Totals(
       title = title,
       titleStyle =
           MaterialTheme.typography.h6.copy(
-              color = MaterialTheme.colors.onPrimary,
+              color = MaterialTheme.colorScheme.onPrimary,
           ),
       date = "",
       dateStyle =
           MaterialTheme.typography.caption.copy(
-              color = MaterialTheme.colors.onPrimary,
+              color = MaterialTheme.colorScheme.onPrimary,
           ),
       price = totalPrice,
       priceDirection = totalDirection,
       priceStyle =
           MaterialTheme.typography.h4.copy(
-              color = MaterialTheme.colors.onPrimary,
+              color = MaterialTheme.colorScheme.onPrimary,
           ),
       note = totalRangeNote,
       noteStyle =
           MaterialTheme.typography.body2.copy(
-              color = MaterialTheme.colors.onPrimary,
+              color = MaterialTheme.colorScheme.onPrimary,
           ),
       navigationIcon = {
         IconButton(
@@ -207,7 +207,7 @@ private fun Totals(
           Icon(
               imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Back",
-              tint = MaterialTheme.colors.onPrimary,
+              tint = MaterialTheme.colorScheme.onPrimary,
           )
         }
       },

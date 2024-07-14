@@ -33,18 +33,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.ContentAlpha
+import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterialApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.icons.Icons
+import androidx.compose.material3.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberDismissState
@@ -81,7 +81,7 @@ private fun UsageIndicator(
                 .padding(end = MaterialTheme.keylines.baseline)
                 .size(MaterialTheme.keylines.baseline)
                 .background(
-                    color = MaterialTheme.colors.success,
+                    color = MaterialTheme.colorScheme.success,
                     shape =
                         RoundedCornerShape(
                             percent = 50,
@@ -123,7 +123,7 @@ fun KnobBar(
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = "Close",
-                tint = MaterialTheme.colors.error,
+                tint = MaterialTheme.colorScheme.error,
             )
           }
         }
@@ -199,7 +199,7 @@ fun Search(
         imageVector = Icons.Filled.Search,
         contentDescription = "Search",
         tint =
-            MaterialTheme.colors.onPrimary.copy(
+            MaterialTheme.colorScheme.onPrimary.copy(
                 alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
             ),
     )

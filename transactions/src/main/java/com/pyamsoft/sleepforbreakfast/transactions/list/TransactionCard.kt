@@ -86,7 +86,7 @@ internal fun TransactionHeader(
   Surface(
       modifier = modifier,
       color = LocalCategoryColor.current,
-      contentColor = MaterialTheme.colors.onPrimary,
+      contentColor = MaterialTheme.colorScheme.onPrimary,
       shape = MaterialTheme.shapes.medium,
   ) {
     Text(
@@ -123,7 +123,7 @@ internal fun TransactionCard(
       titleStyle =
           MaterialTheme.typography.h6.copy(
               color =
-                  MaterialTheme.colors.onSurface.copy(
+                  MaterialTheme.colorScheme.onSurface.copy(
                       alpha = ContentAlpha.high,
                   ),
           ),
@@ -131,7 +131,7 @@ internal fun TransactionCard(
       dateStyle =
           MaterialTheme.typography.body2.copy(
               color =
-                  MaterialTheme.colors.onSurface.copy(
+                  MaterialTheme.colorScheme.onSurface.copy(
                       alpha = ContentAlpha.medium,
                   ),
           ),
@@ -142,7 +142,7 @@ internal fun TransactionCard(
       noteStyle =
           MaterialTheme.typography.caption.copy(
               color =
-                  MaterialTheme.colors.onSurface.copy(
+                  MaterialTheme.colorScheme.onSurface.copy(
                       alpha = ContentAlpha.disabled,
                   ),
           ),
@@ -158,7 +158,7 @@ internal fun TransactionCard(
     contentModifier: Modifier = Modifier,
     priceModifier: Modifier = Modifier,
     noteModifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.surface,
+    color: Color = MaterialTheme.colorScheme.surface,
     shape: Shape = MaterialTheme.shapes.medium,
     elevation: Dp = CardDefaults.Elevation,
     navigationIcon: @Composable () -> Unit = {},
@@ -179,7 +179,7 @@ internal fun TransactionCard(
   val hasDate = remember(date) { date.isNotBlank() }
   val hasNote = remember(note) { note.isNotBlank() }
 
-  val defaultColor = MaterialTheme.colors.onPrimary
+  val defaultColor = MaterialTheme.colorScheme.onPrimary
   val priceColor =
       remember(
           priceDirection,

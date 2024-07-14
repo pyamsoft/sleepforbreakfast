@@ -23,10 +23,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -72,8 +72,8 @@ fun AutomaticAddScreen(
     Column {
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
-          backgroundColor = MaterialTheme.colors.primary,
-          contentColor = MaterialTheme.colors.onPrimary,
+          backgroundColor = MaterialTheme.colorScheme.primary,
+          contentColor = MaterialTheme.colorScheme.onPrimary,
           navigationIcon = {
             IconButton(
                 onClick = onDismiss,

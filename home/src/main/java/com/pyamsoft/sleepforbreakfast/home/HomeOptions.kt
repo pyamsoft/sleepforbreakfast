@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.ContentAlpha
+import androidx.compose.material3.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Switch
@@ -65,7 +65,7 @@ internal fun HomeOptions(
   val hapticManager = LocalHapticManager.current
 
   val themeColor =
-      MaterialTheme.colors.primary.copy(
+      MaterialTheme.colorScheme.primary.copy(
           alpha = if (isNotificationListenerEnabled) ContentAlpha.disabled else ContentAlpha.high,
       )
   val highAlpha = if (isNotificationListenerEnabled) ContentAlpha.medium else ContentAlpha.high
@@ -108,7 +108,7 @@ internal fun HomeOptions(
                   MaterialTheme.typography.h6.copy(
                       fontWeight = FontWeight.W700,
                       color =
-                          MaterialTheme.colors.onSurface.copy(
+                          MaterialTheme.colorScheme.onSurface.copy(
                               alpha = highAlpha,
                           ),
                   ),
@@ -127,7 +127,7 @@ internal fun HomeOptions(
             style =
                 MaterialTheme.typography.body1.copy(
                     color =
-                        MaterialTheme.colors.onSurface.copy(
+                        MaterialTheme.colorScheme.onSurface.copy(
                             alpha = highAlpha,
                         ),
                 ),
@@ -140,17 +140,17 @@ internal fun HomeOptions(
             style =
                 MaterialTheme.typography.body2.copy(
                     color =
-                        MaterialTheme.colors.onSurface.copy(
+                        MaterialTheme.colorScheme.onSurface.copy(
                             alpha = mediumAlpha,
                         ),
                 ),
         )
 
         val textColor =
-            MaterialTheme.colors.onSurface.copy(
+            MaterialTheme.colorScheme.onSurface.copy(
                 alpha = ContentAlpha.disabled,
             )
-        val linkColor = MaterialTheme.colors.primary
+        val linkColor = MaterialTheme.colorScheme.primary
         val privacyDisclaimer =
             remember(
                 textColor,

@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -86,7 +86,7 @@ internal fun CategoryAddEntry(
   val categoryColor by viewModel.color.collectAsStateWithLifecycle()
   val scope = rememberCoroutineScope()
 
-  val defaultColor = MaterialTheme.colors.primary
+  val defaultColor = MaterialTheme.colorScheme.primary
   val color =
       remember(
           categoryColor,

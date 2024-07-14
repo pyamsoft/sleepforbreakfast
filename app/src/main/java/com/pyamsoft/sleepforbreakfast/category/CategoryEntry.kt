@@ -22,13 +22,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -143,7 +143,7 @@ private fun AppBar(
   ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colors.primary,
+        color = MaterialTheme.colorScheme.primary,
     ) {
       Spacer(
           modifier = Modifier.fillMaxWidth().statusBarsPadding(),
@@ -153,8 +153,8 @@ private fun AppBar(
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         elevation = ZeroElevation,
-        contentColor = MaterialTheme.colors.onPrimary,
-        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        backgroundColor = MaterialTheme.colorScheme.primary,
         navigationIcon = {
           IconButton(
               onClick = onDismiss,

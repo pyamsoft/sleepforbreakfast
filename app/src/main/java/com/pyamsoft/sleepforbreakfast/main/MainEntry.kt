@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -96,7 +96,7 @@ internal fun ComponentActivity.MainEntry(
   )
 
   CompositionLocalProvider(
-      LocalCategoryColor provides MaterialTheme.colors.primary,
+      LocalCategoryColor provides MaterialTheme.colorScheme.primary,
       LocalCategoryObserver provides categoryObserver,
       LocalTransactionObserver provides transactionObserver,
   ) {

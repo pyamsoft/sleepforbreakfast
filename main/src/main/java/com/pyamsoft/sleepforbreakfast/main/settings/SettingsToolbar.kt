@@ -43,7 +43,7 @@ internal fun SettingsToolbar(
       modifier = modifier,
       elevation = ZeroElevation,
       contentColor = Color.White,
-      color = MaterialTheme.colors.primary,
+      color = MaterialTheme.colorScheme.primary,
       shape =
           MaterialTheme.shapes.medium.copy(
               bottomStart = ZeroCornerSize,

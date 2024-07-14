@@ -34,15 +34,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ContentAlpha
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -331,7 +331,7 @@ private fun DateBreakdown(
         if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
       }
 
-  val zeroPriceColor = MaterialTheme.colors.onPrimary
+  val zeroPriceColor = MaterialTheme.colorScheme.onPrimary
   val priceColor =
       remember(
           totalDirection,
@@ -436,7 +436,7 @@ private fun Category(
     transactions: Set<DbTransaction>,
     onOpen: (DbCategory) -> Unit,
 ) {
-  val defaultColor = MaterialTheme.colors.surface
+  val defaultColor = MaterialTheme.colorScheme.surface
   val color =
       remember(
           category,
@@ -472,7 +472,7 @@ private fun Category(
         if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
       }
 
-  val zeroPriceColor = MaterialTheme.colors.onPrimary
+  val zeroPriceColor = MaterialTheme.colorScheme.onPrimary
   val priceColor =
       remember(
           totalDirection,
@@ -497,7 +497,7 @@ private fun Category(
           style =
               MaterialTheme.typography.h6.copy(
                   color =
-                      MaterialTheme.colors.onSurface.copy(
+                      MaterialTheme.colorScheme.onSurface.copy(
                           alpha = contentColorAlpha,
                       ),
               ),
@@ -562,16 +562,16 @@ private fun IconOption(
       modifier =
           modifier.border(
               width = 2.dp,
-              color = MaterialTheme.colors.primary,
+              color = MaterialTheme.colorScheme.primary,
               shape = shape,
           ),
       shape = shape,
       elevation = ZeroElevation,
       color =
-          MaterialTheme.colors.primary.copy(
+          MaterialTheme.colorScheme.primary.copy(
               alpha = 0.20F,
           ),
-      contentColor = MaterialTheme.colors.onPrimary,
+      contentColor = MaterialTheme.colorScheme.onPrimary,
   ) {
     Column(
         modifier = Modifier.clickable { onClick() }.padding(MaterialTheme.keylines.content),
@@ -584,14 +584,14 @@ private fun IconOption(
                   .padding(bottom = MaterialTheme.keylines.content),
           imageVector = icon,
           contentDescription = title,
-          tint = MaterialTheme.colors.onPrimary,
+          tint = MaterialTheme.colorScheme.onPrimary,
       )
       Text(
           text = title,
           style =
               MaterialTheme.typography.body1.copy(
                   color =
-                      MaterialTheme.colors.onPrimary.copy(
+                      MaterialTheme.colorScheme.onPrimary.copy(
                           alpha = ContentAlpha.medium,
                       ),
               ),

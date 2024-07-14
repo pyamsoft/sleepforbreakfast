@@ -21,10 +21,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.ContentAlpha
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -43,7 +43,7 @@ private fun Tag(
       modifier =
           modifier
               .background(
-                  color = MaterialTheme.colors.secondary,
+                  color = MaterialTheme.colorScheme.secondary,
                   shape = MaterialTheme.shapes.small,
               )
               .padding(horizontal = MaterialTheme.keylines.baseline)
@@ -52,7 +52,7 @@ private fun Tag(
       style =
           MaterialTheme.typography.caption.copy(
               color =
-                  MaterialTheme.colors.onSecondary.copy(
+                  MaterialTheme.colorScheme.onSecondary.copy(
                       alpha = ContentAlpha.high,
                   ),
           ),
@@ -68,7 +68,7 @@ internal fun CategoryCard(
   val note = category.note
   val hasNote = remember(note) { note.isNotBlank() }
 
-  val defaultColor = MaterialTheme.colors.primary
+  val defaultColor = MaterialTheme.colorScheme.primary
   val color =
       remember(
           defaultColor,
@@ -92,7 +92,7 @@ internal fun CategoryCard(
           style =
               MaterialTheme.typography.h6.copy(
                   color =
-                      MaterialTheme.colors.onSurface.copy(
+                      MaterialTheme.colorScheme.onSurface.copy(
                           alpha = ContentAlpha.high,
                       ),
               ),
@@ -109,7 +109,7 @@ internal fun CategoryCard(
             style =
                 MaterialTheme.typography.body2.copy(
                     color =
-                        MaterialTheme.colors.onSurface.copy(
+                        MaterialTheme.colorScheme.onSurface.copy(
                             alpha = ContentAlpha.medium,
                         ),
                 ),

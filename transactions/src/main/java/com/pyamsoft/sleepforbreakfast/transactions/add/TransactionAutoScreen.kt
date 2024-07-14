@@ -71,7 +71,7 @@ fun TransactionAutoScreen(
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = LocalCategoryColor.current,
-        contentColor = MaterialTheme.colors.onPrimary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         elevation = ZeroElevation,
         navigationIcon = {
           IconButton(
@@ -116,7 +116,7 @@ fun TransactionAutoScreen(
                   modifier = Modifier.fillMaxWidth(),
                   text = "An unexpected error occurred, please try again later.",
                   textAlign = TextAlign.Center,
-                  color = MaterialTheme.colors.error,
+                  color = MaterialTheme.colorScheme.error,
                   style = MaterialTheme.typography.body1,
               )
             }

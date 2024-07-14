@@ -17,24 +17,25 @@
 package com.pyamsoft.sleepforbreakfast
 
 import android.app.Activity
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
-import androidx.appcompat.R
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Colors
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Shapes
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.PYDroidTheme
-import com.pyamsoft.pydroid.theme.attributesFromCurrentTheme
 import com.pyamsoft.pydroid.ui.app.LocalActivity
 import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
 import com.pyamsoft.pydroid.ui.haptics.rememberHapticManager
@@ -43,109 +44,105 @@ import com.pyamsoft.pydroid.ui.uri.LocalExternalUriHandler
 import com.pyamsoft.pydroid.ui.uri.rememberExternalUriHandler
 
 @Composable
+@ChecksSdkIntAtLeast(Build.VERSION_CODES.S)
+private fun rememberCanUseDynamic(isMaterialYou: Boolean): Boolean {
+    return remember(isMaterialYou) { Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && isMaterialYou }
+}
+
+@Composable
 @CheckResult
 private fun themeColors(
     activity: Activity,
     isDarkMode: Boolean,
-): Colors {
-  val colors =
-      remember(isDarkMode) {
-        activity.attributesFromCurrentTheme(
-            R.attr.colorPrimary,
-            R.attr.colorAccent,
-        )
-      }
-  val primary = colorResource(colors[0])
-  val secondary = colorResource(colors[1])
-  val white = colorResource(android.R.color.white)
+    isMaterialYou: Boolean,
+): ColorScheme {
+    val canUseDynamic = rememberCanUseDynamic(isMaterialYou)
 
-  return remember(
-      isDarkMode,
-      primary,
-      secondary,
-      white,
-  ) {
-    if (isDarkMode)
-        darkColors(
-            primary = primary,
-            onPrimary = white,
-            secondary = secondary,
-            onSecondary = white,
-            // Must be specified for things like Switch color
-            primaryVariant = primary,
-            secondaryVariant = secondary,
-        )
-    else
-        lightColors(
-            primary = primary,
-            onPrimary = white,
-            secondary = secondary,
-            onSecondary = white,
-            // Must be specified for things like Switch color
-            primaryVariant = primary,
-            secondaryVariant = secondary,
-        )
-  }
+    return remember(
+        activity,
+        canUseDynamic,
+        isDarkMode,
+    ) {
+        if (isDarkMode) {
+
+            if (canUseDynamic) {
+                dynamicDarkColorScheme(activity)
+            } else {
+                darkColorScheme(
+                    // TODO custom color theme
+                )
+            }
+        } else {
+            if (canUseDynamic) {
+                dynamicLightColorScheme(activity)
+            } else {
+                lightColorScheme(
+                    // TODO custom color theme
+                )
+            }
+        }
+    }
 }
 
 @Composable
 @CheckResult
 private fun themeShapes(): Shapes {
-  return remember {
-    Shapes(
-        // Don't use MaterialTheme here since we are defining the theme
-        medium = RoundedCornerShape(16.dp),
-    )
-  }
+    return remember {
+        Shapes(
+            // Don't use MaterialTheme here since we are defining the theme
+            medium = RoundedCornerShape(16.dp),
+        )
+    }
 }
 
 @Composable
 fun ComponentActivity.SleepForBreakfastTheme(
     theme: Theming.Mode,
+    isMaterialYou: Boolean,
     content: @Composable () -> Unit,
 ) {
-  val self = this
+    val self = this
 
-  val isDarkMode = theme.getSystemDarkMode()
-  val hapticManager = rememberHapticManager()
-  val uriHandler = rememberExternalUriHandler()
+    val isDarkMode = theme.getSystemDarkMode()
+    val hapticManager = rememberHapticManager()
+    val uriHandler = rememberExternalUriHandler()
 
-  PYDroidTheme(
-      colors = themeColors(self, isDarkMode),
-      shapes = themeShapes(),
-  ) {
-    CompositionLocalProvider(
-        // We update the LocalContentColor to match our onBackground. This allows the default
-        // content color to be more appropriate to the theme background
-        LocalContentColor provides MaterialTheme.colors.onBackground,
+    PYDroidTheme(
+        colorScheme = themeColors(self, isDarkMode, isMaterialYou),
+        shapes = themeShapes(),
+    ) {
+        CompositionLocalProvider(
+            // We update the LocalContentColor to match our onBackground. This allows the default
+            // content color to be more appropriate to the theme background
+            LocalContentColor provides MaterialTheme.colorScheme.onBackground,
 
-        // Provide PYDroid optionals
-        LocalHapticManager provides hapticManager,
+            // Provide PYDroid optionals
+            LocalHapticManager provides hapticManager,
 
-        // Performance optimization internally
-        LocalActivity provides self,
+            // Performance optimization internally
+            LocalActivity provides self,
 
-        // External link handler
-        LocalExternalUriHandler provides uriHandler,
+            // External link handler
+            LocalExternalUriHandler provides uriHandler,
 
-        // And the render content
-        content = content,
-    )
-  }
+            // And the render content
+            content = content,
+        )
+    }
 }
 
 @Composable
 @CheckResult
 fun Theming.Mode.getSystemDarkMode(): Boolean {
-  val self = this
-  val isDarkMode =
-      remember(self) {
-        when (self) {
-          Theming.Mode.LIGHT -> false
-          Theming.Mode.DARK -> true
-          Theming.Mode.SYSTEM -> null
+    val self = this
+    val isDarkMode =
+        remember(self) {
+            when (self) {
+                Theming.Mode.LIGHT -> false
+                Theming.Mode.DARK -> true
+                Theming.Mode.SYSTEM -> null
+            }
         }
-      }
 
-  return isDarkMode ?: isSystemInDarkTheme()
+    return isDarkMode ?: isSystemInDarkTheme()
 }

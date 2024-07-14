@@ -123,7 +123,7 @@ fun TransactionScreen(
                     modifier =
                         Modifier.fillMaxWidth()
                             .padding(bottom = MaterialTheme.keylines.content)
-                            .background(color = MaterialTheme.colors.background)
+                            .background(color = MaterialTheme.colorScheme.background)
                             .padding(top = MaterialTheme.keylines.content),
                 ) {
                   TransactionHeader(

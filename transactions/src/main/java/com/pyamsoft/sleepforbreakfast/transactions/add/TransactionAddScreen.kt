@@ -119,7 +119,7 @@ fun TransactionAddScreen(
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = LocalCategoryColor.current,
-        contentColor = MaterialTheme.colors.onPrimary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         elevation = ZeroElevation,
         navigationIcon = {
           IconButton(
@@ -350,7 +350,7 @@ private fun <T : Any> ExtraBit(
           style =
               MaterialTheme.typography.body2.copy(
                   color =
-                      MaterialTheme.colors.onSurface.copy(
+                      MaterialTheme.colorScheme.onSurface.copy(
                           alpha = if (valid) ContentAlpha.high else ContentAlpha.disabled,
                       ),
               ),

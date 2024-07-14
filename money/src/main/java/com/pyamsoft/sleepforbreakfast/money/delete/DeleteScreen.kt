@@ -54,8 +54,8 @@ fun <T : Any> DeleteScreen(
   ) {
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary,
+        backgroundColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         title = {
           Text(
               text = "Really Remove?",
