@@ -31,6 +31,7 @@ import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
+import com.pyamsoft.sleepforbreakfast.getSystemDarkMode
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.LocalTransactionObserver
@@ -85,7 +86,7 @@ internal fun ComponentActivity.MainEntry(
   val page by viewModel.page.collectAsStateWithLifecycle()
   val isDarkIcons = remember(page) { page == null }
   SystemBars(
-      theme = theme,
+      isDarkMode = theme.getSystemDarkMode(),
       isDarkIcons = isDarkIcons,
   )
 

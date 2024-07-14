@@ -38,7 +38,7 @@ fun DatePickerDialog(
 ) {
   val handleDateSelected by rememberUpdatedState(onDateSelected)
 
-  SurfaceDialog(
+  CardDialog(
       modifier = modifier,
       onDismiss = onDismiss,
   ) {
@@ -73,7 +73,7 @@ fun TimePickerDialog(
 
   val handleTimeSelected by rememberUpdatedState(onTimeSelected)
 
-  SurfaceDialog(
+  CardDialog(
       modifier = modifier,
       onDismiss = onDismiss,
   ) {

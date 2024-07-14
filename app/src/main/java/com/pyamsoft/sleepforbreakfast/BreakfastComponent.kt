@@ -43,6 +43,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
 import java.time.Clock
 import javax.inject.Named
 import javax.inject.Singleton
@@ -87,6 +88,7 @@ internal interface BreakfastComponent {
 
     @CheckResult
     fun create(
+        @Named("app_scope") @BindsInstance scope: CoroutineScope,
         @Named("debug") @BindsInstance debug: Boolean,
         @BindsInstance application: Application,
         @BindsInstance theming: Theming,

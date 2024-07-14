@@ -52,6 +52,8 @@ dependencies {
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
+  implementation("androidx.activity:activity-compose:${rootProject.extra["composeActivity"]}")
+
   implementation(project(":core"))
   implementation(project(":db"))
   implementation(project(":ui"))

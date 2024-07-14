@@ -26,7 +26,7 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
+import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 import javax.inject.Inject
 
 internal class AutomaticAddInjector
@@ -82,7 +82,7 @@ internal fun AutomaticAddEntry(
       viewModel = viewModel,
   )
 
-  SurfaceDialog(
+  CardDialog(
       modifier = modifier,
       onDismiss = onDismiss,
   ) {

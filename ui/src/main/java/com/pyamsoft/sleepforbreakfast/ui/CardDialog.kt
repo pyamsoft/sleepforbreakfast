@@ -16,31 +16,35 @@
 
 package com.pyamsoft.sleepforbreakfast.ui
 
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
-import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 
 @Composable
-fun SurfaceDialog(
+fun CardDialog(
     modifier: Modifier = Modifier,
+    properties: DialogProperties = rememberDialogProperties(),
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
-  Dialog(
-      properties = rememberDialogProperties(),
-      onDismissRequest = onDismiss,
-  ) {
-    Surface(
-        modifier = modifier.padding(MaterialTheme.keylines.content),
-        shape = MaterialTheme.shapes.medium,
-        elevation = DialogDefaults.Elevation,
-        content = content,
-    )
-  }
+    Dialog(
+        properties = properties,
+        onDismissRequest = onDismiss,
+    ) {
+        Card(
+            modifier = modifier.padding(MaterialTheme.keylines.content),
+            shape = MaterialTheme.shapes.medium,
+            elevation = CardDefaults.elevatedCardElevation(),
+            colors = CardDefaults.elevatedCardColors(),
+            content = content,
+        )
+    }
 }

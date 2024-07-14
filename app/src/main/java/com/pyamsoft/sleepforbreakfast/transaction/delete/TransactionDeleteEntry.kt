@@ -31,7 +31,7 @@ import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler
-import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
+import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 import javax.inject.Inject
 
 internal class TransactionDeleteInjector
@@ -93,7 +93,7 @@ internal fun TransactionDeleteEntry(
       viewModel = viewModel,
   )
 
-  SurfaceDialog(
+  CardDialog(
       modifier = modifier,
       onDismiss = onDismiss,
   ) {

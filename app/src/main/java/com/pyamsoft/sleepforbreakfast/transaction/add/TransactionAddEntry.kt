@@ -29,7 +29,7 @@ import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddParams
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddScreen
 import com.pyamsoft.sleepforbreakfast.transactions.add.TransactionAddViewModeler
-import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
+import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 import javax.inject.Inject
 
 internal class TransactionAddInjector
@@ -86,7 +86,7 @@ internal fun TransactionAddEntry(
       viewModel = viewModel,
   )
 
-  SurfaceDialog(
+  CardDialog(
       modifier = modifier,
       onDismiss = onDismiss,
   ) {

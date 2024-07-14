@@ -28,8 +28,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowInsetsControllerCompat
-import com.pyamsoft.pydroid.ui.theme.Theming
-import com.pyamsoft.sleepforbreakfast.getSystemDarkMode
 
 private val LIGHT_MODE_SCRIM by lazy { Color.argb(0x60, 0x1B, 0x1B, 0x1B) }
 
@@ -47,12 +45,9 @@ private fun getLightModeColor(): Int {
 
 @Composable
 internal fun ComponentActivity.SystemBars(
-    theme: Theming.Mode,
+    isDarkMode: Boolean,
     isDarkIcons: Boolean,
 ) {
-  // Dark icons in Light mode only
-  val isDarkMode = theme.getSystemDarkMode()
-
   val darkIcons =
       remember(
           isDarkMode,

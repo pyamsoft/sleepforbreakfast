@@ -22,25 +22,29 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material3.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.icons.filled.ArrowBack
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
@@ -79,10 +83,14 @@ internal fun AutomaticEntry(
 ) {
   val component = rememberComposableInjector { AutomaticInjector() }
   val viewModel = rememberNotNull(component.viewModel)
-  val scope = rememberCoroutineScope()
 
   val addParams by viewModel.addParams.collectAsStateWithLifecycle()
   val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
+
+    // Use the LifecycleOwner.CoroutineScope (Activity usually)
+    // so that the scope does not die because of navigation events
+    val owner = LocalLifecycleOwner.current
+    val lifecycleScope = owner.lifecycleScope
 
   MountHooks(
       viewModel = viewModel,
@@ -108,7 +116,7 @@ internal fun AutomaticEntry(
       onAutomaticClicked = { viewModel.handleEditAutomatic(it) },
       onAutomaticLongClicked = { viewModel.handleDeleteAutomatic(it) },
       onAutomaticDeleteFinalized = { viewModel.handleDeleteFinalized() },
-      onAutomaticRestored = { viewModel.handleRestoreDeleted(scope = scope) },
+      onAutomaticRestored = { viewModel.handleRestoreDeleted(scope = lifecycleScope) },
   )
 
   addParams?.also { p ->
@@ -129,6 +137,7 @@ internal fun AutomaticEntry(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun AppBar(
     modifier: Modifier = Modifier,
     state: AutomaticViewState,
@@ -150,11 +159,17 @@ private fun AppBar(
       )
     }
 
+      val contentColor = LocalContentColor.current
+
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        elevation = ZeroElevation,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        backgroundColor = MaterialTheme.colorScheme.primary,
+        colors =
+        TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            actionIconContentColor = contentColor,
+            navigationIconContentColor = contentColor,
+            titleContentColor = contentColor,
+        ),
         navigationIcon = {
           IconButton(
               onClick = onDismiss,

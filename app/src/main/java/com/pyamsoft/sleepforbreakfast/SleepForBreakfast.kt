@@ -17,8 +17,6 @@
 package com.pyamsoft.sleepforbreakfast
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.bootstrap.libraries.OssLibraries
 import com.pyamsoft.pydroid.ui.ModuleProvider
@@ -31,129 +29,137 @@ import com.pyamsoft.sleepforbreakfast.spending.guaranteed.GuaranteedSpending
 import com.pyamsoft.sleepforbreakfast.work.enqueueAppWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SleepForBreakfast : Application() {
 
-  @Inject @JvmField internal var workerQueue: WorkerQueue? = null
-  @Inject @JvmField internal var guaranteedSpending: GuaranteedSpending? = null
+    @Inject
+    @JvmField
+    internal var workerQueue: WorkerQueue? = null
 
-  @CheckResult
-  private fun initPYDroid(): ModuleProvider {
-    val url = "https://github.com/pyamsoft/sleepforbreakfast"
+    @Inject
+    @JvmField
+    internal var guaranteedSpending: GuaranteedSpending? = null
 
-    return installPYDroid(
-        PYDroid.Parameters(
-            viewSourceUrl = url,
-            bugReportUrl = "$url/issues",
-            privacyPolicyUrl = PRIVACY_POLICY_URL,
-            termsConditionsUrl = TERMS_CONDITIONS_URL,
-            version = BuildConfig.VERSION_CODE,
-            logger = createLogger(),
-        ),
-    )
-  }
+    @CheckResult
+    private fun initPYDroid(): ModuleProvider {
+        val url = "https://github.com/pyamsoft/sleepforbreakfast"
 
-  private fun installWorkerComponent(component: BreakfastComponent) {
-    val wc = component.plusWorkerComponent().create()
-    WorkerObjectGraph.install(this, wc)
-  }
+        return installPYDroid(
+            PYDroid.Parameters(
+                viewSourceUrl = url,
+                bugReportUrl = "$url/issues",
+                privacyPolicyUrl = PRIVACY_POLICY_URL,
+                termsConditionsUrl = TERMS_CONDITIONS_URL,
+                version = BuildConfig.VERSION_CODE,
+                logger = createLogger(),
+            ),
+        )
+    }
 
-  private fun installComponent(moduleProvider: ModuleProvider) {
-    val mods = moduleProvider.get()
-    val component =
-        DaggerBreakfastComponent.factory()
-            .create(
-                debug = isDebugMode(),
-                application = this,
-                theming = mods.theming(),
-                enforcer = mods.enforcer(),
+    private fun installWorkerComponent(component: BreakfastComponent) {
+        val wc = component.plusWorkerComponent().create()
+        WorkerObjectGraph.install(this, wc)
+    }
+
+    private fun installObjectGraph(component: BreakfastComponent) {
+        ObjectGraph.ApplicationScope.install(this, component)
+        installWorkerComponent(component)
+    }
+
+    private fun installComponent(
+        scope: CoroutineScope,
+        moduleProvider: ModuleProvider,
+    ) {
+        val mods = moduleProvider.get()
+        val component =
+            DaggerBreakfastComponent.factory()
+                .create(
+                    debug = isDebugMode(),
+                    scope = scope,
+                    application = this,
+                    theming = mods.theming(),
+                    enforcer = mods.enforcer(),
+                )
+
+        installObjectGraph(component)
+        component.inject(this)
+    }
+
+    private fun beginWork(scope: CoroutineScope) {
+        scope.launch(context = Dispatchers.Default) {
+            guaranteedSpending?.ensureExistsInDatabase()
+            workerQueue?.enqueueAppWork()
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        val modules = initPYDroid()
+
+        val scope =
+            CoroutineScope(
+                context = SupervisorJob() + Dispatchers.Default + CoroutineName(this::class.java.name),
             )
-    component.inject(this)
+        installLogger(
+            scope = scope,
+            inAppDebugStatus = modules.get().inAppDebugStatus(),
+        )
 
-    ObjectGraph.ApplicationScope.install(this, component)
-    installWorkerComponent(component)
-  }
-
-  private fun beginWork() {
-    // Coroutine start up is slow. What we can do instead is create a handler, which is cheap, and
-    // post to the main thread to defer this work until after start up is done
-    Handler(Looper.getMainLooper()).post {
-      MainScope().launch(context = Dispatchers.Default) {
-        guaranteedSpending?.ensureExistsInDatabase()
-        workerQueue?.enqueueAppWork()
-      }
+        installComponent(scope, modules)
+        addLibraries()
+        beginWork(scope)
     }
-  }
 
-  override fun onCreate() {
-    super.onCreate()
-    val modules = initPYDroid()
+    companion object {
 
-    val scope =
-        CoroutineScope(
-            context = SupervisorJob() + Dispatchers.Default + CoroutineName(this::class.java.name),
-        )
-    installLogger(
-        scope = scope,
-        inAppDebugStatus = modules.get().inAppDebugStatus(),
-    )
+        @JvmStatic
+        private fun addLibraries() {
+            OssLibraries.apply {
+                usingAutopsy = true
+                usingArch = true
+                usingUi = true
+            }
 
-    installComponent(modules)
-    addLibraries()
-    beginWork()
-  }
+            OssLibraries.apply {
+                add(
+                    "Room",
+                    "https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/room/",
+                    "The AndroidX Jetpack Room library. Fluent SQLite database access.",
+                )
+                add(
+                    "Cachify",
+                    "https://github.com/pyamsoft/cachify",
+                    "Simple in-memory caching of all the things",
+                )
+                add(
+                    "WorkManager",
+                    "https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/work/",
+                    "The AndroidX Jetpack WorkManager library. Schedule periodic work in a device friendly way.",
+                )
+                add(
+                    "Dagger",
+                    "https://github.com/google/dagger",
+                    "A fast dependency injector for Android and Java.",
+                )
 
-  companion object {
+                add(
+                    "Vico",
+                    "https://github.com/patrykandpatrick/vico",
+                    "A light and extensible chart library for Android.",
+                )
 
-    @JvmStatic
-    private fun addLibraries() {
-      OssLibraries.apply {
-        usingAutopsy = true
-        usingArch = true
-        usingUi = true
-      }
-
-      OssLibraries.apply {
-        add(
-            "Room",
-            "https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/room/",
-            "The AndroidX Jetpack Room library. Fluent SQLite database access.",
-        )
-        add(
-            "Cachify",
-            "https://github.com/pyamsoft/cachify",
-            "Simple in-memory caching of all the things",
-        )
-        add(
-            "WorkManager",
-            "https://android.googlesource.com/platform/frameworks/support/+/androidx-master-dev/work/",
-            "The AndroidX Jetpack WorkManager library. Schedule periodic work in a device friendly way.",
-        )
-        add(
-            "Dagger",
-            "https://github.com/google/dagger",
-            "A fast dependency injector for Android and Java.",
-        )
-
-        add(
-            "Vico",
-            "https://github.com/patrykandpatrick/vico",
-            "A light and extensible chart library for Android.",
-        )
-
-        add(
-            "Jetpack Compose Color Picker",
-            "https://github.com/godaddy/compose-color-picker",
-            "A component that provides two different HSV color pickers, written in Jetpack Compose.",
-        )
-      }
+                add(
+                    "Jetpack Compose Color Picker",
+                    "https://github.com/godaddy/compose-color-picker",
+                    "A component that provides two different HSV color pickers, written in Jetpack Compose.",
+                )
+            }
+        }
     }
-  }
 }

@@ -17,7 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.main
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.core.requireNotNull
+import com.pyamsoft.pydroid.ui.app.PYDroidActivityDelegate
 import com.pyamsoft.pydroid.ui.app.installPYDroid
 import com.pyamsoft.pydroid.ui.changelog.ChangeLogBuilder
 import com.pyamsoft.pydroid.ui.changelog.ChangeLogProvider
@@ -38,14 +39,16 @@ import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
 import com.pyamsoft.sleepforbreakfast.ui.InstallPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.work.enqueueActivityWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
   @JvmField @Inject internal var themeViewModel: ThemeViewModeler? = null
   @JvmField @Inject internal var workerQueue: WorkerQueue? = null
+
+  private var pydroid: PYDroidActivityDelegate? = null
 
   private fun beginWork() {
     lifecycleScope.launch(context = Dispatchers.Default) {
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun initializePYDroid() {
-    installPYDroid(
+    pydroid = installPYDroid(
         provider =
             object : ChangeLogProvider {
 
@@ -84,9 +87,13 @@ class MainActivity : AppCompatActivity() {
 
     setContent {
       val theme by vm.theme.collectAsStateWithLifecycle()
+      val isMaterialYou by vm.isMaterialYou.collectAsStateWithLifecycle()
+
+      SaveStateDisposableEffect(vm)
 
       SleepForBreakfastTheme(
           theme = theme,
+          isMaterialYou = isMaterialYou,
       ) {
         InstallPYDroidExtras(
             modifier = Modifier.fillUpToPortraitSize(),
@@ -100,6 +107,8 @@ class MainActivity : AppCompatActivity() {
         )
       }
     }
+
+    vm.init(this)
   }
 
   override fun onStart() {
@@ -109,9 +118,6 @@ class MainActivity : AppCompatActivity() {
 
   override fun onResume() {
     super.onResume()
-
-    // Vitals
-    themeViewModel.requireNotNull().handleSyncDarkTheme(this)
     reportFullyDrawn()
   }
 
@@ -120,13 +126,9 @@ class MainActivity : AppCompatActivity() {
     setIntent(intent)
   }
 
-  override fun onConfigurationChanged(newConfig: Configuration) {
-    super.onConfigurationChanged(newConfig)
-    themeViewModel?.handleSyncDarkTheme(newConfig)
-  }
-
   override fun onDestroy() {
     super.onDestroy()
     themeViewModel = null
+    pydroid = null
   }
 }

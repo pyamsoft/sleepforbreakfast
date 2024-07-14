@@ -59,7 +59,7 @@ import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddName
 import com.pyamsoft.sleepforbreakfast.money.add.AddNote
 import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
-import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
+import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 
 private enum class ContentTypes {
   NAME,
@@ -199,7 +199,7 @@ private fun ColorPickerDialog(
 
   val color = remember(currentColor) { HsvColor.from(currentColor) }
 
-  SurfaceDialog(
+  CardDialog(
       modifier = modifier,
       onDismiss = onDismiss,
   ) {

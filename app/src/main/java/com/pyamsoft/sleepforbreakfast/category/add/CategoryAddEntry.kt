@@ -33,7 +33,7 @@ import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
-import com.pyamsoft.sleepforbreakfast.ui.SurfaceDialog
+import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 import javax.inject.Inject
 
 internal class CategoryAddInjector
@@ -102,7 +102,7 @@ internal fun CategoryAddEntry(
   CompositionLocalProvider(
       LocalCategoryColor provides color,
   ) {
-    SurfaceDialog(
+    CardDialog(
         modifier = modifier,
         onDismiss = onDismiss,
     ) {

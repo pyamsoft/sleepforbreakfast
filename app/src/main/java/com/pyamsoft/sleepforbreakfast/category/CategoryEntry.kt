@@ -22,25 +22,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
 import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
@@ -52,24 +54,26 @@ import javax.inject.Inject
 
 internal class CategoryInjector @Inject internal constructor() : ComposableInjector() {
 
-  @JvmField @Inject internal var viewModel: CategoryViewModeler? = null
+    @JvmField
+    @Inject
+    internal var viewModel: CategoryViewModeler? = null
 
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity).plusCategory().create().inject(this)
-  }
+    override fun onInject(activity: ComponentActivity) {
+        ObjectGraph.ActivityScope.retrieve(activity).plusCategory().create().inject(this)
+    }
 
-  override fun onDispose() {
-    viewModel = null
-  }
+    override fun onDispose() {
+        viewModel = null
+    }
 }
 
 @Composable
 private fun MountHooks(
     viewModel: CategoryViewModeler,
 ) {
-  SaveStateDisposableEffect(viewModel)
+    SaveStateDisposableEffect(viewModel)
 
-  LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
+    LaunchedEffect(viewModel) { viewModel.bind(scope = this) }
 }
 
 @Composable
@@ -77,58 +81,59 @@ internal fun CategoryEntry(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
 ) {
-  val component = rememberComposableInjector { CategoryInjector() }
-  val viewModel = rememberNotNull(component.viewModel)
-  val scope = rememberCoroutineScope()
+    val component = rememberComposableInjector { CategoryInjector() }
+    val viewModel = rememberNotNull(component.viewModel)
+    val scope = rememberCoroutineScope()
 
-  val addParams by viewModel.addParams.collectAsStateWithLifecycle()
-  val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
+    val addParams by viewModel.addParams.collectAsStateWithLifecycle()
+    val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
 
-  MountHooks(
-      viewModel = viewModel,
-  )
+    MountHooks(
+        viewModel = viewModel,
+    )
 
-  BackHandler(
-      onBack = onDismiss,
-  )
+    BackHandler(
+        onBack = onDismiss,
+    )
 
-  CategoryScreen(
-      modifier = modifier,
-      showActionButton = true,
-      state = viewModel,
-      topBar = {
-        AppBar(
-            onDismiss = onDismiss,
-            state = viewModel,
-            onSearchToggled = { viewModel.handleToggleSearch() },
-            onSearchUpdated = { viewModel.handleSearchUpdated(it) },
+    CategoryScreen(
+        modifier = modifier,
+        showActionButton = true,
+        state = viewModel,
+        topBar = {
+            AppBar(
+                onDismiss = onDismiss,
+                state = viewModel,
+                onSearchToggled = { viewModel.handleToggleSearch() },
+                onSearchUpdated = { viewModel.handleSearchUpdated(it) },
+            )
+        },
+        onActionButtonClicked = { viewModel.handleAddNewCategory() },
+        onCategoryClicked = { viewModel.handleEditCategory(it) },
+        onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },
+        onCategoryDeleteFinalized = { viewModel.handleDeleteFinalized() },
+        onCategoryRestored = { viewModel.handleRestoreDeleted(scope = scope) },
+    )
+
+    addParams?.also { p ->
+        CategoryAddEntry(
+            modifier = Modifier.fillUpToPortraitSize(),
+            params = p,
+            onDismiss = { viewModel.handleCloseAddCategory() },
         )
-      },
-      onActionButtonClicked = { viewModel.handleAddNewCategory() },
-      onCategoryClicked = { viewModel.handleEditCategory(it) },
-      onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },
-      onCategoryDeleteFinalized = { viewModel.handleDeleteFinalized() },
-      onCategoryRestored = { viewModel.handleRestoreDeleted(scope = scope) },
-  )
+    }
 
-  addParams?.also { p ->
-    CategoryAddEntry(
-        modifier = Modifier.fillUpToPortraitSize(),
-        params = p,
-        onDismiss = { viewModel.handleCloseAddCategory() },
-    )
-  }
-
-  deleteParams?.also { p ->
-    CategoryDeleteEntry(
-        modifier = Modifier.fillUpToPortraitSize(),
-        params = p,
-        onDismiss = { viewModel.handleCloseDeleteCategory() },
-    )
-  }
+    deleteParams?.also { p ->
+        CategoryDeleteEntry(
+            modifier = Modifier.fillUpToPortraitSize(),
+            params = p,
+            onDismiss = { viewModel.handleCloseDeleteCategory() },
+        )
+    }
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun AppBar(
     modifier: Modifier = Modifier,
     state: CategoryViewState,
@@ -138,50 +143,58 @@ private fun AppBar(
     onSearchToggled: () -> Unit,
     onSearchUpdated: (String) -> Unit,
 ) {
-  Column(
-      modifier = modifier,
-  ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.primary,
+    Column(
+        modifier = modifier,
     ) {
-      Spacer(
-          modifier = Modifier.fillMaxWidth().statusBarsPadding(),
-      )
-    }
-
-    TopAppBar(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = ZeroElevation,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        backgroundColor = MaterialTheme.colorScheme.primary,
-        navigationIcon = {
-          IconButton(
-              onClick = onDismiss,
-          ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.primary,
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding(),
             )
-          }
-        },
-        title = {
-          Text(
-              text = "All Categories",
-          )
-        },
-        actions = {
-          Search(
-              state = state,
-              onToggle = onSearchToggled,
-          )
-        },
-    )
+        }
 
-    SearchBar(
-        state = state,
-        onToggle = onSearchToggled,
-        onChange = onSearchUpdated,
-    )
-  }
+        val contentColor = LocalContentColor.current
+
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                actionIconContentColor = contentColor,
+                navigationIconContentColor = contentColor,
+                titleContentColor = contentColor,
+            ),
+            navigationIcon = {
+                IconButton(
+                    onClick = onDismiss,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                    )
+                }
+            },
+            title = {
+                Text(
+                    text = "All Categories",
+                )
+            },
+            actions = {
+                Search(
+                    state = state,
+                    onToggle = onSearchToggled,
+                )
+            },
+        )
+
+        SearchBar(
+            state = state,
+            onToggle = onSearchToggled,
+            onChange = onSearchUpdated,
+        )
+    }
 }
