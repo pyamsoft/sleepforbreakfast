@@ -17,6 +17,7 @@
 plugins {
   id("com.android.application")
   id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -83,8 +84,6 @@ android {
     compose = true
   }
 
-  composeOptions { kotlinCompilerExtensionVersion = "${rootProject.extra["composeCompiler"]}" }
-
   // Fixes this error message
   // More than one file was found with OS independent path "META-INF/core_release.kotlin_module"
   packaging {
@@ -114,8 +113,8 @@ dependencies {
   debugImplementation("com.github.pyamsoft.pydroid:autopsy:${rootProject.extra["pydroid"]}")
 
   // AndroidX
-  implementation("androidx.appcompat:appcompat:1.6.1")
-  implementation("androidx.activity:activity-compose:1.8.2")
+  implementation("androidx.appcompat:appcompat:1.7.0")
+  implementation("androidx.activity:activity-compose:1.9.0")
 
   // Needed just for androidx.preference.PreferenceManager
   // Eventually, big G may push for DataStore being a requirement, which will be pain

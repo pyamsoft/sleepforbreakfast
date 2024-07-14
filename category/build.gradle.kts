@@ -17,6 +17,7 @@
 plugins {
   id("com.android.library")
   id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -44,8 +45,6 @@ android {
     buildConfig = false
     compose = true
   }
-
-  composeOptions { kotlinCompilerExtensionVersion = "${rootProject.extra["composeCompiler"]}" }
 }
 
 dependencies {

@@ -24,10 +24,10 @@ buildscript {
     compileSdk = 34
 
     // Us
-    pydroid = "27.0.1"
+    pydroid = "27.0.4"
 
     // Kotlin
-    kotlin = "1.9.24"
+    kotlin = "2.0.0"
     coroutines = "1.8.1"
 
     // Leak Canary
@@ -46,12 +46,12 @@ buildscript {
     moshi = "1.15.1"
 
     // Compose
-    compose = "1.6.7"
-    composeCompiler = "1.5.14"
-    composeMaterial = "1.6.7"
+    compose = "1.6.8"
+    composeMaterial3 = "1.2.1"
+    composeActivity = "1.9.0"
 
     // Charts
-    vico = "1.14.0"
+    vico = "1.15.0"
 
     desugar = "2.0.4"
   }
@@ -70,6 +70,10 @@ plugins {
   // https://developer.android.com/studio/build#top-level
   id("org.jetbrains.kotlin.android") version "${kotlin}" apply false
 
+  // Jetpack Compose Compiler
+  // https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html
+  id("org.jetbrains.kotlin.plugin.compose") version "${kotlin}" apply false
+
   // Gradle version checker
   // https://github.com/ben-manes/gradle-versions-plugin
   id("com.github.ben-manes.versions") version "0.51.0" apply false
@@ -84,7 +88,7 @@ plugins {
 
   // KSP
   // https://github.com/google/ksp
-  id("com.google.devtools.ksp") version "${kotlin}-1.0.20" apply false
+  id("com.google.devtools.ksp") version "${kotlin}-1.0.23" apply false
 
   // Gradle Doctor
   // https://runningcode.github.io/gradle-doctor/

@@ -17,6 +17,7 @@
 plugins {
   id("com.android.library")
   id("com.google.devtools.ksp")
+  id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -44,8 +45,6 @@ android {
     buildConfig = false
     compose = true
   }
-
-  composeOptions { kotlinCompilerExtensionVersion = "${rootProject.extra["composeCompiler"]}" }
 }
 
 dependencies {
@@ -55,13 +54,13 @@ dependencies {
   ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
   // Lifecycle extensions
-  api("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+  api("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
 
   // Compose
   api("androidx.compose.ui:ui:${rootProject.extra["compose"]}")
   api("androidx.compose.animation:animation:${rootProject.extra["compose"]}")
-  api("androidx.compose.material:material:${rootProject.extra["composeMaterial"]}")
-  api("androidx.compose.material:material-icons-extended:${rootProject.extra["composeMaterial"]}")
+  api("androidx.compose.material3:material3:${rootProject.extra["composeMaterial3"]}")
+  api("androidx.compose.material:material-icons-extended:${rootProject.extra["compose"]}")
 
   // Compose Preview
   compileOnly("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["compose"]}")

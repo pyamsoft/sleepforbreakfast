@@ -48,7 +48,7 @@ dependencies {
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
-  implementation("com.github.pyamsoft:cachify:0.3.1")
+  implementation("com.github.pyamsoft:cachify:0.3.3")
 
   // Compose Annotations
   implementation("androidx.compose.runtime:runtime:${rootProject.extra["compose"]}")

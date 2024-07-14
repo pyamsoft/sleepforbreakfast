@@ -57,7 +57,7 @@ dependencies {
   api("com.github.pyamsoft.pydroid:ui:${rootProject.extra["pydroid"]}")
 
   // Android support library.
-  api("androidx.core:core-ktx:1.12.0")
+  api("androidx.core:core-ktx:1.13.1")
 
   // Dagger
   api("com.google.dagger:dagger:${rootProject.extra["dagger"]}")
