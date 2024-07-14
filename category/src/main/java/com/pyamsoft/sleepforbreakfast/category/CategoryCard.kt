@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
-import androidx.compose.material3.ContentAlpha
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.defaults.CardDefaults
+import com.pyamsoft.pydroid.ui.defaults.TypographyDefaults
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 
 @Composable
@@ -50,11 +50,8 @@ private fun Tag(
               .padding(vertical = MaterialTheme.keylines.typography),
       text = text,
       style =
-          MaterialTheme.typography.caption.copy(
-              color =
-                  MaterialTheme.colorScheme.onSecondary.copy(
-                      alpha = ContentAlpha.high,
-                  ),
+          MaterialTheme.typography.bodySmall.copy(
+              color = MaterialTheme.colorScheme.onSecondary,
           ),
   )
 }
@@ -81,7 +78,8 @@ internal fun CategoryCard(
   Card(
       modifier = modifier,
       shape = MaterialTheme.shapes.medium,
-      elevation = CardDefaults.Elevation,
+      elevation = CardDefaults.elevatedCardElevation(),
+      colors = CardDefaults.elevatedCardColors(),
   ) {
     Column(
         modifier = contentModifier.padding(MaterialTheme.keylines.content),
@@ -90,11 +88,8 @@ internal fun CategoryCard(
           modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
           text = category.name,
           style =
-              MaterialTheme.typography.h6.copy(
-                  color =
-                      MaterialTheme.colorScheme.onSurface.copy(
-                          alpha = ContentAlpha.high,
-                      ),
+              MaterialTheme.typography.headlineSmall.copy(
+                  color = MaterialTheme.colorScheme.onSurfaceVariant,
               ),
       )
 
@@ -107,10 +102,10 @@ internal fun CategoryCard(
         Text(
             text = note,
             style =
-                MaterialTheme.typography.body2.copy(
+                MaterialTheme.typography.bodyMedium.copy(
                     color =
-                        MaterialTheme.colorScheme.onSurface.copy(
-                            alpha = ContentAlpha.medium,
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                            alpha = TypographyDefaults.ALPHA_DISABLED,
                         ),
                 ),
         )

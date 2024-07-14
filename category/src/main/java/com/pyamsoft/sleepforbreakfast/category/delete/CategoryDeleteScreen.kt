@@ -19,7 +19,7 @@ package com.pyamsoft.sleepforbreakfast.category.delete
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -51,7 +51,7 @@ fun CategoryDeleteScreen(
         text =
             if (canDelete) "Are you sure you want to remove this category?"
             else "Cannot delete system categories.",
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.bodyLarge,
     )
 
     CategoryCard(

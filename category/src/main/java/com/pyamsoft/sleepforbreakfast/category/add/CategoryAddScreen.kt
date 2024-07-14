@@ -28,15 +28,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +71,7 @@ private enum class ContentTypes {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun CategoryAddScreen(
     modifier: Modifier = Modifier,
     state: CategoryAddViewState,
@@ -98,10 +102,17 @@ fun CategoryAddScreen(
       contentAlignment = Alignment.Center,
   ) {
     Column {
+      val contentColor = LocalContentColor.current
+
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
-          backgroundColor = LocalCategoryColor.current,
-          contentColor = MaterialTheme.colorScheme.onPrimary,
+          colors =
+              TopAppBarDefaults.topAppBarColors(
+                  containerColor = Color.Transparent,
+                  actionIconContentColor = contentColor,
+                  navigationIconContentColor = contentColor,
+                  titleContentColor = contentColor,
+              ),
           navigationIcon = {
             IconButton(
                 onClick = onDismiss,
@@ -178,6 +189,7 @@ fun CategoryAddScreen(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun ColorPickerDialog(
     modifier: Modifier = Modifier,
     onColorChanged: (Color) -> Unit,
@@ -204,10 +216,17 @@ private fun ColorPickerDialog(
       onDismiss = onDismiss,
   ) {
     Column {
+      val contentColor = LocalContentColor.current
+
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
-          backgroundColor = LocalCategoryColor.current,
-          contentColor = MaterialTheme.colorScheme.onPrimary,
+          colors =
+              TopAppBarDefaults.topAppBarColors(
+                  containerColor = Color.Transparent,
+                  actionIconContentColor = contentColor,
+                  navigationIconContentColor = contentColor,
+                  titleContentColor = contentColor,
+              ),
           navigationIcon = {
             IconButton(
                 onClick = onDismiss,

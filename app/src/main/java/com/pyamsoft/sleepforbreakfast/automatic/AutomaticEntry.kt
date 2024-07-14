@@ -36,7 +36,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -87,10 +86,10 @@ internal fun AutomaticEntry(
   val addParams by viewModel.addParams.collectAsStateWithLifecycle()
   val deleteParams by viewModel.deleteParams.collectAsStateWithLifecycle()
 
-    // Use the LifecycleOwner.CoroutineScope (Activity usually)
-    // so that the scope does not die because of navigation events
-    val owner = LocalLifecycleOwner.current
-    val lifecycleScope = owner.lifecycleScope
+  // Use the LifecycleOwner.CoroutineScope (Activity usually)
+  // so that the scope does not die because of navigation events
+  val owner = LocalLifecycleOwner.current
+  val lifecycleScope = owner.lifecycleScope
 
   MountHooks(
       viewModel = viewModel,
@@ -159,17 +158,17 @@ private fun AppBar(
       )
     }
 
-      val contentColor = LocalContentColor.current
+    val contentColor = LocalContentColor.current
 
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         colors =
-        TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            actionIconContentColor = contentColor,
-            navigationIconContentColor = contentColor,
-            titleContentColor = contentColor,
-        ),
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                actionIconContentColor = contentColor,
+                navigationIconContentColor = contentColor,
+                titleContentColor = contentColor,
+            ),
         navigationIcon = {
           IconButton(
               onClick = onDismiss,

@@ -23,25 +23,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
@@ -58,6 +60,7 @@ private enum class AutoContentTypes {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun TransactionAutoScreen(
     modifier: Modifier = Modifier,
     loading: LoadingState,
@@ -68,11 +71,17 @@ fun TransactionAutoScreen(
   Column(
       modifier = modifier,
   ) {
+    val contentColor = LocalContentColor.current
+
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        backgroundColor = LocalCategoryColor.current,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        elevation = ZeroElevation,
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                actionIconContentColor = contentColor,
+                navigationIconContentColor = contentColor,
+                titleContentColor = contentColor,
+            ),
         navigationIcon = {
           IconButton(
               onClick = onDismiss,
@@ -117,7 +126,7 @@ fun TransactionAutoScreen(
                   text = "An unexpected error occurred, please try again later.",
                   textAlign = TextAlign.Center,
                   color = MaterialTheme.colorScheme.error,
-                  style = MaterialTheme.typography.body1,
+                  style = MaterialTheme.typography.bodyLarge,
               )
             }
           } else {
@@ -128,7 +137,7 @@ fun TransactionAutoScreen(
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
                     text = "Notification: ${a.notificationTitle}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -141,7 +150,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
                     text = "Matched: ${a.notificationMatchText}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -158,7 +167,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content * 2),
                     text = "Amount: $money",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -171,7 +180,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
                     text = "ID: ${a.notificationId}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -184,7 +193,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
                     text = "Package: ${a.notificationPackageName}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -197,7 +206,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
                     text = "Key: ${a.notificationKey}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -210,7 +219,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
                     text = "Group: ${a.notificationGroup}",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
 
@@ -224,7 +233,7 @@ fun TransactionAutoScreen(
                             .padding(horizontal = MaterialTheme.keylines.content)
                             .padding(bottom = MaterialTheme.keylines.content),
                     text = "Created On: $dateString",
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.bodyLarge,
                 )
               }
             }

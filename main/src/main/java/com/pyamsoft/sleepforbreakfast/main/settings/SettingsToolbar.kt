@@ -19,29 +19,30 @@ package com.pyamsoft.sleepforbreakfast.main.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.ZeroCornerSize
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 internal fun SettingsToolbar(
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
   Surface(
       modifier = modifier,
-      elevation = ZeroElevation,
       contentColor = Color.White,
       color = MaterialTheme.colorScheme.primary,
       shape =
@@ -57,9 +58,13 @@ internal fun SettingsToolbar(
 
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
-          backgroundColor = Color.Transparent,
-          contentColor = contentColor,
-          elevation = ZeroElevation,
+          colors =
+              TopAppBarDefaults.topAppBarColors(
+                  containerColor = Color.Transparent,
+                  actionIconContentColor = contentColor,
+                  navigationIconContentColor = contentColor,
+                  titleContentColor = contentColor,
+              ),
           title = {
             Text(
                 text = "Settings",

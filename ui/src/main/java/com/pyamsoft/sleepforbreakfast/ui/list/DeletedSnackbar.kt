@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.ui
+package com.pyamsoft.sleepforbreakfast.ui.list
 
-import androidx.compose.material3.ScaffoldState
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +26,7 @@ import androidx.compose.runtime.rememberUpdatedState
 
 @Composable
 fun <T : Any> DeletedSnackbar(
-    scaffoldState: ScaffoldState,
+    snackbarHostState: SnackbarHostState,
     deleted: T?,
     onSnackbarDismissed: () -> Unit,
     onSnackbarAction: () -> Unit,
@@ -37,7 +37,7 @@ fun <T : Any> DeletedSnackbar(
   deleted?.also { u ->
     LaunchedEffect(u) {
       val snackbarResult =
-          scaffoldState.snackbarHostState.showSnackbar(
+          snackbarHostState.showSnackbar(
               message = handleMessage(u),
               duration = SnackbarDuration.Short,
               actionLabel = "Undo",

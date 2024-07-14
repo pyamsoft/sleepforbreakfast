@@ -23,12 +23,12 @@ import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.ui.theme.Theming
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class ThemeViewModeler
 @Inject
@@ -45,8 +45,7 @@ internal constructor(
 
         registry.registerProvider(KEY_THEME) { s.theme.value.name }.also { add(it) }
 
-
-          registry.registerProvider(KEY_THEME_MATERIAL_YOU) { s.isMaterialYou.value }.also { add(it) }
+        registry.registerProvider(KEY_THEME_MATERIAL_YOU) { s.isMaterialYou.value }.also { add(it) }
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
@@ -57,39 +56,39 @@ internal constructor(
         ?.let { Theming.Mode.valueOf(it) }
         ?.also { s.theme.value = it }
 
-      registry
-          .consumeRestored(KEY_THEME_MATERIAL_YOU)
-          ?.let { it as Boolean }
-          ?.also { s.isMaterialYou.value = it }
+    registry
+        .consumeRestored(KEY_THEME_MATERIAL_YOU)
+        ?.let { it as Boolean }
+        ?.also { s.isMaterialYou.value = it }
   }
 
-    private fun bind(scope: CoroutineScope) {
-        combineTransform(
+  private fun bind(scope: CoroutineScope) {
+    combineTransform(
             theming.listenForModeChanges(),
             theming.listenForMaterialYouChanges(),
         ) { mode, isMaterialYou ->
-            emit(listOf(mode, isMaterialYou))
+          emit(listOf(mode, isMaterialYou))
         }
-            .flowOn(context = Dispatchers.Default)
-            .also { f ->
-                scope.launch(context = Dispatchers.Default) {
-                    f.collect { list ->
-                        val mode = list[0].cast<Theming.Mode>().requireNotNull()
-                        val isMaterialYou = list[1].cast<Boolean>().requireNotNull()
-                        state.theme.value = mode
-                        state.isMaterialYou.value = isMaterialYou
-                    }
-                }
+        .flowOn(context = Dispatchers.Default)
+        .also { f ->
+          scope.launch(context = Dispatchers.Default) {
+            f.collect { list ->
+              val mode = list[0].cast<Theming.Mode>().requireNotNull()
+              val isMaterialYou = list[1].cast<Boolean>().requireNotNull()
+              state.theme.value = mode
+              state.isMaterialYou.value = isMaterialYou
             }
-    }
+          }
+        }
+  }
 
-    fun init(activity: ComponentActivity) {
-        bind(scope = activity.lifecycleScope)
-    }
+  fun init(activity: ComponentActivity) {
+    bind(scope = activity.lifecycleScope)
+  }
 
   companion object {
 
     private const val KEY_THEME = "theme_mode"
-      private const val KEY_THEME_MATERIAL_YOU = "theme_material_you"
+    private const val KEY_THEME_MATERIAL_YOU = "theme_material_you"
   }
 }

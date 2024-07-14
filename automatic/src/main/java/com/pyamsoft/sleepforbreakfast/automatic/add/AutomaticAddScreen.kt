@@ -23,17 +23,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,6 +51,7 @@ private enum class ContentTypes {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun AutomaticAddScreen(
     modifier: Modifier = Modifier,
     state: AutomaticAddViewState,
@@ -70,10 +75,17 @@ fun AutomaticAddScreen(
       contentAlignment = Alignment.Center,
   ) {
     Column {
+      val contentColor = LocalContentColor.current
+
       TopAppBar(
           modifier = Modifier.fillMaxWidth(),
-          backgroundColor = MaterialTheme.colorScheme.primary,
-          contentColor = MaterialTheme.colorScheme.onPrimary,
+          colors =
+              TopAppBarDefaults.topAppBarColors(
+                  containerColor = Color.Transparent,
+                  actionIconContentColor = contentColor,
+                  navigationIconContentColor = contentColor,
+                  titleContentColor = contentColor,
+              ),
           navigationIcon = {
             IconButton(
                 onClick = onDismiss,

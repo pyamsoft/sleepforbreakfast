@@ -26,31 +26,32 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
 import com.pyamsoft.sleepforbreakfast.money.add.DatePicker
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyAmount
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyCategories
@@ -59,8 +60,8 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyNote
 import com.pyamsoft.sleepforbreakfast.money.add.MoneySubmit
 import com.pyamsoft.sleepforbreakfast.money.add.MoneyTypes
 import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
-import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.CardDialog
+import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
 import java.time.LocalDate
@@ -77,6 +78,7 @@ private enum class AddContentTypes {
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun TransactionAddScreen(
     modifier: Modifier = Modifier,
     state: TransactionAddViewState,
@@ -116,11 +118,17 @@ fun TransactionAddScreen(
   Column(
       modifier = modifier,
   ) {
+    val contentColor = LocalContentColor.current
+
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
-        backgroundColor = LocalCategoryColor.current,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        elevation = ZeroElevation,
+        colors =
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                actionIconContentColor = contentColor,
+                navigationIconContentColor = contentColor,
+                titleContentColor = contentColor,
+            ),
         navigationIcon = {
           IconButton(
               onClick = onDismiss,
@@ -348,11 +356,8 @@ private fun <T : Any> ExtraBit(
       Text(
           text = "${if (valid) "View" else "No"} $title",
           style =
-              MaterialTheme.typography.body2.copy(
-                  color =
-                      MaterialTheme.colorScheme.onSurface.copy(
-                          alpha = if (valid) ContentAlpha.high else ContentAlpha.disabled,
-                      ),
+              MaterialTheme.typography.bodyMedium.copy(
+                  color = MaterialTheme.colorScheme.onSurfaceVariant,
               ),
       )
     }

@@ -24,11 +24,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -41,7 +40,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.defaults.DialogDefaults
 import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
 import com.pyamsoft.pydroid.ui.uri.rememberUriHandler
 import com.pyamsoft.sleepforbreakfast.core.PRIVACY_POLICY_URL
@@ -64,13 +62,7 @@ internal fun HomeOptions(
 
   val hapticManager = LocalHapticManager.current
 
-  val themeColor =
-      MaterialTheme.colorScheme.primary.copy(
-          alpha = if (isNotificationListenerEnabled) ContentAlpha.disabled else ContentAlpha.high,
-      )
-  val highAlpha = if (isNotificationListenerEnabled) ContentAlpha.medium else ContentAlpha.high
-  val mediumAlpha =
-      if (isNotificationListenerEnabled) ContentAlpha.disabled else ContentAlpha.medium
+  val themeColor = MaterialTheme.colorScheme.primary
 
   val uriHandler = rememberUriHandler()
 
@@ -86,7 +78,6 @@ internal fun HomeOptions(
                     shape = shape,
                 ),
         shape = shape,
-        elevation = DialogDefaults.Elevation,
     ) {
       Column(
           modifier =
@@ -105,12 +96,9 @@ internal fun HomeOptions(
               modifier = Modifier.weight(1F),
               text = "Automatic Tracking",
               style =
-                  MaterialTheme.typography.h6.copy(
+                  MaterialTheme.typography.headlineSmall.copy(
                       fontWeight = FontWeight.W700,
-                      color =
-                          MaterialTheme.colorScheme.onSurface.copy(
-                              alpha = highAlpha,
-                          ),
+                      color = MaterialTheme.colorScheme.onSurface,
                   ),
           )
 
@@ -125,11 +113,8 @@ internal fun HomeOptions(
             text =
                 "$appName could automatically enter transaction information for certain purchases.",
             style =
-                MaterialTheme.typography.body1.copy(
-                    color =
-                        MaterialTheme.colorScheme.onSurface.copy(
-                            alpha = highAlpha,
-                        ),
+                MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
                 ),
         )
 
@@ -138,18 +123,12 @@ internal fun HomeOptions(
             text =
                 "Enabling this feature will give $appName the ability to see ALL of your notifications, but it will only take action on the notifications that it knows are related to transactions.",
             style =
-                MaterialTheme.typography.body2.copy(
-                    color =
-                        MaterialTheme.colorScheme.onSurface.copy(
-                            alpha = mediumAlpha,
-                        ),
+                MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
         )
 
-        val textColor =
-            MaterialTheme.colorScheme.onSurface.copy(
-                alpha = ContentAlpha.disabled,
-            )
+        val textColor = MaterialTheme.colorScheme.onSurface
         val linkColor = MaterialTheme.colorScheme.primary
         val privacyDisclaimer =
             remember(
@@ -182,7 +161,7 @@ internal fun HomeOptions(
         ClickableText(
             modifier = Modifier.padding(top = MaterialTheme.keylines.typography),
             text = privacyDisclaimer,
-            style = MaterialTheme.typography.caption,
+            style = MaterialTheme.typography.bodySmall,
             onClick = { start ->
               privacyDisclaimer
                   .getStringAnnotations(

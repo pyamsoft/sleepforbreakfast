@@ -50,7 +50,7 @@ fun AutomaticDeleteScreen(
         text =
             if (canDelete) "Are you sure you want to remove this Automatic?"
             else "Cannot delete system Automatics.",
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.bodyLarge,
     )
 
     // TODO

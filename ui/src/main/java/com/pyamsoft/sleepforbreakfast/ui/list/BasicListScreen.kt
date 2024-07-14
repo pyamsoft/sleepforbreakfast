@@ -30,15 +30,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -48,7 +48,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.ui.Delayed
-import com.pyamsoft.sleepforbreakfast.ui.DeletedSnackbar
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 
@@ -66,12 +65,12 @@ fun <T : Any> BasicListScreen(
     topBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
-  val scaffoldState = rememberScaffoldState()
   val isLoading = remember(loading) { loading !== LoadingState.DONE }
+
+  val snackbarHostState = remember { SnackbarHostState() }
 
   Scaffold(
       modifier = modifier,
-      scaffoldState = scaffoldState,
       topBar = topBar,
       floatingActionButtonPosition = FabPosition.End,
       floatingActionButton = {
@@ -104,7 +103,7 @@ fun <T : Any> BasicListScreen(
     }
 
     DeletedSnackbar(
-        scaffoldState = scaffoldState,
+        snackbarHostState = snackbarHostState,
         deleted = recentlyDeletedItem,
         onSnackbarDismissed = onSnackbarDismissed,
         onSnackbarAction = onSnackbarAction,
@@ -127,7 +126,6 @@ private fun AnimatedFab(
   ) {
     FloatingActionButton(
         modifier = modifier,
-        backgroundColor = backgroundColor,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         onClick = onClick,
     ) {

@@ -16,9 +16,9 @@
 
 package com.pyamsoft.sleepforbreakfast.ui.icons
 
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material3.icons.materialIcon
-import androidx.compose.material3.icons.materialPath
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material.icons.materialPath
 import androidx.compose.ui.graphics.vector.ImageVector
 
 @Suppress("unused")

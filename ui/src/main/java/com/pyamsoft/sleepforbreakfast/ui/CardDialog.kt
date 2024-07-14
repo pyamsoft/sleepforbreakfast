@@ -35,16 +35,16 @@ fun CardDialog(
     onDismiss: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Dialog(
-        properties = properties,
-        onDismissRequest = onDismiss,
-    ) {
-        Card(
-            modifier = modifier.padding(MaterialTheme.keylines.content),
-            shape = MaterialTheme.shapes.medium,
-            elevation = CardDefaults.elevatedCardElevation(),
-            colors = CardDefaults.elevatedCardColors(),
-            content = content,
-        )
-    }
+  Dialog(
+      properties = properties,
+      onDismissRequest = onDismiss,
+  ) {
+    Card(
+        modifier = modifier.padding(MaterialTheme.keylines.content),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.elevatedCardElevation(),
+        colors = CardDefaults.elevatedCardColors(),
+        content = content,
+    )
+  }
 }

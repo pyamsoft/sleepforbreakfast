@@ -22,7 +22,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.ContentAlpha
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
@@ -80,7 +79,8 @@ fun AutomaticScreen(
                     onClick = { onAutomaticClicked(automatic) },
                     onLongClick = { onAutomaticLongClicked?.invoke(automatic) },
                 ),
-        elevation = CardDefaults.Elevation,
+        elevation = CardDefaults.elevatedCardElevation(),
+        colors = CardDefaults.elevatedCardColors(),
         shape = MaterialTheme.shapes.medium,
     ) {
       Column(
@@ -89,7 +89,7 @@ fun AutomaticScreen(
         Text(
             modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
             text = automatic.notification.name,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleSmall,
         )
 
         automatic.matchRegexes.forEach { reg ->
@@ -97,11 +97,8 @@ fun AutomaticScreen(
               modifier = Modifier.padding(bottom = MaterialTheme.keylines.typography),
               text = reg.text,
               style =
-                  MaterialTheme.typography.body2.copy(
-                      color =
-                          MaterialTheme.colorScheme.onSurface.copy(
-                              alpha = ContentAlpha.medium,
-                          ),
+                  MaterialTheme.typography.bodyMedium.copy(
+                      color = MaterialTheme.colorScheme.onSurfaceVariant,
                   ),
           )
         }

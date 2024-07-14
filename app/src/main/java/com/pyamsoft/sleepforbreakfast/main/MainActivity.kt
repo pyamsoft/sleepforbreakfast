@@ -39,9 +39,9 @@ import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
 import com.pyamsoft.sleepforbreakfast.ui.InstallPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.work.enqueueActivityWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,15 +57,16 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun initializePYDroid() {
-    pydroid = installPYDroid(
-        provider =
-            object : ChangeLogProvider {
+    pydroid =
+        installPYDroid(
+            provider =
+                object : ChangeLogProvider {
 
-              override val applicationIcon = R.mipmap.ic_launcher_round
+                  override val applicationIcon = R.mipmap.ic_launcher_round
 
-              override val changelog: ChangeLogBuilder = buildChangeLog {}
-            },
-    )
+                  override val changelog: ChangeLogBuilder = buildChangeLog {}
+                },
+        )
   }
 
   private fun setupActivity() {

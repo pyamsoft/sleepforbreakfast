@@ -33,21 +33,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,8 +65,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.theme.success
-import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -183,7 +180,7 @@ private fun SpendType(
 ) {
   val shape = MaterialTheme.shapes.small
   val spendColor = MaterialTheme.colorScheme.error
-  val earnColor = MaterialTheme.colorScheme.success
+  val earnColor = MaterialTheme.colorScheme.tertiary
   val color =
       remember(
           type,
@@ -208,12 +205,9 @@ private fun SpendType(
       modifier =
           modifier.border(
               width = 2.dp,
-              color = color.copy(alpha = ContentAlpha.medium),
+              color = color,
               shape = shape,
           ),
-      elevation = CardDefaults.Elevation,
-      backgroundColor = if (isSelected) color else MaterialTheme.colorScheme.surface,
-      contentColor = if (isSelected) MaterialTheme.colorScheme.onSecondary else color,
       shape = shape,
   ) {
     Column(
@@ -225,7 +219,7 @@ private fun SpendType(
               Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.typography),
           text = type.name,
           fontWeight = FontWeight.W700,
-          style = MaterialTheme.typography.body2,
+          style = MaterialTheme.typography.bodyMedium,
           textAlign = TextAlign.Center,
       )
     }
@@ -243,7 +237,7 @@ fun DatePicker(
   Text(
       modifier = modifier.clickable { onOpenDateDialog() },
       text = justDate,
-      style = MaterialTheme.typography.h6,
+      style = MaterialTheme.typography.headlineSmall,
       textAlign = TextAlign.Center,
   )
 }
@@ -259,7 +253,7 @@ fun TimePicker(
   Text(
       modifier = modifier.clickable { onOpenTimeDialog() },
       text = justTime,
-      style = MaterialTheme.typography.h6,
+      style = MaterialTheme.typography.headlineSmall,
       textAlign = TextAlign.Center,
   )
 }
@@ -322,11 +316,7 @@ fun AddSubmit(
                 topStart = ZeroCornerSize,
             ),
         elevation = null,
-        colors =
-            ButtonDefaults.buttonColors(
-                backgroundColor = LocalCategoryColor.current,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
+        colors = ButtonDefaults.buttonColors(),
     ) {
       Crossfade(
           label = "Submit",
@@ -462,11 +452,8 @@ private fun CategoryChip(
               .padding(vertical = MaterialTheme.keylines.typography),
       text = category.name,
       style =
-          MaterialTheme.typography.caption.copy(
-              color =
-                  textColor.copy(
-                      alpha = ContentAlpha.high,
-                  ),
+          MaterialTheme.typography.bodySmall.copy(
+              color = textColor,
           ),
   )
 }
@@ -516,11 +503,8 @@ fun AddCategories(
           modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
           text = "Categories",
           fontWeight = FontWeight.W700,
-          color =
-              MaterialTheme.colorScheme.onSurface.copy(
-                  alpha = ContentAlpha.disabled,
-              ),
-          style = MaterialTheme.typography.caption,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          style = MaterialTheme.typography.bodySmall,
       )
     }
 
@@ -622,12 +606,12 @@ fun AddCategories(
                 onCategoryAdded?.invoke(cat)
               }
             },
-        ) {
-          CategoryChip(
-              category = cat,
-              isSelected = isSelected,
-          )
-        }
+            text = {
+              CategoryChip(
+                  category = cat,
+                  isSelected = isSelected,
+              )
+            })
       }
     }
   }

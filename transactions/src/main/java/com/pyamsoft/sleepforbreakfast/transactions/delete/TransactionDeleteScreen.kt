@@ -18,8 +18,8 @@ package com.pyamsoft.sleepforbreakfast.transactions.delete
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
@@ -43,8 +43,7 @@ fun TransactionDeleteScreen(
     Text(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
         text = "Are you sure you want to remove this transaction?",
-        style = MaterialTheme.typography.body1,
-    )
+        style = MaterialTheme.typography.bodyLarge)
 
     TransactionCard(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),

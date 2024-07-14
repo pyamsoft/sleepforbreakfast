@@ -34,15 +34,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ContentAlpha
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -55,9 +55,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
+import com.pyamsoft.pydroid.ui.defaults.TypographyDefaults
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.ui.util.collectAsStateMapWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -385,18 +384,19 @@ private fun DateBreakdown(
 
   Card(
       modifier = modifier,
-      elevation = CardDefaults.Elevation,
+      elevation = CardDefaults.elevatedCardElevation(),
+      colors = CardDefaults.elevatedCardColors(),
   ) {
     Column(
         modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content),
     ) {
       Text(
-          style = MaterialTheme.typography.h6,
+          style = MaterialTheme.typography.headlineSmall,
           text = rangeName,
       )
 
       Text(
-          style = MaterialTheme.typography.caption,
+          style = MaterialTheme.typography.bodySmall,
           text =
               remember(
                   today,
@@ -417,10 +417,10 @@ private fun DateBreakdown(
       Text(
           modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
           style =
-              MaterialTheme.typography.body1.copy(
+              MaterialTheme.typography.bodyLarge.copy(
                   color =
                       priceColor.copy(
-                          alpha = ContentAlpha.disabled,
+                          alpha = TypographyDefaults.ALPHA_DISABLED,
                       ),
               ),
           text = totalPrice,
@@ -451,16 +451,6 @@ private fun Category(
       ) {
         if (category.id.isEmpty) FontStyle.Italic else null
       }
-  val defaultCategoryAlpha = ContentAlpha.high
-  val noneCategoryAlpha = ContentAlpha.medium
-  val contentColorAlpha =
-      remember(
-          category,
-          noneCategoryAlpha,
-          defaultCategoryAlpha,
-      ) {
-        if (category.id.isEmpty) noneCategoryAlpha else defaultCategoryAlpha
-      }
 
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
   val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
@@ -487,19 +477,19 @@ private fun Category(
 
   Card(
       modifier = modifier,
-      elevation = CardDefaults.Elevation,
-      backgroundColor = color,
+      elevation = CardDefaults.elevatedCardElevation(),
+      colors =
+          CardDefaults.elevatedCardColors(
+              containerColor = color,
+          ),
   ) {
     Column(
         modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content),
     ) {
       Text(
           style =
-              MaterialTheme.typography.h6.copy(
-                  color =
-                      MaterialTheme.colorScheme.onSurface.copy(
-                          alpha = contentColorAlpha,
-                      ),
+              MaterialTheme.typography.headlineSmall.copy(
+                  color = MaterialTheme.colorScheme.onSurface,
               ),
           text = category.name,
           fontStyle = fontStyle,
@@ -508,10 +498,10 @@ private fun Category(
       Text(
           modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
           style =
-              MaterialTheme.typography.body1.copy(
+              MaterialTheme.typography.bodyLarge.copy(
                   color =
                       priceColor.copy(
-                          alpha = ContentAlpha.disabled,
+                          alpha = TypographyDefaults.ALPHA_DISABLED,
                       ),
               ),
           text = totalPrice,
@@ -566,7 +556,6 @@ private fun IconOption(
               shape = shape,
           ),
       shape = shape,
-      elevation = ZeroElevation,
       color =
           MaterialTheme.colorScheme.primary.copy(
               alpha = 0.20F,
@@ -589,11 +578,8 @@ private fun IconOption(
       Text(
           text = title,
           style =
-              MaterialTheme.typography.body1.copy(
-                  color =
-                      MaterialTheme.colorScheme.onPrimary.copy(
-                          alpha = ContentAlpha.medium,
-                      ),
+              MaterialTheme.typography.bodyLarge.copy(
+                  color = MaterialTheme.colorScheme.onPrimary,
               ),
       )
     }

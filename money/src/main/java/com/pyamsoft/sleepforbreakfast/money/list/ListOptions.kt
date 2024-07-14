@@ -33,21 +33,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ContentAlpha
-import androidx.compose.material3.DismissValue
-import androidx.compose.material3.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material3.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,8 +58,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.theme.success
-import com.pyamsoft.pydroid.ui.defaults.CardDefaults
 import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
 import kotlinx.coroutines.flow.filter
 
@@ -81,7 +78,7 @@ private fun UsageIndicator(
                 .padding(end = MaterialTheme.keylines.baseline)
                 .size(MaterialTheme.keylines.baseline)
                 .background(
-                    color = MaterialTheme.colorScheme.success,
+                    color = MaterialTheme.colorScheme.tertiary,
                     shape =
                         RoundedCornerShape(
                             percent = 50,
@@ -108,7 +105,6 @@ fun KnobBar(
     ) {
       Surface(
           modifier = modifier,
-          elevation = CardDefaults.Elevation,
       ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
@@ -133,7 +129,7 @@ fun KnobBar(
 }
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 private fun SwipeAway(
     modifier: Modifier = Modifier,
     onSwiped: () -> Unit,
@@ -141,11 +137,11 @@ private fun SwipeAway(
 ) {
   val handleSwiped by rememberUpdatedState(onSwiped)
 
-  val swipeState = rememberDismissState()
+  val swipeState = rememberSwipeToDismissBoxState()
 
   LaunchedEffect(swipeState) {
     snapshotFlow { swipeState.currentValue }
-        .filter { it != DismissValue.Default }
+        .filter { it != SwipeToDismissBoxValue.Settled }
         .collect { handleSwiped() }
   }
 
@@ -198,10 +194,7 @@ fun Search(
     Icon(
         imageVector = Icons.Filled.Search,
         contentDescription = "Search",
-        tint =
-            MaterialTheme.colorScheme.onPrimary.copy(
-                alpha = if (isOpen) ContentAlpha.high else ContentAlpha.medium,
-            ),
+        tint = MaterialTheme.colorScheme.onPrimary,
     )
   }
 }

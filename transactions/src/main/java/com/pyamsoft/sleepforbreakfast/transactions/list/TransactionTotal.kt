@@ -23,14 +23,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.ZeroCornerSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.icons.Icons
-import androidx.compose.material3.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -38,11 +37,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.theme.ZeroElevation
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
@@ -174,29 +171,27 @@ private fun Totals(
               .padding(bottom = MaterialTheme.keylines.baseline),
       priceModifier = Modifier.padding(end = MaterialTheme.keylines.content),
       noteModifier = Modifier.padding(MaterialTheme.keylines.content),
-      color = Color.Unspecified,
       shape = RectangleShape,
-      elevation = ZeroElevation,
       isHeader = true,
       title = title,
       titleStyle =
-          MaterialTheme.typography.h6.copy(
+          MaterialTheme.typography.headlineSmall.copy(
               color = MaterialTheme.colorScheme.onPrimary,
           ),
       date = "",
       dateStyle =
-          MaterialTheme.typography.caption.copy(
+          MaterialTheme.typography.bodySmall.copy(
               color = MaterialTheme.colorScheme.onPrimary,
           ),
       price = totalPrice,
       priceDirection = totalDirection,
       priceStyle =
-          MaterialTheme.typography.h4.copy(
+          MaterialTheme.typography.headlineLarge.copy(
               color = MaterialTheme.colorScheme.onPrimary,
           ),
       note = totalRangeNote,
       noteStyle =
-          MaterialTheme.typography.body2.copy(
+          MaterialTheme.typography.bodyMedium.copy(
               color = MaterialTheme.colorScheme.onPrimary,
           ),
       navigationIcon = {

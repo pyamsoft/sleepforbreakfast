@@ -23,27 +23,26 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Card
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.defaults.CardDefaults
+import com.pyamsoft.pydroid.ui.defaults.TypographyDefaults
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -92,7 +91,7 @@ internal fun TransactionHeader(
     Text(
         modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
         text = "Transactions in $monthName",
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.W700,
     )
   }
@@ -121,30 +120,23 @@ internal fun TransactionCard(
           Modifier.fillMaxWidth().then(contentModifier).padding(MaterialTheme.keylines.content),
       title = transaction.name,
       titleStyle =
-          MaterialTheme.typography.h6.copy(
-              color =
-                  MaterialTheme.colorScheme.onSurface.copy(
-                      alpha = ContentAlpha.high,
-                  ),
+          MaterialTheme.typography.headlineSmall.copy(
+              color = MaterialTheme.colorScheme.onSurface,
           ),
       date = dateString,
       dateStyle =
-          MaterialTheme.typography.body2.copy(
-              color =
-                  MaterialTheme.colorScheme.onSurface.copy(
-                      alpha = ContentAlpha.medium,
-                  ),
+          MaterialTheme.typography.bodyMedium.copy(
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
           ),
       price = priceString,
       priceDirection = spendDirection,
-      priceStyle = MaterialTheme.typography.h5,
+      priceStyle = MaterialTheme.typography.headlineMedium,
       note = transaction.note,
       noteStyle =
-          MaterialTheme.typography.caption.copy(
+          MaterialTheme.typography.bodySmall.copy(
               color =
-                  MaterialTheme.colorScheme.onSurface.copy(
-                      alpha = ContentAlpha.disabled,
-                  ),
+                  MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                      alpha = TypographyDefaults.ALPHA_DISABLED),
           ),
       currentCategory = currentCategory,
       categories = transaction.categories.rememberAsStateList(),
@@ -158,9 +150,8 @@ internal fun TransactionCard(
     contentModifier: Modifier = Modifier,
     priceModifier: Modifier = Modifier,
     noteModifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surface,
+    colors: CardColors = CardDefaults.cardColors(),
     shape: Shape = MaterialTheme.shapes.medium,
-    elevation: Dp = CardDefaults.Elevation,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     isHeader: Boolean = false,
@@ -204,8 +195,7 @@ internal fun TransactionCard(
   Card(
       modifier = modifier,
       shape = shape,
-      elevation = elevation,
-      backgroundColor = color,
+      colors = colors,
   ) {
     Column(
         modifier = contentModifier,
@@ -252,10 +242,7 @@ internal fun TransactionCard(
           fontFamily = FontFamily.Monospace,
           style =
               priceStyle.copy(
-                  color =
-                      priceColor.copy(
-                          alpha = ContentAlpha.high,
-                      ),
+                  color = priceColor,
               ),
       )
 
