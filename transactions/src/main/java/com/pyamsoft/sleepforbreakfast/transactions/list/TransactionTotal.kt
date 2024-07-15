@@ -38,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
@@ -175,7 +176,7 @@ private fun Totals(
       shape = RectangleShape,
       colors =
           CardDefaults.cardColors(
-              containerColor = MaterialTheme.colorScheme.primary,
+              containerColor = Color.Transparent,
               contentColor = MaterialTheme.colorScheme.onPrimary,
           ),
       isHeader = true,

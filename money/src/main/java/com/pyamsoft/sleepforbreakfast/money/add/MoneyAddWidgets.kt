@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -47,6 +48,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -156,7 +158,9 @@ fun MoneyTypes(
       modifier = modifier.width(IntrinsicSize.Min),
   ) {
     SpendType(
-        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.keylines.typography),
         type = DbTransaction.Type.SPEND,
         current = type,
         onTypeChanged = onTypeChanged,
@@ -209,14 +213,21 @@ private fun SpendType(
               shape = shape,
           ),
       shape = shape,
+      colors = CardDefaults.cardColors(
+          containerColor = color,
+      ),
   ) {
     Column(
         modifier =
-            Modifier.clickable { onTypeChanged(type) }.padding(MaterialTheme.keylines.typography),
+        Modifier
+            .clickable { onTypeChanged(type) }
+            .padding(MaterialTheme.keylines.typography),
     ) {
       Text(
           modifier =
-              Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.typography),
+          Modifier
+              .fillMaxWidth()
+              .padding(horizontal = MaterialTheme.keylines.typography),
           text = type.name,
           fontWeight = FontWeight.W700,
           style = MaterialTheme.typography.bodyMedium,
@@ -300,6 +311,7 @@ fun AddSubmit(
         colors =
             ButtonDefaults.outlinedButtonColors(
                 contentColor = LocalCategoryColor.current,
+
             ),
     ) {
       Text(
@@ -316,7 +328,9 @@ fun AddSubmit(
                 topStart = ZeroCornerSize,
             ),
         elevation = null,
-        colors = ButtonDefaults.buttonColors(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = LocalCategoryColor.current,
+        ),
     ) {
       Crossfade(
           label = "Submit",
@@ -407,6 +421,7 @@ fun AddNote(
       onValueChange = onNoteChanged,
       maxLines = 4,
       label = label,
+      colors = TextFieldDefaults.colors()
   )
 }
 
@@ -443,13 +458,13 @@ private fun CategoryChip(
       }
   Text(
       modifier =
-          modifier
-              .background(
-                  color = backgroundColor,
-                  shape = MaterialTheme.shapes.small,
-              )
-              .padding(horizontal = MaterialTheme.keylines.baseline)
-              .padding(vertical = MaterialTheme.keylines.typography),
+      modifier
+          .background(
+              color = backgroundColor,
+              shape = MaterialTheme.shapes.small,
+          )
+          .padding(horizontal = MaterialTheme.keylines.baseline)
+          .padding(vertical = MaterialTheme.keylines.typography),
       text = category.name,
       style =
           MaterialTheme.typography.bodySmall.copy(
@@ -515,7 +530,9 @@ fun AddCategories(
       if (canAdd) {
         Icon(
             modifier =
-                Modifier.padding(end = MaterialTheme.keylines.content).clickable { handleShow() },
+            Modifier
+                .padding(end = MaterialTheme.keylines.content)
+                .clickable { handleShow() },
             imageVector = Icons.Filled.Add,
             contentDescription = "Categories",
         )
@@ -525,9 +542,10 @@ fun AddCategories(
       for (cat in showCategories) {
         CategoryChip(
             modifier =
-                Modifier.padding(end = MaterialTheme.keylines.baseline)
-                    .padding(bottom = MaterialTheme.keylines.baseline)
-                    .clickable(enabled = canAdd) { handleShow() },
+            Modifier
+                .padding(end = MaterialTheme.keylines.baseline)
+                .padding(bottom = MaterialTheme.keylines.baseline)
+                .clickable(enabled = canAdd) { handleShow() },
             category = cat,
             isSelected = true,
         )

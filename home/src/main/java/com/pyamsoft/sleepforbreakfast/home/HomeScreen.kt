@@ -18,7 +18,6 @@ package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.annotation.CheckResult
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -131,7 +130,9 @@ fun HomeScreen(
           contentType = ContentTypes.HEADER,
       ) {
         HomeHeader(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.keylines.content),
             appName = appName,
             onOpenSettings = onOpenSettings,
         )
@@ -220,7 +221,9 @@ private fun HomeCategories(
       modifier = modifier.padding(MaterialTheme.keylines.content),
   ) {
     OutlinedButton(
-        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = MaterialTheme.keylines.typography),
         onClick = onOpenAllTransactions,
     ) {
       Text(
@@ -271,7 +274,9 @@ private fun HomeCategories(
           }
 
           LazyRow(
-              modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.keylines.content),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(top = MaterialTheme.keylines.content),
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.spacedBy(MaterialTheme.keylines.baseline),
           ) {
@@ -307,7 +312,9 @@ private fun HomeCategories(
         }
       } else {
         Box(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MaterialTheme.keylines.content),
             contentAlignment = Alignment.Center,
         ) {
           CircularProgressIndicator(
@@ -401,7 +408,9 @@ private fun DateBreakdown(
       colors = CardDefaults.elevatedCardColors(),
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content),
+        modifier = Modifier
+            .clickable { onOpen(dateRange) }
+            .padding(MaterialTheme.keylines.content),
     ) {
       Text(
           style = MaterialTheme.typography.headlineSmall,
@@ -497,7 +506,9 @@ private fun Category(
           ),
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content),
+        modifier = Modifier
+            .clickable { onOpen(category) }
+            .padding(MaterialTheme.keylines.content),
     ) {
       Text(
           style =
@@ -562,28 +573,23 @@ private fun IconOption(
   val shape = MaterialTheme.shapes.medium
 
   Surface(
-      modifier =
-          modifier.border(
-              width = 2.dp,
-              color = MaterialTheme.colorScheme.primary,
-              shape = shape,
-          ),
+      modifier = modifier,
       shape = shape,
-      color =
-          MaterialTheme.colorScheme.primary.copy(
-              alpha = 0.20F,
-          ),
+      color = MaterialTheme.colorScheme.primary,
       contentColor = MaterialTheme.colorScheme.onPrimary,
   ) {
     Column(
-        modifier = Modifier.clickable { onClick() }.padding(MaterialTheme.keylines.content),
+        modifier = Modifier
+            .clickable { onClick() }
+            .padding(MaterialTheme.keylines.content),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       Icon(
           modifier =
-              Modifier.size(ImageDefaults.LargeSize)
-                  .padding(bottom = MaterialTheme.keylines.content),
+          Modifier
+              .size(ImageDefaults.LargeSize)
+              .padding(bottom = MaterialTheme.keylines.content),
           imageVector = icon,
           contentDescription = title,
           tint = MaterialTheme.colorScheme.onPrimary,
