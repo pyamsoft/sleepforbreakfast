@@ -16,37 +16,30 @@
 
 package com.pyamsoft.sleepforbreakfast.main.settings
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Dialog
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.pydroid.ui.app.rememberDialogProperties
 import com.pyamsoft.pydroid.ui.settings.SettingsPage
+import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 
 @Composable
 fun SettingsDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
 ) {
-  Dialog(
-      properties = rememberDialogProperties(),
-      onDismissRequest = onDismiss,
+  CardDialog(
+      modifier = modifier,
+      onDismiss = onDismiss,
   ) {
-    Column(
-        modifier = modifier.padding(MaterialTheme.keylines.content),
-    ) {
-      SettingsToolbar(
-          modifier = Modifier.fillMaxWidth(),
-          onClose = onDismiss,
-      )
-      SettingsPage(
-          modifier = Modifier.fillMaxWidth().weight(1F),
-          customBottomItemMargin = MaterialTheme.keylines.baseline,
-      )
-    }
+    SettingsToolbar(
+        modifier = Modifier.fillMaxWidth(),
+        onClose = onDismiss,
+    )
+    SettingsPage(
+        modifier = Modifier.fillMaxWidth().weight(1F),
+        customBottomItemMargin = MaterialTheme.keylines.baseline,
+    )
   }
 }

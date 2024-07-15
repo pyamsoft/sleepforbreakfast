@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,6 +42,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -104,69 +106,80 @@ fun HomeScreen(
     onOpenCategories: () -> Unit,
     onOpenAutomatics: () -> Unit,
 ) {
-  LazyColumn(
+  Scaffold(
       modifier = modifier,
-  ) {
-    item(
-        contentType = ContentTypes.SPACER,
+  ) { pv ->
+    LazyColumn(
+        modifier =
+            Modifier
+                // So this basically doesn't do anything since we handle the padding ourselves
+                // BUT, we don't just want to consume it because we DO actually care when using
+                // Modifier.navigationBarsPadding()
+                .heightIn(
+                    min = remember(pv) { pv.calculateBottomPadding() },
+                ),
     ) {
-      Spacer(
-          modifier = Modifier.statusBarsPadding(),
-      )
-    }
+      item(
+          contentType = ContentTypes.SPACER,
+      ) {
+        Spacer(
+            modifier = Modifier.statusBarsPadding(),
+        )
+      }
 
-    item(
-        contentType = ContentTypes.HEADER,
-    ) {
-      HomeHeader(
-          modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
-          appName = appName,
-          onOpenSettings = onOpenSettings,
-      )
-    }
+      item(
+          contentType = ContentTypes.HEADER,
+      ) {
+        HomeHeader(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+            appName = appName,
+            onOpenSettings = onOpenSettings,
+        )
+      }
 
-    renderPYDroidExtras()
+      renderPYDroidExtras()
 
-    item(
-        contentType = ContentTypes.OPTIONS,
-    ) {
-      HomeOptions(
-          modifier = Modifier.fillMaxWidth(),
-          state = state,
-          appName = appName,
-          onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
-      )
-    }
+      item(
+          contentType = ContentTypes.OPTIONS,
+      ) {
+        HomeOptions(
+            modifier = Modifier.fillMaxWidth(),
+            state = state,
+            appName = appName,
+            onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
+        )
+      }
 
-    item(
-        contentType = ContentTypes.TRANSACTIONS,
-    ) {
-      HomeCategories(
-          modifier = Modifier.fillMaxWidth(),
-          clock = clock,
-          state = state,
-          onOpenAllTransactions = { onOpenAllTransactions(null) },
-          onOpenCategory = { onOpenTransactions(it, null) },
-          onOpenBreakdown = onOpenAllTransactions,
-      )
-    }
+      item(
+          contentType = ContentTypes.TRANSACTIONS,
+      ) {
+        HomeCategories(
+            modifier = Modifier.fillMaxWidth(),
+            clock = clock,
+            state = state,
+            onOpenAllTransactions = { onOpenAllTransactions(null) },
+            onOpenCategory = { onOpenTransactions(it, null) },
+            onOpenBreakdown = onOpenAllTransactions,
+        )
+      }
 
-    item(
-        contentType = ContentTypes.EXTRAS,
-    ) {
-      HomeExtras(
-          modifier = Modifier.fillMaxWidth(),
-          onOpenCategories = onOpenCategories,
-          onOpenAutomatics = onOpenAutomatics,
-      )
-    }
+      item(
+          contentType = ContentTypes.EXTRAS,
+      ) {
+        HomeExtras(
+            modifier = Modifier.fillMaxWidth(),
+            onOpenCategories = onOpenCategories,
+            onOpenAutomatics = onOpenAutomatics,
+        )
+      }
 
-    item(
-        contentType = ContentTypes.BOTTOM_SPACER,
-    ) {
-      Spacer(
-          modifier = Modifier.navigationBarsPadding(),
-      )
+      item(
+          contentType = ContentTypes.BOTTOM_SPACER,
+      ) {
+        Spacer(
+            modifier = Modifier.navigationBarsPadding(),
+        )
+      }
     }
   }
 }

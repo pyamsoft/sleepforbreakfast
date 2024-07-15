@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -172,6 +173,11 @@ private fun Totals(
       priceModifier = Modifier.padding(end = MaterialTheme.keylines.content),
       noteModifier = Modifier.padding(MaterialTheme.keylines.content),
       shape = RectangleShape,
+      colors =
+          CardDefaults.cardColors(
+              containerColor = MaterialTheme.colorScheme.primary,
+              contentColor = MaterialTheme.colorScheme.onPrimary,
+          ),
       isHeader = true,
       title = title,
       titleStyle =

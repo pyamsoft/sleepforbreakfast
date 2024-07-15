@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -56,7 +55,7 @@ fun <T : Any> BasicListScreen(
     modifier: Modifier = Modifier,
     loading: LoadingState,
     showActionButton: Boolean,
-    actionButtonBackgroundColor: Color = MaterialTheme.colorScheme.primary,
+    actionButtonContainerColor: Color = MaterialTheme.colorScheme.primary,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
     onSnackbarDismissed: () -> Unit,
@@ -75,9 +74,8 @@ fun <T : Any> BasicListScreen(
       floatingActionButtonPosition = FabPosition.End,
       floatingActionButton = {
         AnimatedFab(
-            modifier = Modifier.navigationBarsPadding(),
             show = showActionButton,
-            backgroundColor = actionButtonBackgroundColor,
+            containerColor = actionButtonContainerColor,
             onClick = onActionButtonClicked,
         )
       },
@@ -115,7 +113,7 @@ fun <T : Any> BasicListScreen(
 @Composable
 private fun AnimatedFab(
     modifier: Modifier = Modifier,
-    backgroundColor: Color,
+    containerColor: Color,
     show: Boolean,
     onClick: () -> Unit,
 ) {
@@ -126,6 +124,7 @@ private fun AnimatedFab(
   ) {
     FloatingActionButton(
         modifier = modifier,
+        containerColor = containerColor,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         onClick = onClick,
     ) {
@@ -176,7 +175,9 @@ fun <T : Any> ListScreen(
           contentType = ContentTypes.TOP_SPACER,
       ) {
         Spacer(
-            modifier = Modifier.padding(pv).height(MaterialTheme.keylines.content),
+            modifier =
+                Modifier.padding(top = remember(pv) { pv.calculateTopPadding() })
+                    .height(MaterialTheme.keylines.content),
         )
       }
 
@@ -193,7 +194,7 @@ fun <T : Any> ListScreen(
       ) {
         Spacer(
             modifier =
-                Modifier.padding(pv)
+                Modifier
                     // Space to offset the FAB
                     .height(MaterialTheme.keylines.content * 4),
         )

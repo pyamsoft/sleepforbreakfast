@@ -17,9 +17,6 @@
 package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -50,53 +47,49 @@ fun MainScreen(
   val isSettingsOpen by state.isSettingsOpen.collectAsStateWithLifecycle()
   val page by state.page.collectAsStateWithLifecycle()
 
-  Scaffold(
-      modifier = modifier.fillMaxSize(),
-  ) { pv ->
-    Crossfade(
-        label = "Main",
-        targetState = page,
-    ) { p ->
-      if (p == null) {
-        HomeEntry(
-            modifier = Modifier.fillMaxSize().padding(pv),
-            clock = clock,
-            appName = appName,
-            onOpenTransactions = onOpenTransactions,
-            onOpenAllTransactions = onOpenAllTransactions,
-            onOpenSettings = onOpenSettings,
-            onOpenPage = onOpenPage,
-        )
-      } else {
-        when (p) {
-          is MainPage.Transactions -> {
-            TransactionEntry(
-                modifier = Modifier.fillMaxSize().padding(pv),
-                page = p,
-                onDismiss = onClosePage,
-            )
-          }
-          is MainPage.Category -> {
-            CategoryEntry(
-                modifier = Modifier.fillMaxSize().padding(pv),
-                onDismiss = onClosePage,
-            )
-          }
-          is MainPage.Automatic -> {
-            AutomaticEntry(
-                modifier = Modifier.fillMaxSize().padding(pv),
-                onDismiss = onClosePage,
-            )
-          }
+  Crossfade(
+      label = "Main",
+      targetState = page,
+  ) { p ->
+    if (p == null) {
+      HomeEntry(
+          modifier = modifier,
+          clock = clock,
+          appName = appName,
+          onOpenTransactions = onOpenTransactions,
+          onOpenAllTransactions = onOpenAllTransactions,
+          onOpenSettings = onOpenSettings,
+          onOpenPage = onOpenPage,
+      )
+    } else {
+      when (p) {
+        is MainPage.Transactions -> {
+          TransactionEntry(
+              modifier = modifier,
+              page = p,
+              onDismiss = onClosePage,
+          )
+        }
+        is MainPage.Category -> {
+          CategoryEntry(
+              modifier = modifier,
+              onDismiss = onClosePage,
+          )
+        }
+        is MainPage.Automatic -> {
+          AutomaticEntry(
+              modifier = modifier,
+              onDismiss = onClosePage,
+          )
         }
       }
     }
+  }
 
-    if (isSettingsOpen) {
-      SettingsDialog(
-          modifier = Modifier.fillUpToPortraitSize(),
-          onDismiss = onCloseSettings,
-      )
-    }
+  if (isSettingsOpen) {
+    SettingsDialog(
+        modifier = Modifier.fillUpToPortraitSize(),
+        onDismiss = onCloseSettings,
+    )
   }
 }

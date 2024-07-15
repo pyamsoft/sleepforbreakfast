@@ -21,14 +21,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import com.pyamsoft.sleepforbreakfast.money.list.Search
+import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
+import com.pyamsoft.sleepforbreakfast.ui.ScreenTopBar
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 private enum class ContentTypes {
@@ -40,12 +46,20 @@ private enum class ContentTypes {
 fun CategoryScreen(
     modifier: Modifier = Modifier,
     state: CategoryViewState,
+
+    // App Bar
+    onBack: () -> Unit,
+    onSearchToggled: () -> Unit,
+    onSearchUpdated: (String) -> Unit,
+
+    // Fab
     showActionButton: Boolean,
     onActionButtonClicked: () -> Unit,
+
+    // Item
     onCategoryClicked: (DbCategory) -> Unit,
     onCategoryRestored: () -> Unit,
     onCategoryDeleteFinalized: () -> Unit,
-    topBar: @Composable () -> Unit,
     onCategoryLongClicked: ((DbCategory) -> Unit)? = null,
 ) {
   val loading by state.loadingState.collectAsStateWithLifecycle()
@@ -56,7 +70,6 @@ fun CategoryScreen(
       modifier = modifier,
       loading = loading,
       showActionButton = showActionButton,
-      topBar = topBar,
       items = categories,
       recentlyDeletedItem = undoable,
       itemKey = { it.id.raw },
@@ -65,24 +78,49 @@ fun CategoryScreen(
       onActionButtonClicked = onActionButtonClicked,
       onSnackbarAction = onCategoryRestored,
       onSnackbarDismissed = onCategoryDeleteFinalized,
-  ) { category ->
-    CategoryCard(
-        modifier =
-            Modifier.fillMaxWidth()
-                .padding(horizontal = MaterialTheme.keylines.content)
-                .padding(bottom = MaterialTheme.keylines.content),
-        contentModifier =
-            onCategoryLongClicked.let { longClick ->
-              if (longClick == null) {
-                Modifier.clickable { onCategoryClicked(category) }
-              } else {
-                Modifier.combinedClickable(
-                    onClick = { onCategoryClicked(category) },
-                    onLongClick = { longClick(category) },
+      topBar = {
+        CompositionLocalProvider(
+            LocalContentColor provides MaterialTheme.colorScheme.onPrimary,
+        ) {
+          ScreenTopBar(
+              onDismiss = onBack,
+              title = {
+                Text(
+                    text = "All Categories",
                 )
-              }
-            },
-        category = category,
-    )
-  }
+              },
+              actions = {
+                Search(
+                    state = state,
+                    onToggle = onSearchToggled,
+                )
+              },
+          ) {
+            SearchBar(
+                state = state,
+                onToggle = onSearchToggled,
+                onChange = onSearchUpdated,
+            )
+          }
+        }
+      }) { category ->
+        CategoryCard(
+            modifier =
+                Modifier.fillMaxWidth()
+                    .padding(horizontal = MaterialTheme.keylines.content)
+                    .padding(bottom = MaterialTheme.keylines.content),
+            contentModifier =
+                onCategoryLongClicked.let { longClick ->
+                  if (longClick == null) {
+                    Modifier.clickable { onCategoryClicked(category) }
+                  } else {
+                    Modifier.combinedClickable(
+                        onClick = { onCategoryClicked(category) },
+                        onLongClick = { longClick(category) },
+                    )
+                  }
+                },
+            category = category,
+        )
+      }
 }
