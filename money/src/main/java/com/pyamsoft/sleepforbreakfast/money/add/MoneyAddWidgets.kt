@@ -55,7 +55,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -158,9 +157,7 @@ fun MoneyTypes(
       modifier = modifier.width(IntrinsicSize.Min),
   ) {
     SpendType(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = MaterialTheme.keylines.typography),
+        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
         type = DbTransaction.Type.SPEND,
         current = type,
         onTypeChanged = onTypeChanged,
@@ -213,21 +210,18 @@ private fun SpendType(
               shape = shape,
           ),
       shape = shape,
-      colors = CardDefaults.cardColors(
-          containerColor = color,
-      ),
+      colors =
+          CardDefaults.cardColors(
+              containerColor = if (isSelected) color else Color.Unspecified,
+          ),
   ) {
     Column(
         modifier =
-        Modifier
-            .clickable { onTypeChanged(type) }
-            .padding(MaterialTheme.keylines.typography),
+            Modifier.clickable { onTypeChanged(type) }.padding(MaterialTheme.keylines.typography),
     ) {
       Text(
           modifier =
-          Modifier
-              .fillMaxWidth()
-              .padding(horizontal = MaterialTheme.keylines.typography),
+              Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.typography),
           text = type.name,
           fontWeight = FontWeight.W700,
           style = MaterialTheme.typography.bodyMedium,
@@ -311,7 +305,6 @@ fun AddSubmit(
         colors =
             ButtonDefaults.outlinedButtonColors(
                 contentColor = LocalCategoryColor.current,
-
             ),
     ) {
       Text(
@@ -328,9 +321,10 @@ fun AddSubmit(
                 topStart = ZeroCornerSize,
             ),
         elevation = null,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = LocalCategoryColor.current,
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = LocalCategoryColor.current,
+            ),
     ) {
       Crossfade(
           label = "Submit",
@@ -421,8 +415,7 @@ fun AddNote(
       onValueChange = onNoteChanged,
       maxLines = 4,
       label = label,
-      colors = TextFieldDefaults.colors()
-  )
+      colors = TextFieldDefaults.colors())
 }
 
 @Composable
@@ -458,13 +451,13 @@ private fun CategoryChip(
       }
   Text(
       modifier =
-      modifier
-          .background(
-              color = backgroundColor,
-              shape = MaterialTheme.shapes.small,
-          )
-          .padding(horizontal = MaterialTheme.keylines.baseline)
-          .padding(vertical = MaterialTheme.keylines.typography),
+          modifier
+              .background(
+                  color = backgroundColor,
+                  shape = MaterialTheme.shapes.small,
+              )
+              .padding(horizontal = MaterialTheme.keylines.baseline)
+              .padding(vertical = MaterialTheme.keylines.typography),
       text = category.name,
       style =
           MaterialTheme.typography.bodySmall.copy(
@@ -499,7 +492,7 @@ fun AddCategories(
     modifier: Modifier = Modifier,
     canAdd: Boolean,
     showLabel: Boolean,
-    selectedCategories: SnapshotStateList<DbCategory.Id>,
+    selectedCategories: List<DbCategory.Id>,
     onCategoryAdded: ((DbCategory) -> Unit)?,
     onCategoryRemoved: ((DbCategory) -> Unit)?,
 ) {
@@ -509,6 +502,7 @@ fun AddCategories(
   val (show, setShow) = rememberSaveable { mutableStateOf(false) }
 
   val handleShow by rememberUpdatedState { setShow(true) }
+  val handleHide by rememberUpdatedState { setShow(false) }
 
   Column(
       modifier = modifier,
@@ -530,9 +524,7 @@ fun AddCategories(
       if (canAdd) {
         Icon(
             modifier =
-            Modifier
-                .padding(end = MaterialTheme.keylines.content)
-                .clickable { handleShow() },
+                Modifier.padding(end = MaterialTheme.keylines.content).clickable { handleShow() },
             imageVector = Icons.Filled.Add,
             contentDescription = "Categories",
         )
@@ -542,95 +534,114 @@ fun AddCategories(
       for (cat in showCategories) {
         CategoryChip(
             modifier =
-            Modifier
-                .padding(end = MaterialTheme.keylines.baseline)
-                .padding(bottom = MaterialTheme.keylines.baseline)
-                .clickable(enabled = canAdd) { handleShow() },
+                Modifier.padding(end = MaterialTheme.keylines.baseline)
+                    .padding(bottom = MaterialTheme.keylines.baseline)
+                    .clickable(enabled = canAdd) { handleShow() },
             category = cat,
             isSelected = true,
         )
       }
     }
+
+    if (canAdd) {
+      CategoryDropdown(
+          show = show,
+          selectedCategories = selectedCategories,
+          onHide = { handleHide() },
+          onCategoryAdded = onCategoryAdded,
+          onCategoryRemoved = onCategoryRemoved,
+      )
+    }
   }
+}
 
-  if (canAdd) {
-    val configuration = LocalConfiguration.current
-    val dropdownMaxHeight =
-        remember(configuration) {
-          val h =
-              configuration.run {
-                val size = if (isPortrait) screenHeightDp else screenWidthDp
-                return@run size / 3
-              }
-
-          return@remember h.dp
-        }
-
-    val isClickEnabled =
-        remember(
-            onCategoryAdded,
-            onCategoryRemoved,
-        ) {
-          onCategoryAdded != null && onCategoryRemoved != null
-        }
-
-    DropdownMenu(
-        modifier = Modifier.heightIn(max = dropdownMaxHeight),
-        properties = remember { PopupProperties(focusable = true) },
-        expanded = show,
-        onDismissRequest = { setShow(false) },
-    ) {
-
-      // Remember this only on the initial composition to keep the "starting selected" on top,
-      // then alphabetical. New selections will not go to the top
-      val allCategories = observer.collect()
-      val showCategories =
-          remember(allCategories) {
-            val result = mutableListOf<DbCategory>()
-            val unselected = mutableListOf<DbCategory>()
-            for (cat in allCategories) {
-              val selected = selectedCategories.firstOrNull { it == cat.id }
-              if (selected != null) {
-                result.add(cat)
-              } else {
-                unselected.add(cat)
-              }
+@Composable
+private fun CategoryDropdown(
+    modifier: Modifier = Modifier,
+    show: Boolean,
+    selectedCategories: List<DbCategory.Id>,
+    onHide: () -> Unit,
+    onCategoryAdded: ((DbCategory) -> Unit)?,
+    onCategoryRemoved: ((DbCategory) -> Unit)?,
+) {
+  val observer = LocalCategoryObserver.current
+  val configuration = LocalConfiguration.current
+  val dropdownMaxHeight =
+      remember(configuration) {
+        val h =
+            configuration.run {
+              val size = if (isPortrait) screenHeightDp else screenWidthDp
+              return@run size / 3
             }
 
-            // Sort the existing result list in place, selected on top alphabetical
-            result.sortBy { it.name.lowercase() }
+        return@remember h.dp
+      }
 
-            // Then sort unselected, and all the two
-            unselected.sortBy { it.name.lowercase() }
-            return@remember (result + unselected).toMutableStateList()
+  val isClickEnabled =
+      remember(
+          onCategoryAdded,
+          onCategoryRemoved,
+      ) {
+        onCategoryAdded != null && onCategoryRemoved != null
+      }
+
+  DropdownMenu(
+      modifier = modifier.heightIn(max = dropdownMaxHeight),
+      properties = remember { PopupProperties(focusable = true) },
+      expanded = show,
+      onDismissRequest = onHide,
+  ) {
+
+    // Remember this only on the initial composition to keep the "starting selected" on top,
+    // then alphabetical. New selections will not go to the top
+    val allCategories = observer.collect()
+    val showCategories =
+        remember(allCategories) {
+          val result = mutableListOf<DbCategory>()
+          val unselected = mutableListOf<DbCategory>()
+          for (cat in allCategories) {
+            val selected = selectedCategories.firstOrNull { it == cat.id }
+            if (selected != null) {
+              result.add(cat)
+            } else {
+              unselected.add(cat)
+            }
           }
 
-      for (cat in showCategories) {
-        // If this category is selected
-        val isSelected =
-            remember(
-                cat,
-                selectedCategories,
-            ) {
-              selectedCategories.firstOrNull { it == cat.id } != null
-            }
+          // Sort the existing result list in place, selected on top alphabetical
+          result.sortBy { it.name.lowercase() }
 
-        DropdownMenuItem(
-            enabled = isClickEnabled,
-            onClick = {
-              if (isSelected) {
-                onCategoryRemoved?.invoke(cat)
-              } else {
-                onCategoryAdded?.invoke(cat)
-              }
-            },
-            text = {
-              CategoryChip(
-                  category = cat,
-                  isSelected = isSelected,
-              )
-            })
-      }
+          // Then sort unselected, and all the two
+          unselected.sortBy { it.name.lowercase() }
+          return@remember (result + unselected).toMutableStateList()
+        }
+
+    for (cat in showCategories) {
+      // If this category is selected
+      val isSelected =
+          remember(
+              cat,
+              selectedCategories,
+          ) {
+            selectedCategories.firstOrNull { it == cat.id } != null
+          }
+
+      DropdownMenuItem(
+          enabled = isClickEnabled,
+          onClick = {
+            if (isSelected) {
+              onCategoryRemoved?.invoke(cat)
+            } else {
+              onCategoryAdded?.invoke(cat)
+            }
+          },
+          text = {
+            CategoryChip(
+                category = cat,
+                isSelected = isSelected,
+            )
+          },
+      )
     }
   }
 }

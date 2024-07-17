@@ -40,7 +40,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -145,7 +144,7 @@ private enum class ContentTypes {
 fun <T : Any> ListScreen(
     modifier: Modifier = Modifier,
     loading: LoadingState,
-    items: SnapshotStateList<T>,
+    items: List<T>,
     showActionButton: Boolean,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,

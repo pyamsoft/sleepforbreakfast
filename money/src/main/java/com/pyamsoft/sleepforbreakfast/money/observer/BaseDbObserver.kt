@@ -18,16 +18,15 @@ package com.pyamsoft.sleepforbreakfast.money.observer
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlinx.coroutines.CoroutineScope
 
 interface BaseDbObserver<T : Any, I : Any> {
 
   fun bind(scope: CoroutineScope)
 
-  @Composable @CheckResult fun collect(): SnapshotStateList<T>
+  @Composable @CheckResult fun collect(): List<T>
 
   @Composable @CheckResult fun map(id: I): T
 
-  @Composable @CheckResult fun map(ids: SnapshotStateList<I>): SnapshotStateList<T>
+  @Composable @CheckResult fun map(ids: List<I>): List<T>
 }

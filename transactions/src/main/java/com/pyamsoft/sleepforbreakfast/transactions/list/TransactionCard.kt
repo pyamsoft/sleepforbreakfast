@@ -31,7 +31,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -165,7 +164,7 @@ internal fun TransactionCard(
     note: String,
     noteStyle: TextStyle,
     currentCategory: DbCategory.Id,
-    categories: SnapshotStateList<DbCategory.Id>,
+    categories: List<DbCategory.Id>,
 ) {
   val hasDate = remember(date) { date.isNotBlank() }
   val hasNote = remember(note) { note.isNotBlank() }

@@ -20,7 +20,6 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
@@ -65,7 +64,7 @@ protected constructor(
   }
 
   @Composable
-  final override fun collect(): SnapshotStateList<T> {
+  final override fun collect(): List<T> {
     return cache.collectAsStateListWithLifecycle()
   }
 
@@ -76,7 +75,7 @@ protected constructor(
   }
 
   @Composable
-  final override fun map(ids: SnapshotStateList<I>): SnapshotStateList<T> {
+  final override fun map(ids: List<I>): List<T> {
     val c by cache.collectAsStateWithLifecycle()
     return remember(ids, c) {
       val result = mutableSetOf<T>()
