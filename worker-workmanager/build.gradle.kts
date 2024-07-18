@@ -48,9 +48,8 @@ dependencies {
 
   kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
-  implementation("androidx.work:work-runtime:${rootProject.extra["workmanager"]}")
-  // API for Dagger
-  api("androidx.work:work-runtime-ktx:${rootProject.extra["workmanager"]}")
+  // API for dagger
+  api("androidx.work:work-runtime:${rootProject.extra["workmanager"]}")
 
   implementation(project(":core"))
   implementation(project(":db"))
