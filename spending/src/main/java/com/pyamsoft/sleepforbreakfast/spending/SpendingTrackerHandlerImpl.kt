@@ -57,7 +57,12 @@ internal constructor(
       extras: Bundle,
   ) =
       GLOBAL_LOCK.withLock {
-        val automaticPayment = manager.extractPayment(sbn.packageName, extras) ?: return
+        val automaticPayment =
+            manager.extractPayment(
+                notificationId = sbn.id,
+                packageName = sbn.packageName,
+                bundle = extras,
+            ) ?: return
 
         val automatic =
             DbAutomatic.create(clock)
@@ -79,10 +84,12 @@ internal constructor(
         when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {
           is Maybe.Data -> {
             Timber.w {
-              "Found existing automatic notification matching parameters: ${mapOf(
-                  "NEW" to automatic,
-                  "EXISTING" to existing,
-              )}"
+              "Found existing automatic notification matching parameters: ${
+                            mapOf(
+                                "NEW" to automatic,
+                                "EXISTING" to existing,
+                            )
+                        }"
             }
           }
           is Maybe.None -> {

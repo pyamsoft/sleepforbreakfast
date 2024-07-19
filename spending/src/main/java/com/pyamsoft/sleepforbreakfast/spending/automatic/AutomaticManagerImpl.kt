@@ -20,7 +20,9 @@ import android.os.Bundle
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.InternalApi
 import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.AutomaticIgnores
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,14 +31,21 @@ internal class AutomaticManagerImpl
 @Inject
 internal constructor(
     private val queryDao: NotificationQueryDao,
+    @InternalApi private val ignores: AutomaticIgnores,
 ) : AutomaticManager {
 
   @CheckResult
   private suspend fun collectNotificationHandlers(): Collection<AutomaticHandler> {
-    return queryDao.query().map { DbAutomaticHandler.create(it) }
+    return queryDao.query().map {
+      DbAutomaticHandler.create(
+          notification = it,
+          ignores = ignores,
+      )
+    }
   }
 
   override suspend fun extractPayment(
+      notificationId: Int,
       packageName: String,
       bundle: Bundle,
   ): PaymentNotification? {
@@ -46,7 +55,7 @@ internal constructor(
 
     for (handler in handlers) {
       if (handler.canExtract(packageName) || TEST_CAN_ALWAYS_EXTRACT) {
-        val result = handler.extract(packageName, bundle)
+        val result = handler.extract(notificationId, packageName, bundle)
         if (result != null) {
           return result
         }
@@ -59,6 +68,6 @@ internal constructor(
   companion object {
 
     /** Test the regex system by letting it run against ANY package */
-    private const val TEST_CAN_ALWAYS_EXTRACT = false
+    private const val TEST_CAN_ALWAYS_EXTRACT = true
   }
 }

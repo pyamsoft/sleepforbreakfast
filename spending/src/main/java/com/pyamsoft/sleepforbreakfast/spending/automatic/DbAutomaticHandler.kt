@@ -20,11 +20,16 @@ import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.AutomaticIgnores
 
 internal class DbAutomaticHandler
 private constructor(
     private val notification: DbNotificationWithRegexes,
-) : BaseAutomaticHandler() {
+    ignores: AutomaticIgnores,
+) :
+    BaseAutomaticHandler(
+        ignores = ignores,
+    ) {
 
   private val regexes by lazy {
     notification.matchRegexes.map { n ->
@@ -51,9 +56,13 @@ private constructor(
 
     @JvmStatic
     @CheckResult
-    fun create(notification: DbNotificationWithRegexes): AutomaticHandler {
+    fun create(
+        notification: DbNotificationWithRegexes,
+        ignores: AutomaticIgnores,
+    ): AutomaticHandler {
       return DbAutomaticHandler(
           notification = notification,
+          ignores = ignores,
       )
     }
   }

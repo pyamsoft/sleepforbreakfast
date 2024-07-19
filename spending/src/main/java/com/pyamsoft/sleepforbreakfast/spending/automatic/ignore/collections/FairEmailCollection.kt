@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending
+package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections
 
-import android.os.Bundle
-import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.Ignorable
 
-internal interface AutomaticHandler {
-
-  @CheckResult
-  suspend fun extract(
-      notificationId: Int,
-      packageName: String,
-      bundle: Bundle,
-  ): PaymentNotification?
-
-  @CheckResult fun canExtract(packageName: String): Boolean
+internal object FairEmailCollection :
+    AbstractIgnoreCollection(
+        packageName = "eu.faircode.email",
+    ) {
+  override suspend fun ignorables(): Collection<Ignorable> {
+    return setOf(
+        // Monitoring message
+        ignore("Monitoring \\d accounts?"),
+        // Operating message
+        ignore("\\d operations? pending"))
+  }
 }

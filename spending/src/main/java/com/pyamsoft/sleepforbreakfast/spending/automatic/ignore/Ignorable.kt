@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending
+package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore
 
-import android.os.Bundle
 import androidx.annotation.CheckResult
 
-internal interface AutomaticHandler {
+internal sealed interface IIgnorable
 
-  @CheckResult
-  suspend fun extract(
-      notificationId: Int,
-      packageName: String,
-      bundle: Bundle,
-  ): PaymentNotification?
+internal data class Ignorable(
+    val packageName: String,
+    val text: Regex,
+) : IIgnorable
 
-  @CheckResult fun canExtract(packageName: String): Boolean
+internal interface IgnoreCollection : IIgnorable {
+
+  @CheckResult suspend fun ignorables(): Collection<Ignorable>
 }

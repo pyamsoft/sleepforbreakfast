@@ -24,8 +24,12 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.AutomaticHandler
 import com.pyamsoft.sleepforbreakfast.spending.PaymentNotification
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.AutomaticIgnores
 
-internal abstract class BaseAutomaticHandler protected constructor() : AutomaticHandler {
+internal abstract class BaseAutomaticHandler
+protected constructor(
+    private val ignores: AutomaticIgnores,
+) : AutomaticHandler {
 
   @CheckResult
   private fun MatchGroupCollection.extractGroup(group: String): String? =
@@ -52,6 +56,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
 
   @CheckResult
   private suspend fun handleRegex(
+      notificationId: Int,
       packageName: String,
       regexMatch: RegexMatch,
       text: CharSequence,
@@ -67,14 +72,17 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
           bigText
         } else {
           Timber.w {
-            "Could not match notification: ${mapOf(
-                        "package" to packageName,
-                        "text" to text,
-                        "bigText" to bigText,
-                        "title" to title,
-                        "bigTitle" to bigTitle,
-                        "regex" to regex.pattern,
-                    )}"
+            "Could not match notification: ${
+                        mapOf(
+                            "notificationId" to notificationId,
+                            "package" to packageName,
+                            "text" to text,
+                            "bigText" to bigText,
+                            "title" to title,
+                            "bigTitle" to bigTitle,
+                            "regex" to regex.pattern,
+                        )
+                    }"
           }
           return null
         }
@@ -94,7 +102,19 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
             ?.toLongOrNull()
 
     if (justPrice == null) {
-      Timber.w { "Unable to get justPrice from payText: $payText" }
+      Timber.w {
+        "Unable to get justPrice from payText: $payText ${
+                mapOf(
+                    "notificationId" to notificationId,
+                    "package" to packageName,
+                    "text" to text,
+                    "bigText" to bigText,
+                    "title" to title,
+                    "bigTitle" to bigTitle,
+                    "regex" to regex.pattern,
+                )
+            }"
+      }
       return null
     }
 
@@ -119,6 +139,7 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
   }
 
   final override suspend fun extract(
+      notificationId: Int,
       packageName: String,
       bundle: Bundle,
   ): PaymentNotification? {
@@ -127,12 +148,21 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
     val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
     val bigTitle = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE_BIG, "")
 
+    if (ignores.shouldIgnoreNotification(
+        packageName = packageName,
+        text = text,
+        bigText = bigText,
+    )) {
+      return null
+    }
+
     val regexList = getPossibleRegexes()
     for (regex in regexList) {
       // If regex is bad, we catch and result NULL
       val result =
           try {
             handleRegex(
+                notificationId = notificationId,
                 packageName = packageName,
                 regexMatch = regex,
                 text = text,
@@ -141,31 +171,49 @@ internal abstract class BaseAutomaticHandler protected constructor() : Automatic
                 bigTitle = bigTitle,
             )
           } catch (e: Throwable) {
-            Timber.e(e) { "Failed to compile regex" }
+            Timber.e(e) {
+              "Failed to compile regex ${
+                        mapOf(
+                            "notificationId" to notificationId,
+                            "package" to packageName,
+                            "text" to text,
+                            "bigText" to bigText,
+                            "title" to title,
+                            "bigTitle" to bigTitle,
+                            "regex" to regex.regex.pattern,
+                        )
+                    }"
+            }
             null
           }
 
       if (result != null) {
         Timber.d {
-          "Notification handled! ${mapOf(
-              "text" to text,
-              "bigText" to bigText,
-              "title" to title,
-              "bigTitle" to bigTitle,
-              "result" to result,
-          )}"
+          "Notification handled! ${
+                        mapOf(
+                            "notificationId" to notificationId,
+                            "text" to text,
+                            "bigText" to bigText,
+                            "title" to title,
+                            "bigTitle" to bigTitle,
+                            "result" to result,
+                        )
+                    }"
         }
         return result
       }
     }
 
     Timber.w {
-      "No regexes handled notification: ${mapOf(
-          "text" to text,
-          "bigText" to bigText,
-          "title" to title,
-          "bigTitle" to bigTitle,
-      )}"
+      "No regexes handled notification: ${
+                mapOf(
+                    "notificationId" to notificationId,
+                    "text" to text,
+                    "bigText" to bigText,
+                    "title" to title,
+                    "bigTitle" to bigTitle,
+                )
+            }"
     }
     return null
   }

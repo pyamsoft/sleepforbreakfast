@@ -48,7 +48,7 @@ internal constructor(
         }
 
         val bundle = Bundle().apply { putCharSequence(NotificationCompat.EXTRA_TEXT, text) }
-        val automaticPayment = manager.extractPayment(packageName, bundle)
+        val automaticPayment = manager.extractPayment(notificationId = 0, packageName, bundle)
         if (automaticPayment == null) {
           Timber.w { "Regex test failed, no matches!" }
           return@withLock null

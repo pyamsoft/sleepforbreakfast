@@ -14,19 +14,4 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending
-
-import android.os.Bundle
-import androidx.annotation.CheckResult
-
-internal interface AutomaticHandler {
-
-  @CheckResult
-  suspend fun extract(
-      notificationId: Int,
-      packageName: String,
-      bundle: Bundle,
-  ): PaymentNotification?
-
-  @CheckResult fun canExtract(packageName: String): Boolean
-}
+package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections

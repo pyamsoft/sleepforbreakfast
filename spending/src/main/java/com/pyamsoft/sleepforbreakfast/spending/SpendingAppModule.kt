@@ -19,8 +19,13 @@ package com.pyamsoft.sleepforbreakfast.spending
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.spending.automatic.AutomaticManager
 import com.pyamsoft.sleepforbreakfast.spending.automatic.AutomaticManagerImpl
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.AutomaticIgnores
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.AutomaticIgnoresImpl
 import dagger.Binds
 import dagger.Module
+import javax.inject.Qualifier
+
+@Qualifier @Retention(AnnotationRetention.BINARY) internal annotation class InternalApi
 
 @Module
 abstract class SpendingAppModule {
@@ -28,6 +33,11 @@ abstract class SpendingAppModule {
   @Binds
   @CheckResult
   internal abstract fun bindAutomaticManager(impl: AutomaticManagerImpl): AutomaticManager
+
+  @Binds
+  @CheckResult
+  @InternalApi
+  internal abstract fun bindAutomaticIgnores(impl: AutomaticIgnoresImpl): AutomaticIgnores
 
   @Binds
   @CheckResult

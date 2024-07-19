@@ -24,6 +24,7 @@ internal interface AutomaticManager {
 
   @CheckResult
   suspend fun extractPayment(
+      notificationId: Int,
       packageName: String,
       bundle: Bundle,
   ): PaymentNotification?
