@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore
+package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections
 
-import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.Ignorable
 
-interface AutomaticIgnores {
-
-  @CheckResult
-  suspend fun shouldIgnoreNotification(
-      packageName: String,
-      title: CharSequence,
-      bigTitle: CharSequence,
-      text: CharSequence,
-      bigText: CharSequence,
-  ): Boolean
+internal object NeoStoreCollection :
+    AbstractIgnoreCollection(
+        packageName = "eu.faircode.email",
+    ) {
+  override suspend fun ignorables(): Collection<Ignorable> {
+    return setOf(
+        // Syncing
+        ignoreTitle("^Syncing .*"),
+    )
+  }
 }

@@ -114,7 +114,7 @@ dependencies {
 
   // AndroidX
   implementation("androidx.appcompat:appcompat:1.7.0")
-  implementation("androidx.activity:activity-compose:1.9.0")
+  implementation("androidx.activity:activity-compose:${rootProject.extra["composeActivity"]}")
 
   // Needed just for androidx.preference.PreferenceManager
   // Eventually, big G may push for DataStore being a requirement, which will be pain

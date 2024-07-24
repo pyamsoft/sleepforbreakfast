@@ -54,7 +54,7 @@ dependencies {
   ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
 
   // Lifecycle extensions
-  api("androidx.lifecycle:lifecycle-runtime-compose:2.8.3")
+  api("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
 
   // Compose
   api("androidx.compose.ui:ui:${rootProject.extra["compose"]}")

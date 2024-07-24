@@ -25,8 +25,8 @@ internal object FairEmailCollection :
   override suspend fun ignorables(): Collection<Ignorable> {
     return setOf(
         // Monitoring message
-        ignore("Monitoring \\d accounts?"),
+        ignoreTitle("^Monitoring \\d accounts?"),
         // Operating message
-        ignore("\\d operations? pending"))
+        ignoreText("^\\d operations? pending"))
   }
 }

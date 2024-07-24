@@ -25,7 +25,7 @@ internal abstract class AbstractIgnoreCollection(
 ) : IgnoreCollection {
 
   @CheckResult
-  protected fun ignore(regex: Regex): Ignorable {
+  protected fun ignoreText(regex: Regex): Ignorable {
     return Ignorable(
         packageName = packageName,
         text = regex,
@@ -33,8 +33,23 @@ internal abstract class AbstractIgnoreCollection(
   }
 
   @CheckResult
-  protected fun ignore(text: String): Ignorable {
-    return ignore(
+  protected fun ignoreText(text: String): Ignorable {
+    return ignoreText(
+        regex = Regex(text),
+    )
+  }
+
+  @CheckResult
+  protected fun ignoreTitle(regex: Regex): Ignorable {
+    return Ignorable(
+        packageName = packageName,
+        title = regex,
+    )
+  }
+
+  @CheckResult
+  protected fun ignoreTitle(text: String): Ignorable {
+    return ignoreTitle(
         regex = Regex(text),
     )
   }

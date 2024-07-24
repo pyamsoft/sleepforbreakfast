@@ -150,6 +150,8 @@ protected constructor(
 
     if (ignores.shouldIgnoreNotification(
         packageName = packageName,
+        title = title,
+        bigTitle = bigTitle,
         text = text,
         bigText = bigText,
     )) {

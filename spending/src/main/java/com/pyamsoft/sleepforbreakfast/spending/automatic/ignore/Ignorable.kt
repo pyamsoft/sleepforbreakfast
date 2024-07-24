@@ -22,7 +22,8 @@ internal sealed interface IIgnorable
 
 internal data class Ignorable(
     val packageName: String,
-    val text: Regex,
+    val title: Regex? = null,
+    val text: Regex? = null,
 ) : IIgnorable
 
 internal interface IgnoreCollection : IIgnorable {

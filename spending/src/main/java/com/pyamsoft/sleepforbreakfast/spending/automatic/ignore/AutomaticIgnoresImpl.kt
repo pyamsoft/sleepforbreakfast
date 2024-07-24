@@ -26,17 +26,22 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
 
   override suspend fun shouldIgnoreNotification(
       packageName: String,
+      title: CharSequence,
+      bigTitle: CharSequence,
       text: CharSequence,
       bigText: CharSequence
   ): Boolean {
     return ignores(
         packageName = packageName,
+        title = title,
+        bigTitle = bigTitle,
         text = text,
         bigText = bigText,
         ignoreables =
             setOf(
                 FairEmailCollection,
-            ))
+            ),
+    )
   }
 
   companion object {
@@ -44,6 +49,8 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
     @CheckResult
     private fun shouldIgnore(
         packageName: String,
+        title: CharSequence,
+        bigTitle: CharSequence,
         text: CharSequence,
         bigText: CharSequence,
         ignorable: Ignorable,
@@ -52,15 +59,31 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
         return false
       }
 
-      if (text.isNotBlank()) {
-        if (ignorable.text.matches(text)) {
-          return true
+      ignorable.title?.let { ignore ->
+        if (text.isNotBlank()) {
+          if (ignore.matches(title)) {
+            return true
+          }
+        }
+
+        if (bigText.isNotBlank()) {
+          if (ignore.matches(bigTitle)) {
+            return true
+          }
         }
       }
 
-      if (bigText.isNotBlank()) {
-        if (ignorable.text.matches(bigText)) {
-          return true
+      ignorable.text?.let { ignore ->
+        if (text.isNotBlank()) {
+          if (ignore.matches(text)) {
+            return true
+          }
+        }
+
+        if (bigText.isNotBlank()) {
+          if (ignore.matches(bigText)) {
+            return true
+          }
         }
       }
 
@@ -70,6 +93,8 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
     @CheckResult
     private suspend fun ignores(
         packageName: String,
+        title: CharSequence,
+        bigTitle: CharSequence,
         text: CharSequence,
         bigText: CharSequence,
         ignoreables: Collection<IIgnorable>,
@@ -79,6 +104,8 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
           is Ignorable -> {
             if (shouldIgnore(
                 packageName = packageName,
+                title = title,
+                bigTitle = bigTitle,
                 text = text,
                 bigText = bigText,
                 ignorable = ignore,
@@ -90,6 +117,8 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
             for (innerIgnore in ignore.ignorables()) {
               if (shouldIgnore(
                   packageName = packageName,
+                  title = title,
+                  bigTitle = bigTitle,
                   text = text,
                   bigText = bigText,
                   ignorable = innerIgnore,
