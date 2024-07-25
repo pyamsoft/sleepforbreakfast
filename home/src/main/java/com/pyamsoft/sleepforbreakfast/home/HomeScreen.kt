@@ -68,6 +68,7 @@ import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
+import com.pyamsoft.sleepforbreakfast.ui.complement
 import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
 import com.pyamsoft.sleepforbreakfast.ui.icons.Category
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
@@ -448,13 +449,22 @@ private fun Category(
     transactions: Set<DbTransaction>,
     onOpen: (DbCategory) -> Unit,
 ) {
-  val defaultColor = MaterialTheme.colorScheme.surface
-  val color =
+  val defaultContainerColor = MaterialTheme.colorScheme.surface
+  val defaultContentColor = MaterialTheme.colorScheme.onSurface
+  val containerColor =
       remember(
           category,
-          defaultColor,
+          defaultContainerColor,
       ) {
-        if (category.color == 0L) defaultColor else Color(category.color.toULong())
+        if (category.color == 0L) defaultContainerColor else Color(category.color.toULong())
+      }
+  val contentColor =
+      remember(
+          category,
+          defaultContentColor,
+      ) {
+        if (category.color == 0L) defaultContentColor
+        else Color(category.color.toULong()).complement
       }
 
   val fontStyle =
@@ -492,17 +502,15 @@ private fun Category(
       elevation = CardDefaults.elevatedCardElevation(),
       colors =
           CardDefaults.elevatedCardColors(
-              containerColor = color,
+              containerColor = containerColor,
+              contentColor = contentColor,
           ),
   ) {
     Column(
         modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content),
     ) {
       Text(
-          style =
-              MaterialTheme.typography.headlineSmall.copy(
-                  color = MaterialTheme.colorScheme.onSurface,
-              ),
+          style = MaterialTheme.typography.headlineSmall,
           text = category.name,
           fontStyle = fontStyle,
       )

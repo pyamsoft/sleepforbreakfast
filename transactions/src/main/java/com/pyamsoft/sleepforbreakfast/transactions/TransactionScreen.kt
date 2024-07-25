@@ -35,7 +35,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionCard
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionHeader
 import com.pyamsoft.sleepforbreakfast.transactions.list.TransactionOrHeader
@@ -89,7 +90,8 @@ fun TransactionScreen(
   BasicListScreen(
       modifier = modifier,
       loading = loading,
-      actionButtonContainerColor = LocalCategoryColor.current,
+      actionButtonContainerColor = LocalCategoryContainerColor.current,
+      actionButtonContentColor = LocalCategoryContentColor.current,
       showActionButton = showActionButton,
       recentlyDeletedItem = undoable,
       deletedMessage = { "${it.name} Removed" },

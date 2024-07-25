@@ -55,6 +55,7 @@ fun <T : Any> BasicListScreen(
     loading: LoadingState,
     showActionButton: Boolean,
     actionButtonContainerColor: Color = MaterialTheme.colorScheme.primary,
+    actionButtonContentColor: Color = MaterialTheme.colorScheme.onPrimary,
     recentlyDeletedItem: T?,
     onActionButtonClicked: () -> Unit,
     onSnackbarDismissed: () -> Unit,
@@ -75,6 +76,7 @@ fun <T : Any> BasicListScreen(
         AnimatedFab(
             show = showActionButton,
             containerColor = actionButtonContainerColor,
+            contentColor = actionButtonContentColor,
             onClick = onActionButtonClicked,
         )
       },
@@ -113,6 +115,7 @@ fun <T : Any> BasicListScreen(
 private fun AnimatedFab(
     modifier: Modifier = Modifier,
     containerColor: Color,
+    contentColor: Color,
     show: Boolean,
     onClick: () -> Unit,
 ) {
@@ -124,7 +127,7 @@ private fun AnimatedFab(
     FloatingActionButton(
         modifier = modifier,
         containerColor = containerColor,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+        contentColor = contentColor,
         onClick = onClick,
     ) {
       Icon(

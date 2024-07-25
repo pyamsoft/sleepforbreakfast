@@ -16,7 +16,29 @@
 
 package com.pyamsoft.sleepforbreakfast.ui
 
+import androidx.annotation.CheckResult
 import androidx.compose.ui.graphics.Color
 
 val COLOR_EARN = Color.Green
 val COLOR_SPEND = Color.Red
+
+private val complementaryColorMap by lazy { mutableMapOf<Color, Color>() }
+
+/** Get the complementary color */
+@get:CheckResult
+val Color.complement: Color
+  get() {
+    return complementaryColorMap.getOrPut(this) { resolveComplementaryColor(this) }
+  }
+
+/** https://rgbcolorpicker.com/complementary */
+@CheckResult
+private fun resolveComplementaryColor(color: Color): Color {
+  return Color(
+      red = 1F - color.red,
+      green = 1F - color.green,
+      blue = 1F - color.blue,
+      alpha = color.alpha,
+      colorSpace = color.colorSpace,
+  )
+}

@@ -32,8 +32,10 @@ import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.ui.CardDialog
+import com.pyamsoft.sleepforbreakfast.ui.complement
 import javax.inject.Inject
 
 internal class CategoryAddInjector
@@ -86,13 +88,22 @@ internal fun CategoryAddEntry(
   val categoryColor by viewModel.color.collectAsStateWithLifecycle()
   val scope = rememberCoroutineScope()
 
-  val defaultColor = MaterialTheme.colorScheme.primary
-  val color =
+  val defaultContainerColor = MaterialTheme.colorScheme.primary
+  val containerColor =
       remember(
           categoryColor,
-          defaultColor,
+          defaultContainerColor,
       ) {
-        if (categoryColor == 0L) defaultColor else Color(categoryColor.toULong())
+        if (categoryColor == 0L) defaultContainerColor else Color(categoryColor.toULong())
+      }
+
+  val defaultContentColor = MaterialTheme.colorScheme.onPrimary
+  val contentColor =
+      remember(
+          categoryColor,
+          defaultContentColor,
+      ) {
+        if (categoryColor == 0L) defaultContentColor else Color(categoryColor.toULong()).complement
       }
 
   MountHooks(
@@ -100,7 +111,9 @@ internal fun CategoryAddEntry(
   )
 
   CompositionLocalProvider(
-      LocalCategoryColor provides color,
+      // Category coloring
+      LocalCategoryContainerColor provides containerColor,
+      LocalCategoryContentColor provides contentColor,
   ) {
     CardDialog(
         modifier = modifier,

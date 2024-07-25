@@ -32,7 +32,8 @@ import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.getSystemDarkMode
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.LocalTransactionObserver
 import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
@@ -97,9 +98,12 @@ internal fun ComponentActivity.MainEntry(
   )
 
   CompositionLocalProvider(
-      LocalCategoryColor provides MaterialTheme.colorScheme.primary,
       LocalCategoryObserver provides categoryObserver,
       LocalTransactionObserver provides transactionObserver,
+
+      // Category coloring
+      LocalCategoryContainerColor provides MaterialTheme.colorScheme.primary,
+      LocalCategoryContentColor provides MaterialTheme.colorScheme.onPrimary,
   ) {
     MainScreen(
         modifier = modifier,

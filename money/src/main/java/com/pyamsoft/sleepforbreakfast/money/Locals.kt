@@ -23,7 +23,12 @@ import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.observer.TransactionObserver
 
 @JvmField
-val LocalCategoryColor: ProvidableCompositionLocal<Color> = staticCompositionLocalOf {
+val LocalCategoryContainerColor: ProvidableCompositionLocal<Color> = staticCompositionLocalOf {
+  Color.Unspecified
+}
+
+@JvmField
+val LocalCategoryContentColor: ProvidableCompositionLocal<Color> = staticCompositionLocalOf {
   Color.Unspecified
 }
 

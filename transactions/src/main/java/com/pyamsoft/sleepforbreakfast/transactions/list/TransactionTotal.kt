@@ -45,7 +45,8 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionAmount
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionDirection
 import com.pyamsoft.sleepforbreakfast.money.calculateTotalTransactionRange
@@ -82,7 +83,7 @@ internal fun TransactionTotal(
     Column(
         modifier =
             Modifier.background(
-                color = LocalCategoryColor.current,
+                color = LocalCategoryContainerColor.current,
                 shape =
                     MaterialTheme.shapes.medium.copy(
                         topStart = ZeroCornerSize,
@@ -127,6 +128,7 @@ private fun Totals(
     onSearchToggle: () -> Unit,
     onDateRangeToggle: () -> Unit,
 ) {
+  val contentColor = LocalCategoryContentColor.current
   val category by state.category.collectAsStateWithLifecycle()
   val transactions = state.items.collectAsStateListWithLifecycle()
 
@@ -177,29 +179,29 @@ private fun Totals(
       colors =
           CardDefaults.cardColors(
               containerColor = Color.Transparent,
-              contentColor = MaterialTheme.colorScheme.onPrimary,
+              contentColor = contentColor,
           ),
       isHeader = true,
       title = title,
       titleStyle =
           MaterialTheme.typography.headlineSmall.copy(
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = contentColor,
           ),
       date = "",
       dateStyle =
           MaterialTheme.typography.bodySmall.copy(
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = contentColor,
           ),
       price = totalPrice,
       priceDirection = totalDirection,
       priceStyle =
           MaterialTheme.typography.headlineLarge.copy(
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = contentColor,
           ),
       note = totalRangeNote,
       noteStyle =
           MaterialTheme.typography.bodyMedium.copy(
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = contentColor,
           ),
       navigationIcon = {
         IconButton(
@@ -209,7 +211,7 @@ private fun Totals(
           Icon(
               imageVector = Icons.AutoMirrored.Filled.ArrowBack,
               contentDescription = "Back",
-              tint = MaterialTheme.colorScheme.onPrimary,
+              tint = contentColor,
           )
         }
       },

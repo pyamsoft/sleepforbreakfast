@@ -35,11 +35,13 @@ import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.main.MainPage
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.transaction.add.TransactionAddEntry
 import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
+import com.pyamsoft.sleepforbreakfast.ui.complement
 import java.time.Clock
 import javax.inject.Inject
 
@@ -99,14 +101,24 @@ internal fun TransactionEntry(
 
   val category by viewModel.category.collectAsStateWithLifecycle()
 
-  val defaultColor = MaterialTheme.colorScheme.primary
-  val color =
+  val defaultContainerColor = MaterialTheme.colorScheme.primary
+  val containerColor =
       remember(
           category,
-          defaultColor,
+          defaultContainerColor,
       ) {
         val c = category?.color ?: 0L
-        if (c == 0L) defaultColor else Color(c.toULong())
+        if (c == 0L) defaultContainerColor else Color(c.toULong())
+      }
+
+  val defaultContentColor = MaterialTheme.colorScheme.onPrimary
+  val contentColor =
+      remember(
+          category,
+          defaultContentColor,
+      ) {
+        val c = category?.color ?: 0L
+        if (c == 0L) defaultContentColor else Color(c.toULong()).complement
       }
 
   MountHooks(
@@ -118,7 +130,9 @@ internal fun TransactionEntry(
   )
 
   CompositionLocalProvider(
-      LocalCategoryColor provides color,
+      // Category coloring
+      LocalCategoryContainerColor provides containerColor,
+      LocalCategoryContentColor provides contentColor,
   ) {
     TransactionScreen(
         modifier = modifier,

@@ -71,9 +71,11 @@ import com.pyamsoft.pydroid.ui.util.isPortrait
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
+import com.pyamsoft.sleepforbreakfast.ui.complement
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -304,7 +306,7 @@ fun AddSubmit(
         enabled = isButtonEnabled,
         colors =
             ButtonDefaults.outlinedButtonColors(
-                contentColor = LocalCategoryColor.current,
+                contentColor = LocalCategoryContainerColor.current,
             ),
     ) {
       Text(
@@ -323,7 +325,8 @@ fun AddSubmit(
         elevation = null,
         colors =
             ButtonDefaults.buttonColors(
-                containerColor = LocalCategoryColor.current,
+                containerColor = LocalCategoryContainerColor.current,
+                contentColor = LocalCategoryContentColor.current,
             ),
     ) {
       Crossfade(
@@ -443,11 +446,17 @@ private fun CategoryChip(
   val selectedTextColor = MaterialTheme.colorScheme.onSecondary
   val textColor =
       remember(
+          category,
           isSelected,
           unselectedTextColor,
           selectedTextColor,
       ) {
-        if (isSelected) selectedTextColor else unselectedTextColor
+        if (isSelected) {
+          val c = category.color
+          return@remember if (c == 0L) selectedTextColor else Color(c.toULong()).complement
+        } else {
+          return@remember unselectedTextColor
+        }
       }
   Text(
       modifier =

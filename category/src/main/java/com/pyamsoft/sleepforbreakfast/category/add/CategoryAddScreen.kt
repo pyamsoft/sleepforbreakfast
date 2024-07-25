@@ -58,7 +58,7 @@ import com.godaddy.android.colorpicker.HsvColor
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.category.CategoryColor
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddName
 import com.pyamsoft.sleepforbreakfast.money.add.AddNote
 import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
@@ -146,7 +146,7 @@ fun CategoryAddScreen(
                     Modifier.padding(start = MaterialTheme.keylines.content).size(48.dp).clickable {
                       onOpenColorPicker()
                     },
-                color = LocalCategoryColor.current,
+                color = LocalCategoryContainerColor.current,
             )
           }
         }
@@ -195,7 +195,7 @@ private fun ColorPickerDialog(
     onColorChanged: (Color) -> Unit,
     onDismiss: () -> Unit,
 ) {
-  val defaultColor = LocalCategoryColor.current
+  val defaultColor = LocalCategoryContainerColor.current
   val (renderKey, setRenderKey) = remember { mutableStateOf(IdGenerator.generate()) }
   val (currentColor, setCurrentColor) = remember { mutableStateOf(defaultColor) }
 

@@ -47,7 +47,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.SpendDirection
 import com.pyamsoft.sleepforbreakfast.db.transaction.asDirection
-import com.pyamsoft.sleepforbreakfast.money.LocalCategoryColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
+import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.money.add.AddCategories
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
@@ -83,8 +84,8 @@ internal fun TransactionHeader(
 
   Surface(
       modifier = modifier,
-      color = LocalCategoryColor.current,
-      contentColor = MaterialTheme.colorScheme.onPrimary,
+      color = LocalCategoryContainerColor.current,
+      contentColor = LocalCategoryContentColor.current,
       shape = MaterialTheme.shapes.medium,
   ) {
     Text(
