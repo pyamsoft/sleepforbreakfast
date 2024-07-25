@@ -28,7 +28,10 @@ private val complementaryColorMap by lazy { mutableMapOf<Color, Color>() }
 @get:CheckResult
 val Color.complement: Color
   get() {
-    return complementaryColorMap.getOrPut(this) { resolveComplementaryColor(this) }
+    val self = this
+    return complementaryColorMap.getOrPut(self) {
+      resolveComplementaryColor(self)
+    }
   }
 
 /** https://rgbcolorpicker.com/complementary */

@@ -24,8 +24,8 @@ internal object AndroidCollection :
     ) {
   override suspend fun ignorables(): Collection<Ignorable> {
     return setOf(
-        // Update
-        ignoreTitle("^Finishing system update"),
-    )
+        // Ignore all Android system notifications
+        ignoreTitle(Regex(".*")),
+        ignoreText(Regex(".*")))
   }
 }

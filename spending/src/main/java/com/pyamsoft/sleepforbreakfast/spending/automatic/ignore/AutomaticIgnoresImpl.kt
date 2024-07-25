@@ -17,7 +17,10 @@
 package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections.AndroidCollection
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections.AndroidSystemUiCollection
 import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections.FairEmailCollection
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections.NeoStoreCollection
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,7 +42,10 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
         bigText = bigText,
         ignoreables =
             setOf(
+                AndroidCollection,
+                AndroidSystemUiCollection,
                 FairEmailCollection,
+                NeoStoreCollection,
             ),
     )
   }

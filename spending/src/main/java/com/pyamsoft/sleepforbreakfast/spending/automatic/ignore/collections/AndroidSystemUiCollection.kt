@@ -15,3 +15,17 @@
  */
 
 package com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.collections
+
+import com.pyamsoft.sleepforbreakfast.spending.automatic.ignore.Ignorable
+
+internal object AndroidSystemUiCollection :
+    AbstractIgnoreCollection(
+        packageName = "com.android.systemui",
+    ) {
+  override suspend fun ignorables(): Collection<Ignorable> {
+    return setOf(
+        // Ignore all Android system notifications
+        ignoreTitle(Regex(".*")),
+        ignoreText(Regex(".*")))
+  }
+}
