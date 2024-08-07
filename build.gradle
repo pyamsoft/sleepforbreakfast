@@ -27,14 +27,14 @@ buildscript {
     pydroid = "27.0.5"
 
     // Kotlin
-    kotlin = "2.0.0"
+    kotlin = "2.0.10"
     coroutines = "1.8.1"
 
     // Leak Canary
     leakCanary = "2.14"
 
     // Dagger
-    dagger = "2.51.1"
+    dagger = "2.52"
 
     // Room
     room = "2.6.1"
@@ -88,7 +88,7 @@ plugins {
 
   // KSP
   // https://github.com/google/ksp
-  id("com.google.devtools.ksp") version "${kotlin}-1.0.23" apply false
+  id("com.google.devtools.ksp") version "${kotlin}-1.0.24" apply false
 
   // Gradle Doctor
   // https://runningcode.github.io/gradle-doctor/
