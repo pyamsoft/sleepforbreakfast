@@ -17,6 +17,8 @@
 plugins {
   id("com.android.library")
   id("com.google.devtools.ksp")
+  id("org.gradle.android.cache-fix")
+  id("kotlin-android")
 }
 
 android {
@@ -38,7 +40,7 @@ android {
     isCoreLibraryDesugaringEnabled = true
   }
 
-  kotlinOptions { jvmTarget = JavaVersion.VERSION_17.getMajorVersion() }
+  kotlinOptions { jvmTarget = JavaVersion.VERSION_17.majorVersion }
 
   buildFeatures { buildConfig = false }
 }
@@ -46,7 +48,7 @@ android {
 dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
-  kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
   api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutines"]}")
 

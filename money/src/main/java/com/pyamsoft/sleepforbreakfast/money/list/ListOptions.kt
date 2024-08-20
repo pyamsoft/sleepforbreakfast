@@ -42,7 +42,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -145,12 +145,17 @@ private fun SwipeAway(
         .collect { handleSwiped() }
   }
 
-  SwipeToDismiss(
-      modifier = modifier,
-      state = swipeState,
-      background = {},
-      dismissContent = content,
-  )
+    setOf(SwipeToDismissBoxValue.EndToStart,
+        SwipeToDismissBoxValue.StartToEnd
+    )
+    SwipeToDismissBox(
+        modifier = modifier,
+        state = swipeState,
+        backgroundContent = {},
+        enableDismissFromStartToEnd = true,
+        enableDismissFromEndToStart = true,
+        content = content
+    )
 }
 
 @Composable

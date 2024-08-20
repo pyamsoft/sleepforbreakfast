@@ -18,6 +18,8 @@ plugins {
   id("com.android.application")
   id("com.google.devtools.ksp")
   id("org.jetbrains.kotlin.plugin.compose")
+  id("org.gradle.android.cache-fix")
+  id("kotlin-android")
 }
 
 android {
@@ -47,10 +49,10 @@ android {
     isCoreLibraryDesugaringEnabled = true
   }
 
-  kotlinOptions { jvmTarget = JavaVersion.VERSION_17.getMajorVersion() }
+  kotlinOptions { jvmTarget = JavaVersion.VERSION_17.majorVersion }
 
   signingConfigs {
-    getByName("debug") {
+    named("debug") {
       storeFile = file("debug.keystore")
       keyAlias = "androiddebugkey"
       keyPassword = "android"
@@ -102,7 +104,7 @@ android {
 dependencies {
   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
 
-  kapt("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
   // Leak Canary
   debugImplementation(
