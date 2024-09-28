@@ -119,8 +119,8 @@ allprojects {
   // Java compile show
   tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += [
-            "-Xlint:unchecked",
-            "-Xlint:deprecation"
+      "-Xlint:unchecked",
+      "-Xlint:deprecation"
     ]
     options.deprecation = true
   }

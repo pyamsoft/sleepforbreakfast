@@ -145,17 +145,14 @@ private fun SwipeAway(
         .collect { handleSwiped() }
   }
 
-    setOf(SwipeToDismissBoxValue.EndToStart,
-        SwipeToDismissBoxValue.StartToEnd
-    )
-    SwipeToDismissBox(
-        modifier = modifier,
-        state = swipeState,
-        backgroundContent = {},
-        enableDismissFromStartToEnd = true,
-        enableDismissFromEndToStart = true,
-        content = content
-    )
+  setOf(SwipeToDismissBoxValue.EndToStart, SwipeToDismissBoxValue.StartToEnd)
+  SwipeToDismissBox(
+      modifier = modifier,
+      state = swipeState,
+      backgroundContent = {},
+      enableDismissFromStartToEnd = true,
+      enableDismissFromEndToStart = true,
+      content = content)
 }
 
 @Composable

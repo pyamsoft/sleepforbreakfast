@@ -26,8 +26,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 
 class CategoryViewModeler
 @Inject
