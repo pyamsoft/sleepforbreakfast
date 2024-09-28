@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import javax.inject.Inject
@@ -56,12 +57,12 @@ internal constructor(
 
     registry
         .consumeRestored(KEY_SETTINGS)
-        ?.let { it as Boolean }
+        ?.let { it.cast<Boolean>() }
         ?.also { s.isSettingsOpen.value = it }
 
     registry
         .consumeRestored(KEY_PAGE)
-        ?.let { it as String }
+        ?.let { it.cast<String>() }
         ?.let { p ->
           return@let when (p) {
             MainPage.Category::class.java.name -> MainPage.Category

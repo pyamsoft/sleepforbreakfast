@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.automatic.add
 
 import androidx.annotation.CheckResult
+import androidx.annotation.Keep
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
 import com.squareup.moshi.JsonClass
@@ -33,6 +34,7 @@ data class AutomaticAddParams(
     )
   }
 
+  @Keep
   @Stable
   @JsonClass(generateAdapter = true)
   data class Json(

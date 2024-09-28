@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast.worker.workmanager
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import android.content.Context
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -34,11 +33,6 @@ object WorkerObjectGraph {
   ) {
     trackingMap[application] = component
     Timber.d { "Track WorkerScoped install: $application $component" }
-  }
-
-  @CheckResult
-  fun retrieve(context: Context): WorkerComponent {
-    return retrieve(context.applicationContext as Application)
   }
 
   @CheckResult

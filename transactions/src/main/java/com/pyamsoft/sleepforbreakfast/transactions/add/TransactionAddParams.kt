@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.annotation.CheckResult
+import androidx.annotation.Keep
 import androidx.compose.runtime.Stable
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -36,6 +37,7 @@ data class TransactionAddParams(
     )
   }
 
+  @Keep
   @Stable
   @JsonClass(generateAdapter = true)
   data class Json(

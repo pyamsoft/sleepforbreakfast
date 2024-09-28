@@ -19,7 +19,6 @@ package com.pyamsoft.sleepforbreakfast
 import android.app.Activity
 import android.app.Application
 import android.app.Service
-import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.requireNotNull
@@ -39,11 +38,6 @@ internal object ObjectGraph {
     ) {
       trackingMap[application] = component
       Timber.d { "Track ApplicationScoped install: $application $component" }
-    }
-
-    @CheckResult
-    fun retrieve(context: Context): BreakfastComponent {
-      return retrieve(context.applicationContext as Application)
     }
 
     @CheckResult

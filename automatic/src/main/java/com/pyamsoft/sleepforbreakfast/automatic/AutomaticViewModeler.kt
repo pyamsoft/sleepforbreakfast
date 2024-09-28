@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.automatic
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.sleepforbreakfast.automatic.add.AutomaticAddParams
 import com.pyamsoft.sleepforbreakfast.automatic.delete.AutomaticDeleteParams
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
@@ -26,8 +27,8 @@ import com.pyamsoft.sleepforbreakfast.db.notification.NotificationChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
 
 class AutomaticViewModeler
 @Inject
@@ -71,14 +72,14 @@ internal constructor(
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
         .consumeRestored(KEY_ADD_PARAMS)
-        ?.let { it as String }
+        ?.let { it.cast<String>() }
         ?.let { jsonParser.fromJson<AutomaticAddParams.Json>(it) }
         ?.fromJson()
         ?.let { handleAddParams(it) }
 
     registry
         .consumeRestored(KEY_DELETE_PARAMS)
-        ?.let { it as String }
+        ?.let { it.cast<String>() }
         ?.let { jsonParser.fromJson<AutomaticDeleteParams.Json>(it) }
         ?.fromJson()
         ?.let { handleDeleteParams(it) }

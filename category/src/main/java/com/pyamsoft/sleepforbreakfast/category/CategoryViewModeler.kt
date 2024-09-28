@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.category
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddParams
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteParams
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryChangeEvent
@@ -25,8 +26,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
 
 class CategoryViewModeler
 @Inject
@@ -70,14 +71,14 @@ internal constructor(
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
         .consumeRestored(KEY_ADD_PARAMS)
-        ?.let { it as String }
+        ?.let { it.cast<String>() }
         ?.let { jsonParser.fromJson<CategoryAddParams.Json>(it) }
         ?.fromJson()
         ?.let { handleAddParams(it) }
 
     registry
         .consumeRestored(KEY_DELETE_PARAMS)
-        ?.let { it as String }
+        ?.let { it.cast<String>() }
         ?.let { jsonParser.fromJson<CategoryDeleteParams.Json>(it) }
         ?.fromJson()
         ?.let { handleDeleteParams(it) }
