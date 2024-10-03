@@ -34,7 +34,7 @@ protected constructor(
 ) : CoroutineWorker(context, params) {
 
   private fun inject() {
-    onInject(WorkerObjectGraph.retrieve(applicationContext))
+    onInject(WorkerObjectGraph.retrieve(this))
   }
 
   private fun destroy() {

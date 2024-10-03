@@ -28,7 +28,7 @@ buildscript {
 
     // Kotlin
     kotlin = "2.0.20"
-    coroutines = "1.8.1"
+    coroutines = "1.9.0"
 
     // Leak Canary
     leakCanary = "2.14"
@@ -88,11 +88,15 @@ plugins {
 
   // KSP
   // https://github.com/google/ksp
-  id("com.google.devtools.ksp") version "${kotlin}-1.0.24" apply false
+  id("com.google.devtools.ksp") version "${kotlin}-1.0.25" apply false
 
   // Gradle Doctor
   // https://runningcode.github.io/gradle-doctor/
   id("com.osacky.doctor") version "0.10.0" apply true
+
+  // Room
+  // https://developer.android.com/jetpack/androidx/releases/room#ktsid("kotlin-android")
+  id("androidx.room") version "${room}" apply false
 }
 
 allprojects {

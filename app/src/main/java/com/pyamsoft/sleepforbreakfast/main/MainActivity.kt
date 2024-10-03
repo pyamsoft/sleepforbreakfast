@@ -39,14 +39,15 @@ import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
 import com.pyamsoft.sleepforbreakfast.ui.InstallPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.work.enqueueActivityWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
   @JvmField @Inject internal var themeViewModel: ThemeViewModeler? = null
   @JvmField @Inject internal var workerQueue: WorkerQueue? = null
+  @JvmField @Inject internal var mainViewModel: MainViewModeler? = null
 
   private var pydroid: PYDroidActivityDelegate? = null
 
@@ -77,6 +78,12 @@ class MainActivity : AppCompatActivity() {
     val component = ObjectGraph.ApplicationScope.retrieve(this).plusMainComponent().create(this)
     component.inject(this)
     ObjectGraph.ActivityScope.install(this, component)
+  }
+
+  private fun handleOpenedWithIntent(intent: Intent) {
+    if (intent.action === Intent.ACTION_APPLICATION_PREFERENCES) {
+      mainViewModel.requireNotNull().handleOpenSettings()
+    }
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +117,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     vm.init(this)
+    handleOpenedWithIntent(intent)
   }
 
   override fun onStart() {
@@ -125,11 +133,13 @@ class MainActivity : AppCompatActivity() {
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
     setIntent(intent)
+    handleOpenedWithIntent(intent)
   }
 
   override fun onDestroy() {
     super.onDestroy()
     themeViewModel = null
     pydroid = null
+    mainViewModel = null
   }
 }

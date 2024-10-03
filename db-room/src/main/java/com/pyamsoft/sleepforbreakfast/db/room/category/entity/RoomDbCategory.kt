@@ -24,6 +24,7 @@ import androidx.room.PrimaryKey
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import java.time.LocalDateTime
 
+// Kotlin 2.0.20, Room 2.6.1 - Copy annotations currently break Room KSP. Do not use.
 @Entity(tableName = RoomDbCategory.TABLE_NAME)
 internal data class RoomDbCategory
 internal constructor(

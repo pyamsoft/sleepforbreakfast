@@ -19,6 +19,7 @@ plugins {
   id("com.google.devtools.ksp")
   id("org.gradle.android.cache-fix")
   id("kotlin-android")
+  id("androidx.room")
 }
 
 android {
@@ -43,10 +44,13 @@ android {
   kotlinOptions { jvmTarget = JavaVersion.VERSION_17.majorVersion }
 
   buildFeatures { buildConfig = false }
+
+  room {
+    schemaDirectory("${projectDir}/schemas")
+  }
 }
 
 ksp {
-  arg("room.schemaLocation", "${projectDir}/schemas")
   arg("room.incremental", "true")
   arg("room.generateKotlin", "true")
 }

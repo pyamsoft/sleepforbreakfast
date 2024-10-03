@@ -20,6 +20,8 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import androidx.annotation.CheckResult
+import androidx.work.ListenableWorker
+import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.sleepforbreakfast.core.Timber
 
@@ -43,6 +45,11 @@ object WorkerObjectGraph {
   @CheckResult
   fun retrieve(service: Service): WorkerComponent {
     return retrieve(service.application)
+  }
+
+  @CheckResult
+  fun retrieve(worker: ListenableWorker): WorkerComponent {
+    return retrieve(worker.applicationContext.cast<Application>().requireNotNull())
   }
 
   @CheckResult
