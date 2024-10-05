@@ -23,19 +23,45 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.await
+import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.AutomaticSpendingWorker
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 internal class WorkerQueueImpl
 @Inject
 internal constructor(
     private val context: Context,
 ) : WorkerQueue {
+
+  /**
+   * This method is called in rare cases to initialize WorkManager ourselves.
+   */
+  private fun initializeWorkManager() {
+    try {
+      /*
+      Note: `WorkManager.getInstance(context)` should already initialize WorkManager when the
+      application implements Configuration.Provider. However, as a further safeguard, let's detect
+      for this when we attempt to initialize WorkManager.
+       */
+      val configuration =
+        context.applicationContext.cast<Configuration.Provider>()?.workManagerConfiguration
+          ?: Configuration.Builder().build()
+      WorkManager.initialize(context, configuration)
+    } catch (e: IllegalStateException) {
+      /*
+      This catch is meant for the exception -
+      https://android.googlesource.com/platform/frameworks/support/+/60ae0eec2a32396c22ad92502cde952c80d514a0/work/workmanager/src/main/java/androidx/work/impl/WorkManagerImpl.java#177
+      1. We lost the race with another call to  WorkManager.initialize outside of OneSignal.
+      2. It is possible for some other unexpected error is thrown from WorkManager.
+       */
+      Timber.e(e) { "initializeWorkManager workaround failed" }
+    }
+  }
 
   /**
    * 07/18/2024
@@ -69,21 +95,23 @@ internal constructor(
    * at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:702)
    *
    * Attempt this kind of fix https://github.com/OneSignal/OneSignal-Android-SDK/pull/2052/files
+   *
+   * https://github.com/OneSignal/OneSignal-Android-SDK/blob/main/OneSignalSDK/onesignal/notifications/src/main/java/com/onesignal/notifications/internal/common/OSWorkManagerHelper.kt
    */
   @CheckResult
   private fun ensureWorkManagerInitialized(): WorkManager {
     if (!WorkManager.isInitialized()) {
       synchronized(INIT_LOCK) {
-        if (!WorkManager.isInitialized()) {
-          try {
-            Timber.w { "WorkManager is not initialized even though it should be!?!?!" }
-            val defaultConfig = Configuration.Builder().build()
-            WorkManager.initialize(context, defaultConfig)
-          } catch (e: IllegalStateException) {
-            // Guard against the WM being already initialized
-            // There is something that is racing which is just peachy great.
-            Timber.e(e) { "Initializing WorkManager failed :( YOLO!" }
-          }
+        return try {
+          WorkManager.getInstance(context)
+        } catch (e: IllegalStateException) {
+          /*
+          This aims to catch the IllegalStateException "WorkManager is not initialized properly..." -
+          https://androidx.tech/artifacts/work/work-runtime/2.8.1-source/androidx/work/impl/WorkManagerImpl.java.html
+           */
+          Timber.e(e) { "WorkManager.getInstance failed, attempting to initialize: " }
+          initializeWorkManager()
+          WorkManager.getInstance(context)
         }
       }
     }
