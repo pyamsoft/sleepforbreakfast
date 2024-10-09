@@ -39,9 +39,9 @@ import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
 import com.pyamsoft.sleepforbreakfast.ui.InstallPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.work.enqueueActivityWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 

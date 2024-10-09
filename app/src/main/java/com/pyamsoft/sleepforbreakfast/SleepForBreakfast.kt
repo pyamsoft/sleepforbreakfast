@@ -18,6 +18,8 @@ package com.pyamsoft.sleepforbreakfast
 
 import android.app.Application
 import androidx.annotation.CheckResult
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.pyamsoft.pydroid.bootstrap.libraries.OssLibraries
 import com.pyamsoft.pydroid.ui.ModuleProvider
 import com.pyamsoft.pydroid.ui.PYDroid
@@ -36,11 +38,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class SleepForBreakfast : Application() {
+class SleepForBreakfast : Application(), Configuration.Provider {
 
   @Inject @JvmField internal var workerQueue: WorkerQueue? = null
 
   @Inject @JvmField internal var guaranteedSpending: GuaranteedSpending? = null
+
+  override val workManagerConfiguration: Configuration by lazy { Configuration.Builder().build() }
 
   @CheckResult
   private fun initPYDroid(): ModuleProvider {
@@ -96,6 +100,10 @@ class SleepForBreakfast : Application() {
 
   override fun onCreate() {
     super.onCreate()
+
+    // Immediately
+    WorkManager.initialize(this, workManagerConfiguration)
+
     val modules = initPYDroid()
 
     val scope =

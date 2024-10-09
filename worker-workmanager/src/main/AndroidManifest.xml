@@ -14,11 +14,34 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+>
   <!-- Drop Foreground Service Permission that is pulled in from WorkManager -->
   <uses-permission
-    xmlns:tools="http://schemas.android.com/tools"
     android:name="android.permission.FOREGROUND_SERVICE"
     tools:node="remove"
   />
+
+  <application>
+    <!-- Remove WorkManager auto startup
+
+        Nothing we do can fix this crash
+       https://github.com/OneSignal/OneSignal-Android-SDK/blob/main/OneSignalSDK/onesignal/notifications/src/main/java/com/onesignal/notifications/internal/common/OSWorkManagerHelper.kt
+         -->
+    <provider
+      android:name="androidx.startup.InitializationProvider"
+      android:authorities="${applicationId}.androidx-startup"
+      android:exported="false"
+      tools:node="merge"
+    >
+      <!-- If you are using androidx.startup to initialize other components -->
+      <meta-data
+        android:name="androidx.work.WorkManagerInitializer"
+        android:value="androidx.startup"
+        tools:node="remove"
+      />
+    </provider>
+  </application>
 </manifest>

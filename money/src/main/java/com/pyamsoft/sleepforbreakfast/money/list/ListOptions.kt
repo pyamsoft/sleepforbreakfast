@@ -226,12 +226,7 @@ fun SearchBar(
         value = search,
         onValueChange = { setSearch(it) },
         keyboardOptions =
-            remember {
-                KeyboardOptions(
-                    autoCorrectEnabled = true,
-                    imeAction = ImeAction.Search
-                )
-            },
+            remember { KeyboardOptions(autoCorrectEnabled = true, imeAction = ImeAction.Search) },
         leadingIcon = {
           Icon(
               imageVector = Icons.Filled.Search,
