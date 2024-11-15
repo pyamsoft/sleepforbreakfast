@@ -50,7 +50,7 @@ dependencies {
 
   ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
 
-  implementation("com.github.pyamsoft:cachify:0.3.3")
+  implementation("com.github.pyamsoft:cachify:0.3.5")
 
   // Compose Annotations
   implementation("androidx.compose.runtime:runtime:${rootProject.extra["compose"]}")
