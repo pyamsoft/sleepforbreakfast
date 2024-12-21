@@ -27,7 +27,7 @@ buildscript {
     pydroid = "27.1.0"
 
     // Kotlin
-    kotlin = "2.0.21"
+    kotlin = "2.1.0"
     coroutines = "1.10.1"
 
     // Leak Canary
@@ -40,10 +40,10 @@ buildscript {
     room = "2.6.1"
 
     // Jobsfire
-    workmanager = "2.9.1"
+    workmanager = "2.10.0"
 
     // Moshi
-    moshi = "1.15.1"
+    moshi = "1.15.2"
 
     // Compose
     compose = "1.7.6"
@@ -51,7 +51,7 @@ buildscript {
     composeActivity = "1.9.3"
 
     // Charts
-    vico = "1.15.0"
+    vico = "1.16.0"
 
     desugar = "2.1.4"
   }
@@ -88,7 +88,7 @@ plugins {
 
   // KSP
   // https://github.com/google/ksp
-  id("com.google.devtools.ksp") version "${kotlin}-1.0.27" apply false
+  id("com.google.devtools.ksp") version "${kotlin}-1.0.29" apply false
 
   // Gradle Doctor
   // https://runningcode.github.io/gradle-doctor/
