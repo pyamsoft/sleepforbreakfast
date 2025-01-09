@@ -146,7 +146,7 @@ allprojects {
       removeUnusedImports()
       trimTrailingWhitespace()
       endWithNewline()
-      indentWithSpaces(2)
+      leadingTabsToSpaces(2)
     }
     kotlin {
       target("src/**/*.kt", "*.kts")
@@ -154,7 +154,7 @@ allprojects {
 
       trimTrailingWhitespace()
       endWithNewline()
-      indentWithSpaces(2)
+      leadingTabsToSpaces(2)
     }
     groovyGradle {
       target("*.gradle")
@@ -162,7 +162,7 @@ allprojects {
 
       trimTrailingWhitespace()
       endWithNewline()
-      indentWithSpaces(2)
+      leadingTabsToSpaces(2)
     }
   }
 }
