@@ -566,7 +566,7 @@ private fun IconOption(
     icon: ImageVector,
     title: String,
 ) {
-  val shape = MaterialTheme.shapes.medium
+  val shape = MaterialTheme.shapes.large
 
   Surface(
       modifier = modifier,

@@ -46,7 +46,7 @@ internal fun SettingsToolbar(
       contentColor = Color.White,
       color = MaterialTheme.colorScheme.primary,
       shape =
-          MaterialTheme.shapes.medium.copy(
+          MaterialTheme.shapes.large.copy(
               bottomStart = ZeroCornerSize,
               bottomEnd = ZeroCornerSize,
           ),

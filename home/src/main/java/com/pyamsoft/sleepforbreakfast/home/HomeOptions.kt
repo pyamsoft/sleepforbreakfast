@@ -58,7 +58,7 @@ internal fun HomeOptions(
   val isNotificationListenerEnabled by
       state.isNotificationListenerEnabled.collectAsStateWithLifecycle()
 
-  val shape = MaterialTheme.shapes.medium
+  val shape = MaterialTheme.shapes.large
 
   val hapticManager = LocalHapticManager.current
 

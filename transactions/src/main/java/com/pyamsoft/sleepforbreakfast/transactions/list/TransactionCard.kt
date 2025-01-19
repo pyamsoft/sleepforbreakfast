@@ -86,7 +86,7 @@ internal fun TransactionHeader(
       modifier = modifier,
       color = LocalCategoryContainerColor.current,
       contentColor = LocalCategoryContentColor.current,
-      shape = MaterialTheme.shapes.medium,
+      shape = MaterialTheme.shapes.large,
   ) {
     Text(
         modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
@@ -151,7 +151,7 @@ internal fun TransactionCard(
     priceModifier: Modifier = Modifier,
     noteModifier: Modifier = Modifier,
     colors: CardColors = CardDefaults.cardColors(),
-    shape: Shape = MaterialTheme.shapes.medium,
+    shape: Shape = MaterialTheme.shapes.large,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     isHeader: Boolean = false,
