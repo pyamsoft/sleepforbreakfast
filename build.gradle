@@ -51,7 +51,7 @@ buildscript {
     composeActivity = "1.10.0"
 
     // Charts
-    vico = "1.16.0"
+    vico = "2.0.1"
 
     desugar = "2.1.4"
   }
