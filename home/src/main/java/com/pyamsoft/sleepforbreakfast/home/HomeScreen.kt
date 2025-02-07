@@ -85,7 +85,6 @@ import java.time.temporal.WeekFields
 import kotlin.math.abs
 
 private enum class ContentTypes {
-  SPACER,
   HEADER,
   OPTIONS,
   TRANSACTIONS,
@@ -100,6 +99,7 @@ fun HomeScreen(
     state: HomeViewState,
     appName: String,
     onOpenSettings: () -> Unit,
+    onToggleExpanded: () -> Unit,
     onOpenNotificationListenerSettings: () -> Unit,
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
@@ -120,21 +120,18 @@ fun HomeScreen(
                 ),
     ) {
       item(
-          contentType = ContentTypes.SPACER,
-      ) {
-        Spacer(
-            modifier = Modifier.statusBarsPadding(),
-        )
-      }
-
-      item(
           contentType = ContentTypes.HEADER,
       ) {
-        HomeHeader(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
-            appName = appName,
-            onOpenSettings = onOpenSettings,
-        )
+          Column {
+              Spacer(
+                  modifier = Modifier.statusBarsPadding(),
+              )
+              HomeHeader(
+                  modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+                  appName = appName,
+                  onOpenSettings = onOpenSettings,
+              )
+          }
       }
 
       renderPYDroidExtras()
@@ -146,6 +143,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             state = state,
             appName = appName,
+            onToggleExpanded = onToggleExpanded,
             onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
         )
       }

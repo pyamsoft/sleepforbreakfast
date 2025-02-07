@@ -24,12 +24,12 @@ import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
-import java.time.Clock
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Clock
+import javax.inject.Inject
 
 class CategoryAddViewModeler
 @Inject
@@ -97,15 +97,14 @@ internal constructor(
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_NAME)?.let { it.cast<String>() }?.also { handleNameChanged(it) }
+    registry.consumeRestored(KEY_NAME)?.cast<String>()?.also { handleNameChanged(it) }
 
-    registry.consumeRestored(KEY_NOTE)?.let { it.cast<String>() }?.also { handleNoteChanged(it) }
+    registry.consumeRestored(KEY_NOTE)?.cast<String>()?.also { handleNoteChanged(it) }
 
-    registry.consumeRestored(KEY_COLOR)?.let { it.cast<Long>() }?.also { handleColorChanged(it) }
+    registry.consumeRestored(KEY_COLOR)?.cast<Long>()?.also { handleColorChanged(it) }
 
     registry
-        .consumeRestored(KEY_COLOR_PICKER_OPEN)
-        ?.let { it.cast<Boolean>() }
+        .consumeRestored(KEY_COLOR_PICKER_OPEN)?.cast<Boolean>()
         ?.also {
           if (it) {
             handleOpenColorPicker()

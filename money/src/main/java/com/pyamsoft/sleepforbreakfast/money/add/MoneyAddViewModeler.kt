@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
-import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 abstract class MoneyAddViewModeler<I : Any, T : Any, S : MutableMoneyAddViewState>
 protected constructor(
@@ -65,25 +65,22 @@ protected constructor(
       }
 
   final override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_NAME)?.let { it.cast<String>() }?.also { state.name.value = it }
+    registry.consumeRestored(KEY_NAME)?.cast<String>()?.also { state.name.value = it }
 
-    registry.consumeRestored(KEY_NOTE)?.let { it.cast<String>() }?.also { state.note.value = it }
+    registry.consumeRestored(KEY_NOTE)?.cast<String>()?.also { state.note.value = it }
 
     registry
-        .consumeRestored(KEY_AMOUNT)
-        ?.let { it.cast<String>() }
+        .consumeRestored(KEY_AMOUNT)?.cast<String>()
         ?.also { state.amount.value = it }
 
     registry
-        .consumeRestored(KEY_CATEGORIES)
-        ?.let { it.cast<String>() }
+        .consumeRestored(KEY_CATEGORIES)?.cast<String>()
         ?.split("|")
         ?.map { DbCategory.Id(it) }
         ?.also { state.categories.value = it }
 
     registry
-        .consumeRestored(KEY_TYPE)
-        ?.let { it.cast<String>() }
+        .consumeRestored(KEY_TYPE)?.cast<String>()
         ?.let { DbTransaction.Type.valueOf(it) }
         ?.also { state.type.value = it }
 
