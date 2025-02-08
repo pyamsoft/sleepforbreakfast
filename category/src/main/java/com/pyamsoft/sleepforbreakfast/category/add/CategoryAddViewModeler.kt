@@ -24,12 +24,12 @@ import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import java.time.Clock
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Clock
-import javax.inject.Inject
 
 class CategoryAddViewModeler
 @Inject
@@ -103,15 +103,13 @@ internal constructor(
 
     registry.consumeRestored(KEY_COLOR)?.cast<Long>()?.also { handleColorChanged(it) }
 
-    registry
-        .consumeRestored(KEY_COLOR_PICKER_OPEN)?.cast<Boolean>()
-        ?.also {
-          if (it) {
-            handleOpenColorPicker()
-          } else {
-            handleCloseColorPicker()
-          }
-        }
+    registry.consumeRestored(KEY_COLOR_PICKER_OPEN)?.cast<Boolean>()?.also {
+      if (it) {
+        handleOpenColorPicker()
+      } else {
+        handleCloseColorPicker()
+      }
+    }
   }
 
   fun handleReset() {

@@ -33,6 +33,8 @@ import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParam
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
+import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -40,8 +42,6 @@ import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import javax.inject.Inject
 
 class TransactionViewModeler
 @Inject
@@ -100,13 +100,15 @@ internal constructor(
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
-        .consumeRestored(KEY_ADD_PARAMS)?.cast<String>()
+        .consumeRestored(KEY_ADD_PARAMS)
+        ?.cast<String>()
         ?.let { jsonParser.fromJson<TransactionAddParams.Json>(it) }
         ?.fromJson()
         ?.also { handleAddParams(it) }
 
     registry
-        .consumeRestored(KEY_DELETE_PARAMS)?.cast<String>()
+        .consumeRestored(KEY_DELETE_PARAMS)
+        ?.cast<String>()
         ?.let { jsonParser.fromJson<TransactionDeleteParams.Json>(it) }
         ?.fromJson()
         ?.also { handleDeleteParams(it) }

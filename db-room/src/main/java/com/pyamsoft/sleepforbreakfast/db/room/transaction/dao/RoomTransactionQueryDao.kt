@@ -36,7 +36,8 @@ internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
 
   @CheckResult
   @Transaction
-  @Query("""
+  @Query(
+      """
 SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
 """)
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>

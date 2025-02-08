@@ -28,16 +28,16 @@ import com.pyamsoft.sleepforbreakfast.money.add.MoneyAddViewModeler
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class TransactionAddViewModeler
 @Inject
@@ -139,21 +139,22 @@ internal constructor(
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
-        .consumeRestored(KEY_DATE)?.cast<String>()
+        .consumeRestored(KEY_DATE)
+        ?.cast<String>()
         ?.let { LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME) }
         ?.also { state.date.value = it }
 
-    registry
-        .consumeRestored(KEY_DATE_DIALOG)?.cast<Boolean>()
-        ?.also { state.isDateDialogOpen.value = it }
+    registry.consumeRestored(KEY_DATE_DIALOG)?.cast<Boolean>()?.also {
+      state.isDateDialogOpen.value = it
+    }
 
-    registry
-        .consumeRestored(KEY_TIME_DIALOG)?.cast<Boolean>()
-        ?.also { state.isTimeDialogOpen.value = it }
+    registry.consumeRestored(KEY_TIME_DIALOG)?.cast<Boolean>()?.also {
+      state.isTimeDialogOpen.value = it
+    }
 
-    registry
-        .consumeRestored(KEY_IS_AUTO_OPEN)?.cast<Boolean>()
-        ?.also { state.isAutoOpen.value = it }
+    registry.consumeRestored(KEY_IS_AUTO_OPEN)?.cast<Boolean>()?.also {
+      state.isAutoOpen.value = it
+    }
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(

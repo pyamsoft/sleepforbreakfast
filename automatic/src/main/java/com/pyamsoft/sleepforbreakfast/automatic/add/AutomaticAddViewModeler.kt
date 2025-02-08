@@ -27,14 +27,14 @@ import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import java.time.Clock
+import java.time.LocalDateTime
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.Clock
-import java.time.LocalDateTime
-import javax.inject.Inject
 
 class AutomaticAddViewModeler
 @Inject
@@ -156,13 +156,12 @@ internal constructor(
     registry.consumeRestored(KEY_NAME)?.cast<String>()?.also { handleNameChanged(it) }
 
     registry
-        .consumeRestored(KEY_TYPE)?.cast<String>()
+        .consumeRestored(KEY_TYPE)
+        ?.cast<String>()
         ?.let { DbTransaction.Type.valueOf(it) }
         ?.also { handleTypeChanged(it) }
 
-    registry
-        .consumeRestored(KEY_ENABLED)?.cast<Boolean>()
-        ?.also { handleEnabledChanged(it) }
+    registry.consumeRestored(KEY_ENABLED)?.cast<Boolean>()?.also { handleEnabledChanged(it) }
   }
 
   fun handleReset() {

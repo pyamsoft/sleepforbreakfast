@@ -106,79 +106,59 @@ fun HomeScreen(
     onOpenCategories: () -> Unit,
     onOpenAutomatics: () -> Unit,
 ) {
-  Scaffold(
-      modifier = modifier,
-  ) { pv ->
-    LazyColumn(
+  Scaffold(modifier = modifier) { pv ->
+    Column(
         modifier =
             Modifier
                 // So this basically doesn't do anything since we handle the padding ourselves
                 // BUT, we don't just want to consume it because we DO actually care when using
                 // Modifier.navigationBarsPadding()
-                .heightIn(
-                    min = remember(pv) { pv.calculateBottomPadding() },
-                ),
-    ) {
-      item(
-          contentType = ContentTypes.HEADER,
-      ) {
-          Column {
-              Spacer(
-                  modifier = Modifier.statusBarsPadding(),
-              )
-              HomeHeader(
-                  modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+                .heightIn(min = remember(pv) { pv.calculateBottomPadding() })) {
+          Spacer(modifier = Modifier.statusBarsPadding())
+          HomeHeader(
+              modifier =
+                  Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+              appName = appName,
+              onOpenSettings = onOpenSettings,
+          )
+
+          LazyColumn {
+            renderPYDroidExtras()
+
+            item(contentType = ContentTypes.OPTIONS) {
+              HomeOptions(
+                  modifier = Modifier.fillMaxWidth(),
+                  state = state,
                   appName = appName,
-                  onOpenSettings = onOpenSettings,
+                  onToggleExpanded = onToggleExpanded,
+                  onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
               )
+            }
+
+            item(contentType = ContentTypes.TRANSACTIONS) {
+              HomeCategories(
+                  modifier = Modifier.fillMaxWidth(),
+                  clock = clock,
+                  state = state,
+                  onOpenAllTransactions = { onOpenAllTransactions(null) },
+                  onOpenCategory = { onOpenTransactions(it, null) },
+                  onOpenBreakdown = onOpenAllTransactions,
+              )
+            }
+
+            item(contentType = ContentTypes.EXTRAS) {
+              HomeExtras(
+                  modifier = Modifier.fillMaxWidth(),
+                  onOpenCategories = onOpenCategories,
+                  onOpenAutomatics = onOpenAutomatics,
+              )
+            }
+
+            item(contentType = ContentTypes.BOTTOM_SPACER) {
+              Spacer(modifier = Modifier.navigationBarsPadding())
+            }
           }
-      }
-
-      renderPYDroidExtras()
-
-      item(
-          contentType = ContentTypes.OPTIONS,
-      ) {
-        HomeOptions(
-            modifier = Modifier.fillMaxWidth(),
-            state = state,
-            appName = appName,
-            onToggleExpanded = onToggleExpanded,
-            onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
-        )
-      }
-
-      item(
-          contentType = ContentTypes.TRANSACTIONS,
-      ) {
-        HomeCategories(
-            modifier = Modifier.fillMaxWidth(),
-            clock = clock,
-            state = state,
-            onOpenAllTransactions = { onOpenAllTransactions(null) },
-            onOpenCategory = { onOpenTransactions(it, null) },
-            onOpenBreakdown = onOpenAllTransactions,
-        )
-      }
-
-      item(
-          contentType = ContentTypes.EXTRAS,
-      ) {
-        HomeExtras(
-            modifier = Modifier.fillMaxWidth(),
-            onOpenCategories = onOpenCategories,
-            onOpenAutomatics = onOpenAutomatics,
-        )
-      }
-
-      item(
-          contentType = ContentTypes.BOTTOM_SPACER,
-      ) {
-        Spacer(
-            modifier = Modifier.navigationBarsPadding(),
-        )
-      }
-    }
+        }
   }
 }
 
@@ -186,7 +166,7 @@ fun HomeScreen(
 @CheckResult
 private fun rememberCategories(
     map: SnapshotStateMap<DbCategory.Id, Set<DbTransaction>>,
-    id: DbCategory.Id
+    id: DbCategory.Id,
 ): Set<DbTransaction> {
   return remember(map, id) { map.getOrElse(id) { emptySet() } }
 }
@@ -214,27 +194,18 @@ private fun HomeCategories(
   val transactionsByCategory = state.transactionsByCategory.collectAsStateMapWithLifecycle()
   val transactionsByRange = state.transactionsByDateRange.collectAsStateMapWithLifecycle()
 
-  Column(
-      modifier = modifier.padding(MaterialTheme.keylines.content),
-  ) {
+  Column(modifier = modifier.padding(MaterialTheme.keylines.content)) {
     OutlinedButton(
         modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.typography),
         onClick = onOpenAllTransactions,
     ) {
-      Text(
-          text = "View All Transactions",
-      )
+      Text(text = "View All Transactions")
     }
 
-    Crossfade(
-        modifier = Modifier.fillMaxWidth(),
-        label = "Loading",
-        targetState = loading,
-    ) { load ->
+    Crossfade(modifier = Modifier.fillMaxWidth(), label = "Loading", targetState = loading) { load
+      ->
       if (load == LoadingState.DONE) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
           LazyRow(
               modifier = Modifier.fillMaxWidth(),
               verticalAlignment = Alignment.CenterVertically,
@@ -275,31 +246,16 @@ private fun HomeCategories(
           ) {
             item {
               val uncategorizedTransactions =
-                  rememberCategories(
-                      transactionsByCategory,
-                      DbCategory.Id.EMPTY,
-                  )
+                  rememberCategories(transactionsByCategory, DbCategory.Id.EMPTY)
               Category(
                   category = DbCategory.NONE,
                   onOpen = onOpenCategory,
-                  transactions = uncategorizedTransactions,
-              )
+                  transactions = uncategorizedTransactions)
             }
 
-            items(
-                items = categories,
-                key = { it.id.raw },
-            ) { category ->
-              val transactions =
-                  rememberCategories(
-                      transactionsByCategory,
-                      category.id,
-                  )
-              Category(
-                  category = category,
-                  onOpen = onOpenCategory,
-                  transactions = transactions,
-              )
+            items(items = categories, key = { it.id.raw }) { category ->
+              val transactions = rememberCategories(transactionsByCategory, category.id)
+              Category(category = category, onOpen = onOpenCategory, transactions = transactions)
             }
           }
         }
@@ -308,9 +264,7 @@ private fun HomeCategories(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             contentAlignment = Alignment.Center,
         ) {
-          CircularProgressIndicator(
-              modifier = Modifier.size(80.dp),
-          )
+          CircularProgressIndicator(modifier = Modifier.size(80.dp))
         }
       }
     }
@@ -334,19 +288,13 @@ private fun DateBreakdown(
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
   val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
   val totalPrice =
-      remember(
-          transactions,
-          totalAmount,
-      ) {
+      remember(transactions, totalAmount) {
         if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
       }
 
   val zeroPriceColor = MaterialTheme.colorScheme.onPrimary
   val priceColor =
-      remember(
-          totalDirection,
-          zeroPriceColor,
-      ) {
+      remember(totalDirection, zeroPriceColor) {
         when (totalDirection) {
           SpendDirection.NONE -> zeroPriceColor
           SpendDirection.SPEND -> COLOR_SPEND
@@ -367,12 +315,7 @@ private fun DateBreakdown(
 
   val locale = rememberCurrentLocale()
   val startOfRange =
-      remember(
-          type,
-          clock,
-          today,
-          locale,
-      ) {
+      remember(type, clock, today, locale) {
         when (type) {
           DateBreakdownType.DAILY -> LocalDate.now(clock)
           DateBreakdownType.WEEKLY -> {
@@ -383,13 +326,7 @@ private fun DateBreakdown(
         }
       }
 
-  val dateRange =
-      remember(
-          startOfRange,
-          today,
-      ) {
-        startOfRange.toDateRange(today)
-      }
+  val dateRange = remember(startOfRange, today) { startOfRange.toDateRange(today) }
 
   val dateRangeFormatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT) }
 
@@ -399,44 +336,32 @@ private fun DateBreakdown(
       colors = CardDefaults.elevatedCardColors(),
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content),
-    ) {
-      Text(
-          style = MaterialTheme.typography.headlineSmall,
-          text = rangeName,
-      )
+        modifier =
+            Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content)) {
+          Text(style = MaterialTheme.typography.headlineSmall, text = rangeName)
 
-      Text(
-          style = MaterialTheme.typography.bodySmall,
-          text =
-              remember(
-                  today,
-                  type,
-                  dateRange,
-                  dateRangeFormatter,
-              ) {
-                if (type == DateBreakdownType.DAILY) {
-                  return@remember dateRangeFormatter.format(today)
-                } else {
-                  val start = dateRangeFormatter.format(dateRange.from)
-                  val end = dateRangeFormatter.format(dateRange.to)
-                  return@remember "$start - $end"
-                }
-              },
-      )
+          Text(
+              style = MaterialTheme.typography.bodySmall,
+              text =
+                  remember(today, type, dateRange, dateRangeFormatter) {
+                    if (type == DateBreakdownType.DAILY) {
+                      return@remember dateRangeFormatter.format(today)
+                    } else {
+                      val start = dateRangeFormatter.format(dateRange.from)
+                      val end = dateRangeFormatter.format(dateRange.to)
+                      return@remember "$start - $end"
+                    }
+                  },
+          )
 
-      Text(
-          modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
-          style =
-              MaterialTheme.typography.bodyLarge.copy(
-                  color =
-                      priceColor.copy(
-                          alpha = TypographyDefaults.ALPHA_DISABLED,
-                      ),
-              ),
-          text = totalPrice,
-      )
-    }
+          Text(
+              modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+              style =
+                  MaterialTheme.typography.bodyLarge.copy(
+                      color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)),
+              text = totalPrice,
+          )
+        }
   }
 }
 
@@ -450,44 +375,27 @@ private fun Category(
   val defaultContainerColor = MaterialTheme.colorScheme.surface
   val defaultContentColor = MaterialTheme.colorScheme.onSurface
   val containerColor =
-      remember(
-          category,
-          defaultContainerColor,
-      ) {
+      remember(category, defaultContainerColor) {
         if (category.color == 0L) defaultContainerColor else Color(category.color.toULong())
       }
   val contentColor =
-      remember(
-          category,
-          defaultContentColor,
-      ) {
+      remember(category, defaultContentColor) {
         if (category.color == 0L) defaultContentColor
         else Color(category.color.toULong()).complement
       }
 
-  val fontStyle =
-      remember(
-          category,
-      ) {
-        if (category.id.isEmpty) FontStyle.Italic else null
-      }
+  val fontStyle = remember(category) { if (category.id.isEmpty) FontStyle.Italic else null }
 
   val totalAmount = remember(transactions) { transactions.calculateTotalTransactionAmount() }
   val totalDirection = remember(totalAmount) { totalAmount.calculateTotalTransactionDirection() }
   val totalPrice =
-      remember(
-          transactions,
-          totalAmount,
-      ) {
+      remember(transactions, totalAmount) {
         if (transactions.isEmpty()) "$0.00" else MoneyVisualTransformation.format(abs(totalAmount))
       }
 
   val zeroPriceColor = MaterialTheme.colorScheme.onPrimary
   val priceColor =
-      remember(
-          totalDirection,
-          zeroPriceColor,
-      ) {
+      remember(totalDirection, zeroPriceColor) {
         when (totalDirection) {
           SpendDirection.NONE -> zeroPriceColor
           SpendDirection.SPEND -> COLOR_SPEND
@@ -500,31 +408,24 @@ private fun Category(
       elevation = CardDefaults.elevatedCardElevation(),
       colors =
           CardDefaults.elevatedCardColors(
-              containerColor = containerColor,
-              contentColor = contentColor,
-          ),
+              containerColor = containerColor, contentColor = contentColor),
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content),
-    ) {
-      Text(
-          style = MaterialTheme.typography.headlineSmall,
-          text = category.name,
-          fontStyle = fontStyle,
-      )
+        modifier =
+            Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content)) {
+          Text(
+              style = MaterialTheme.typography.headlineSmall,
+              text = category.name,
+              fontStyle = fontStyle)
 
-      Text(
-          modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
-          style =
-              MaterialTheme.typography.bodyLarge.copy(
-                  color =
-                      priceColor.copy(
-                          alpha = TypographyDefaults.ALPHA_DISABLED,
-                      ),
-              ),
-          text = totalPrice,
-      )
-    }
+          Text(
+              modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+              style =
+                  MaterialTheme.typography.bodyLarge.copy(
+                      color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)),
+              text = totalPrice,
+          )
+        }
   }
 }
 
@@ -532,29 +433,26 @@ private fun Category(
 private fun HomeExtras(
     modifier: Modifier = Modifier,
     onOpenCategories: () -> Unit,
-    onOpenAutomatics: () -> Unit,
+    onOpenAutomatics: () -> Unit
 ) {
   Row(
       modifier = modifier.padding(MaterialTheme.keylines.content),
-      verticalAlignment = Alignment.CenterVertically,
-  ) {
-    IconOption(
-        modifier = Modifier.weight(1F),
-        onClick = onOpenCategories,
-        icon = Icons.Filled.Category,
-        title = "View Categories",
-    )
-    Spacer(
-        modifier = Modifier.width(MaterialTheme.keylines.content),
-    )
+      verticalAlignment = Alignment.CenterVertically) {
+        IconOption(
+            modifier = Modifier.weight(1F),
+            onClick = onOpenCategories,
+            icon = Icons.Filled.Category,
+            title = "View Categories",
+        )
+        Spacer(modifier = Modifier.width(MaterialTheme.keylines.content))
 
-    IconOption(
-        modifier = Modifier.weight(1F),
-        onClick = onOpenAutomatics,
-        icon = Icons.Filled.AutoAwesome,
-        title = "View Automatics",
-    )
-  }
+        IconOption(
+            modifier = Modifier.weight(1F),
+            onClick = onOpenAutomatics,
+            icon = Icons.Filled.AutoAwesome,
+            title = "View Automatics",
+        )
+      }
 }
 
 @Composable
@@ -562,7 +460,7 @@ private fun IconOption(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    title: String,
+    title: String
 ) {
   val shape = MaterialTheme.shapes.large
 
@@ -588,10 +486,7 @@ private fun IconOption(
       Text(
           text = title,
           style =
-              MaterialTheme.typography.bodyLarge.copy(
-                  color = MaterialTheme.colorScheme.onPrimary,
-              ),
-      )
+              MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onPrimary))
     }
   }
 }

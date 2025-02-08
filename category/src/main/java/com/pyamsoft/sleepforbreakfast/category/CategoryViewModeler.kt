@@ -26,8 +26,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 
 class CategoryViewModeler
 @Inject
@@ -70,13 +70,15 @@ internal constructor(
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {
     registry
-        .consumeRestored(KEY_ADD_PARAMS)?.cast<String>()
+        .consumeRestored(KEY_ADD_PARAMS)
+        ?.cast<String>()
         ?.let { jsonParser.fromJson<CategoryAddParams.Json>(it) }
         ?.fromJson()
         ?.let { handleAddParams(it) }
 
     registry
-        .consumeRestored(KEY_DELETE_PARAMS)?.cast<String>()
+        .consumeRestored(KEY_DELETE_PARAMS)
+        ?.cast<String>()
         ?.let { jsonParser.fromJson<CategoryDeleteParams.Json>(it) }
         ?.fromJson()
         ?.let { handleDeleteParams(it) }

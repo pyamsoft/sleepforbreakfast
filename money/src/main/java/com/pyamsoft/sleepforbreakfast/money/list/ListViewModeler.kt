@@ -68,13 +68,11 @@ protected constructor(
       }
 
   final override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry
-        .consumeRestored(KEY_SEARCH)?.cast<String>()
-        ?.also { state.search.value = it }
+    registry.consumeRestored(KEY_SEARCH)?.cast<String>()?.also { state.search.value = it }
 
-    registry
-        .consumeRestored(KEY_IS_SEARCH_OPEN)?.cast<Boolean>()
-        ?.also { state.isSearchOpen.value = it }
+    registry.consumeRestored(KEY_IS_SEARCH_OPEN)?.cast<Boolean>()?.also {
+      state.isSearchOpen.value = it
+    }
 
     onConsumeRestoredState(registry)
   }

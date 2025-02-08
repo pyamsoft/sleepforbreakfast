@@ -37,7 +37,8 @@ internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
 
   @CheckResult
   @Transaction
-  @Query("""
+  @Query(
+      """
       SELECT * FROM ${RoomDbNotification.TABLE_NAME}
       """)
   internal abstract suspend fun daoQuery(): List<RoomDbNotificationWithRegexes>

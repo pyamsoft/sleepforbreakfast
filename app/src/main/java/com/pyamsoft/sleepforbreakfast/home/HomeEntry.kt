@@ -34,15 +34,16 @@ import java.time.Clock
 import java.util.Locale
 import javax.inject.Inject
 
-internal class HomeInjector @Inject internal constructor(private val locale: Locale) : ComposableInjector() {
+internal class HomeInjector @Inject internal constructor(private val locale: Locale) :
+    ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: HomeViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
-      .plusHome()
-      .create(locale = locale, activity = activity, lifecycle = activity.lifecycle)
-      .inject(this)
+        .plusHome()
+        .create(locale = locale, activity = activity, lifecycle = activity.lifecycle)
+        .inject(this)
   }
 
   override fun onDispose() {
@@ -59,13 +60,13 @@ private fun MountHooks(viewModel: HomeViewModeler) {
 
 @Composable
 internal fun HomeEntry(
-  modifier: Modifier = Modifier,
-  clock: Clock,
-  appName: String,
-  onOpenSettings: () -> Unit,
-  onOpenPage: (MainPage) -> Unit,
-  onOpenAllTransactions: (TransactionDateRange?) -> Unit,
-  onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
+    modifier: Modifier = Modifier,
+    clock: Clock,
+    appName: String,
+    onOpenSettings: () -> Unit,
+    onOpenPage: (MainPage) -> Unit,
+    onOpenAllTransactions: (TransactionDateRange?) -> Unit,
+    onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
 ) {
   val locale = rememberCurrentLocale()
   val component = rememberComposableInjector { HomeInjector(locale = locale) }
@@ -75,16 +76,18 @@ internal fun HomeEntry(
   MountHooks(viewModel = viewModel)
 
   HomeScreen(
-    modifier = modifier,
-    clock = clock,
-    state = viewModel,
-    appName = appName,
-    onOpenSettings = onOpenSettings,
-    onOpenAllTransactions = onOpenAllTransactions,
-    onOpenTransactions = onOpenTransactions,
-    onOpenCategories = { onOpenPage(MainPage.Category) },
-    onOpenAutomatics = { onOpenPage(MainPage.Automatic) },
-    onToggleExpanded = { viewModel.handleToggleExplanation() },
-    onOpenNotificationListenerSettings = { viewModel.handleOpenNotificationSettings(scope = scope) },
+      modifier = modifier,
+      clock = clock,
+      state = viewModel,
+      appName = appName,
+      onOpenSettings = onOpenSettings,
+      onOpenAllTransactions = onOpenAllTransactions,
+      onOpenTransactions = onOpenTransactions,
+      onOpenCategories = { onOpenPage(MainPage.Category) },
+      onOpenAutomatics = { onOpenPage(MainPage.Automatic) },
+      onToggleExpanded = { viewModel.handleToggleExplanation() },
+      onOpenNotificationListenerSettings = {
+        viewModel.handleOpenNotificationSettings(scope = scope)
+      },
   )
 }

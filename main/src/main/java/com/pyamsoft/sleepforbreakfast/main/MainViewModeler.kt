@@ -55,12 +55,11 @@ internal constructor(
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
     val s = state
 
-    registry
-        .consumeRestored(KEY_SETTINGS)?.cast<Boolean>()
-        ?.also { s.isSettingsOpen.value = it }
+    registry.consumeRestored(KEY_SETTINGS)?.cast<Boolean>()?.also { s.isSettingsOpen.value = it }
 
     registry
-        .consumeRestored(KEY_PAGE)?.cast<String>()
+        .consumeRestored(KEY_PAGE)
+        ?.cast<String>()
         ?.let { p ->
           return@let when (p) {
             MainPage.Category::class.java.name -> MainPage.Category
