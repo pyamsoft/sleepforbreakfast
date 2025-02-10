@@ -442,7 +442,7 @@ private fun HomeExtras(
             modifier = Modifier.weight(1F),
             onClick = onOpenCategories,
             icon = Icons.Filled.Category,
-            title = "View Categories",
+            title = "Categories",
         )
         Spacer(modifier = Modifier.width(MaterialTheme.keylines.content))
 
@@ -450,7 +450,7 @@ private fun HomeExtras(
             modifier = Modifier.weight(1F),
             onClick = onOpenAutomatics,
             icon = Icons.Filled.AutoAwesome,
-            title = "View Automatics",
+            title = "Automatics",
         )
       }
 }
