@@ -18,7 +18,7 @@ plugins {
   id("com.android.library")
   id("com.google.devtools.ksp")
   id("org.gradle.android.cache-fix")
-  id("kotlin-android")
+  id("org.jetbrains.kotlin.android")
   id("androidx.room")
 }
 

@@ -19,7 +19,7 @@ plugins {
   id("com.google.devtools.ksp")
   id("org.jetbrains.kotlin.plugin.compose")
   id("org.gradle.android.cache-fix")
-  id("kotlin-android")
+  id("org.jetbrains.kotlin.android")
 }
 
 android {
