@@ -35,33 +35,28 @@ fun TransactionDeleteScreen(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    DeleteScreen(
-        modifier = modifier,
-        state = state,
-        onDismiss = onDismiss,
-        onConfirm = onConfirm,
-    ) { transaction ->
-        LazyColumn {
-            item {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = MaterialTheme.keylines.content),
-                    text = "Are you sure you want to remove this transaction?",
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            }
+  DeleteScreen(
+      modifier = modifier,
+      state = state,
+      onDismiss = onDismiss,
+      onConfirm = onConfirm,
+  ) { transaction ->
+    LazyColumn {
+      item {
+        Text(
+            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+            text = "Are you sure you want to remove this transaction?",
+            style = MaterialTheme.typography.bodyLarge,
+        )
+      }
 
-            item {
-                TransactionCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = MaterialTheme.keylines.content),
-                    transaction = transaction,
-                    currentCategory = DbCategory.Id.EMPTY,
-                )
-            }
-        }
-
+      item {
+        TransactionCard(
+            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
+            transaction = transaction,
+            currentCategory = DbCategory.Id.EMPTY,
+        )
+      }
     }
+  }
 }
