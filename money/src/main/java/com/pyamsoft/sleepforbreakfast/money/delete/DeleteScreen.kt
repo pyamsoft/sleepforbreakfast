@@ -100,7 +100,9 @@ fun <T : Any> DeleteScreen(
       } else {
         Column {
           Box(
-              modifier = Modifier.weight(1F).padding(bottom = MaterialTheme.keylines.content),
+              modifier =
+                  Modifier.weight(1F, fill = false)
+                      .padding(bottom = MaterialTheme.keylines.content),
           ) {
             content(data)
           }
