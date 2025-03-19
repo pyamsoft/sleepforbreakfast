@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.list
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -144,7 +143,6 @@ internal fun TransactionCard(
 }
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 internal fun TransactionCard(
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,

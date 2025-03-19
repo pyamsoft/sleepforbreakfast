@@ -37,7 +37,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -129,7 +128,6 @@ fun KnobBar(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun SwipeAway(
     modifier: Modifier = Modifier,
     onSwiped: () -> Unit,
@@ -185,7 +183,6 @@ fun Search(
     onToggle: () -> Unit,
 ) {
   val search by state.search.collectAsStateWithLifecycle()
-  val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
   val showUsage = remember(search) { search.isNotBlank() }
 
   ToggleIcon(

@@ -51,76 +51,84 @@ fun <T : Any> DeleteScreen(
     onConfirm: () -> Unit,
     content: @Composable (T) -> Unit,
 ) {
-  val working by state.working.collectAsStateWithLifecycle()
-  val item by state.item.collectAsStateWithLifecycle()
+    val working by state.working.collectAsStateWithLifecycle()
+    val item by state.item.collectAsStateWithLifecycle()
 
-  Column(
-      modifier = modifier,
-  ) {
-    val contentColor = LocalContentColor.current
+    Column(
+        modifier = modifier,
+    ) {
+        val contentColor = LocalContentColor.current
 
-    TopAppBar(
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-            TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                actionIconContentColor = contentColor,
-                navigationIconContentColor = contentColor,
-                titleContentColor = contentColor,
-            ),
-        title = {
-          Text(
-              text = "Really Remove?",
-          )
-        },
-        navigationIcon = {
-          IconButton(
-              onClick = onDismiss,
-          ) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = "Close",
-            )
-          }
-        },
-    )
-
-    Crossfade(
-        label = "Loading Remove",
-        modifier = Modifier.padding(MaterialTheme.keylines.content),
-        targetState = item,
-    ) { data ->
-      if (data == null) {
-        Box(
-            modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-            contentAlignment = Alignment.Center,
-        ) {
-          CircularProgressIndicator()
-        }
-      } else {
-        Column {
-          content(data)
-
-          Button(
-              modifier = Modifier.fillMaxWidth(),
-              onClick = onConfirm,
-              enabled = !working && canDelete,
-          ) {
-            Crossfade(
-                label = "Removing",
-                targetState = working,
-            ) { w ->
-              if (w) {
-                CircularProgressIndicator()
-              } else {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    actionIconContentColor = contentColor,
+                    navigationIconContentColor = contentColor,
+                    titleContentColor = contentColor,
+                ),
+            title = {
                 Text(
-                    text = "Remove",
+                    text = "Really Remove?",
                 )
-              }
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = onDismiss,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Close",
+                    )
+                }
+            },
+        )
+
+        Crossfade(
+            label = "Loading Remove",
+            modifier = Modifier.padding(MaterialTheme.keylines.content),
+            targetState = item,
+        ) { data ->
+            if (data == null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(MaterialTheme.keylines.content),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .weight(1F)
+                            .padding(bottom = MaterialTheme.keylines.content),
+                    ) {
+                        content(data)
+                    }
+
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onConfirm,
+                        enabled = !working && canDelete,
+                    ) {
+                        Crossfade(
+                            label = "Removing",
+                            targetState = working,
+                        ) { w ->
+                            if (w) {
+                                CircularProgressIndicator()
+                            } else {
+                                Text(
+                                    text = "Remove",
+                                )
+                            }
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
 }

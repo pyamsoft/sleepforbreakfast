@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.delete
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,21 +35,33 @@ fun TransactionDeleteScreen(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-  DeleteScreen(
-      modifier = modifier,
-      state = state,
-      onDismiss = onDismiss,
-      onConfirm = onConfirm,
-  ) { transaction ->
-    Text(
-        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-        text = "Are you sure you want to remove this transaction?",
-        style = MaterialTheme.typography.bodyLarge)
+    DeleteScreen(
+        modifier = modifier,
+        state = state,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+    ) { transaction ->
+        LazyColumn {
+            item {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = MaterialTheme.keylines.content),
+                    text = "Are you sure you want to remove this transaction?",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
 
-    TransactionCard(
-        modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.keylines.content),
-        transaction = transaction,
-        currentCategory = DbCategory.Id.EMPTY,
-    )
-  }
+            item {
+                TransactionCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = MaterialTheme.keylines.content),
+                    transaction = transaction,
+                    currentCategory = DbCategory.Id.EMPTY,
+                )
+            }
+        }
+
+    }
 }
