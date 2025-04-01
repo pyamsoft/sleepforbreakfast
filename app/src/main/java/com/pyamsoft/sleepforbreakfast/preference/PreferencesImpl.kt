@@ -23,7 +23,6 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.preference.PreferenceManager
-import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.sleepforbreakfast.db.DbPreferences
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,7 +40,6 @@ internal class PreferencesImpl
 @Inject
 internal constructor(
     private val context: Context,
-    private val enforcer: ThreadEnforcer,
 ) : DbPreferences {
 
   private val Context.dataStore by
@@ -66,10 +64,7 @@ internal constructor(
           },
       )
 
-  private val preferences by lazy {
-    enforcer.assertOffMainThread()
-    context.applicationContext.dataStore
-  }
+  private val preferences by lazy { context.applicationContext.dataStore }
 
   private val scope by lazy {
     CoroutineScope(
