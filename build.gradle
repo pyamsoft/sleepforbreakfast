@@ -63,7 +63,7 @@ buildscript {
     coil = "3.1.0"
 
     // Charts
-    vico = "2.0.2"
+    vico = "2.1.1"
     colorPicker = "0.7.0"
 
     desugar = "2.1.5"
@@ -101,7 +101,7 @@ plugins {
 
   // KSP
   // https://github.com/google/ksp
-  id("com.google.devtools.ksp") version "${kotlin}-1.0.31" apply false
+  id("com.google.devtools.ksp") version "${kotlin}-1.0.32" apply false
 
   // Gradle Doctor
   // https://runningcode.github.io/gradle-doctor/
