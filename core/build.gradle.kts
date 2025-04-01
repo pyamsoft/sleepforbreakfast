@@ -52,14 +52,14 @@ dependencies {
 
   api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutines"]}")
 
-  api("com.jakewharton.timber:timber:5.0.1")
+  api("com.jakewharton.timber:timber:${rootProject.extra["timber"]}")
 
   // PYDroid
   api("com.github.pyamsoft.pydroid:arch:${rootProject.extra["pydroid"]}")
   api("com.github.pyamsoft.pydroid:ui:${rootProject.extra["pydroid"]}")
 
   // Android support library.
-  api("androidx.core:core-ktx:1.15.0")
+  api("androidx.core:core-ktx:${rootProject.extra["core"]}")
 
   // Dagger
   api("com.google.dagger:dagger:${rootProject.extra["dagger"]}")
