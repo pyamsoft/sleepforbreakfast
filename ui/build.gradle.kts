@@ -62,7 +62,7 @@ dependencies {
   api("androidx.compose.ui:ui:${rootProject.extra["compose"]}")
   api("androidx.compose.animation:animation:${rootProject.extra["compose"]}")
   api("androidx.compose.material3:material3:${rootProject.extra["composeMaterial3"]}")
-  api("androidx.compose.material:material-icons-extended:${rootProject.extra["compose"]}")
+  api("androidx.compose.material:material-icons-extended:${rootProject.extra["materialIconsExtended"]}")
 
   // Compose Preview
   compileOnly("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["compose"]}")
