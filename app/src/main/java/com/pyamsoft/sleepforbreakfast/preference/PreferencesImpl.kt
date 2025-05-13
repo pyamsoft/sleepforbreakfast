@@ -17,23 +17,28 @@
 package com.pyamsoft.sleepforbreakfast.preference
 
 import android.content.Context
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.SharedPreferencesMigration
-import androidx.datastore.preferences.core.MutablePreferences
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.preference.PreferenceManager
+import com.pyamsoft.pydroid.util.ifNotCancellation
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbPreferences
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class PreferencesImpl
@@ -45,6 +50,11 @@ internal constructor(
   private val Context.dataStore by
       preferencesDataStore(
           name = "sleepforbreakfast_preferences",
+          corruptionHandler =
+              ReplaceFileCorruptionHandler { err ->
+                Timber.e(err) { "File corruption detected, start with empty Preferences" }
+                return@ReplaceFileCorruptionHandler emptyPreferences()
+              },
           produceMigrations = {
             listOf(
                 // NOTE(Peter): Since our shared preferences was the DEFAULT process one, loading up
@@ -72,18 +82,45 @@ internal constructor(
     )
   }
 
-  private inline fun setPreference(crossinline block: suspend (MutablePreferences) -> Unit) {
-    scope.launch(context = Dispatchers.IO) { preferences.edit { block(it) } }
+  private inline fun <T : Any> setPreference(
+      key: Preferences.Key<T>,
+      fallbackValue: T,
+      crossinline value: suspend (Preferences) -> T
+  ) {
+    scope.launch(context = Dispatchers.IO) {
+      try {
+        preferences.edit { it[key] = value(it) }
+      } catch (e: Throwable) {
+        e.ifNotCancellation { preferences.edit { it[key] = fallbackValue } }
+      }
+    }
   }
+
+  private fun <T : Any> getPreference(
+      key: Preferences.Key<T>,
+      value: T,
+  ): Flow<T> =
+      preferences.data
+          .map { it[key] ?: value }
+          .catch { err ->
+            Timber.e(err) { "Error reading from dataStore: ${key.name}" }
+            preferences.edit { it[key] = value }
+            emit(value)
+          }
 
   override fun listenSystemCategoriesPreloaded(): Flow<Boolean> =
-      preferences.data
-          .map { it[KEY_DEFAULT_CATEGORIES] ?: DEFAULT_DEFAULT_CATEGORIES }
+      getPreference(
+              key = KEY_DEFAULT_CATEGORIES,
+              value = DEFAULT_DEFAULT_CATEGORIES,
+          )
           .flowOn(context = Dispatchers.IO)
 
-  override fun markSystemCategoriesPreloaded() {
-    setPreference { it[KEY_DEFAULT_CATEGORIES] = true }
-  }
+  override fun markSystemCategoriesPreloaded() =
+      setPreference(
+          key = KEY_DEFAULT_CATEGORIES,
+          fallbackValue = DEFAULT_DEFAULT_CATEGORIES,
+          value = { true },
+      )
 
   companion object {
 
