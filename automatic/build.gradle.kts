@@ -29,8 +29,6 @@ android {
 
   defaultConfig {
     minSdk = rootProject.extra["minSdk"] as Int
-
-    resourceConfigurations += setOf("en")
   }
 
   compileOptions {
