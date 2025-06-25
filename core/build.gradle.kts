@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
   id("com.android.library")
   id("com.google.devtools.ksp")
@@ -26,9 +28,7 @@ android {
 
   compileSdk = rootProject.extra["compileSdk"] as Int
 
-  defaultConfig {
-    minSdk = rootProject.extra["minSdk"] as Int
-  }
+  defaultConfig { minSdk = rootProject.extra["minSdk"] as Int }
 
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -38,7 +38,7 @@ android {
     isCoreLibraryDesugaringEnabled = true
   }
 
-  kotlinOptions { jvmTarget = JavaVersion.VERSION_17.majorVersion }
+  kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_17 } }
 
   buildFeatures { buildConfig = false }
 }
