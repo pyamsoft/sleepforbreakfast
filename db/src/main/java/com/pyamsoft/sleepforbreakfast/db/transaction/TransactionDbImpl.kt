@@ -37,8 +37,8 @@ internal class TransactionDbImpl
 internal constructor(
     private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: TransactionQueryDao,
-    @DbApi private val realInsertDao: TransactionInsertDao,
-    @DbApi private val realDeleteDao: TransactionDeleteDao,
+    @param:DbApi private val realInsertDao: TransactionInsertDao,
+    @param:DbApi private val realDeleteDao: TransactionDeleteDao,
 ) :
     TransactionDb,
     TransactionQueryDao.Cache,

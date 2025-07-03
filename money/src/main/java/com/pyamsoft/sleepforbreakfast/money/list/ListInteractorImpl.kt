@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert

@@ -40,8 +40,6 @@ buildscript {
 
     // Room
     room = "2.7.2"
-
-    // Jobsfire
     workmanager = "2.10.2"
 
     // Moshi

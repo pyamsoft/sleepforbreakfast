@@ -36,8 +36,8 @@ internal class NotificationDbImpl
 internal constructor(
     private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: NotificationQueryDao,
-    @DbApi private val realInsertDao: NotificationInsertDao,
-    @DbApi private val realDeleteDao: NotificationDeleteDao,
+    @param:DbApi private val realInsertDao: NotificationInsertDao,
+    @param:DbApi private val realDeleteDao: NotificationDeleteDao,
 ) :
     NotificationDb,
     NotificationQueryDao.Cache,

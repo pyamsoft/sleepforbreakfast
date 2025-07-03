@@ -31,7 +31,7 @@ internal constructor(
     private val queryDao: NotificationQueryDao,
     private val insertDao: NotificationInsertDao,
     // Need to use MutableSet instead of Set because of Java -> Kotlin fun.
-    @SpendingApi private val guarantees: MutableSet<SpendingGuarantee>,
+    @param:SpendingApi private val guarantees: MutableSet<SpendingGuarantee>,
 ) {
 
   suspend fun ensureExistsInDatabase() =

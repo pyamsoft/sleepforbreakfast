@@ -36,8 +36,8 @@ internal class CategoryDbImpl
 internal constructor(
     private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: CategoryQueryDao,
-    @DbApi private val realInsertDao: CategoryInsertDao,
-    @DbApi private val realDeleteDao: CategoryDeleteDao,
+    @param:DbApi private val realInsertDao: CategoryInsertDao,
+    @param:DbApi private val realDeleteDao: CategoryDeleteDao,
 ) :
     CategoryDb,
     CategoryQueryDao.Cache,

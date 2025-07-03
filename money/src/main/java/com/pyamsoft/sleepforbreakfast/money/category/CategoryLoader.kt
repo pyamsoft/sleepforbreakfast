@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.money.category
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 

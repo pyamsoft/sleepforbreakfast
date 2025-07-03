@@ -31,7 +31,7 @@ internal class AutomaticManagerImpl
 @Inject
 internal constructor(
     private val queryDao: NotificationQueryDao,
-    @InternalApi private val ignores: AutomaticIgnores,
+    @param:InternalApi private val ignores: AutomaticIgnores,
 ) : AutomaticManager {
 
   @CheckResult
@@ -68,6 +68,6 @@ internal constructor(
   companion object {
 
     /** Test the regex system by letting it run against ANY package */
-    private const val TEST_CAN_ALWAYS_EXTRACT = true
+    private const val TEST_CAN_ALWAYS_EXTRACT = false
   }
 }

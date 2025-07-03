@@ -16,7 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
-import com.pyamsoft.pydroid.core.ResultWrapper
+import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe

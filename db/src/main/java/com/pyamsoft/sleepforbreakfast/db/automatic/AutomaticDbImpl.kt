@@ -37,8 +37,8 @@ internal class AutomaticDbImpl
 internal constructor(
     private val enforcer: ThreadEnforcer,
     @DbApi realQueryDao: AutomaticQueryDao,
-    @DbApi private val realInsertDao: AutomaticInsertDao,
-    @DbApi private val realDeleteDao: AutomaticDeleteDao,
+    @param:DbApi private val realInsertDao: AutomaticInsertDao,
+    @param:DbApi private val realDeleteDao: AutomaticDeleteDao,
 
     // When we delete DbAutomatics, invalidate the DbTransaction table so it can re-fetch
     // information
