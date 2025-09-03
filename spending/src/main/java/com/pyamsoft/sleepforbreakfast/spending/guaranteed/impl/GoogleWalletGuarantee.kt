@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Singleton
 internal class GoogleWalletGuarantee
@@ -47,10 +47,11 @@ internal constructor(
                 clock = clock,
                 id = notificationId,
                 name = "Google Wallet Spending",
-                actOnPackageNames = setOf(
-                    "com.google.android.gms",
-                    "com.google.android.apps.walletnfcrel",
-                ),
+                actOnPackageNames =
+                    setOf(
+                        "com.google.android.gms",
+                        "com.google.android.apps.walletnfcrel",
+                    ),
                 type = DbTransaction.Type.SPEND,
             ),
         regexes =

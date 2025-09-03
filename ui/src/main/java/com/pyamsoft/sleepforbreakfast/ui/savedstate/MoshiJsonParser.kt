@@ -23,7 +23,7 @@ import javax.inject.Inject
 internal class MoshiJsonParser
 @Inject
 constructor(
-    @InternalApi private val moshi: Moshi,
+    @param:InternalApi private val moshi: Moshi,
 ) : JsonParser {
 
   override fun <T : Any> toJson(data: T): String {
