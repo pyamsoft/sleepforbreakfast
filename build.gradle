@@ -36,7 +36,7 @@ buildscript {
     timber = "5.0.1"
 
     // Dagger
-    dagger = "2.57"
+    dagger = "2.57.1"
 
     // Room
     room = "2.7.2"
@@ -55,7 +55,7 @@ buildscript {
     core = "1.17.0"
     preferences = "1.2.1"
     appCompat = "1.7.1"
-    lifecycle = "2.9.2"
+    lifecycle = "2.9.3"
     dataStore = "1.1.7"
 
     // Coil
