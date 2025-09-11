@@ -28,7 +28,7 @@ buildscript {
     cachify = "0.3.7"
 
     // Kotlin
-    kotlin = "2.2.10"
+    kotlin = "2.2.20"
     coroutines = "1.10.2"
 
     // Square
@@ -46,9 +46,9 @@ buildscript {
     moshi = "1.15.2"
 
     // Compose
-    compose = "1.9.0"
+    compose = "1.9.1"
     composeMaterial3 = "1.3.2"
-    composeActivity = "1.10.1"
+    composeActivity = "1.11.0"
     materialIconsExtended = "1.7.8"
 
     // AndroidX
