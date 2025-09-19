@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Singleton
 internal class GoogleWalletGuarantee
@@ -60,6 +60,10 @@ internal constructor(
                  * From Google Wallet App
                  *
                  * $123.45 with Amex •••• 1234
+                 *
+                 * 09/19/2025 noticed
+                 * Wallet notification updated to
+                 * $123.45 with Amex ••1234
                  */
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("38875bfe-8dbc-49e4-9732-9a50b08dd588"),
@@ -85,6 +89,12 @@ internal constructor(
 
   companion object {
 
-    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>.* •••• \\d\\d\\d\\d)"
+    // CardName <space> <1 to 4 •> <maybe a space, but possibly no space> <4 digits>
+    // For example
+    // Chase Freedom ••1234
+    // Chase Freedom •• 1234
+    // Chase Freedom ••••1234
+    // Chase Freedom •••• 1234
+    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>.* •{1,4} ?\\d{4})"
   }
 }
