@@ -29,6 +29,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+@ConsistentCopyVisibility
 @Entity(
     tableName = RoomDbTransaction.TABLE_NAME,
     foreignKeys =

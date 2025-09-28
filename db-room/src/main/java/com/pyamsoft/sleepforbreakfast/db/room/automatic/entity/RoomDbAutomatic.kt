@@ -26,7 +26,7 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import java.time.LocalDateTime
 
-// Kotlin 2.0.20, Room 2.6.1 - Copy annotations currently break Room KSP. Do not use.
+@ConsistentCopyVisibility
 @Entity(tableName = RoomDbAutomatic.TABLE_NAME)
 internal data class RoomDbAutomatic
 internal constructor(

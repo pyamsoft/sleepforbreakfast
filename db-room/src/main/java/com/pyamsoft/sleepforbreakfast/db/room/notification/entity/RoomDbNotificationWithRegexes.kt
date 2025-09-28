@@ -23,7 +23,7 @@ import androidx.room.Relation
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 
-// Kotlin 2.0.20, Room 2.6.1 - Copy annotations currently break Room KSP. Do not use.
+@ConsistentCopyVisibility
 internal data class RoomDbNotificationWithRegexes
 internal constructor(
     @JvmField @Embedded val dbNotification: RoomDbNotification,
