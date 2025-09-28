@@ -28,6 +28,6 @@ interface SpendingTester {
 
   data class Result(
       val notification: DbNotification.Id,
-      val matching: Collection<DbNotificationMatchRegex.Id>
+      val matching: Collection<DbNotificationMatchRegex.Id>,
   )
 }

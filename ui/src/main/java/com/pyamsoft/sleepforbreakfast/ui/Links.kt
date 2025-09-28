@@ -25,7 +25,7 @@ import androidx.compose.ui.text.withStyle
 private inline fun AnnotatedString.Builder.withStringAnnotation(
     tag: String,
     annotation: String,
-    content: () -> Unit
+    content: () -> Unit,
 ) {
   pushStringAnnotation(
       tag = tag,

@@ -21,7 +21,7 @@ import androidx.annotation.CheckResult
 enum class SpendDirection {
   NONE,
   SPEND,
-  EARN
+  EARN,
 }
 
 @CheckResult

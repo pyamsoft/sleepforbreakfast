@@ -150,7 +150,8 @@ private fun SwipeAway(
       backgroundContent = {},
       enableDismissFromStartToEnd = true,
       enableDismissFromEndToStart = true,
-      content = content)
+      content = content,
+  )
 }
 
 @Composable

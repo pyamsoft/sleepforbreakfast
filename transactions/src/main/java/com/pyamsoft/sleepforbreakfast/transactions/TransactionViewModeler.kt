@@ -184,7 +184,7 @@ internal constructor(
 
   override fun onGenerateItemsBasedOnAllItems(
       scope: CoroutineScope,
-      allItems: StateFlow<List<DbTransaction>>
+      allItems: StateFlow<List<DbTransaction>>,
   ) {
     // Create a source that generates data based on the latest from all sources
     val combined =

@@ -148,13 +148,15 @@ protected constructor(
     val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
     val bigTitle = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE_BIG, "")
 
-    if (ignores.shouldIgnoreNotification(
-        packageName = packageName,
-        title = title,
-        bigTitle = bigTitle,
-        text = text,
-        bigText = bigText,
-    )) {
+    if (
+        ignores.shouldIgnoreNotification(
+            packageName = packageName,
+            title = title,
+            bigTitle = bigTitle,
+            text = text,
+            bigText = bigText,
+        )
+    ) {
       return null
     }
 

@@ -37,8 +37,9 @@ internal abstract class RoomNotificationDeleteDao : NotificationDeleteDao {
   /* final */ override suspend fun delete(o: DbNotificationWithRegexes): Boolean =
       withContext(context = Dispatchers.Default) {
         val roomNotification = RoomDbNotificationWithRegexes.create(o)
-        return@withContext if (daoDeleteNotification(roomNotification.notification) >
-            ROOM_ROW_COUNT_DELETE_INVALID) {
+        return@withContext if (
+            daoDeleteNotification(roomNotification.notification) > ROOM_ROW_COUNT_DELETE_INVALID
+        ) {
           daoDeleteMatchRegexes(roomNotification.matchRegexes)
           true
         } else {

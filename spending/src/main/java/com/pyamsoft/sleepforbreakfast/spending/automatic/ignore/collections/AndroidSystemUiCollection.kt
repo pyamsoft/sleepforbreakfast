@@ -26,6 +26,7 @@ internal object AndroidSystemUiCollection :
     return setOf(
         // Ignore all Android system notifications
         ignoreTitle(Regex(".*")),
-        ignoreText(Regex(".*")))
+        ignoreText(Regex(".*")),
+    )
   }
 }

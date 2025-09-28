@@ -39,7 +39,7 @@ internal constructor(
     private val transactionCache: TransactionQueryDao.Cache,
     private val categoryCache: CategoryQueryDao.Cache,
     private val automaticCache: AutomaticQueryDao.Cache,
-    private val notificationCache: NotificationQueryDao.Cache
+    private val notificationCache: NotificationQueryDao.Cache,
 ) : SleepDb {
 
   override suspend fun invalidate() {

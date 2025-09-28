@@ -32,7 +32,7 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
       title: CharSequence,
       bigTitle: CharSequence,
       text: CharSequence,
-      bigText: CharSequence
+      bigText: CharSequence,
   ): Boolean {
     return ignores(
         packageName = packageName,
@@ -108,27 +108,31 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
       for (ignore in ignoreables) {
         when (ignore) {
           is Ignorable -> {
-            if (shouldIgnore(
-                packageName = packageName,
-                title = title,
-                bigTitle = bigTitle,
-                text = text,
-                bigText = bigText,
-                ignorable = ignore,
-            )) {
+            if (
+                shouldIgnore(
+                    packageName = packageName,
+                    title = title,
+                    bigTitle = bigTitle,
+                    text = text,
+                    bigText = bigText,
+                    ignorable = ignore,
+                )
+            ) {
               return true
             }
           }
           is IgnoreCollection -> {
             for (innerIgnore in ignore.ignorables()) {
-              if (shouldIgnore(
-                  packageName = packageName,
-                  title = title,
-                  bigTitle = bigTitle,
-                  text = text,
-                  bigText = bigText,
-                  ignorable = innerIgnore,
-              )) {
+              if (
+                  shouldIgnore(
+                      packageName = packageName,
+                      title = title,
+                      bigTitle = bigTitle,
+                      text = text,
+                      bigText = bigText,
+                      ignorable = innerIgnore,
+                  )
+              ) {
                 return true
               }
             }

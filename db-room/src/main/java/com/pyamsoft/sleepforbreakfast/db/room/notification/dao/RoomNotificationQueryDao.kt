@@ -40,7 +40,8 @@ internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
   @Query(
       """
       SELECT * FROM ${RoomDbNotification.TABLE_NAME}
-      """)
+      """
+  )
   internal abstract suspend fun daoQuery(): List<RoomDbNotificationWithRegexes>
 
   final override suspend fun queryById(
@@ -60,6 +61,7 @@ internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
 SELECT * FROM ${RoomDbNotification.TABLE_NAME}
   WHERE ${RoomDbNotification.COLUMN_ID} = :id
   LIMIT 1
-""")
+"""
+  )
   internal abstract suspend fun daoQueryById(id: DbNotification.Id): RoomDbNotificationWithRegexes?
 }

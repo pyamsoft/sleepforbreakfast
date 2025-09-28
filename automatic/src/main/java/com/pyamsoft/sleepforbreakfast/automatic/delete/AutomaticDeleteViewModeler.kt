@@ -31,7 +31,10 @@ internal constructor(
 ) :
     AutomaticDeleteViewState by state,
     DeleteViewModeler<
-        DbNotification.Id, DbNotificationWithRegexes, MutableAutomaticDeleteViewState>(
+        DbNotification.Id,
+        DbNotificationWithRegexes,
+        MutableAutomaticDeleteViewState,
+    >(
         state = state,
         initialId = params.notificationId,
         interactor = interactor,

@@ -123,7 +123,8 @@ internal constructor(
         scope.async(context = Dispatchers.Default) {
           val categories = fetchCategories()
           state.categories.value = categories.sortedBy { it.name.lowercase() }
-        })
+        }
+    )
     jobs.add(
         scope.async(context = Dispatchers.Default) {
           val transactions = fetchTransactions()
@@ -141,12 +142,14 @@ internal constructor(
                 transaction = t,
                 today = today,
                 startOfWeek = startOfWeek,
-                startOfMonth = startOfMonth)
+                startOfMonth = startOfMonth,
+            )
           }
 
           state.transactionsByCategory.value = cats
           state.transactionsByDateRange.value = breaks
-        })
+        }
+    )
 
     try {
       jobs.awaitAll()

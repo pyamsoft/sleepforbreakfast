@@ -27,7 +27,7 @@ internal abstract class BaseGuarantee protected constructor() : SpendingGuarante
 
   private suspend fun upsert(
       insert: NotificationInsertDao,
-      notification: DbNotificationWithRegexes
+      notification: DbNotificationWithRegexes,
   ) {
     val name = notification.notification.name
     when (val res = insert.insert(notification)) {

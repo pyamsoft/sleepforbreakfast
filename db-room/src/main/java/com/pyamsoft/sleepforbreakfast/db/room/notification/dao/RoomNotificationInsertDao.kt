@@ -115,7 +115,8 @@ internal abstract class RoomNotificationInsertDao : NotificationInsertDao {
         SELECT * FROM ${RoomDbNotification.TABLE_NAME} WHERE
         ${RoomDbNotification.COLUMN_ID} = :id
         LIMIT 1
-        """)
+        """
+  )
   internal abstract suspend fun daoQuery(id: DbNotification.Id): RoomDbNotificationWithRegexes?
 
   @Update internal abstract suspend fun daoUpdate(symbol: RoomDbNotification): Int

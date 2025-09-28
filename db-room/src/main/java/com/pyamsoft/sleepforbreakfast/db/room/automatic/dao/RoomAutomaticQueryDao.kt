@@ -43,17 +43,19 @@ internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationMatchText: String
+      notificationMatchText: String,
   ): Maybe<out DbAutomatic> =
       withContext(context = Dispatchers.Default) {
-        when (val result =
-            daoQueryByNotification(
-                id = notificationId,
-                key = notificationKey,
-                group = notificationGroup,
-                packageName = notificationPackageName,
-                matchText = notificationMatchText,
-            )) {
+        when (
+            val result =
+                daoQueryByNotification(
+                    id = notificationId,
+                    key = notificationKey,
+                    group = notificationGroup,
+                    packageName = notificationPackageName,
+                    matchText = notificationMatchText,
+                )
+        ) {
           null -> Maybe.None
           else -> Maybe.Data(result)
         }
@@ -69,7 +71,8 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_PACKAGE} = :packageName
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_MATCH_TEXT} = :matchText
   LIMIT 1
-""")
+"""
+  )
   internal abstract suspend fun daoQueryByNotification(
       id: Int,
       key: String,
@@ -86,7 +89,8 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   @Query(
       """
 SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_USED}
-""")
+"""
+  )
   internal abstract suspend fun daoQueryUnused(): List<RoomDbAutomatic>
 
   final override suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic> =
@@ -103,6 +107,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_U
 SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   WHERE ${RoomDbAutomatic.COLUMN_ID} = :id
   LIMIT 1
-""")
+"""
+  )
   internal abstract suspend fun daoQueryById(id: DbAutomatic.Id): RoomDbAutomatic?
 }

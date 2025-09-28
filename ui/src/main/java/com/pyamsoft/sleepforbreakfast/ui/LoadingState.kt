@@ -24,5 +24,5 @@ import androidx.compose.runtime.Stable
 enum class LoadingState {
   NONE,
   LOADING,
-  DONE
+  DONE,
 }

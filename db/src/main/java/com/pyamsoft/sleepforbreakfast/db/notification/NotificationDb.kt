@@ -20,7 +20,11 @@ import com.pyamsoft.sleepforbreakfast.db.BaseDb
 
 interface NotificationDb :
     BaseDb<
-        NotificationRealtime, NotificationQueryDao, NotificationInsertDao, NotificationDeleteDao>,
+        NotificationRealtime,
+        NotificationQueryDao,
+        NotificationInsertDao,
+        NotificationDeleteDao,
+    >,
     NotificationRealtime,
     NotificationQueryDao,
     NotificationInsertDao,

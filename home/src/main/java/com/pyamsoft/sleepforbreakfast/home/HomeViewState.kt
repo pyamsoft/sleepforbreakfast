@@ -39,7 +39,7 @@ interface HomeViewState : UiViewState {
   enum class DayRange {
     DAY,
     WEEK,
-    MONTH
+    MONTH,
   }
 }
 

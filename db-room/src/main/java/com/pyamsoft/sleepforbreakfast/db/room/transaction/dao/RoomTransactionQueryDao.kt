@@ -39,7 +39,8 @@ internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
   @Query(
       """
 SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
-""")
+"""
+  )
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
 
   final override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
@@ -56,7 +57,8 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
 SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   WHERE ${RoomDbTransaction.COLUMN_ID} = :id
   LIMIT 1
-""")
+"""
+  )
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 
   final override suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction> =
@@ -73,7 +75,8 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
       """
 SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   WHERE ${RoomDbTransaction.COLUMN_CATEGORY_ID} LIKE :idQuery
-""")
+"""
+  )
   internal abstract suspend fun daoQueryByCategory(idQuery: String): List<RoomDbTransaction>
 
   @CheckResult
@@ -82,6 +85,7 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
 SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   WHERE ${RoomDbTransaction.COLUMN_CATEGORY_ID} = ''
   OR ${RoomDbTransaction.COLUMN_CATEGORY_ID} = NULL
-""")
+"""
+  )
   internal abstract suspend fun daoQueryNoCategories(): List<RoomDbTransaction>
 }

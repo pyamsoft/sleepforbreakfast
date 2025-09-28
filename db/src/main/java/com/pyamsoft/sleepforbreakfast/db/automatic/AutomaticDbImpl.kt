@@ -72,12 +72,14 @@ internal constructor(
 
   private val queryByNotificationCache =
       multiCachify<
-          QueryByNotificationKey, Maybe<out DbAutomatic>, Int, String, String, String, String> {
-          id,
-          key,
-          group,
-          packageName,
-          matchText ->
+          QueryByNotificationKey,
+          Maybe<out DbAutomatic>,
+          Int,
+          String,
+          String,
+          String,
+          String,
+      > { id, key, group, packageName, matchText ->
         enforcer.assertOffMainThread()
         return@multiCachify realQueryDao.queryByNotification(
             notificationId = id,
@@ -113,7 +115,7 @@ internal constructor(
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationMatchText: String
+      notificationMatchText: String,
   ) =
       withContext(context = Dispatchers.Default) {
         val key =
@@ -153,7 +155,7 @@ internal constructor(
       notificationKey: String,
       notificationGroup: String,
       notificationPackageName: String,
-      notificationMatchText: String
+      notificationMatchText: String,
   ): Maybe<out DbAutomatic> =
       withContext(context = Dispatchers.Default) {
         val key =

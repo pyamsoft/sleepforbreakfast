@@ -70,7 +70,7 @@ interface DbTransaction {
 
   enum class Type {
     SPEND,
-    EARN
+    EARN,
   }
 
   data class Id(@get:CheckResult val raw: String) {

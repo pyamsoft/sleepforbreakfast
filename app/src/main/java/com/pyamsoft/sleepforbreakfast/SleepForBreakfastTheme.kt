@@ -66,7 +66,7 @@ private fun themeColors(
       } else {
         darkColorScheme(
             // TODO custom color theme
-            )
+        )
       }
     } else {
       if (canUseDynamic) {
@@ -74,7 +74,7 @@ private fun themeColors(
       } else {
         lightColorScheme(
             // TODO custom color theme
-            )
+        )
       }
     }
   }

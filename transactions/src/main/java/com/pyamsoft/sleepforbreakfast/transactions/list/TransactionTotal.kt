@@ -308,6 +308,7 @@ private fun RangeDatePicker(
     DatePickerDialog(
         initialDate = remember { date ?: LocalDate.now(clock) },
         onDismiss = { onSetShow(false) },
-        onDateSelected = { onDatePicked(it) })
+        onDateSelected = { onDatePicked(it) },
+    )
   }
 }

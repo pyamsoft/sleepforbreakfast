@@ -113,52 +113,52 @@ fun HomeScreen(
                 // So this basically doesn't do anything since we handle the padding ourselves
                 // BUT, we don't just want to consume it because we DO actually care when using
                 // Modifier.navigationBarsPadding()
-                .heightIn(min = remember(pv) { pv.calculateBottomPadding() })) {
-          Spacer(modifier = Modifier.statusBarsPadding())
-          HomeHeader(
-              modifier =
-                  Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+                .heightIn(min = remember(pv) { pv.calculateBottomPadding() })
+    ) {
+      Spacer(modifier = Modifier.statusBarsPadding())
+      HomeHeader(
+          modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.keylines.content),
+          appName = appName,
+          onOpenSettings = onOpenSettings,
+      )
+
+      LazyColumn {
+        renderPYDroidExtras()
+
+        item(contentType = ContentTypes.OPTIONS) {
+          HomeOptions(
+              modifier = Modifier.fillMaxWidth(),
+              state = state,
               appName = appName,
-              onOpenSettings = onOpenSettings,
+              onToggleExpanded = onToggleExpanded,
+              onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
           )
-
-          LazyColumn {
-            renderPYDroidExtras()
-
-            item(contentType = ContentTypes.OPTIONS) {
-              HomeOptions(
-                  modifier = Modifier.fillMaxWidth(),
-                  state = state,
-                  appName = appName,
-                  onToggleExpanded = onToggleExpanded,
-                  onOpenNotificationListenerSettings = onOpenNotificationListenerSettings,
-              )
-            }
-
-            item(contentType = ContentTypes.TRANSACTIONS) {
-              HomeCategories(
-                  modifier = Modifier.fillMaxWidth(),
-                  clock = clock,
-                  state = state,
-                  onOpenAllTransactions = { onOpenAllTransactions(null) },
-                  onOpenCategory = { onOpenTransactions(it, null) },
-                  onOpenBreakdown = onOpenAllTransactions,
-              )
-            }
-
-            item(contentType = ContentTypes.EXTRAS) {
-              HomeExtras(
-                  modifier = Modifier.fillMaxWidth(),
-                  onOpenCategories = onOpenCategories,
-                  onOpenAutomatics = onOpenAutomatics,
-              )
-            }
-
-            item(contentType = ContentTypes.BOTTOM_SPACER) {
-              Spacer(modifier = Modifier.navigationBarsPadding())
-            }
-          }
         }
+
+        item(contentType = ContentTypes.TRANSACTIONS) {
+          HomeCategories(
+              modifier = Modifier.fillMaxWidth(),
+              clock = clock,
+              state = state,
+              onOpenAllTransactions = { onOpenAllTransactions(null) },
+              onOpenCategory = { onOpenTransactions(it, null) },
+              onOpenBreakdown = onOpenAllTransactions,
+          )
+        }
+
+        item(contentType = ContentTypes.EXTRAS) {
+          HomeExtras(
+              modifier = Modifier.fillMaxWidth(),
+              onOpenCategories = onOpenCategories,
+              onOpenAutomatics = onOpenAutomatics,
+          )
+        }
+
+        item(contentType = ContentTypes.BOTTOM_SPACER) {
+          Spacer(modifier = Modifier.navigationBarsPadding())
+        }
+      }
+    }
   }
 }
 
@@ -250,7 +250,8 @@ private fun HomeCategories(
               Category(
                   category = DbCategory.NONE,
                   onOpen = onOpenCategory,
-                  transactions = uncategorizedTransactions)
+                  transactions = uncategorizedTransactions,
+              )
             }
 
             items(items = categories, key = { it.id.raw }) { category ->
@@ -336,32 +337,33 @@ private fun DateBreakdown(
       colors = CardDefaults.elevatedCardColors(),
   ) {
     Column(
-        modifier =
-            Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content)) {
-          Text(style = MaterialTheme.typography.headlineSmall, text = rangeName)
+        modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content)
+    ) {
+      Text(style = MaterialTheme.typography.headlineSmall, text = rangeName)
 
-          Text(
-              style = MaterialTheme.typography.bodySmall,
-              text =
-                  remember(today, type, dateRange, dateRangeFormatter) {
-                    if (type == DateBreakdownType.DAILY) {
-                      return@remember dateRangeFormatter.format(today)
-                    } else {
-                      val start = dateRangeFormatter.format(dateRange.from)
-                      val end = dateRangeFormatter.format(dateRange.to)
-                      return@remember "$start - $end"
-                    }
-                  },
-          )
+      Text(
+          style = MaterialTheme.typography.bodySmall,
+          text =
+              remember(today, type, dateRange, dateRangeFormatter) {
+                if (type == DateBreakdownType.DAILY) {
+                  return@remember dateRangeFormatter.format(today)
+                } else {
+                  val start = dateRangeFormatter.format(dateRange.from)
+                  val end = dateRangeFormatter.format(dateRange.to)
+                  return@remember "$start - $end"
+                }
+              },
+      )
 
-          Text(
-              modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
-              style =
-                  MaterialTheme.typography.bodyLarge.copy(
-                      color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)),
-              text = totalPrice,
-          )
-        }
+      Text(
+          modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+          style =
+              MaterialTheme.typography.bodyLarge.copy(
+                  color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)
+              ),
+          text = totalPrice,
+      )
+    }
   }
 }
 
@@ -408,24 +410,28 @@ private fun Category(
       elevation = CardDefaults.elevatedCardElevation(),
       colors =
           CardDefaults.elevatedCardColors(
-              containerColor = containerColor, contentColor = contentColor),
+              containerColor = containerColor,
+              contentColor = contentColor,
+          ),
   ) {
     Column(
-        modifier =
-            Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content)) {
-          Text(
-              style = MaterialTheme.typography.headlineSmall,
-              text = category.name,
-              fontStyle = fontStyle)
+        modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content)
+    ) {
+      Text(
+          style = MaterialTheme.typography.headlineSmall,
+          text = category.name,
+          fontStyle = fontStyle,
+      )
 
-          Text(
-              modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
-              style =
-                  MaterialTheme.typography.bodyLarge.copy(
-                      color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)),
-              text = totalPrice,
-          )
-        }
+      Text(
+          modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+          style =
+              MaterialTheme.typography.bodyLarge.copy(
+                  color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)
+              ),
+          text = totalPrice,
+      )
+    }
   }
 }
 
@@ -433,26 +439,27 @@ private fun Category(
 private fun HomeExtras(
     modifier: Modifier = Modifier,
     onOpenCategories: () -> Unit,
-    onOpenAutomatics: () -> Unit
+    onOpenAutomatics: () -> Unit,
 ) {
   Row(
       modifier = modifier.padding(MaterialTheme.keylines.content),
-      verticalAlignment = Alignment.CenterVertically) {
-        IconOption(
-            modifier = Modifier.weight(1F),
-            onClick = onOpenCategories,
-            icon = Icons.Filled.Category,
-            title = "Categories",
-        )
-        Spacer(modifier = Modifier.width(MaterialTheme.keylines.content))
+      verticalAlignment = Alignment.CenterVertically,
+  ) {
+    IconOption(
+        modifier = Modifier.weight(1F),
+        onClick = onOpenCategories,
+        icon = Icons.Filled.Category,
+        title = "Categories",
+    )
+    Spacer(modifier = Modifier.width(MaterialTheme.keylines.content))
 
-        IconOption(
-            modifier = Modifier.weight(1F),
-            onClick = onOpenAutomatics,
-            icon = Icons.Filled.AutoAwesome,
-            title = "Automatics",
-        )
-      }
+    IconOption(
+        modifier = Modifier.weight(1F),
+        onClick = onOpenAutomatics,
+        icon = Icons.Filled.AutoAwesome,
+        title = "Automatics",
+    )
+  }
 }
 
 @Composable
@@ -460,7 +467,7 @@ private fun IconOption(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     icon: ImageVector,
-    title: String
+    title: String,
 ) {
   val shape = MaterialTheme.shapes.large
 
@@ -486,7 +493,8 @@ private fun IconOption(
       Text(
           text = title,
           style =
-              MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onPrimary))
+              MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onPrimary),
+      )
     }
   }
 }

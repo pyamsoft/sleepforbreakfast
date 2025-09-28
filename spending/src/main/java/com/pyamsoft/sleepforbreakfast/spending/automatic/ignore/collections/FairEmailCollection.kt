@@ -27,6 +27,7 @@ internal object FairEmailCollection :
         // Monitoring message
         ignoreTitle("^Monitoring \\d accounts?"),
         // Operating message
-        ignoreText("^\\d operations? pending"))
+        ignoreText("^\\d operations? pending"),
+    )
   }
 }

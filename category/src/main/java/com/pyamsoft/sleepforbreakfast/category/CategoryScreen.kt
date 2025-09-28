@@ -103,24 +103,25 @@ fun CategoryScreen(
             )
           }
         }
-      }) { category ->
-        CategoryCard(
-            modifier =
-                Modifier.fillMaxWidth()
-                    .padding(horizontal = MaterialTheme.keylines.content)
-                    .padding(bottom = MaterialTheme.keylines.content),
-            contentModifier =
-                onCategoryLongClicked.let { longClick ->
-                  if (longClick == null) {
-                    Modifier.clickable { onCategoryClicked(category) }
-                  } else {
-                    Modifier.combinedClickable(
-                        onClick = { onCategoryClicked(category) },
-                        onLongClick = { longClick(category) },
-                    )
-                  }
-                },
-            category = category,
-        )
-      }
+      },
+  ) { category ->
+    CategoryCard(
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(horizontal = MaterialTheme.keylines.content)
+                .padding(bottom = MaterialTheme.keylines.content),
+        contentModifier =
+            onCategoryLongClicked.let { longClick ->
+              if (longClick == null) {
+                Modifier.clickable { onCategoryClicked(category) }
+              } else {
+                Modifier.combinedClickable(
+                    onClick = { onCategoryClicked(category) },
+                    onLongClick = { longClick(category) },
+                )
+              }
+            },
+        category = category,
+    )
+  }
 }

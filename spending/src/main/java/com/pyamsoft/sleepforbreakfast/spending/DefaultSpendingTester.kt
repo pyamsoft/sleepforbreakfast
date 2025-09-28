@@ -36,7 +36,7 @@ internal constructor(
 
   override suspend fun testText(
       notificationWithRegexes: DbNotificationWithRegexes,
-      text: String
+      text: String,
   ): SpendingTester.Result? =
       GLOBAL_LOCK.withLock {
         val notification = notificationWithRegexes.notification

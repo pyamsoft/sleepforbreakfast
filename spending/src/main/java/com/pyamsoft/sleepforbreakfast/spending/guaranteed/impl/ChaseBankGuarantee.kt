@@ -197,7 +197,7 @@ internal constructor(
 
   override suspend fun ensureExistsInDatabase(
       query: NotificationQueryDao,
-      insert: NotificationInsertDao
+      insert: NotificationInsertDao,
   ) =
       withContext(context = Dispatchers.Default) {
         upsertIfUntainted(

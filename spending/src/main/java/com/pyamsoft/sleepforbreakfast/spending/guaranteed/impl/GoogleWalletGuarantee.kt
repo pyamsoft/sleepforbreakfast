@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Singleton
 internal class GoogleWalletGuarantee
@@ -61,9 +61,7 @@ internal constructor(
                  *
                  * $123.45 with Amex •••• 1234
                  *
-                 * 09/19/2025 noticed
-                 * Wallet notification updated to
-                 * $123.45 with Amex ••1234
+                 * 09/19/2025 noticed Wallet notification updated to $123.45 with Amex ••1234
                  */
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("38875bfe-8dbc-49e4-9732-9a50b08dd588"),
@@ -77,7 +75,7 @@ internal constructor(
 
   override suspend fun ensureExistsInDatabase(
       query: NotificationQueryDao,
-      insert: NotificationInsertDao
+      insert: NotificationInsertDao,
   ) =
       withContext(context = Dispatchers.Default) {
         upsertIfUntainted(
