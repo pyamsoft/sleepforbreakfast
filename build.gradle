@@ -24,7 +24,7 @@ buildscript {
     compileSdk = 36
 
     // Us
-    pydroid = "29.1.2"
+    pydroid = "29.1.3"
     cachify = "0.3.7"
 
     // Kotlin
@@ -47,9 +47,9 @@ buildscript {
 
     // Compose
     compose = "1.9.2"
+    composeMaterial = "1.7.8"
     composeMaterial3 = "1.4.0"
     composeActivity = "1.11.0"
-    materialIconsExtended = "1.7.8"
 
     // AndroidX
     core = "1.17.0"
