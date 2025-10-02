@@ -17,19 +17,21 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  id("com.android.library")
-  id("com.google.devtools.ksp")
-  id("org.jetbrains.kotlin.plugin.compose")
-  id("org.gradle.android.cache-fix")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.android)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.android.cacheFix)
 }
 
 android {
   namespace = "com.pyamsoft.sleepforbreakfast.category"
 
-  compileSdk = rootProject.extra["compileSdk"] as Int
+  compileSdk = libs.versions.compileSdk.get().toInt()
 
-  defaultConfig { minSdk = rootProject.extra["minSdk"] as Int }
+  defaultConfig {
+    minSdk = libs.versions.minSdk.get().toInt()
+  }
 
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -48,14 +50,12 @@ android {
 }
 
 dependencies {
-  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
+  coreLibraryDesugaring(libs.android.desugar)
 
-  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
-  ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
+  ksp(libs.dagger.compiler)
+  ksp(libs.moshi.codegen)
 
-  implementation(
-      "com.godaddy.android.colorpicker:compose-color-picker:${rootProject.extra["colorPicker"]}"
-  )
+  implementation(libs.colorPicker)
 
   implementation(project(":core"))
   implementation(project(":db"))

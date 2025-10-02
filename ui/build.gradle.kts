@@ -17,19 +17,21 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  id("com.android.library")
-  id("com.google.devtools.ksp")
-  id("org.jetbrains.kotlin.plugin.compose")
-  id("org.gradle.android.cache-fix")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.android)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.android.cacheFix)
 }
 
 android {
   namespace = "com.pyamsoft.sleepforbreakfast.ui"
 
-  compileSdk = rootProject.extra["compileSdk"] as Int
+  compileSdk = libs.versions.compileSdk.get().toInt()
 
-  defaultConfig { minSdk = rootProject.extra["minSdk"] as Int }
+  defaultConfig {
+    minSdk = libs.versions.minSdk.get().toInt()
+  }
 
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -48,28 +50,28 @@ android {
 }
 
 dependencies {
-  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
+  coreLibraryDesugaring(libs.android.desugar)
 
-  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
-  ksp("com.squareup.moshi:moshi-kotlin-codegen:${rootProject.extra["moshi"]}")
+  ksp(libs.dagger.compiler)
+  ksp(libs.moshi.codegen)
 
   // Lifecycle extensions
-  api("androidx.lifecycle:lifecycle-runtime-compose:${rootProject.extra["lifecycle"]}")
+  api(libs.androidx.lifecycle.compose)
 
   // Compose
-  api("androidx.compose.ui:ui:${rootProject.extra["compose"]}")
-  api("androidx.compose.animation:animation:${rootProject.extra["compose"]}")
-  api("androidx.compose.material3:material3:${rootProject.extra["composeMaterial3"]}")
-  api("androidx.compose.material:material-icons-core:${rootProject.extra["composeMaterial"]}")
+  api(libs.compose.ui)
+  api(libs.compose.animation)
+  api(libs.compose.material3)
+  api(libs.compose.material.icons)
 
   // TODO(Peter): Remove after development is done
-  api("androidx.compose.material:material-icons-extended:${rootProject.extra["composeMaterial"]}")
+  api(libs.compose.material.icons.extended)
 
   // Compose Preview
-  compileOnly("androidx.compose.ui:ui-tooling-preview:${rootProject.extra["compose"]}")
-  debugApi("androidx.compose.ui:ui-tooling:${rootProject.extra["compose"]}")
+  compileOnly(libs.compose.ui.tooling.preview)
+  debugApi(libs.compose.ui.tooling)
 
-  api("com.squareup.moshi:moshi:${rootProject.extra["moshi"]}")
+  api(libs.moshi)
 
   implementation(project(":core"))
 }

@@ -17,18 +17,20 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  id("com.android.library")
-  id("com.google.devtools.ksp")
-  id("org.gradle.android.cache-fix")
-  id("org.jetbrains.kotlin.android")
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.android)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.android.cacheFix)
 }
 
 android {
   namespace = "com.pyamsoft.sleepforbreakfast.core"
 
-  compileSdk = rootProject.extra["compileSdk"] as Int
+  compileSdk = libs.versions.compileSdk.get().toInt()
 
-  defaultConfig { minSdk = rootProject.extra["minSdk"] as Int }
+  defaultConfig {
+    minSdk = libs.versions.minSdk.get().toInt()
+  }
 
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -44,21 +46,21 @@ android {
 }
 
 dependencies {
-  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:${rootProject.extra["desugar"]}")
+  coreLibraryDesugaring(libs.android.desugar)
 
-  ksp("com.google.dagger:dagger-compiler:${rootProject.extra["dagger"]}")
+  ksp(libs.dagger.compiler)
 
-  api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutines"]}")
+  api(libs.kotlinx.coroutines)
 
-  api("com.jakewharton.timber:timber:${rootProject.extra["timber"]}")
+  api(libs.timber)
 
   // PYDroid
-  api("com.github.pyamsoft.pydroid:arch:${rootProject.extra["pydroid"]}")
-  api("com.github.pyamsoft.pydroid:ui:${rootProject.extra["pydroid"]}")
+  api(libs.pydroid.arch)
+  api(libs.pydroid.ui)
 
   // Android support library.
-  api("androidx.core:core-ktx:${rootProject.extra["core"]}")
+  api(libs.androidx.core.ktx)
 
   // Dagger
-  api("com.google.dagger:dagger:${rootProject.extra["dagger"]}")
+  api(libs.dagger)
 }

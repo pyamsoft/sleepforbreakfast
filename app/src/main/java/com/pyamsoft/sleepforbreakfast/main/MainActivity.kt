@@ -18,8 +18,8 @@ package com.pyamsoft.sleepforbreakfast.main
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -39,11 +39,11 @@ import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
 import com.pyamsoft.sleepforbreakfast.ui.InstallPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.work.enqueueActivityWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
   @JvmField @Inject internal var themeViewModel: ThemeViewModeler? = null
   @JvmField @Inject internal var workerQueue: WorkerQueue? = null
