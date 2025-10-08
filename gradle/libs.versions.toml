@@ -41,7 +41,7 @@ composeMaterial3 = "1.4.0"
 ksp = "2.2.20-2.0.3"
 
 # Images
-vico = "2.2.0"
+vico = "2.2.1"
 colorPicker = "0.7.0"
 
 # Developer Tools
