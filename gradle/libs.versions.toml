@@ -29,11 +29,11 @@ activity = "1.11.0"
 lifecycle = "2.9.4"
 dataStore = "1.1.7"
 preference = "1.2.1"
-room = "2.8.1"
+room = "2.8.2"
 workManager = "2.10.5"
 
 # Compose
-compose = "1.9.2"
+compose = "1.9.3"
 composeMaterial = "1.7.8"
 composeMaterial3 = "1.4.0"
 
