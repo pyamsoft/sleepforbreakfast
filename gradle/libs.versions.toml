@@ -30,7 +30,7 @@ lifecycle = "2.9.4"
 dataStore = "1.1.7"
 preference = "1.2.1"
 room = "2.8.3"
-workManager = "2.10.5"
+workManager = "2.11.0"
 
 # Compose
 compose = "1.9.4"
