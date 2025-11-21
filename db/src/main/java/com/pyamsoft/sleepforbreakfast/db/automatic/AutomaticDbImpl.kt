@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class AutomaticDbImpl
@@ -54,7 +54,7 @@ internal constructor(
         AutomaticDeleteDao,
     >() {
 
-  private val queryCache = cachify {
+  private val queryCache = cachify<List<DbAutomatic>> {
     enforcer.assertOffMainThread()
     return@cachify realQueryDao.query()
   }
@@ -65,7 +65,7 @@ internal constructor(
         return@multiCachify realQueryDao.queryById(id)
       }
 
-  private val queryUnusedCache = cachify {
+  private val queryUnusedCache = cachify<List<DbAutomatic>> {
     enforcer.assertOffMainThread()
     return@cachify realQueryDao.queryUnused()
   }
