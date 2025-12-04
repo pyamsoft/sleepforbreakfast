@@ -25,11 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 internal class TransactionDbImpl
@@ -50,10 +50,11 @@ internal constructor(
         TransactionDeleteDao,
     >() {
 
-  private val queryCache = cachify<List<DbTransaction>> {
-    enforcer.assertOffMainThread()
-    return@cachify realQueryDao.query()
-  }
+  private val queryCache =
+      cachify<List<DbTransaction>> {
+        enforcer.assertOffMainThread()
+        return@cachify realQueryDao.query()
+      }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbTransaction>, DbTransaction.Id> { id ->

@@ -24,11 +24,11 @@ import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 internal class NotificationDbImpl
@@ -49,10 +49,11 @@ internal constructor(
         NotificationDeleteDao,
     >() {
 
-  private val queryCache = cachify<List<DbNotificationWithRegexes>> {
-    enforcer.assertOffMainThread()
-    return@cachify realQueryDao.query()
-  }
+  private val queryCache =
+      cachify<List<DbNotificationWithRegexes>> {
+        enforcer.assertOffMainThread()
+        return@cachify realQueryDao.query()
+      }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbNotificationWithRegexes>, DbNotification.Id> { id ->
