@@ -28,11 +28,11 @@ import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DATE
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Singleton
 internal class ChaseBankGuarantee
@@ -63,17 +63,23 @@ internal constructor(
                  *
                  * Chase Freedom: You made an online, phone, or mail transaction of $2.00 with My
                  * Favorite Merchant on Oct 7, 2023 at 1:23PM ET
+                 *
+                 * Chase Freedom: AUTHORIZED USER made an online, phone, or mail transaction of $2.00 with My
+                 * Favorite Merchant on Oct 7, 2023 at 1:23PM ET
                  */
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("49a223d5-68bd-4023-83fd-942567ad0ef5"),
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: You made an online, phone, or mail transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP on $DATE_GROUP.",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP: .* made an online, phone, or mail transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP on $DATE_GROUP.",
                 ),
 
                 /**
                  * From Chase App Credit Card
+                 *
+                 * Chase Freedom: AUTHORIZED USER made a $2.00 transaction with My Favorite Merchant on Oct 7,
+                 * 2023 at 1:23PM ET
                  *
                  * Chase Freedom: You made a $2.00 transaction with My Favorite Merchant on Oct 7,
                  * 2023 at 1:23PM ET
@@ -83,11 +89,14 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: You made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on $DATE_GROUP.",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP: .* made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on $DATE_GROUP.",
                 ),
 
                 /**
                  * From Email Credit Card
+                 *
+                 * AUTHORIZED USER made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023 at
+                 * 1:23PM ET Merchant My Favorite Merchant Amount
                  *
                  * You made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023 at
                  * 1:23PM ET Merchant My Favorite Merchant Amount
@@ -97,7 +106,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "You made a $CAPTURE_GROUP_AMOUNT transaction Account $CHASE_PREFIXED_ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount",
+                        ".* made a $CAPTURE_GROUP_AMOUNT transaction Account $CHASE_PREFIXED_ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount",
                 ),
 
                 /**
@@ -118,6 +127,10 @@ internal constructor(
                 /**
                  * From Chase App Debit Card
                  *
+                 * Chase account 1234: AUTHORIZED USER made a $12.34 debit card transaction to MERCHANT MAN on
+                 * Oct 20, 2023 at 10:13AM ET was more than the $1.00 amount in your Alerts settings
+                 * 1:23PM ET
+                 *
                  * Chase account 1234: You made a $12.34 debit card transaction to MERCHANT MAN on
                  * Oct 20, 2023 at 10:13AM ET was more than the $1.00 amount in your Alerts settings
                  * 1:23PM ET
@@ -127,7 +140,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: You made a $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP: .* made a $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the",
                 ),
 
                 /**
@@ -147,6 +160,9 @@ internal constructor(
                 /**
                  * From Email Debit Card
                  *
+                 * AUTHORIZED USER made a debit card transaction of $12.34 with My Favorite Merchant Account
+                 * ending in (...1234) Made on 2023 at 10:13AM ET
+                 *
                  * You made a debit card transaction of $12.34 with My Favorite Merchant Account
                  * ending in (...1234) Made on 2023 at 10:13AM ET
                  */
@@ -155,7 +171,22 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "You made a debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Made on $DATE_GROUP",
+                        ".* made a debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Made on $DATE_GROUP",
+                ),
+
+                /**
+                 * From Email Checking Transfer
+                 *
+                 * Transfer alert AUTHORIZED USER sent $12.34 to MERCHANT MAN Account ending in ACCOUNT NAME Sent on
+                 * Oct 20, 2023 at 10:13AM ET
+                 *
+                 */
+                DbNotificationMatchRegex.create(
+                    id = DbNotificationMatchRegex.Id("a39b55f7-0ab7-4626-ad0d-72bb5c5d91ac"),
+                    clock = clock,
+                    notificationId = notificationId,
+                    text =
+                        "Transfer alert .* sent $CAPTURE_GROUP_AMOUNT to $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Sent on $DATE_GROUP",
                 ),
             ),
     )
