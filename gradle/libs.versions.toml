@@ -5,7 +5,7 @@ targetSdk = "36"
 compileSdk = "36"
 
 # Android Gradle
-agp = "8.13.2"
+agp = "9.0.0"
 cacheFix = "3.0.3"
 
 # Kotlin
@@ -21,7 +21,7 @@ leakCanary = "2.14"
 timber = "5.0.1"
 moshi = "1.15.2"
 
-dagger = "2.57.2"
+dagger = "2.59"
 
 # AndroidX
 core = "1.17.0"
@@ -33,7 +33,7 @@ room = "2.8.4"
 workManager = "2.11.0"
 
 # Compose
-compose = "1.10.0"
+compose = "1.10.1"
 composeMaterial = "1.7.8"
 composeMaterial3 = "1.4.0"
 
@@ -41,14 +41,14 @@ composeMaterial3 = "1.4.0"
 ksp = "2.3.4"
 
 # Images
-vico = "2.4.0"
+vico = "2.4.1"
 colorPicker = "0.7.0"
 
 # Developer Tools
 spotless = "8.1.0"
 doctor = "0.12.1"
 jdkDesugar = "2.1.5"
-caupain = "1.7.1"
+caupain = "1.8.1"
 
 
 [plugins]
@@ -57,8 +57,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-cacheFix = { id = "org.gradle.android.cache-fix", version.ref = "cacheFix" }
 
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
@@ -113,4 +111,3 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 vico = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
 
 workmanager-runtime = { group = "androidx.work", name = "work-runtime", version.ref = "workManager" }
-

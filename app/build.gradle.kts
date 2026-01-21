@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+
 /*
  * Copyright 2025 pyamsoft
  *
@@ -14,14 +17,11 @@
  * limitations under the License.
  */
 
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
   // Can't use alias() or we get some weird error about double Android on classpath?
   id(libs.plugins.android.application.get().pluginId)
 
   alias(libs.plugins.ksp)
-  alias(libs.plugins.kotlin.android)
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.android.cacheFix)
 }
@@ -50,8 +50,6 @@ android {
     // Flag to enable support for the new language APIs
     isCoreLibraryDesugaringEnabled = true
   }
-
-  kotlin { compilerOptions { jvmTarget = JvmTarget.JVM_21 } }
 
   signingConfigs {
     named("debug") {
@@ -98,6 +96,13 @@ android {
             "META-INF/INDEX.LIST",
             "META-INF/io.netty.versions.properties",
         )
+  }
+}
+
+kotlin {
+  compilerOptions {
+    languageVersion = KotlinVersion.KOTLIN_2_3
+    jvmTarget = JvmTarget.JVM_21
   }
 }
 

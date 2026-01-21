@@ -26,10 +26,6 @@ plugins {
   // https://github.com/gradle/android-cache-fix-gradle-plugin
   alias(libs.plugins.android.cacheFix) apply false
 
-  // Kotlin
-  // https://developer.android.com/studio/build#top-level
-  alias(libs.plugins.kotlin.android) apply false
-
   // Jetpack Compose Compiler
   // https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html
   alias(libs.plugins.compose.compiler) apply false
