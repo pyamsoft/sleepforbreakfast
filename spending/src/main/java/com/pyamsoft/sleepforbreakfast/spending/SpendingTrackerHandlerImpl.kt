@@ -29,11 +29,11 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.replaceCategories
 import com.pyamsoft.sleepforbreakfast.spending.automatic.AutomaticManager
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 @Singleton
 internal class SpendingTrackerHandlerImpl
