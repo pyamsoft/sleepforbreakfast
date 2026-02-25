@@ -26,8 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,7 +41,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,7 +61,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.TimePicker
 import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
 import com.pyamsoft.sleepforbreakfast.ui.TimePickerDialog
-import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -134,7 +132,7 @@ fun TransactionAddScreen(
               onClick = onDismiss,
           ) {
             Icon(
-                imageVector = Icons.Filled.Close,
+                painter = IconPainters.close(),
                 contentDescription = "Close",
             )
           }
@@ -313,7 +311,7 @@ private fun AutoInfo(
   ExtraBit(
       modifier = modifier,
       data = existing,
-      icon = Icons.Filled.AutoAwesome,
+      painter = IconPainters.wandStars(),
       title = "Automatic Info",
       onClick = onAutoInfoOpen,
   ) {
@@ -325,7 +323,7 @@ private fun AutoInfo(
 private fun <T : Any> ExtraBit(
     modifier: Modifier = Modifier,
     data: T?,
-    icon: ImageVector,
+    painter: Painter,
     title: String,
     onClick: () -> Unit,
     isValid: (T) -> Boolean,
@@ -349,7 +347,7 @@ private fun <T : Any> ExtraBit(
     ) {
       Icon(
           modifier = Modifier.padding(end = MaterialTheme.keylines.content),
-          imageVector = icon,
+          painter = painter,
           contentDescription = "${if (valid) "View" else "No"} $title",
       )
 

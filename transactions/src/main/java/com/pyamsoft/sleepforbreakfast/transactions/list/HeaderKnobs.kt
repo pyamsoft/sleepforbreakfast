@@ -19,8 +19,6 @@ package com.pyamsoft.sleepforbreakfast.transactions.list
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -32,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.sleepforbreakfast.money.list.Search
 import com.pyamsoft.sleepforbreakfast.money.list.ToggleIcon
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 @Composable
 internal fun HeaderKnobs(
@@ -72,7 +71,7 @@ private fun DateRange(
       onToggle = onToggle,
   ) {
     Icon(
-        imageVector = Icons.Filled.CalendarMonth,
+        painter = IconPainters.calendarMonth(),
         contentDescription = "Date Range",
         tint = MaterialTheme.colorScheme.onPrimary,
     )

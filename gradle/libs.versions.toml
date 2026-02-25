@@ -13,8 +13,8 @@ kotlin = "2.3.10"
 coroutines = "1.10.2"
 
 # Us
-pydroid = "29.2.2"
-cachify = "0.3.9"
+pydroid = "29.3.0"
+cachify = "0.3.10"
 
 # Square
 leakCanary = "2.14"
@@ -34,7 +34,6 @@ workManager = "2.11.1"
 
 # Compose
 compose = "1.10.3"
-composeMaterial = "1.7.8"
 composeMaterial3 = "1.4.0"
 
 # Google
@@ -78,8 +77,6 @@ androidx-preference = { group = "androidx.preference", name = "preference", vers
 cachify = { group = "com.github.pyamsoft.cachify", name = "cachify", version.ref = "cachify" }
 
 compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose" }
-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core", version.ref = "composeMaterial" }
-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "composeMaterial" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
 compose-runtime-annotation = { group = "androidx.compose.runtime", name = "runtime-annotation", version.ref = "compose" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }

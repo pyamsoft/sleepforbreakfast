@@ -23,8 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -45,6 +43,7 @@ import com.pyamsoft.pydroid.ui.defaults.ImageDefaults
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.money.DATE_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.LocalDate
 
@@ -87,7 +86,7 @@ fun TransactionAutoScreen(
               onClick = onDismiss,
           ) {
             Icon(
-                imageVector = Icons.Filled.Close,
+                painter = IconPainters.close(),
                 contentDescription = "Close",
             )
           }

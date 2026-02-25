@@ -23,8 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.ZeroCornerSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +52,7 @@ import com.pyamsoft.sleepforbreakfast.money.list.KnobBar
 import com.pyamsoft.sleepforbreakfast.money.list.SearchBar
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewState
 import com.pyamsoft.sleepforbreakfast.ui.DatePickerDialog
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Clock
@@ -209,7 +208,7 @@ private fun Totals(
             onClick = onDismiss,
         ) {
           Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+              painter = IconPainters.arrowBack(),
               contentDescription = "Back",
               tint = contentColor,
           )

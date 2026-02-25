@@ -33,10 +33,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -58,6 +54,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import kotlinx.coroutines.flow.filter
 
 @Composable
@@ -116,7 +113,7 @@ fun KnobBar(
               onClick = onToggle,
           ) {
             Icon(
-                imageVector = Icons.Filled.Close,
+                painter = IconPainters.close(),
                 contentDescription = "Close",
                 tint = MaterialTheme.colorScheme.error,
             )
@@ -192,7 +189,7 @@ fun Search(
       onToggle = onToggle,
   ) {
     Icon(
-        imageVector = Icons.Filled.Search,
+        painter = IconPainters.search(),
         contentDescription = "Search",
         tint = MaterialTheme.colorScheme.onPrimary,
     )
@@ -227,7 +224,7 @@ fun SearchBar(
             remember { KeyboardOptions(autoCorrectEnabled = true, imeAction = ImeAction.Search) },
         leadingIcon = {
           Icon(
-              imageVector = Icons.Filled.Search,
+              painter = IconPainters.search(),
               contentDescription = "Search",
           )
           leadingIcon()
@@ -238,7 +235,7 @@ fun SearchBar(
           ) {
             Icon(
                 modifier = Modifier.clickable { setSearch("") },
-                imageVector = Icons.Filled.Clear,
+                painter = IconPainters.cancel(),
                 contentDescription = "Clear",
             )
 

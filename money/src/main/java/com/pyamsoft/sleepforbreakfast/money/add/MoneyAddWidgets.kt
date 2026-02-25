@@ -33,9 +33,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -76,6 +73,7 @@ import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.TIME_FORMATTER
 import com.pyamsoft.sleepforbreakfast.ui.complement
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -129,7 +127,7 @@ fun MoneyAmount(
         keyboardOptions = keyboardNumberOptions,
         leadingIcon = {
           Icon(
-              imageVector = Icons.Filled.AttachMoney,
+              painter = IconPainters.attachMoney(),
               contentDescription = "Amount",
           )
         },
@@ -535,7 +533,7 @@ fun AddCategories(
         Icon(
             modifier =
                 Modifier.padding(end = MaterialTheme.keylines.content).clickable { handleShow() },
-            imageVector = Icons.Filled.Add,
+            painter = IconPainters.add(),
             contentDescription = "Categories",
         )
       }

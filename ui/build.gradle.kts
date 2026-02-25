@@ -65,10 +65,6 @@ dependencies {
   api(libs.compose.ui)
   api(libs.compose.animation)
   api(libs.compose.material3)
-  api(libs.compose.material.icons)
-
-  // TODO(Peter): Remove after development is done
-  api(libs.compose.material.icons.extended)
 
   // Compose Preview
   compileOnly(libs.compose.ui.tooling.preview)

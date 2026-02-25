@@ -18,8 +18,6 @@ package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 @Composable
 fun HomeHeader(
@@ -55,7 +54,7 @@ fun HomeHeader(
           },
       ) {
         Icon(
-            imageVector = Icons.Filled.Settings,
+            painter = IconPainters.settings(),
             contentDescription = "Settings",
         )
       }

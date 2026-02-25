@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,7 +50,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -69,8 +68,7 @@ import com.pyamsoft.sleepforbreakfast.ui.COLOR_EARN
 import com.pyamsoft.sleepforbreakfast.ui.COLOR_SPEND
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import com.pyamsoft.sleepforbreakfast.ui.complement
-import com.pyamsoft.sleepforbreakfast.ui.icons.AutoAwesome
-import com.pyamsoft.sleepforbreakfast.ui.icons.Category
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.model.toDateRange
 import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
@@ -448,7 +446,7 @@ private fun HomeExtras(
     IconOption(
         modifier = Modifier.weight(1F),
         onClick = onOpenCategories,
-        icon = Icons.Filled.Category,
+        painter = IconPainters.category(),
         title = "Categories",
     )
     Spacer(modifier = Modifier.width(MaterialTheme.keylines.content))
@@ -456,7 +454,7 @@ private fun HomeExtras(
     IconOption(
         modifier = Modifier.weight(1F),
         onClick = onOpenAutomatics,
-        icon = Icons.Filled.AutoAwesome,
+        painter = IconPainters.wandStars(),
         title = "Automatics",
     )
   }
@@ -466,7 +464,7 @@ private fun HomeExtras(
 private fun IconOption(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    icon: ImageVector,
+    painter: Painter,
     title: String,
 ) {
   val shape = MaterialTheme.shapes.large
@@ -486,7 +484,7 @@ private fun IconOption(
           modifier =
               Modifier.size(ImageDefaults.LargeSize)
                   .padding(bottom = MaterialTheme.keylines.content),
-          imageVector = icon,
+          painter = painter,
           contentDescription = title,
           tint = MaterialTheme.colorScheme.onPrimary,
       )

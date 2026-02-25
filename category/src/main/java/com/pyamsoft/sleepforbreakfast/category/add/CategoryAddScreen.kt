@@ -28,8 +28,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -63,6 +61,7 @@ import com.pyamsoft.sleepforbreakfast.money.add.AddName
 import com.pyamsoft.sleepforbreakfast.money.add.AddNote
 import com.pyamsoft.sleepforbreakfast.money.add.AddSubmit
 import com.pyamsoft.sleepforbreakfast.ui.CardDialog
+import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 private enum class ContentTypes {
   NAME,
@@ -118,7 +117,7 @@ fun CategoryAddScreen(
                 onClick = onDismiss,
             ) {
               Icon(
-                  imageVector = Icons.Filled.Close,
+                  painter = IconPainters.close(),
                   contentDescription = "Close",
               )
             }
@@ -232,7 +231,7 @@ private fun ColorPickerDialog(
                 onClick = onDismiss,
             ) {
               Icon(
-                  imageVector = Icons.Filled.Close,
+                  painter = IconPainters.close(),
                   contentDescription = "Close",
               )
             }
