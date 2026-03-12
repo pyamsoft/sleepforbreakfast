@@ -24,7 +24,7 @@ moshi = "1.15.2"
 dagger = "2.59.2"
 
 # AndroidX
-core = "1.17.0"
+core = "1.18.0"
 activity = "1.12.4"
 lifecycle = "2.10.0"
 dataStore = "1.2.0"
