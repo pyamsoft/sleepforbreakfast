@@ -62,7 +62,7 @@ dependencies {
   api(libs.pydroid.ui)
 
   // Android support library.
-  api(libs.androidx.core.ktx)
+  api(libs.androidx.core)
 
   // Dagger
   api(libs.dagger)
