@@ -24,7 +24,7 @@ moshi = "1.15.2"
 dagger = "2.59.2"
 
 # AndroidX
-core = "1.18.0"
+core = "1.18.0" # core-ktx is ready in 1.19.X https://jakewharton.com/an-update-on-android-ktx/
 activity = "1.13.0"
 lifecycle = "2.10.0"
 dataStore = "1.2.1"
@@ -69,7 +69,7 @@ caupain = { id = "com.deezer.caupain", version.ref = "caupain" }
 android-desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "jdkDesugar" }
 
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
-androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 androidx-dataStore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 androidx-lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
