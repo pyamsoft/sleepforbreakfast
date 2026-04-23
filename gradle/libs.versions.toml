@@ -33,7 +33,7 @@ room = "2.8.4"
 workManager = "2.11.2"
 
 # Compose
-compose = "1.10.6"
+compose = "1.11.0"
 composeMaterial3 = "1.4.0"
 
 # Google
