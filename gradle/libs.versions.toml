@@ -37,7 +37,7 @@ compose = "1.11.1"
 composeMaterial3 = "1.4.0"
 
 # Google
-ksp = "2.3.7"
+ksp = "2.3.8"
 
 # Images
 vico = "3.1.0"
