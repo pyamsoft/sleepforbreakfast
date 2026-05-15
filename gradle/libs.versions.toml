@@ -44,7 +44,7 @@ vico = "3.1.0"
 colorPicker = "0.7.0"
 
 # Developer Tools
-spotless = "8.4.0"
+spotless = "8.5.0"
 doctor = "0.12.1"
 jdkDesugar = "2.1.5"
 caupain = "1.9.1"
