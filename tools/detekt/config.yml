@@ -1,0 +1,77 @@
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - "Composable"
+  TopLevelPropertyNaming:
+    constantPattern: "[A-Z][_A-Za-z0-9]*"
+
+empty-blocks:
+  EmptyFunctionBlock:
+    ignoreAnnotated:
+      - "LintIgnoreEmptyFunctionBlock"
+
+exceptions:
+  TooGenericExceptionCaught:
+    ignoreAnnotated:
+      - "LintIgnoreTooGenericExceptionCaught"
+  TooGenericExceptionThrown:
+    ignoreAnnotated:
+      - "LintIgnoreTooGenericExceptionThrown"
+  SwallowedException:
+    ignoreAnnotated:
+      - "LintIgnoreSwallowedException"
+
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotated:
+      - "Preview"
+      - "PreviewSource"
+      - "LintIgnoreMagicNumber"
+  UnusedPrivateFunction:
+    ignoreAnnotated:
+      - "Preview"
+      - "PreviewSource"
+  NewLineAtEndOfFile:
+    active: false
+  ReturnCount:
+    active: false
+  MaxLineLength:
+    ignoreAnnotated:
+      - "LintIgnoreMaxLineLength"
+  LoopWithTooManyJumpStatements:
+    ignoreAnnotated:
+      - "LintIgnoreLoopWithTooManyJumpStatements"
+  ThrowsCount:
+    ignoreAnnotated:
+      - "LintIgnoreThrowsCount"
+
+complexity:
+  CyclomaticComplexMethod:
+    ignoreAnnotated:
+      - "Composable"
+      - "Preview"
+      - "PreviewSource"
+      - "TestOnly"
+      - "LintIgnoreCyclomaticComplexMethod"
+
+  LongParameterList:
+    ignoreDefaultParameters: true
+    ignoreAnnotated:
+      - "PreviewSource"
+  TooManyFunctions:
+    ignoreAnnotated:
+      - "Preview"
+      - "PreviewSource"
+      - "LintIgnoreTooManyFunctions"
+      - "TestOnly"
+      - "Module"
+      - "Component"
+  LongMethod:
+    ignoreAnnotated:
+      - "Composable"
+      - "Preview"
+      - "PreviewSource"
+      - "LintIgnoreLongMethod"
+      - "TestOnly"

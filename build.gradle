@@ -16,6 +16,7 @@
 
 import com.deezer.caupain.plugin.DependenciesUpdateTask
 import com.deezer.caupain.policies.StabilityLevelPolicy
+import dev.detekt.gradle.extensions.FailOnSeverity
 
 plugins {
   // Android AGP
@@ -49,6 +50,10 @@ plugins {
   // Room
   // https://developer.android.com/jetpack/androidx/releases/room#kts
   alias(libs.plugins.room) apply false
+
+  // Detekt
+  // https://detekt.dev/docs/gettingstarted/gradle
+  alias(libs.plugins.detekt) apply false
 }
 
 subprojects {
@@ -67,6 +72,9 @@ allprojects {
   //
   // and we can't just apply this toplevel or it won't run on all the subprojects
   apply(plugin: libs.plugins.spotless.get().pluginId)
+
+  // Apply Detekt Plugin here
+  apply(plugin: libs.plugins.detekt.get().pluginId)
 
   repositories {
     mavenLocal()
@@ -121,6 +129,14 @@ allprojects {
     }
   }
 
+  // Detekt
+  detekt {
+    debug = true
+    buildUponDefaultConfig = true
+    parallel = true
+    failOnSeverity = FailOnSeverity.Warning
+    config.setFrom(rootProject.projectDir.absolutePath + "/tools/detekt/config.yml")
+  }
 
   // Caupain Version Strategy
   tasks.withType(DependenciesUpdateTask).configureEach {
