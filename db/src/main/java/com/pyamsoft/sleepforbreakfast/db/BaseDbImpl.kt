@@ -17,7 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.db
 
 import androidx.annotation.CheckResult
-import com.pyamsoft.pydroid.bus.internal.DefaultEventBus
+import com.pyamsoft.pydroid.bus.EventBus
 import kotlinx.coroutines.flow.Flow
 
 internal abstract class BaseDbImpl<
@@ -28,7 +28,7 @@ internal abstract class BaseDbImpl<
     D : DbDelete<*>,
 > protected constructor() : BaseDb<R, Q, I, D> {
 
-  private val bus = DefaultEventBus<ChangeEvent>()
+  private val bus = EventBus.create<ChangeEvent>()
 
   @CheckResult protected fun subscribe(): Flow<ChangeEvent> = bus
 

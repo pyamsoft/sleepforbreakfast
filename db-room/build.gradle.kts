@@ -62,7 +62,6 @@ dependencies {
   ksp(libs.dagger.compiler)
   ksp(libs.room.compiler)
 
-  implementation(libs.room)
   implementation(libs.room.runtime)
 
   implementation(project(":core"))

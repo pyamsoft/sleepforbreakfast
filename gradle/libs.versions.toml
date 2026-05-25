@@ -1,8 +1,8 @@
 [versions]
 # SDK
 minSdk = "26"
-targetSdk = "36"
-compileSdk = "36"
+targetSdk = "37"
+compileSdk = "37"
 
 # Android Gradle
 agp = "9.2.1"
@@ -13,7 +13,7 @@ kotlin = "2.3.21"
 coroutines = "1.11.0"
 
 # Us
-pydroid = "29.4.0"
+pydroid = "29.5.0"
 cachify = "0.3.11"
 
 # Square
@@ -96,7 +96,6 @@ leakcanary-plumber = { group = "com.squareup.leakcanary", name = "plumber-androi
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 
-room = { group = "androidx.room", name = "room", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 

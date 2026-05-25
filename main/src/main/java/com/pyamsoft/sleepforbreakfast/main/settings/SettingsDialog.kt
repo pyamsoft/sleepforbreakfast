@@ -17,10 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.main.settings
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.settings.SettingsPage
 import com.pyamsoft.sleepforbreakfast.ui.CardDialog
 
@@ -39,7 +37,6 @@ fun SettingsDialog(
     )
     SettingsPage(
         modifier = Modifier.fillMaxWidth().weight(1F),
-        customBottomItemMargin = MaterialTheme.keylines.baseline,
     )
   }
 }
