@@ -28,9 +28,6 @@ import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import java.time.Clock
 import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters
-import java.time.temporal.WeekFields
-import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -44,7 +41,6 @@ class HomeViewModeler
 @Inject
 internal constructor(
     override val state: MutableHomeViewState,
-    private val locale: Locale,
     private val clock: Clock,
     private val listenerStatus: NotificationListenerStatus,
     private val categoryLoader: CategoryLoader,
@@ -77,12 +73,12 @@ internal constructor(
 
   private fun MutableMap<HomeViewState.DayRange, MutableSet<DbTransaction>>.breakdown(
       transaction: DbTransaction,
-      today: LocalDate,
+      startOfDay: LocalDate,
       startOfWeek: LocalDate,
       startOfMonth: LocalDate,
   ) {
     val date = transaction.date.toLocalDate()
-    if (date >= today) {
+    if (date >= startOfDay) {
       getOrPut(HomeViewState.DayRange.DAY) { mutableSetOf() }.add(transaction)
     }
     if (date >= startOfWeek) {
@@ -129,10 +125,9 @@ internal constructor(
         scope.async(context = Dispatchers.Default) {
           val transactions = fetchTransactions()
 
-          val today = LocalDate.now(clock)
-          val firstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
-          val startOfWeek = today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
-          val startOfMonth = today.withDayOfMonth(1)
+          val startOfDay = LocalDate.now(clock)
+          val startOfWeek = startOfDay.minusDays(7)
+          val startOfMonth = startOfDay.minusDays(30)
 
           val cats = mutableMapOf<DbCategory.Id, MutableSet<DbTransaction>>()
           val breaks = mutableMapOf<HomeViewState.DayRange, MutableSet<DbTransaction>>()
@@ -140,7 +135,7 @@ internal constructor(
             cats.categorize(transaction = t)
             breaks.breakdown(
                 transaction = t,
-                today = today,
+                startOfDay = startOfDay,
                 startOfWeek = startOfWeek,
                 startOfMonth = startOfMonth,
             )

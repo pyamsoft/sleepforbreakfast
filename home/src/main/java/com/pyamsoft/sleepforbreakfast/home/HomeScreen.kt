@@ -71,15 +71,12 @@ import com.pyamsoft.sleepforbreakfast.ui.complement
 import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.model.toDateRange
-import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import com.pyamsoft.sleepforbreakfast.ui.renderPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.ui.text.MoneyVisualTransformation
 import java.time.Clock
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.time.temporal.TemporalAdjusters
-import java.time.temporal.WeekFields
 import kotlin.math.abs
 
 private enum class ContentTypes {
@@ -306,22 +303,18 @@ private fun DateBreakdown(
   val rangeName =
       remember(type) {
         when (type) {
-          DateBreakdownType.DAILY -> "Transactions Today"
-          DateBreakdownType.WEEKLY -> "Transactions This Week"
-          DateBreakdownType.MONTHLY -> "Transactions This Month"
+          DateBreakdownType.DAILY -> "Last 24h"
+          DateBreakdownType.WEEKLY -> "Last 7 Days"
+          DateBreakdownType.MONTHLY -> "Last 30 Days"
         }
       }
 
-  val locale = rememberCurrentLocale()
   val startOfRange =
-      remember(type, clock, today, locale) {
+      remember(type, today) {
         when (type) {
-          DateBreakdownType.DAILY -> LocalDate.now(clock)
-          DateBreakdownType.WEEKLY -> {
-            val firstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
-            today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
-          }
-          DateBreakdownType.MONTHLY -> today.withDayOfMonth(1)
+          DateBreakdownType.DAILY -> today.minusDays(1)
+          DateBreakdownType.WEEKLY -> today.minusDays(7)
+          DateBreakdownType.MONTHLY -> today.minusDays(30)
         }
       }
 

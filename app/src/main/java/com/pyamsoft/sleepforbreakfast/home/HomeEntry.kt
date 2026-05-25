@@ -29,20 +29,17 @@ import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
-import com.pyamsoft.sleepforbreakfast.ui.rememberCurrentLocale
 import java.time.Clock
-import java.util.Locale
 import javax.inject.Inject
 
-internal class HomeInjector @Inject internal constructor(private val locale: Locale) :
-    ComposableInjector() {
+internal class HomeInjector @Inject internal constructor() : ComposableInjector() {
 
   @JvmField @Inject internal var viewModel: HomeViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
     ObjectGraph.ActivityScope.retrieve(activity)
         .plusHome()
-        .create(locale = locale, activity = activity, lifecycle = activity.lifecycle)
+        .create(activity = activity, lifecycle = activity.lifecycle)
         .inject(this)
   }
 
@@ -68,8 +65,7 @@ internal fun HomeEntry(
     onOpenAllTransactions: (TransactionDateRange?) -> Unit,
     onOpenTransactions: (DbCategory, TransactionDateRange?) -> Unit,
 ) {
-  val locale = rememberCurrentLocale()
-  val component = rememberComposableInjector { HomeInjector(locale = locale) }
+  val component = rememberComposableInjector { HomeInjector() }
   val viewModel = rememberNotNull(component.viewModel)
   val scope = rememberCoroutineScope()
 
