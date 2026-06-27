@@ -21,7 +21,7 @@ leakCanary = "2.14"
 timber = "5.0.1"
 moshi = "1.15.2"
 
-dagger = "2.59.2"
+dagger = "2.60"
 
 # AndroidX
 core = "1.19.0"
@@ -40,7 +40,7 @@ composeMaterial3 = "1.4.0"
 ksp = "2.3.9"
 
 # Images
-vico = "3.2.2"
+vico = "3.2.3"
 colorPicker = "0.7.0"
 
 # Developer Tools
