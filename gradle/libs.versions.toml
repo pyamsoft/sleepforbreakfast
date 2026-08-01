@@ -45,7 +45,6 @@ colorPicker = "0.7.0"
 
 # Developer Tools
 spotless = "8.9.0"
-doctor = "0.12.1"
 jdkDesugar = "2.1.5"
 caupain = "1.9.1"
 detekt = "2.0.0-alpha.5"
@@ -62,7 +61,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
 
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-doctor = { id = "com.osacky.doctor", version.ref = "doctor" }
 caupain = { id = "com.deezer.caupain", version.ref = "caupain" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
 
