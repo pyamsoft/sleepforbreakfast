@@ -29,18 +29,17 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_UPDATE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_ID_INSERT_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomAutomaticInsertDao : AutomaticInsertDao {
 
   // Transaction methods cannot be final
   @Transaction
-  override suspend fun insert(o: DbAutomatic): DbInsert.InsertResult<DbAutomatic> =
-      withContext(context = Dispatchers.Default) {
+  /* final */ override suspend fun insert(
+      o: DbAutomatic,
+  ): DbInsert.InsertResult<DbAutomatic> {
         val roomAutomatic = RoomDbAutomatic.create(o)
-        return@withContext if (daoQuery(roomAutomatic.id) == null) {
+      return if (daoQuery(roomAutomatic.id) == null) {
           if (daoInsert(roomAutomatic) != ROOM_ROW_ID_INSERT_INVALID) {
             DbInsert.InsertResult.Insert(roomAutomatic)
           } else {

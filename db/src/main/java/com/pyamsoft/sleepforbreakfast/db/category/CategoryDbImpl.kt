@@ -19,25 +19,26 @@ package com.pyamsoft.sleepforbreakfast.db.category
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class CategoryDbImpl
 @Inject
 internal constructor(
     private val enforcer: ThreadEnforcer,
-    @DbApi realQueryDao: CategoryQueryDao,
     @param:DbApi private val realInsertDao: CategoryInsertDao,
     @param:DbApi private val realDeleteDao: CategoryDeleteDao,
+    @DbApi realQueryDao: CategoryQueryDao,
+    dispatchers: AppDispatchers,
 ) :
     CategoryDb,
     CategoryQueryDao.Cache,
@@ -47,7 +48,9 @@ internal constructor(
         CategoryQueryDao,
         CategoryInsertDao,
         CategoryDeleteDao,
-    >() {
+    >(
+        dispatchers = dispatchers,
+    ) {
 
   private val queryCache =
       cachify<List<DbCategory>> {
@@ -70,13 +73,13 @@ internal constructor(
   override val realtime: CategoryRealtime = this
 
   override suspend fun invalidate() =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         queryCache.clear()
         queryByIdCache.clear()
       }
 
   override suspend fun invalidateById(id: DbCategory.Id) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 categoryId = id,
@@ -90,10 +93,10 @@ internal constructor(
   }
 
   override suspend fun query(): List<DbCategory> =
-      withContext(context = Dispatchers.Default) { queryCache.call() }
+      withContext(context = dispatchers.io) { queryCache.call() }
 
   override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 categoryId = id,
@@ -103,7 +106,7 @@ internal constructor(
       }
 
   override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
@@ -121,7 +124,7 @@ internal constructor(
       }
 
   override suspend fun delete(o: DbCategory): Boolean =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()

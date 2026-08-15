@@ -24,14 +24,11 @@ import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
 
-  final override suspend fun query(): List<DbAutomatic> =
-      withContext(context = Dispatchers.Default) { daoQuery() }
+    final override suspend fun query(): List<DbAutomatic> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -44,21 +41,18 @@ internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
       notificationGroup: String,
       notificationPackageName: String,
       notificationMatchText: String,
-  ): Maybe<out DbAutomatic> =
-      withContext(context = Dispatchers.Default) {
-        when (
-            val result =
-                daoQueryByNotification(
-                    id = notificationId,
-                    key = notificationKey,
-                    group = notificationGroup,
-                    packageName = notificationPackageName,
-                    matchText = notificationMatchText,
-                )
-        ) {
+  ): Maybe<out DbAutomatic> = when (
+      val result =
+          daoQueryByNotification(
+              id = notificationId,
+              key = notificationKey,
+              group = notificationGroup,
+              packageName = notificationPackageName,
+              matchText = notificationMatchText,
+          )
+  ) {
           null -> Maybe.None
           else -> Maybe.Data(result)
-        }
       }
 
   @CheckResult
@@ -81,8 +75,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
       matchText: String,
   ): RoomDbAutomatic?
 
-  final override suspend fun queryUnused(): List<DbAutomatic> =
-      withContext(context = Dispatchers.Default) { daoQueryUnused() }
+    final override suspend fun queryUnused(): List<DbAutomatic> = daoQueryUnused()
 
   @CheckResult
   @Transaction
@@ -93,13 +86,13 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_U
   )
   internal abstract suspend fun daoQueryUnused(): List<RoomDbAutomatic>
 
-  final override suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic> =
-      withContext(context = Dispatchers.Default) {
+    final override suspend fun queryById(
+        id: DbAutomatic.Id
+    ): Maybe<out DbAutomatic> =
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
         }
-      }
 
   @CheckResult
   @Query(

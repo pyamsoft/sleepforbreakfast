@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions.delete
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteViewModeler
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionInteractor
@@ -27,12 +28,14 @@ internal constructor(
     state: MutableTransactionDeleteViewState,
     params: TransactionDeleteParams,
     interactor: TransactionInteractor,
+    dispatchers: AppDispatchers,
 ) :
     TransactionDeleteViewState by state,
     DeleteViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionDeleteViewState>(
         state = state,
         initialId = params.transactionId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   override fun isIdEmpty(id: DbTransaction.Id): Boolean {

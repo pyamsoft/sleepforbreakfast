@@ -33,8 +33,6 @@ import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_ID_INSERT_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotification
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationWithRegexes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomNotificationInsertDao : NotificationInsertDao {
@@ -43,11 +41,10 @@ internal abstract class RoomNotificationInsertDao : NotificationInsertDao {
   @Transaction
   /* final */ override suspend fun insert(
       o: DbNotificationWithRegexes
-  ): DbInsert.InsertResult<DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) {
+  ): DbInsert.InsertResult<DbNotificationWithRegexes> {
         val roomNotification = RoomDbNotificationWithRegexes.create(o)
         val existing = daoQuery(roomNotification.notification.id)
-        return@withContext if (existing == null) {
+        return if (existing == null) {
           if (daoInsert(roomNotification.notification) != ROOM_ROW_ID_INSERT_INVALID) {
             if (daoInsert(roomNotification.matchRegexes).all { it != ROOM_ROW_ID_INSERT_INVALID }) {
               DbInsert.InsertResult.Insert(roomNotification)

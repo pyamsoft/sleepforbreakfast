@@ -17,9 +17,9 @@
 package com.pyamsoft.sleepforbreakfast.db.category.system
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 interface SystemCategories {
@@ -28,8 +28,8 @@ interface SystemCategories {
 }
 
 @CheckResult
-suspend fun SystemCategories.ensure() =
-    withContext(context = Dispatchers.Default) {
+suspend fun SystemCategories.ensure(dispatchers: AppDispatchers) =
+    withContext(context = dispatchers.default) {
       for (cat in RequiredCategories.entries) {
         create(cat).also { c ->
           if (c == null) {

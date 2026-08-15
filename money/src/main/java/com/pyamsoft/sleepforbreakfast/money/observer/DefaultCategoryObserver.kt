@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.observer
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -29,11 +30,13 @@ internal class DefaultCategoryObserver
 internal constructor(
     loader: CategoryLoader,
     categoryRealtime: CategoryRealtime,
+    dispatchers: AppDispatchers,
 ) :
     CategoryObserver,
     AbstractDbObserver<DbCategory, CategoryChangeEvent, DbCategory.Id>(
         query = loader,
         realtime = categoryRealtime,
+        dispatchers = dispatchers,
     ) {
 
   override val emptyInstance = DbCategory.NONE

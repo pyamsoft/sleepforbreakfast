@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -29,10 +30,9 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 internal class TransactionInteractorImpl
 @Inject
@@ -43,12 +43,15 @@ constructor(
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
     private val autoQueryDao: AutomaticQueryDao,
+    dispatchers: AppDispatchers,
 ) :
     TransactionInteractor,
-    ListInteractorImpl<DbTransaction.Id, DbTransaction, TransactionChangeEvent>() {
+    ListInteractorImpl<DbTransaction.Id, DbTransaction, TransactionChangeEvent>(
+        dispatchers = dispatchers,
+    ) {
 
   override suspend fun loadAuto(transaction: DbTransaction): ResultWrapper<Maybe<out DbAutomatic>> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         val r = transaction.automaticId
         if (r == null) {
           Timber.w { "Transaction has no auto data: $transaction" }

@@ -16,21 +16,22 @@
 
 package com.pyamsoft.sleepforbreakfast.worker.work.automatictransaction
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
 import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
-import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 class AutomaticSpendingWork
 @Inject
 internal constructor(
     private val automaticQueryDao: AutomaticQueryDao,
     private val handler: AutomaticTransactionHandler,
+    private val dispatchers: AppDispatchers,
 ) : BgWorker {
 
   private suspend fun processJobs() = GLOBAL_LOCK.withLock {
@@ -47,7 +48,7 @@ internal constructor(
   }
 
   override suspend fun work(): BgWorker.WorkResult =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         try {
           processJobs()
           return@withContext BgWorker.WorkResult.Success

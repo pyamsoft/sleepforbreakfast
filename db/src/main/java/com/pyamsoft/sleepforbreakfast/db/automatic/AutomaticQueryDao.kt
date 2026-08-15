@@ -22,9 +22,14 @@ import com.pyamsoft.sleepforbreakfast.db.Maybe
 
 interface AutomaticQueryDao : DbQuery<DbAutomatic> {
 
-  @CheckResult suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic>
+    @CheckResult
+    suspend fun queryById(
+        id: DbAutomatic.Id
+    ): Maybe<out DbAutomatic>
 
-  @CheckResult suspend fun queryUnused(): List<DbAutomatic>
+    @CheckResult
+    suspend fun queryUnused(
+    ): List<DbAutomatic>
 
   @CheckResult
   suspend fun queryByNotification(

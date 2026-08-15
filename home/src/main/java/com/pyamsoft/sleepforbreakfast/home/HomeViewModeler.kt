@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -26,16 +27,15 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.home.notification.NotificationListenerStatus
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
-import java.time.Clock
-import java.time.LocalDate
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Clock
+import java.time.LocalDate
+import javax.inject.Inject
 
 class HomeViewModeler
 @Inject
@@ -45,6 +45,7 @@ internal constructor(
     private val listenerStatus: NotificationListenerStatus,
     private val categoryLoader: CategoryLoader,
     private val transactionQueryDao: TransactionQueryDao,
+    private val dispatchers: AppDispatchers,
 ) : HomeViewState by state, AbstractViewModeler<HomeViewState>(state) {
 
   @CheckResult
@@ -116,13 +117,13 @@ internal constructor(
 
     val jobs = mutableListOf<Deferred<*>>()
     jobs.add(
-        scope.async(context = Dispatchers.Default) {
+        scope.async(context = dispatchers.default) {
           val categories = fetchCategories()
           state.categories.value = categories.sortedBy { it.name.lowercase() }
         }
     )
     jobs.add(
-        scope.async(context = Dispatchers.Default) {
+        scope.async(context = dispatchers.default) {
           val transactions = fetchTransactions()
 
           val startOfDay = LocalDate.now(clock)
@@ -155,16 +156,16 @@ internal constructor(
 
   fun bind(scope: CoroutineScope) {
     listenerStatus.isNotificationListenerActive().also { f ->
-      scope.launch(context = Dispatchers.Default) {
+      scope.launch(context = dispatchers.default) {
         f.collect { state.isNotificationListenerEnabled.value = it }
       }
     }
 
-    scope.launch(context = Dispatchers.Default) { load() }
+    scope.launch(context = dispatchers.default) { load() }
   }
 
   fun handleOpenNotificationSettings(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Default) { listenerStatus.activateNotificationListener() }
+    scope.launch(context = dispatchers.default) { listenerStatus.activateNotificationListener() }
   }
 
   fun handleToggleExplanation() {

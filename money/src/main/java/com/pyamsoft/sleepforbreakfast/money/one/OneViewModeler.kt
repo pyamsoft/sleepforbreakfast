@@ -19,10 +19,10 @@ package com.pyamsoft.sleepforbreakfast.money.one
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.arch.UiViewState
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class OneViewModeler<I : Any, T : Any, S : UiViewState>
@@ -30,12 +30,13 @@ protected constructor(
     final override val state: S,
     protected val initialId: I,
     private val interactor: ListInteractor<I, T, *>,
+    protected val dispatchers: AppDispatchers,
 ) : AbstractViewModeler<S>(state) {
 
   fun bind(scope: CoroutineScope, force: Boolean) {
     // Upon binding, load the existing
     if (!isIdEmpty(initialId)) {
-      scope.launch(context = Dispatchers.Default) {
+      scope.launch(context = dispatchers.default) {
         interactor
             .loadOne(force, initialId)
             .onSuccess { result ->

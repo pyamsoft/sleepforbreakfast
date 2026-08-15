@@ -29,18 +29,15 @@ import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_ID_INSERT_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomTransactionInsertDao : TransactionInsertDao {
 
   // Transaction methods cannot be final
   @Transaction
-  override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> =
-      withContext(context = Dispatchers.Default) {
+  /* final */ override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> {
         val roomTransaction = RoomDbTransaction.create(o)
-        return@withContext if (daoQuery(roomTransaction.id) == null) {
+      return if (daoQuery(roomTransaction.id) == null) {
           if (daoInsert(roomTransaction) != ROOM_ROW_ID_INSERT_INVALID) {
             DbInsert.InsertResult.Insert(roomTransaction)
           } else {

@@ -23,11 +23,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbQuery
 import com.pyamsoft.sleepforbreakfast.db.DbRealtime
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,6 +36,7 @@ internal abstract class AbstractDbObserver<T : Any, R : Any, I : Any>
 protected constructor(
     private val query: DbQuery<T>,
     private val realtime: DbRealtime<R>,
+    protected val dispatchers: AppDispatchers,
 ) : BaseDbObserver<T, I> {
 
   private val cache = MutableStateFlow(setOf<T>())
@@ -56,10 +57,10 @@ protected constructor(
   }
 
   final override fun bind(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Default) { loadAllCategories() }
+    scope.launch(context = dispatchers.default) { loadAllCategories() }
 
     realtime.listenForChanges().also { f ->
-      scope.launch(context = Dispatchers.Default) { f.collect { onRealtimeEvent(it) } }
+      scope.launch(context = dispatchers.default) { f.collect { onRealtimeEvent(it) } }
     }
   }
 

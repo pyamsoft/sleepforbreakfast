@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.transactions.add
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -47,12 +48,14 @@ internal constructor(
     private val interactor: TransactionInteractor,
     private val clock: Clock,
     private val categoryLoader: CategoryLoader,
+  dispatchers: AppDispatchers,
 ) :
     TransactionAddViewState by state,
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
         state = state,
         initialId = params.transactionId,
         interactor = interactor,
+      dispatchers = dispatchers,
     ) {
 
   private val ensureCategoryId = params.ensureCategoryId
@@ -134,7 +137,7 @@ internal constructor(
 
     handleReset()
 
-    launch(context = Dispatchers.Default) { loadAuto(result) }
+    launch(context = dispatchers.default) { loadAuto(result) }
   }
 
   override fun onConsumeRestoredState(registry: SaveableStateRegistry) {

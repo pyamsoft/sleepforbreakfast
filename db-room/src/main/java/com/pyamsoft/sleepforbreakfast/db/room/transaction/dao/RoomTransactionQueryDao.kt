@@ -25,14 +25,11 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
 
-  final override suspend fun query(): List<DbTransaction> =
-      withContext(context = Dispatchers.Default) { daoQuery() }
+    final override suspend fun query(): List<DbTransaction> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -44,12 +41,10 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
 
   final override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
-      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
         }
-      }
 
   @CheckResult
   @Query(
@@ -62,13 +57,11 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 
   final override suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction> =
-      withContext(context = Dispatchers.Default) {
         if (id.isEmpty) {
           daoQueryNoCategories()
         } else {
           daoQueryByCategory("%${id.raw}%")
         }
-      }
 
   @CheckResult
   @Query(

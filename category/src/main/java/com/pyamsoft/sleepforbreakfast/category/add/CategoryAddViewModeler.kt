@@ -19,17 +19,17 @@ package com.pyamsoft.sleepforbreakfast.category.add
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
-import java.time.Clock
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Clock
+import javax.inject.Inject
 
 class CategoryAddViewModeler
 @Inject
@@ -38,12 +38,14 @@ internal constructor(
     params: CategoryAddParams,
     private val interactor: CategoryInteractor,
     private val clock: Clock,
+    dispatchers: AppDispatchers,
 ) :
     CategoryAddViewState by state,
     OneViewModeler<DbCategory.Id, DbCategory, MutableCategoryAddViewState>(
         state = state,
         initialId = params.categoryId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   private val defaultColor = params.categoryColor
@@ -146,7 +148,7 @@ internal constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       if (state.working.value) {
         Timber.w { "Already working" }
         return@launch
@@ -182,7 +184,7 @@ internal constructor(
           .onSuccess {
             if (!isIdEmpty(initialId)) {
               // Force onto main thread
-              withContext(context = Dispatchers.Default) { onDismissAfterUpdated() }
+              withContext(context = dispatchers.default) { onDismissAfterUpdated() }
             }
           }
           .onFailure {

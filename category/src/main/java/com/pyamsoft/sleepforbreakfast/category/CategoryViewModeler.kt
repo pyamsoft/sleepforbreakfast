@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.category
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddParams
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteParams
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryChangeEvent
@@ -26,8 +27,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
 
 class CategoryViewModeler
 @Inject
@@ -36,12 +37,14 @@ internal constructor(
     interactor: CategoryInteractor,
     enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
+    dispatchers: AppDispatchers,
 ) :
     CategoryViewState by state,
     ListViewModeler<DbCategory, CategoryChangeEvent, MutableCategoryViewState>(
         enforcer = enforcer,
         state = state,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   private fun handleAddParams(params: CategoryAddParams) {

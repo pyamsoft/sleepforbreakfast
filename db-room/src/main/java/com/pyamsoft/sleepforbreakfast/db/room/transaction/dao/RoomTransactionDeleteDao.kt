@@ -23,16 +23,13 @@ import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_DELETE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.entity.RoomDbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomTransactionDeleteDao : TransactionDeleteDao {
 
-  override suspend fun delete(o: DbTransaction): Boolean =
-      withContext(context = Dispatchers.Default) {
+  override suspend fun delete(o: DbTransaction): Boolean {
         val roomTransaction = RoomDbTransaction.create(o)
-        return@withContext daoDelete(roomTransaction) > ROOM_ROW_COUNT_DELETE_INVALID
+        return daoDelete(roomTransaction) > ROOM_ROW_COUNT_DELETE_INVALID
       }
 
   @Delete @CheckResult internal abstract fun daoDelete(symbol: RoomDbTransaction): Int

@@ -23,16 +23,13 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_DELETE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomCategoryDeleteDao : CategoryDeleteDao {
 
-  final override suspend fun delete(o: DbCategory): Boolean =
-      withContext(context = Dispatchers.Default) {
+  final override suspend fun delete(o: DbCategory): Boolean {
         val roomCategory = RoomDbCategory.create(o)
-        return@withContext daoDelete(roomCategory) > ROOM_ROW_COUNT_DELETE_INVALID
+        return daoDelete(roomCategory) > ROOM_ROW_COUNT_DELETE_INVALID
       }
 
   @Delete @CheckResult internal abstract fun daoDelete(symbol: RoomDbCategory): Int

@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.spending.guaranteed
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
@@ -23,7 +24,9 @@ import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationInsertDao
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 
-internal abstract class BaseGuarantee protected constructor() : SpendingGuarantee {
+internal abstract class BaseGuarantee protected constructor(
+  protected val dispatchers: AppDispatchers,
+) : SpendingGuarantee {
 
   private suspend fun upsert(
       insert: NotificationInsertDao,

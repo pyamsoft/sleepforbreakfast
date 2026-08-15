@@ -26,18 +26,15 @@ import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_DELETE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotification
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationWithRegexes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomNotificationDeleteDao : NotificationDeleteDao {
 
   // Transaction methods cannot be final
   @Transaction
-  /* final */ override suspend fun delete(o: DbNotificationWithRegexes): Boolean =
-      withContext(context = Dispatchers.Default) {
+  /* final */ override suspend fun delete(o: DbNotificationWithRegexes): Boolean {
         val roomNotification = RoomDbNotificationWithRegexes.create(o)
-        return@withContext if (
+      return if (
             daoDeleteNotification(roomNotification.notification) > ROOM_ROW_COUNT_DELETE_INVALID
         ) {
           daoDeleteMatchRegexes(roomNotification.matchRegexes)

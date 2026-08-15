@@ -24,8 +24,6 @@ import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerComponent
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 abstract class AbstractJobWorker
 protected constructor(
@@ -61,15 +59,14 @@ protected constructor(
     }
   }
 
-  final override suspend fun doWork(): Result =
-      withContext(context = Dispatchers.Default) {
+  final override suspend fun doWork(): Result {
         try {
           inject()
 
-          return@withContext process(worker())
+          return process(worker())
         } catch (e: Throwable) {
           Timber.e(e) { "Error running work" }
-          return@withContext Result.failure()
+          return Result.failure()
         } finally {
           destroy()
         }

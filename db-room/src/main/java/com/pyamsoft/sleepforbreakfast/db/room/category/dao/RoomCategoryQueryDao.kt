@@ -24,14 +24,11 @@ import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
 
-  final override suspend fun query(): List<DbCategory> =
-      withContext(context = Dispatchers.Default) { daoQuery() }
+    final override suspend fun query(): List<DbCategory> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -44,12 +41,10 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
   internal abstract suspend fun daoQuery(): List<RoomDbCategory>
 
   final override suspend fun queryById(id: DbCategory.Id): Maybe<out DbCategory> =
-      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
         }
-      }
 
   @CheckResult
   @Query(

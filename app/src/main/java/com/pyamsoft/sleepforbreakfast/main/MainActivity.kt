@@ -40,9 +40,8 @@ import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
 import com.pyamsoft.sleepforbreakfast.ui.InstallPYDroidExtras
 import com.pyamsoft.sleepforbreakfast.work.enqueueActivityWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class MainActivity : ComponentActivity() {
 
@@ -53,8 +52,8 @@ class MainActivity : ComponentActivity() {
 
   private var pydroid: PYDroidActivityDelegate? = null
 
-  private fun beginWork() {
-    lifecycleScope.launch(context = Dispatchers.Default) {
+  private fun beginWork(dispatchers: AppDispatchers,) {
+    lifecycleScope.launch(context = dispatchers.default) {
       workerQueue.requireNotNull().enqueueActivityWork()
     }
   }
@@ -126,7 +125,7 @@ class MainActivity : ComponentActivity() {
 
   override fun onStart() {
     super.onStart()
-    beginWork()
+    beginWork(dispatchers = dispatchers.requireNotNull())
   }
 
   override fun onResume() {

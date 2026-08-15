@@ -19,26 +19,27 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class AutomaticDbImpl
 @Inject
 internal constructor(
     private val enforcer: ThreadEnforcer,
-    @DbApi realQueryDao: AutomaticQueryDao,
     @param:DbApi private val realInsertDao: AutomaticInsertDao,
     @param:DbApi private val realDeleteDao: AutomaticDeleteDao,
+    @DbApi realQueryDao: AutomaticQueryDao,
+    dispatchers: AppDispatchers,
 
     // When we delete DbAutomatics, invalidate the DbTransaction table so it can re-fetch
     // information
@@ -52,7 +53,9 @@ internal constructor(
         AutomaticQueryDao,
         AutomaticInsertDao,
         AutomaticDeleteDao,
-    >() {
+    >(
+        dispatchers = dispatchers,
+    ) {
 
   private val queryCache =
       cachify<List<DbAutomatic>> {
@@ -101,7 +104,7 @@ internal constructor(
   override val realtime: AutomaticRealtime = this
 
   override suspend fun invalidate() =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         enforcer.assertOffMainThread()
         queryCache.clear()
         queryByNotificationCache.clear()
@@ -110,7 +113,7 @@ internal constructor(
       }
 
   override suspend fun invalidateUnused() =
-      withContext(context = Dispatchers.Default) { queryUnusedCache.clear() }
+      withContext(context = dispatchers.io) { queryUnusedCache.clear() }
 
   override suspend fun invalidateByNotification(
       notificationId: Int,
@@ -119,7 +122,7 @@ internal constructor(
       notificationPackageName: String,
       notificationMatchText: String,
   ) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByNotificationKey(
                 notificationId = notificationId,
@@ -133,7 +136,7 @@ internal constructor(
       }
 
   override suspend fun invalidateById(id: DbAutomatic.Id) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 id = id,
@@ -147,10 +150,10 @@ internal constructor(
   }
 
   override suspend fun query(): List<DbAutomatic> =
-      withContext(context = Dispatchers.Default) { queryCache.call() }
+      withContext(context = dispatchers.io) { queryCache.call() }
 
   override suspend fun queryUnused(): List<DbAutomatic> =
-      withContext(context = Dispatchers.Default) { queryUnusedCache.call() }
+      withContext(context = dispatchers.io) { queryUnusedCache.call() }
 
   override suspend fun queryByNotification(
       notificationId: Int,
@@ -159,7 +162,7 @@ internal constructor(
       notificationPackageName: String,
       notificationMatchText: String,
   ): Maybe<out DbAutomatic> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByNotificationKey(
                 notificationId = notificationId,
@@ -181,7 +184,7 @@ internal constructor(
       }
 
   override suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 id = id,
@@ -191,7 +194,7 @@ internal constructor(
       }
 
   override suspend fun insert(o: DbAutomatic): DbInsert.InsertResult<DbAutomatic> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
@@ -209,7 +212,7 @@ internal constructor(
       }
 
   override suspend fun delete(o: DbAutomatic): Boolean =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()

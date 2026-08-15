@@ -22,7 +22,8 @@ import com.pyamsoft.sleepforbreakfast.db.Maybe
 
 interface NotificationQueryDao : DbQuery<DbNotificationWithRegexes> {
 
-  @CheckResult suspend fun queryById(id: DbNotification.Id): Maybe<out DbNotificationWithRegexes>
+  @CheckResult
+  suspend fun queryById(id: DbNotification.Id): Maybe<out DbNotificationWithRegexes>
 
   interface Cache : DbQuery.Cache {
 

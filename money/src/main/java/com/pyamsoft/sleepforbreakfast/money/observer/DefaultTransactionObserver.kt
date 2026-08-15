@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.observer
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionChangeEvent
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
@@ -29,11 +30,13 @@ internal class DefaultTransactionObserver
 internal constructor(
     query: TransactionQueryDao,
     categoryRealtime: TransactionRealtime,
+    dispatchers: AppDispatchers,
 ) :
     TransactionObserver,
     AbstractDbObserver<DbTransaction, TransactionChangeEvent, DbTransaction.Id>(
         query = query,
         realtime = categoryRealtime,
+        dispatchers = dispatchers,
     ) {
 
   override val emptyInstance = DbTransaction.NONE

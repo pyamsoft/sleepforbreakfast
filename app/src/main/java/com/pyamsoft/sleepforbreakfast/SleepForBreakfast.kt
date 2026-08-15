@@ -32,12 +32,11 @@ import com.pyamsoft.sleepforbreakfast.spending.guaranteed.GuaranteedSpending
 import com.pyamsoft.sleepforbreakfast.work.enqueueAppWork
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerObjectGraph
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SleepForBreakfast : Application(), Configuration.Provider {
 
@@ -96,8 +95,11 @@ class SleepForBreakfast : Application(), Configuration.Provider {
     component.inject(this)
   }
 
-  private fun beginWork(scope: CoroutineScope) {
-    scope.launch(context = Dispatchers.Default) {
+    private fun beginWork(
+        scope: CoroutineScope,
+        dispatchers: AppDispatchers,
+    ) {
+        scope.launch(context = dispatchers.default) {
       guaranteedSpending?.ensureExistsInDatabase()
       workerQueue?.enqueueAppWork()
     }
@@ -128,7 +130,7 @@ class SleepForBreakfast : Application(), Configuration.Provider {
 
     installComponent(scope, modules)
     addLibraries()
-    beginWork(scope)
+    beginWork(scope, dispatchers)
   }
 
   companion object {

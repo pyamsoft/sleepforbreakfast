@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.category
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryChangeEvent
@@ -26,8 +27,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryRealtime
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.category.CategoryLoader
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 internal class CategoryInteractorImpl
 @Inject
@@ -38,7 +39,10 @@ constructor(
     private val categoryQueryDao: CategoryQueryDao,
     private val categoryQueryCache: CategoryQueryDao.Cache,
     private val categoryLoader: CategoryLoader,
-) : CategoryInteractor, ListInteractorImpl<DbCategory.Id, DbCategory, CategoryChangeEvent>() {
+    dispatchers: AppDispatchers,
+) : CategoryInteractor, ListInteractorImpl<DbCategory.Id, DbCategory, CategoryChangeEvent>(
+    dispatchers = dispatchers,
+) {
 
   override suspend fun performQueryAll(): List<DbCategory> {
     return categoryLoader.query()

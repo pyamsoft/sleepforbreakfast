@@ -19,25 +19,26 @@ package com.pyamsoft.sleepforbreakfast.db.notification
 import com.pyamsoft.cachify.cachify
 import com.pyamsoft.cachify.multiCachify
 import com.pyamsoft.pydroid.core.ThreadEnforcer
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class NotificationDbImpl
 @Inject
 internal constructor(
     private val enforcer: ThreadEnforcer,
-    @DbApi realQueryDao: NotificationQueryDao,
     @param:DbApi private val realInsertDao: NotificationInsertDao,
     @param:DbApi private val realDeleteDao: NotificationDeleteDao,
+    @DbApi realQueryDao: NotificationQueryDao,
+    dispatchers: AppDispatchers,
 ) :
     NotificationDb,
     NotificationQueryDao.Cache,
@@ -47,18 +48,21 @@ internal constructor(
         NotificationQueryDao,
         NotificationInsertDao,
         NotificationDeleteDao,
-    >() {
+            >(
+        dispatchers = dispatchers,
+    ) {
 
   private val queryCache =
       cachify<List<DbNotificationWithRegexes>> {
         enforcer.assertOffMainThread()
-        return@cachify realQueryDao.query()
+          return@cachify realQueryDao.query(
+          )
       }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbNotificationWithRegexes>, DbNotification.Id> { id ->
         enforcer.assertOffMainThread()
-        return@multiCachify realQueryDao.queryById(id)
+          return@multiCachify realQueryDao.queryById(id)
       }
 
   override val deleteDao: NotificationDeleteDao = this
@@ -70,14 +74,14 @@ internal constructor(
   override val realtime: NotificationRealtime = this
 
   override suspend fun invalidate() =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         enforcer.assertOffMainThread()
         queryCache.clear()
         queryByIdCache.clear()
       }
 
   override suspend fun invalidateById(id: DbNotification.Id) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 id = id,
@@ -90,11 +94,13 @@ internal constructor(
     return subscribe()
   }
 
-  override suspend fun query(): List<DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) { queryCache.call() }
+    override suspend fun query(): List<DbNotificationWithRegexes> =
+        withContext(context = dispatchers.io) { queryCache.call() }
 
-  override suspend fun queryById(id: DbNotification.Id): Maybe<out DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) {
+    override suspend fun queryById(
+        id: DbNotification.Id
+    ): Maybe<out DbNotificationWithRegexes> =
+        withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 id = id,
@@ -106,8 +112,8 @@ internal constructor(
   override suspend fun insert(
       o: DbNotificationWithRegexes
   ): DbInsert.InsertResult<DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) {
-        realInsertDao.insert(o).also { result ->
+      withContext(context = dispatchers.io) {
+          realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
               invalidate()
@@ -124,7 +130,7 @@ internal constructor(
       }
 
   override suspend fun delete(o: DbNotificationWithRegexes): Boolean =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.io) {
         realDeleteDao.delete(o).also { deleted ->
           if (deleted) {
             invalidate()

@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.automatic
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
@@ -27,8 +28,8 @@ import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.GuaranteedSpending
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 internal class AutomaticInteractorImpl
 @Inject
@@ -39,9 +40,12 @@ constructor(
     private val automaticQueryDao: NotificationQueryDao,
     private val automaticQueryCache: NotificationQueryDao.Cache,
     private val guaranteedSpending: GuaranteedSpending,
+    dispatchers: AppDispatchers,
 ) :
     AutomaticInteractor,
-    ListInteractorImpl<DbNotification.Id, DbNotificationWithRegexes, NotificationChangeEvent>() {
+    ListInteractorImpl<DbNotification.Id, DbNotificationWithRegexes, NotificationChangeEvent>(
+        dispatchers = dispatchers,
+    ) {
 
   override suspend fun performQueryAll(): List<DbNotificationWithRegexes> {
     guaranteedSpending.ensureExistsInDatabase()

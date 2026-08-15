@@ -16,11 +16,11 @@
 
 package com.pyamsoft.sleepforbreakfast.money.delete
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class DeleteViewModeler<I : Any, T : Any, S : MutableDeleteViewState<T>>
@@ -28,11 +28,13 @@ protected constructor(
     state: S,
     initialId: I,
     private val interactor: ListInteractor<I, T, *>,
+    dispatchers: AppDispatchers,
 ) :
     OneViewModeler<I, T, S>(
         state = state,
         initialId = initialId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   final override fun onBind(scope: CoroutineScope) {}
@@ -56,7 +58,7 @@ protected constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       if (state.working.value) {
         Timber.w { "Already deleting" }
         return@launch

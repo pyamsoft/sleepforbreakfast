@@ -20,6 +20,7 @@ import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.pydroid.util.contains
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -33,15 +34,14 @@ import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParam
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import java.time.LocalDate
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import javax.inject.Inject
 
 class TransactionViewModeler
 @Inject
@@ -56,12 +56,14 @@ internal constructor(
     private val categoryLoader: CategoryLoader,
     private val transactionQueryDao: TransactionQueryDao,
     private val transactionQueryCache: TransactionQueryDao.Cache,
+    dispatchers: AppDispatchers,
 ) :
     TransactionViewState by state,
     ListViewModeler<DbTransaction, TransactionChangeEvent, MutableTransactionViewState>(
         enforcer = enforcer,
         state = state,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   private fun handleAddParams(params: TransactionAddParams) {
@@ -204,9 +206,9 @@ internal constructor(
               )
             }
             // Enforce in background
-            .flowOn(context = Dispatchers.Default)
+            .flowOn(context = dispatchers.default)
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       combined.collect { (all, search, dateRange) ->
         enforcer.assertOffMainThread()
 

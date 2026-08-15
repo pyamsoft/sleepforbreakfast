@@ -21,12 +21,12 @@ import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combineTransform
@@ -40,13 +40,14 @@ protected constructor(
     final override val state: S,
     private val enforcer: ThreadEnforcer,
     private val interactor: ListInteractor<*, T, CE>,
+    protected val dispatchers: AppDispatchers,
 ) : AbstractViewModeler<S>(state) {
 
   private val allItems = MutableStateFlow(emptyList<T>())
 
   private fun listenForItems(scope: CoroutineScope) {
     interactor.listenForItemChanges().also { f ->
-      scope.launch(context = Dispatchers.Default) { f.collect { onItemRealtimeEvent(it) } }
+      scope.launch(context = dispatchers.default) { f.collect { onItemRealtimeEvent(it) } }
     }
   }
 
@@ -102,9 +103,9 @@ protected constructor(
               )
             }
             // Enforce in background
-            .flowOn(context = Dispatchers.Default)
+            .flowOn(context = dispatchers.default)
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       combined.collect { (all, search) ->
         enforcer.assertOffMainThread()
 
@@ -157,7 +158,7 @@ protected constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       if (state.loadingState.value == LoadingState.LOADING) {
         Timber.w { "Already loading items list" }
         return@launch
@@ -189,7 +190,7 @@ protected constructor(
   fun handleRestoreDeleted(scope: CoroutineScope) {
     val deleted = state.recentlyDeleted.getAndUpdate { null }
     if (deleted != null) {
-      scope.launch(context = Dispatchers.Default) {
+      scope.launch(context = dispatchers.default) {
         interactor
             .submit(deleted)
             .onFailure { Timber.e(it) { "Error when restoring $deleted" } }

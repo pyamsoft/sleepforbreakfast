@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.automatic.add
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.automatic.AutomaticInteractor
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -27,14 +28,13 @@ import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
-import java.time.Clock
-import java.time.LocalDateTime
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Clock
+import java.time.LocalDateTime
+import javax.inject.Inject
 
 class AutomaticAddViewModeler
 @Inject
@@ -43,12 +43,14 @@ internal constructor(
     params: AutomaticAddParams,
     private val interactor: AutomaticInteractor,
     private val clock: Clock,
+    dispatchers: AppDispatchers,
 ) :
     AutomaticAddViewState by state,
     OneViewModeler<DbNotification.Id, DbNotificationWithRegexes, MutableAutomaticAddViewState>(
         state = state,
         initialId = params.notificationId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   @CheckResult
@@ -201,7 +203,7 @@ internal constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       if (state.working.value) {
         Timber.w { "Already working" }
         return@launch
@@ -239,7 +241,7 @@ internal constructor(
           .onSuccess {
             if (!isIdEmpty(initialId)) {
               // Force onto main thread
-              withContext(context = Dispatchers.Default) { onDismissAfterUpdated() }
+              withContext(context = dispatchers.default) { onDismissAfterUpdated() }
             }
           }
           .onFailure {

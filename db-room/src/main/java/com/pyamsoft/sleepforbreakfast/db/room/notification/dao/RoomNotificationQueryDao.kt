@@ -26,14 +26,11 @@ import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotification
 import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotificationWithRegexes
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
 
-  final override suspend fun query(): List<DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) { daoQuery() }
+    final override suspend fun query(): List<DbNotificationWithRegexes> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -47,14 +44,13 @@ internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
   final override suspend fun queryById(
       id: DbNotification.Id
   ): Maybe<out DbNotificationWithRegexes> =
-      withContext(context = Dispatchers.Default) {
         when (val transaction = daoQueryById(id)) {
           null -> Maybe.None
           else -> Maybe.Data(transaction)
         }
-      }
 
-  @Transaction
+
+    @Transaction
   @CheckResult
   @Query(
       """

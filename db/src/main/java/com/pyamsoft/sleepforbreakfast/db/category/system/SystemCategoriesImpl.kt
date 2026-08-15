@@ -17,19 +17,19 @@
 package com.pyamsoft.sleepforbreakfast.db.category.system
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryInsertDao
 import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
-import java.time.Clock
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.time.Clock
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class SystemCategoriesImpl
@@ -38,6 +38,7 @@ internal constructor(
     private val categoryQueryDao: CategoryQueryDao,
     private val categoryInsertDao: CategoryInsertDao,
     private val clock: Clock,
+    private val dispatchers: AppDispatchers,
 ) : SystemCategories {
 
   @CheckResult
@@ -52,7 +53,7 @@ internal constructor(
   }
 
   override suspend fun create(category: RequiredCategories): DbCategory? =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         GLOBAL_LOCK.withLock {
           val cats = categoryQueryDao.query()
           Timber.d {

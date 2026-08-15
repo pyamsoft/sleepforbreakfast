@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.worker.work.automatictransaction
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticInsertDao
@@ -24,6 +25,9 @@ import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.replaceCategories
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
@@ -31,10 +35,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 
 internal class AutomaticTransactionHandler
 @Inject
@@ -42,6 +42,7 @@ internal constructor(
     private val automaticInsertDao: AutomaticInsertDao,
     private val transactionInsertDao: TransactionInsertDao,
     private val clock: Clock,
+  private val dispatchers: AppDispatchers,
 ) {
 
   private val chaseTransactionDateFormatter by lazy {
@@ -183,7 +184,7 @@ internal constructor(
   }
 
   suspend fun process(automatic: DbAutomatic) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         // If its already used, skip it
         if (automatic.used) {
           return@withContext

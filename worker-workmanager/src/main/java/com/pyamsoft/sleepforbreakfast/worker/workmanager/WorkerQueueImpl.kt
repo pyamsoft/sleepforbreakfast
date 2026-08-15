@@ -22,18 +22,19 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.await
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
 import com.pyamsoft.sleepforbreakfast.worker.WorkerQueue
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.workers.AutomaticSpendingWorker
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 internal class WorkerQueueImpl
 @Inject
 internal constructor(
     private val context: Context,
+    private val dispatchers: AppDispatchers,
 ) : WorkerQueue {
 
   @CheckResult
@@ -44,7 +45,7 @@ internal constructor(
   }
 
   override suspend fun enqueue(type: WorkJobType) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         val builder: WorkRequest.Builder<*, *> =
             when (type) {
               WorkJobType.ONESHOT_AUTOMATIC_TRANSACTION ->
@@ -66,7 +67,7 @@ internal constructor(
       }
 
   override suspend fun cancel(type: WorkJobType) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
 
         // Resolve the WorkManager instance
         Timber.d { "Cancel work by tag: $type" }

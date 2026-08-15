@@ -25,26 +25,27 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.preference.PreferenceManager
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbPreferences
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class PreferencesImpl
 @Inject
 internal constructor(
     private val context: Context,
+    private val dispatchers: AppDispatchers,
 ) : DbPreferences {
 
   private val Context.dataStore by
@@ -78,7 +79,7 @@ internal constructor(
 
   private val scope by lazy {
     CoroutineScope(
-        context = Dispatchers.IO + SupervisorJob() + CoroutineName(this::class.java.name),
+        context = dispatchers.io + SupervisorJob() + CoroutineName(this::class.java.name),
     )
   }
 
@@ -87,7 +88,7 @@ internal constructor(
       fallbackValue: T,
       crossinline value: suspend (Preferences) -> T,
   ) {
-    scope.launch(context = Dispatchers.IO) {
+    scope.launch(context = dispatchers.io) {
       try {
         preferences.edit { it[key] = value(it) }
       } catch (e: Throwable) {
@@ -113,7 +114,7 @@ internal constructor(
               key = KEY_DEFAULT_CATEGORIES,
               value = DEFAULT_DEFAULT_CATEGORIES,
           )
-          .flowOn(context = Dispatchers.IO)
+          .flowOn(context = dispatchers.io)
 
   override fun markSystemCategoriesPreloaded() =
       setPreference(

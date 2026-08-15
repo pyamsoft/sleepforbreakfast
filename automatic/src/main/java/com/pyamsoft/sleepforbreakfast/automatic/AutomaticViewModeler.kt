@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.automatic
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.automatic.add.AutomaticAddParams
 import com.pyamsoft.sleepforbreakfast.automatic.delete.AutomaticDeleteParams
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
@@ -27,8 +28,8 @@ import com.pyamsoft.sleepforbreakfast.db.notification.NotificationChangeEvent
 import com.pyamsoft.sleepforbreakfast.money.list.ListViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Inject
 
 class AutomaticViewModeler
 @Inject
@@ -37,12 +38,14 @@ internal constructor(
     interactor: AutomaticInteractor,
     enforcer: ThreadEnforcer,
     private val jsonParser: JsonParser,
+    dispatchers: AppDispatchers,
 ) :
     AutomaticViewState by state,
     ListViewModeler<DbNotificationWithRegexes, NotificationChangeEvent, MutableAutomaticViewState>(
         enforcer = enforcer,
         state = state,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   private fun handleAddParams(params: AutomaticAddParams) {

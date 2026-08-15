@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.category.delete
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.delete.DeleteViewModeler
@@ -27,12 +28,14 @@ internal constructor(
     state: MutableCategoryDeleteViewState,
     params: CategoryDeleteParams,
     interactor: CategoryInteractor,
+    dispatchers: AppDispatchers,
 ) :
     CategoryDeleteViewState by state,
     DeleteViewModeler<DbCategory.Id, DbCategory, MutableCategoryDeleteViewState>(
         state = state,
         initialId = params.categoryId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   override fun isIdEmpty(id: DbCategory.Id): Boolean {

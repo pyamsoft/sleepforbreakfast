@@ -19,28 +19,30 @@ package com.pyamsoft.sleepforbreakfast.money.add
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
-import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 
 abstract class MoneyAddViewModeler<I : Any, T : Any, S : MutableMoneyAddViewState>
 protected constructor(
     state: S,
     initialId: I,
     private val interactor: ListInteractor<I, T, *>,
+    dispatchers: AppDispatchers,
 ) :
     OneViewModeler<I, T, S>(
         state = state,
         initialId = initialId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   final override fun registerSaveState(
@@ -115,7 +117,7 @@ protected constructor(
       return
     }
 
-    scope.launch(context = Dispatchers.Default) {
+    scope.launch(context = dispatchers.default) {
       if (state.working.value) {
         Timber.w { "Already working" }
         return@launch
@@ -157,7 +159,7 @@ protected constructor(
           .onSuccess {
             if (!isIdEmpty(initialId)) {
               // Force onto main thread
-              withContext(context = Dispatchers.Default) { onDismissAfterUpdated() }
+              withContext(context = dispatchers.default) { onDismissAfterUpdated() }
             }
           }
           .onFailure {

@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.automatic.delete
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.automatic.AutomaticInteractor
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
@@ -28,6 +29,7 @@ internal constructor(
     state: MutableAutomaticDeleteViewState,
     params: AutomaticDeleteParams,
     interactor: AutomaticInteractor,
+    dispatchers: AppDispatchers,
 ) :
     AutomaticDeleteViewState by state,
     DeleteViewModeler<
@@ -38,6 +40,7 @@ internal constructor(
         state = state,
         initialId = params.notificationId,
         interactor = interactor,
+        dispatchers = dispatchers,
     ) {
 
   override fun isIdEmpty(id: DbNotification.Id): Boolean {

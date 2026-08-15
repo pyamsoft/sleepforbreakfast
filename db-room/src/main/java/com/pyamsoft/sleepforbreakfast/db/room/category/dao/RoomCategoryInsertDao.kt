@@ -29,18 +29,17 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_COUNT_UPDATE_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.ROOM_ROW_ID_INSERT_INVALID
 import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Dao
 internal abstract class RoomCategoryInsertDao : CategoryInsertDao {
 
   // Transaction methods cannot be final
   @Transaction
-  /* final */ override suspend fun insert(o: DbCategory): DbInsert.InsertResult<DbCategory> =
-      withContext(context = Dispatchers.Default) {
+  /* final */ override suspend fun insert(
+      o: DbCategory,
+  ): DbInsert.InsertResult<DbCategory> {
         val roomCategory = RoomDbCategory.create(o)
-        return@withContext if (daoQuery(roomCategory.id) == null) {
+      return if (daoQuery(roomCategory.id) == null) {
           if (daoInsert(roomCategory) != ROOM_ROW_ID_INSERT_INVALID) {
             DbInsert.InsertResult.Insert(roomCategory)
           } else {

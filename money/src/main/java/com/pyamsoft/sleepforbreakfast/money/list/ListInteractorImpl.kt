@@ -17,19 +17,21 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected constructor() :
+abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected constructor(
+  protected val dispatchers: AppDispatchers,
+) :
     ListInteractor<I, T, CE> {
 
   final override suspend fun loadAll(force: Boolean): ResultWrapper<List<T>> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         if (force) {
           performClearCache()
         }
@@ -43,7 +45,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
       }
 
   final override suspend fun loadOne(force: Boolean, id: I): ResultWrapper<T> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         if (force) {
           performClearCache(id)
         }
@@ -65,7 +67,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
       }
 
   final override suspend fun delete(item: T): ResultWrapper<Boolean> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         try {
           ResultWrapper.success(performDelete(item))
         } catch (e: Throwable) {
@@ -77,7 +79,7 @@ abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected construc
       }
 
   final override suspend fun submit(item: T): ResultWrapper<DbInsert.InsertResult<T>> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         try {
           ResultWrapper.success(performInsert(item))
         } catch (e: Throwable) {

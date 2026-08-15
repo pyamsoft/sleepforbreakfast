@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.category
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -24,10 +25,9 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.ensure
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 internal class CategoryLoaderImpl
 @Inject
@@ -35,10 +35,11 @@ constructor(
     private val categoryQueryDao: CategoryQueryDao,
     private val systemCategories: SystemCategories,
     private val preferences: DbPreferences,
+    private val dispatchers: AppDispatchers,
 ) : CategoryLoader {
 
   override suspend fun queryAsResult(): ResultWrapper<List<DbCategory>> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         try {
           ResultWrapper.success(query())
         } catch (e: Throwable) {
@@ -50,12 +51,14 @@ constructor(
       }
 
   override suspend fun query(): List<DbCategory> =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         if (!preferences.listenSystemCategoriesPreloaded().first()) {
           preferences.markSystemCategoriesPreloaded()
           Timber.d { "Preload default system categories" }
           // This is bad since it constantly queries each time, but its what we've got for now
-          systemCategories.ensure()
+            systemCategories.ensure(
+                dispatchers = dispatchers,
+            )
         }
 
         return@withContext categoryQueryDao.query()

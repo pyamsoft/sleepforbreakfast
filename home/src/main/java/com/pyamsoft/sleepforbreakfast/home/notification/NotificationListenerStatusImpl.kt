@@ -25,17 +25,18 @@ import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
-import javax.inject.Inject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 internal class NotificationListenerStatusImpl
 @Inject
 internal constructor(
     private val activity: Activity,
+    private val dispatchers: AppDispatchers,
     lifecycle: Lifecycle,
 ) : NotificationListenerStatus {
 
@@ -94,7 +95,7 @@ internal constructor(
   }
 
   override suspend fun activateNotificationListener() =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         val action = Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS
         if (openSettingsPageIntent(action)) {
           Timber.w { "Failed to open settings page: $action" }

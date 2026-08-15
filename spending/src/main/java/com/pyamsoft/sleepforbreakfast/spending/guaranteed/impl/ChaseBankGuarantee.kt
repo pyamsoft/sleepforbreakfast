@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.spending.guaranteed.impl
 
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
@@ -28,18 +29,20 @@ import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DATE
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
+import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Singleton
 internal class ChaseBankGuarantee
 @Inject
 internal constructor(
     private val clock: Clock,
-) : BaseGuarantee() {
+    dispatchers: AppDispatchers,
+) : BaseGuarantee(
+    dispatchers = dispatchers,
+    ) {
 
   private val chaseSpend by lazy {
     val notificationId = DbNotification.Id("16bdd569-b438-42d9-b118-8849d2998934")
@@ -229,7 +232,7 @@ internal constructor(
       query: NotificationQueryDao,
       insert: NotificationInsertDao,
   ) =
-      withContext(context = Dispatchers.Default) {
+      withContext(context = dispatchers.default) {
         upsertIfUntainted(
             query = query,
             insert = insert,
