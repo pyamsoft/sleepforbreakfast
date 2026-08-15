@@ -33,19 +33,18 @@ internal constructor(
     private val handler: AutomaticTransactionHandler,
 ) : BgWorker {
 
-  private suspend fun processJobs() =
-      GLOBAL_LOCK.withLock {
-        val unconsumed = automaticQueryDao.queryUnused()
+  private suspend fun processJobs() = GLOBAL_LOCK.withLock {
+    val unconsumed = automaticQueryDao.queryUnused()
 
-        for (auto in unconsumed) {
-          // Maybe I suck at SQL
-          if (auto.used) {
-            continue
-          }
-
-          handler.process(auto)
-        }
+    for (auto in unconsumed) {
+      // Maybe I suck at SQL
+      if (auto.used) {
+        continue
       }
+
+      handler.process(auto)
+    }
+  }
 
   override suspend fun work(): BgWorker.WorkResult =
       withContext(context = Dispatchers.Default) {

@@ -576,11 +576,10 @@ private fun CategoryDropdown(
   val configuration = LocalConfiguration.current
   val dropdownMaxHeight =
       remember(configuration) {
-        val h =
-            configuration.run {
-              val size = if (isPortrait) screenHeightDp else screenWidthDp
-              return@run size / 3
-            }
+        val h = configuration.run {
+          val size = if (isPortrait) screenHeightDp else screenWidthDp
+          return@run size / 3
+        }
 
         return@remember h.dp
       }

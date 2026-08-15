@@ -22,6 +22,7 @@ import android.content.Context
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.ui.theme.Theming
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.automatic.AutomaticAppModule
 import com.pyamsoft.sleepforbreakfast.category.CategoryAppModule
 import com.pyamsoft.sleepforbreakfast.db.DbModule
@@ -93,6 +94,7 @@ internal interface BreakfastComponent {
         @BindsInstance application: Application,
         @BindsInstance theming: Theming,
         @BindsInstance enforcer: ThreadEnforcer,
+        @BindsInstance dispatchers: AppDispatchers,
     ): BreakfastComponent
   }
 

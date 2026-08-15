@@ -33,7 +33,7 @@ room = "2.8.4"
 workManager = "2.11.2"
 
 # Compose
-compose = "1.11.4"
+compose = "1.12.0"
 composeMaterial3 = "1.4.0"
 
 # Google
@@ -44,6 +44,8 @@ vico = "3.2.3"
 colorPicker = "0.7.0"
 
 # Developer Tools
+ktfmt = "0.64"
+greclipse = "4.40"
 spotless = "8.9.0"
 jdkDesugar = "2.1.5"
 caupain = "1.10.1"

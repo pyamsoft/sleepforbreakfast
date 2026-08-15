@@ -79,8 +79,9 @@ internal constructor(
     val existing = state.existingAutomatic.value?.matchRegexes.orEmpty()
     return state.workingRegexes.value.map { r ->
       // If we have an existing regex, update it's text, or make new one
-      val exists =
-          existing.firstOrNull { it.id.raw == r.id && it.notificationId.raw == notificationId.raw }
+      val exists = existing.firstOrNull {
+        it.id.raw == r.id && it.notificationId.raw == notificationId.raw
+      }
 
       if (exists == null) {
         return@map DbNotificationMatchRegex.create(
@@ -104,13 +105,12 @@ internal constructor(
   }
 
   private fun handleLoadMatchRegexes(regexes: Collection<DbNotificationMatchRegex>) {
-    state.workingRegexes.value =
-        regexes.map { r ->
-          AutomaticAddViewState.BuildMatchRegex(
-              id = r.id.raw,
-              text = r.text,
-          )
-        }
+    state.workingRegexes.value = regexes.map { r ->
+      AutomaticAddViewState.BuildMatchRegex(
+          id = r.id.raw,
+          text = r.text,
+      )
+    }
   }
 
   private fun resetData(s: DbNotificationWithRegexes? = null) {

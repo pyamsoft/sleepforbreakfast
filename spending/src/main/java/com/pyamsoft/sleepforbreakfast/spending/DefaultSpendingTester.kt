@@ -37,28 +37,27 @@ internal constructor(
   override suspend fun testText(
       notificationWithRegexes: DbNotificationWithRegexes,
       text: String,
-  ): SpendingTester.Result? =
-      GLOBAL_LOCK.withLock {
-        val notification = notificationWithRegexes.notification
-        val packageName = notification.actOnPackageNames.firstOrNull()
+  ): SpendingTester.Result? = GLOBAL_LOCK.withLock {
+    val notification = notificationWithRegexes.notification
+    val packageName = notification.actOnPackageNames.firstOrNull()
 
-        if (packageName == null) {
-          Timber.w { "Cannot test regex, no package names!" }
-          return@withLock null
-        }
+    if (packageName == null) {
+      Timber.w { "Cannot test regex, no package names!" }
+      return@withLock null
+    }
 
-        val bundle = Bundle().apply { putCharSequence(NotificationCompat.EXTRA_TEXT, text) }
-        val automaticPayment = manager.extractPayment(notificationId = 0, packageName, bundle)
-        if (automaticPayment == null) {
-          Timber.w { "Regex test failed, no matches!" }
-          return@withLock null
-        }
+    val bundle = Bundle().apply { putCharSequence(NotificationCompat.EXTRA_TEXT, text) }
+    val automaticPayment = manager.extractPayment(notificationId = 0, packageName, bundle)
+    if (automaticPayment == null) {
+      Timber.w { "Regex test failed, no matches!" }
+      return@withLock null
+    }
 
-        return@withLock SpendingTester.Result(
-            notification = notification.id,
-            matching = setOf(DbNotificationMatchRegex.Id(automaticPayment.regexMatch.id)),
-        )
-      }
+    return@withLock SpendingTester.Result(
+        notification = notification.id,
+        matching = setOf(DbNotificationMatchRegex.Id(automaticPayment.regexMatch.id)),
+    )
+  }
 
   companion object {
 

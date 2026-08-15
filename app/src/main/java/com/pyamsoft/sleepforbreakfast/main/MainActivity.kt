@@ -33,6 +33,7 @@ import com.pyamsoft.pydroid.ui.changelog.ChangeLogBuilder
 import com.pyamsoft.pydroid.ui.changelog.ChangeLogProvider
 import com.pyamsoft.pydroid.ui.changelog.buildChangeLog
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
+import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.R
 import com.pyamsoft.sleepforbreakfast.SleepForBreakfastTheme
@@ -45,6 +46,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
+  @JvmField @Inject internal var dispatchers: AppDispatchers? = null
   @JvmField @Inject internal var themeViewModel: ThemeViewModeler? = null
   @JvmField @Inject internal var workerQueue: WorkerQueue? = null
   @JvmField @Inject internal var mainViewModel: MainViewModeler? = null
@@ -81,7 +83,7 @@ class MainActivity : ComponentActivity() {
   }
 
   private fun handleOpenedWithIntent(intent: Intent) {
-    if (intent.action === Intent.ACTION_APPLICATION_PREFERENCES) {
+    if (intent.action == Intent.ACTION_APPLICATION_PREFERENCES) {
       mainViewModel.requireNotNull().handleOpenSettings()
     }
   }
@@ -91,6 +93,7 @@ class MainActivity : ComponentActivity() {
     setupActivity()
 
     val vm = themeViewModel.requireNotNull()
+    val dis = dispatchers.requireNotNull()
     val appName = getString(R.string.app_name)
 
     setContent {
@@ -100,6 +103,7 @@ class MainActivity : ComponentActivity() {
       SaveStateDisposableEffect(vm)
 
       SleepForBreakfastTheme(
+          dispatchers = dis,
           theme = theme,
           isMaterialYou = isMaterialYou,
       ) {
@@ -139,6 +143,7 @@ class MainActivity : ComponentActivity() {
   override fun onDestroy() {
     super.onDestroy()
     themeViewModel = null
+    dispatchers = null
     pydroid = null
     mainViewModel = null
   }

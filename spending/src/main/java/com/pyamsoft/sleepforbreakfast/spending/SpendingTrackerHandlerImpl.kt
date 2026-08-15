@@ -55,59 +55,58 @@ internal constructor(
   override suspend fun processNotification(
       sbn: StatusBarNotification,
       extras: Bundle,
-  ): Unit =
-      GLOBAL_LOCK.withLock {
-        val automaticPayment =
-            manager.extractPayment(
-                notificationId = sbn.id,
-                packageName = sbn.packageName,
-                bundle = extras,
-            ) ?: return
+  ): Unit = GLOBAL_LOCK.withLock {
+    val automaticPayment =
+        manager.extractPayment(
+            notificationId = sbn.id,
+            packageName = sbn.packageName,
+            bundle = extras,
+        ) ?: return
 
-        val automatic =
-            DbAutomatic.create(clock)
-                .notificationId(sbn.id)
-                .notificationKey(sbn.key)
-                .notificationGroup(sbn.groupKey)
-                .notificationPackageName(sbn.packageName)
-                .notificationPostTime(sbn.postTime)
-                .notificationTitle(automaticPayment.title)
-                .notificationMatchText(automaticPayment.text)
-                .notificationAmountInCents(automaticPayment.amount)
-                .notificationType(automaticPayment.type)
-                .notificationOptionalAccount(automaticPayment.optionalAccount)
-                .notificationOptionalDate(automaticPayment.optionalDate)
-                .notificationOptionalMerchant(automaticPayment.optionalMerchant)
-                .notificationOptionalDescription(automaticPayment.optionalDescription)
-                .replaceCategories(automaticPayment.categories)
+    val automatic =
+        DbAutomatic.create(clock)
+            .notificationId(sbn.id)
+            .notificationKey(sbn.key)
+            .notificationGroup(sbn.groupKey)
+            .notificationPackageName(sbn.packageName)
+            .notificationPostTime(sbn.postTime)
+            .notificationTitle(automaticPayment.title)
+            .notificationMatchText(automaticPayment.text)
+            .notificationAmountInCents(automaticPayment.amount)
+            .notificationType(automaticPayment.type)
+            .notificationOptionalAccount(automaticPayment.optionalAccount)
+            .notificationOptionalDate(automaticPayment.optionalDate)
+            .notificationOptionalMerchant(automaticPayment.optionalMerchant)
+            .notificationOptionalDescription(automaticPayment.optionalDescription)
+            .replaceCategories(automaticPayment.categories)
 
-        when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {
-          is Maybe.Data -> {
-            Timber.w {
-              "Found existing automatic notification matching parameters: ${
+    when (val existing = automaticQueryDao.queryByAutomaticNotification(automatic)) {
+      is Maybe.Data -> {
+        Timber.w {
+          "Found existing automatic notification matching parameters: ${
                             mapOf(
                                 "NEW" to automatic,
                                 "EXISTING" to existing,
                             )
                         }"
-            }
+        }
+      }
+      is Maybe.None -> {
+        when (val result = automaticInsertDao.insert(automatic)) {
+          is DbInsert.InsertResult.Fail -> {
+            Timber.e(result.error) { "Failed to insert automatic $automatic" }
           }
-          is Maybe.None -> {
-            when (val result = automaticInsertDao.insert(automatic)) {
-              is DbInsert.InsertResult.Fail -> {
-                Timber.e(result.error) { "Failed to insert automatic $automatic" }
-              }
-              is DbInsert.InsertResult.Update -> {
-                Timber.d { "Update existing automatic: $automatic" }
-              }
-              is DbInsert.InsertResult.Insert -> {
-                Timber.d { "Inserted automatic: $automatic" }
-                handleProcessUnusedAutomatic(automatic)
-              }
-            }
+          is DbInsert.InsertResult.Update -> {
+            Timber.d { "Update existing automatic: $automatic" }
+          }
+          is DbInsert.InsertResult.Insert -> {
+            Timber.d { "Inserted automatic: $automatic" }
+            handleProcessUnusedAutomatic(automatic)
           }
         }
       }
+    }
+  }
 
   companion object {
 
