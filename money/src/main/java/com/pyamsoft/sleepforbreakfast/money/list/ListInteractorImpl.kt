@@ -25,10 +25,10 @@ import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
 import kotlinx.coroutines.withContext
 
-abstract class ListInteractorImpl<I : Any, T : Any, CE : Any> protected constructor(
-  protected val dispatchers: AppDispatchers,
-) :
-    ListInteractor<I, T, CE> {
+abstract class ListInteractorImpl<I : Any, T : Any, CE : Any>
+protected constructor(
+    protected val dispatchers: AppDispatchers,
+) : ListInteractor<I, T, CE> {
 
   final override suspend fun loadAll(force: Boolean): ResultWrapper<List<T>> =
       withContext(context = dispatchers.default) {

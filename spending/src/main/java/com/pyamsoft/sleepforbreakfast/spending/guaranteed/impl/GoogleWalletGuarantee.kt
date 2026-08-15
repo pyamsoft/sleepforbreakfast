@@ -26,10 +26,10 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
-import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.withContext
 
 @Singleton
 internal class GoogleWalletGuarantee
@@ -37,9 +37,10 @@ internal class GoogleWalletGuarantee
 internal constructor(
     private val clock: Clock,
     dispatchers: AppDispatchers,
-) : BaseGuarantee(
-    dispatchers = dispatchers,
-) {
+) :
+    BaseGuarantee(
+        dispatchers = dispatchers,
+    ) {
 
   private val googleWalletSpend by lazy {
     val notificationId = DbNotification.Id("05d18a04-db29-418d-b363-5240b2f5acfc")

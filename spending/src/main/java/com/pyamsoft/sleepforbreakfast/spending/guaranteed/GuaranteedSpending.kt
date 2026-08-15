@@ -20,9 +20,9 @@ import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationInsertDao
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.spending.SpendingApi
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.withContext
 
 @Singleton
 class GuaranteedSpending

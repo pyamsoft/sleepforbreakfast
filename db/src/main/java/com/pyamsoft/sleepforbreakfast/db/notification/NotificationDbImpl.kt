@@ -25,10 +25,10 @@ import com.pyamsoft.sleepforbreakfast.db.BaseDbImpl
 import com.pyamsoft.sleepforbreakfast.db.DbApi
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.Maybe
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 
 @Singleton
 internal class NotificationDbImpl
@@ -48,21 +48,20 @@ internal constructor(
         NotificationQueryDao,
         NotificationInsertDao,
         NotificationDeleteDao,
-            >(
+    >(
         dispatchers = dispatchers,
     ) {
 
   private val queryCache =
       cachify<List<DbNotificationWithRegexes>> {
         enforcer.assertOffMainThread()
-          return@cachify realQueryDao.query(
-          )
+        return@cachify realQueryDao.query()
       }
 
   private val queryByIdCache =
       multiCachify<QueryByIdKey, Maybe<out DbNotificationWithRegexes>, DbNotification.Id> { id ->
         enforcer.assertOffMainThread()
-          return@multiCachify realQueryDao.queryById(id)
+        return@multiCachify realQueryDao.queryById(id)
       }
 
   override val deleteDao: NotificationDeleteDao = this
@@ -94,13 +93,11 @@ internal constructor(
     return subscribe()
   }
 
-    override suspend fun query(): List<DbNotificationWithRegexes> =
-        withContext(context = dispatchers.io) { queryCache.call() }
+  override suspend fun query(): List<DbNotificationWithRegexes> =
+      withContext(context = dispatchers.io) { queryCache.call() }
 
-    override suspend fun queryById(
-        id: DbNotification.Id
-    ): Maybe<out DbNotificationWithRegexes> =
-        withContext(context = dispatchers.io) {
+  override suspend fun queryById(id: DbNotification.Id): Maybe<out DbNotificationWithRegexes> =
+      withContext(context = dispatchers.io) {
         val key =
             QueryByIdKey(
                 id = id,
@@ -113,7 +110,7 @@ internal constructor(
       o: DbNotificationWithRegexes
   ): DbInsert.InsertResult<DbNotificationWithRegexes> =
       withContext(context = dispatchers.io) {
-          realInsertDao.insert(o).also { result ->
+        realInsertDao.insert(o).also { result ->
           return@also when (result) {
             is DbInsert.InsertResult.Insert -> {
               invalidate()

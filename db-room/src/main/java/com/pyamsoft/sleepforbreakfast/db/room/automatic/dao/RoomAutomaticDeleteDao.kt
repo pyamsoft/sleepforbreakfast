@@ -27,10 +27,10 @@ import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 @Dao
 internal abstract class RoomAutomaticDeleteDao : AutomaticDeleteDao {
 
-    final override suspend fun delete(o: DbAutomatic): Boolean {
-        val roomAutomatic = RoomDbAutomatic.create(o)
-        return daoDelete(roomAutomatic) > ROOM_ROW_COUNT_DELETE_INVALID
-      }
+  final override suspend fun delete(o: DbAutomatic): Boolean {
+    val roomAutomatic = RoomDbAutomatic.create(o)
+    return daoDelete(roomAutomatic) > ROOM_ROW_COUNT_DELETE_INVALID
+  }
 
   @Delete @CheckResult internal abstract fun daoDelete(symbol: RoomDbAutomatic): Int
 }

@@ -29,7 +29,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 @Dao
 internal abstract class RoomTransactionQueryDao : TransactionQueryDao {
 
-    final override suspend fun query(): List<DbTransaction> = daoQuery()
+  final override suspend fun query(): List<DbTransaction> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -41,10 +41,10 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   internal abstract suspend fun daoQuery(): List<RoomDbTransaction>
 
   final override suspend fun queryById(id: DbTransaction.Id): Maybe<out DbTransaction> =
-        when (val transaction = daoQueryById(id)) {
-          null -> Maybe.None
-          else -> Maybe.Data(transaction)
-        }
+      when (val transaction = daoQueryById(id)) {
+        null -> Maybe.None
+        else -> Maybe.Data(transaction)
+      }
 
   @CheckResult
   @Query(
@@ -57,11 +57,11 @@ SELECT * FROM ${RoomDbTransaction.TABLE_NAME}
   internal abstract suspend fun daoQueryById(id: DbTransaction.Id): RoomDbTransaction?
 
   final override suspend fun queryByCategory(id: DbCategory.Id): List<DbTransaction> =
-        if (id.isEmpty) {
-          daoQueryNoCategories()
-        } else {
-          daoQueryByCategory("%${id.raw}%")
-        }
+      if (id.isEmpty) {
+        daoQueryNoCategories()
+      } else {
+        daoQueryByCategory("%${id.raw}%")
+      }
 
   @CheckResult
   @Query(

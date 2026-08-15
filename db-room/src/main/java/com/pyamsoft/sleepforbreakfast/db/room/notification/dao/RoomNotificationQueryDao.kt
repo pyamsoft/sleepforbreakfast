@@ -30,7 +30,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.notification.entity.RoomDbNotifica
 @Dao
 internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
 
-    final override suspend fun query(): List<DbNotificationWithRegexes> = daoQuery()
+  final override suspend fun query(): List<DbNotificationWithRegexes> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -44,13 +44,12 @@ internal abstract class RoomNotificationQueryDao : NotificationQueryDao {
   final override suspend fun queryById(
       id: DbNotification.Id
   ): Maybe<out DbNotificationWithRegexes> =
-        when (val transaction = daoQueryById(id)) {
-          null -> Maybe.None
-          else -> Maybe.Data(transaction)
-        }
+      when (val transaction = daoQueryById(id)) {
+        null -> Maybe.None
+        else -> Maybe.Data(transaction)
+      }
 
-
-    @Transaction
+  @Transaction
   @CheckResult
   @Query(
       """

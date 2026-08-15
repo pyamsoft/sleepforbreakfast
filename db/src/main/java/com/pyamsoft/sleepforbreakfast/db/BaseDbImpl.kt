@@ -27,8 +27,9 @@ internal abstract class BaseDbImpl<
     Q : DbQuery<*>,
     I : DbInsert<*>,
     D : DbDelete<*>,
-> protected constructor(
-  protected val dispatchers: AppDispatchers,
+>
+protected constructor(
+    protected val dispatchers: AppDispatchers,
 ) : BaseDb<R, Q, I, D> {
 
   private val bus = EventBus.create<ChangeEvent>()

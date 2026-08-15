@@ -28,9 +28,9 @@ import com.pyamsoft.sleepforbreakfast.db.room.category.entity.RoomDbCategory
 internal abstract class RoomCategoryDeleteDao : CategoryDeleteDao {
 
   final override suspend fun delete(o: DbCategory): Boolean {
-        val roomCategory = RoomDbCategory.create(o)
-        return daoDelete(roomCategory) > ROOM_ROW_COUNT_DELETE_INVALID
-      }
+    val roomCategory = RoomDbCategory.create(o)
+    return daoDelete(roomCategory) > ROOM_ROW_COUNT_DELETE_INVALID
+  }
 
   @Delete @CheckResult internal abstract fun daoDelete(symbol: RoomDbCategory): Int
 }

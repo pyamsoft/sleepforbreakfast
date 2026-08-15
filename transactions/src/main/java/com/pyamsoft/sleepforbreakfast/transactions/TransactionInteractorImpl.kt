@@ -30,9 +30,9 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionQueryDao
 import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 internal class TransactionInteractorImpl
 @Inject

@@ -28,9 +28,9 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.TransactionDeleteDao
 internal abstract class RoomTransactionDeleteDao : TransactionDeleteDao {
 
   override suspend fun delete(o: DbTransaction): Boolean {
-        val roomTransaction = RoomDbTransaction.create(o)
-        return daoDelete(roomTransaction) > ROOM_ROW_COUNT_DELETE_INVALID
-      }
+    val roomTransaction = RoomDbTransaction.create(o)
+    return daoDelete(roomTransaction) > ROOM_ROW_COUNT_DELETE_INVALID
+  }
 
   @Delete @CheckResult internal abstract fun daoDelete(symbol: RoomDbTransaction): Int
 }

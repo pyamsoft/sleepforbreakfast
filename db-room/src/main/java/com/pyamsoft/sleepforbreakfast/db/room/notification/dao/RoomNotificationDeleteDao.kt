@@ -33,16 +33,16 @@ internal abstract class RoomNotificationDeleteDao : NotificationDeleteDao {
   // Transaction methods cannot be final
   @Transaction
   /* final */ override suspend fun delete(o: DbNotificationWithRegexes): Boolean {
-        val roomNotification = RoomDbNotificationWithRegexes.create(o)
-      return if (
-            daoDeleteNotification(roomNotification.notification) > ROOM_ROW_COUNT_DELETE_INVALID
-        ) {
-          daoDeleteMatchRegexes(roomNotification.matchRegexes)
-          true
-        } else {
-          false
-        }
-      }
+    val roomNotification = RoomDbNotificationWithRegexes.create(o)
+    return if (
+        daoDeleteNotification(roomNotification.notification) > ROOM_ROW_COUNT_DELETE_INVALID
+    ) {
+      daoDeleteMatchRegexes(roomNotification.matchRegexes)
+      true
+    } else {
+      false
+    }
+  }
 
   @Delete @CheckResult internal abstract fun daoDeleteNotification(symbol: RoomDbNotification): Int
 

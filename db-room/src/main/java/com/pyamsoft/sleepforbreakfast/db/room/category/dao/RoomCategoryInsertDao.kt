@@ -38,27 +38,27 @@ internal abstract class RoomCategoryInsertDao : CategoryInsertDao {
   /* final */ override suspend fun insert(
       o: DbCategory,
   ): DbInsert.InsertResult<DbCategory> {
-        val roomCategory = RoomDbCategory.create(o)
-      return if (daoQuery(roomCategory.id) == null) {
-          if (daoInsert(roomCategory) != ROOM_ROW_ID_INSERT_INVALID) {
-            DbInsert.InsertResult.Insert(roomCategory)
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomCategory,
-                error = IllegalStateException("Unable to update category $roomCategory"),
-            )
-          }
-        } else {
-          if (daoUpdate(roomCategory) > ROOM_ROW_COUNT_UPDATE_INVALID) {
-            DbInsert.InsertResult.Update(roomCategory)
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomCategory,
-                error = IllegalStateException("Unable to update category $roomCategory"),
-            )
-          }
-        }
+    val roomCategory = RoomDbCategory.create(o)
+    return if (daoQuery(roomCategory.id) == null) {
+      if (daoInsert(roomCategory) != ROOM_ROW_ID_INSERT_INVALID) {
+        DbInsert.InsertResult.Insert(roomCategory)
+      } else {
+        DbInsert.InsertResult.Fail(
+            data = roomCategory,
+            error = IllegalStateException("Unable to update category $roomCategory"),
+        )
       }
+    } else {
+      if (daoUpdate(roomCategory) > ROOM_ROW_COUNT_UPDATE_INVALID) {
+        DbInsert.InsertResult.Update(roomCategory)
+      } else {
+        DbInsert.InsertResult.Fail(
+            data = roomCategory,
+            error = IllegalStateException("Unable to update category $roomCategory"),
+        )
+      }
+    }
+  }
 
   @Insert(onConflict = OnConflictStrategy.ABORT)
   internal abstract suspend fun daoInsert(symbol: RoomDbCategory): Long

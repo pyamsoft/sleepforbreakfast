@@ -24,26 +24,29 @@ import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.core.cancelChildren
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class SpendingTrackerService : NotificationListenerService() {
 
   @Inject @JvmField internal var handler: SpendingTrackerHandler? = null
 
-  @Inject
-  @JvmField
-  internal var dispatchers: AppDispatchers? = null
+  @Inject @JvmField internal var dispatchers: AppDispatchers? = null
 
   private var scope: CoroutineScope? = null
 
   private fun ensureScope(): CoroutineScope {
-    return scope ?: CoroutineScope(
-      context = SupervisorJob() + dispatchers.requireNotNull().default + CoroutineName(this::class.java.name),
-    ).also { scope = it }
+    return scope
+        ?: CoroutineScope(
+                context =
+                    SupervisorJob() +
+                        dispatchers.requireNotNull().default +
+                        CoroutineName(this::class.java.name),
+            )
+            .also { scope = it }
   }
 
   private fun ensureInjected() {

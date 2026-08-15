@@ -24,8 +24,9 @@ import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationInsertDao
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 
-internal abstract class BaseGuarantee protected constructor(
-  protected val dispatchers: AppDispatchers,
+internal abstract class BaseGuarantee
+protected constructor(
+    protected val dispatchers: AppDispatchers,
 ) : SpendingGuarantee {
 
   private suspend fun upsert(

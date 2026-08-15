@@ -36,7 +36,6 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -48,14 +47,14 @@ internal constructor(
     private val interactor: TransactionInteractor,
     private val clock: Clock,
     private val categoryLoader: CategoryLoader,
-  dispatchers: AppDispatchers,
+    dispatchers: AppDispatchers,
 ) :
     TransactionAddViewState by state,
     MoneyAddViewModeler<DbTransaction.Id, DbTransaction, MutableTransactionAddViewState>(
         state = state,
         initialId = params.transactionId,
         interactor = interactor,
-      dispatchers = dispatchers,
+        dispatchers = dispatchers,
     ) {
 
   private val ensureCategoryId = params.ensureCategoryId

@@ -38,27 +38,27 @@ internal abstract class RoomAutomaticInsertDao : AutomaticInsertDao {
   /* final */ override suspend fun insert(
       o: DbAutomatic,
   ): DbInsert.InsertResult<DbAutomatic> {
-        val roomAutomatic = RoomDbAutomatic.create(o)
-      return if (daoQuery(roomAutomatic.id) == null) {
-          if (daoInsert(roomAutomatic) != ROOM_ROW_ID_INSERT_INVALID) {
-            DbInsert.InsertResult.Insert(roomAutomatic)
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomAutomatic,
-                error = IllegalStateException("Unable to update automatic $roomAutomatic"),
-            )
-          }
-        } else {
-          if (daoUpdate(roomAutomatic) > ROOM_ROW_COUNT_UPDATE_INVALID) {
-            DbInsert.InsertResult.Update(roomAutomatic)
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomAutomatic,
-                error = IllegalStateException("Unable to update automatic $roomAutomatic"),
-            )
-          }
-        }
+    val roomAutomatic = RoomDbAutomatic.create(o)
+    return if (daoQuery(roomAutomatic.id) == null) {
+      if (daoInsert(roomAutomatic) != ROOM_ROW_ID_INSERT_INVALID) {
+        DbInsert.InsertResult.Insert(roomAutomatic)
+      } else {
+        DbInsert.InsertResult.Fail(
+            data = roomAutomatic,
+            error = IllegalStateException("Unable to update automatic $roomAutomatic"),
+        )
       }
+    } else {
+      if (daoUpdate(roomAutomatic) > ROOM_ROW_COUNT_UPDATE_INVALID) {
+        DbInsert.InsertResult.Update(roomAutomatic)
+      } else {
+        DbInsert.InsertResult.Fail(
+            data = roomAutomatic,
+            error = IllegalStateException("Unable to update automatic $roomAutomatic"),
+        )
+      }
+    }
+  }
 
   @Insert(onConflict = OnConflictStrategy.ABORT)
   internal abstract suspend fun daoInsert(symbol: RoomDbAutomatic): Long

@@ -28,10 +28,10 @@ import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DESCRIPTIO
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
-import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.withContext
 
 @Singleton
 internal class VenmoGuarantee
@@ -39,9 +39,10 @@ internal class VenmoGuarantee
 internal constructor(
     private val clock: Clock,
     dispatchers: AppDispatchers,
-) : BaseGuarantee(
-    dispatchers = dispatchers,
-) {
+) :
+    BaseGuarantee(
+        dispatchers = dispatchers,
+    ) {
 
   private val chaseSpend by lazy {
     val notificationId = DbNotification.Id("f3e642e8-7af4-4a51-87a1-e5d4693280bd")

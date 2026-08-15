@@ -25,9 +25,9 @@ import com.pyamsoft.sleepforbreakfast.db.category.CategoryQueryDao
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.category.system.SystemCategories
 import com.pyamsoft.sleepforbreakfast.db.category.system.ensure
+import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 internal class CategoryLoaderImpl
 @Inject
@@ -56,9 +56,9 @@ constructor(
           preferences.markSystemCategoriesPreloaded()
           Timber.d { "Preload default system categories" }
           // This is bad since it constantly queries each time, but its what we've got for now
-            systemCategories.ensure(
-                dispatchers = dispatchers,
-            )
+          systemCategories.ensure(
+              dispatchers = dispatchers,
+          )
         }
 
         return@withContext categoryQueryDao.query()

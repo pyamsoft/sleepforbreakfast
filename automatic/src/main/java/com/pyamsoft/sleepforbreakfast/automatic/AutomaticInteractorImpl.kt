@@ -28,8 +28,8 @@ import com.pyamsoft.sleepforbreakfast.db.notification.NotificationQueryDao
 import com.pyamsoft.sleepforbreakfast.db.notification.NotificationRealtime
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractorImpl
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.GuaranteedSpending
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 internal class AutomaticInteractorImpl
 @Inject

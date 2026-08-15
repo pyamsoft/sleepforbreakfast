@@ -36,27 +36,27 @@ internal abstract class RoomTransactionInsertDao : TransactionInsertDao {
   // Transaction methods cannot be final
   @Transaction
   /* final */ override suspend fun insert(o: DbTransaction): DbInsert.InsertResult<DbTransaction> {
-        val roomTransaction = RoomDbTransaction.create(o)
-      return if (daoQuery(roomTransaction.id) == null) {
-          if (daoInsert(roomTransaction) != ROOM_ROW_ID_INSERT_INVALID) {
-            DbInsert.InsertResult.Insert(roomTransaction)
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomTransaction,
-                error = IllegalStateException("Unable to update transaction $roomTransaction"),
-            )
-          }
-        } else {
-          if (daoUpdate(roomTransaction) > ROOM_ROW_COUNT_UPDATE_INVALID) {
-            DbInsert.InsertResult.Update(roomTransaction)
-          } else {
-            DbInsert.InsertResult.Fail(
-                data = roomTransaction,
-                error = IllegalStateException("Unable to update transaction $roomTransaction"),
-            )
-          }
-        }
+    val roomTransaction = RoomDbTransaction.create(o)
+    return if (daoQuery(roomTransaction.id) == null) {
+      if (daoInsert(roomTransaction) != ROOM_ROW_ID_INSERT_INVALID) {
+        DbInsert.InsertResult.Insert(roomTransaction)
+      } else {
+        DbInsert.InsertResult.Fail(
+            data = roomTransaction,
+            error = IllegalStateException("Unable to update transaction $roomTransaction"),
+        )
       }
+    } else {
+      if (daoUpdate(roomTransaction) > ROOM_ROW_COUNT_UPDATE_INVALID) {
+        DbInsert.InsertResult.Update(roomTransaction)
+      } else {
+        DbInsert.InsertResult.Fail(
+            data = roomTransaction,
+            error = IllegalStateException("Unable to update transaction $roomTransaction"),
+        )
+      }
+    }
+  }
 
   @Insert(onConflict = OnConflictStrategy.ABORT)
   internal abstract suspend fun daoInsert(symbol: RoomDbTransaction): Long

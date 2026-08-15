@@ -29,10 +29,10 @@ import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_DATE
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_MERCHANT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.COMMON_EMAIL_PACKAGES
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
-import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.withContext
 
 @Singleton
 internal class ChaseBankGuarantee
@@ -40,8 +40,9 @@ internal class ChaseBankGuarantee
 internal constructor(
     private val clock: Clock,
     dispatchers: AppDispatchers,
-) : BaseGuarantee(
-    dispatchers = dispatchers,
+) :
+    BaseGuarantee(
+        dispatchers = dispatchers,
     ) {
 
   private val chaseSpend by lazy {

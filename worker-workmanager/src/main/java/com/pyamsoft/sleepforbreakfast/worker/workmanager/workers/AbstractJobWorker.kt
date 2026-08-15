@@ -60,17 +60,17 @@ protected constructor(
   }
 
   final override suspend fun doWork(): Result {
-        try {
-          inject()
+    try {
+      inject()
 
-          return process(worker())
-        } catch (e: Throwable) {
-          Timber.e(e) { "Error running work" }
-          return Result.failure()
-        } finally {
-          destroy()
-        }
-      }
+      return process(worker())
+    } catch (e: Throwable) {
+      Timber.e(e) { "Error running work" }
+      return Result.failure()
+    } finally {
+      destroy()
+    }
+  }
 
   protected abstract fun onInject(component: WorkerComponent)
 

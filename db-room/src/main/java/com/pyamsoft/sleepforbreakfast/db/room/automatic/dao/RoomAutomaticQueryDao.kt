@@ -28,7 +28,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.automatic.entity.RoomDbAutomatic
 @Dao
 internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
 
-    final override suspend fun query(): List<DbAutomatic> = daoQuery()
+  final override suspend fun query(): List<DbAutomatic> = daoQuery()
 
   @CheckResult
   @Transaction
@@ -41,18 +41,19 @@ internal abstract class RoomAutomaticQueryDao : AutomaticQueryDao {
       notificationGroup: String,
       notificationPackageName: String,
       notificationMatchText: String,
-  ): Maybe<out DbAutomatic> = when (
-      val result =
-          daoQueryByNotification(
-              id = notificationId,
-              key = notificationKey,
-              group = notificationGroup,
-              packageName = notificationPackageName,
-              matchText = notificationMatchText,
-          )
-  ) {
-          null -> Maybe.None
-          else -> Maybe.Data(result)
+  ): Maybe<out DbAutomatic> =
+      when (
+          val result =
+              daoQueryByNotification(
+                  id = notificationId,
+                  key = notificationKey,
+                  group = notificationGroup,
+                  packageName = notificationPackageName,
+                  matchText = notificationMatchText,
+              )
+      ) {
+        null -> Maybe.None
+        else -> Maybe.Data(result)
       }
 
   @CheckResult
@@ -75,7 +76,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
       matchText: String,
   ): RoomDbAutomatic?
 
-    final override suspend fun queryUnused(): List<DbAutomatic> = daoQueryUnused()
+  final override suspend fun queryUnused(): List<DbAutomatic> = daoQueryUnused()
 
   @CheckResult
   @Transaction
@@ -86,13 +87,11 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_U
   )
   internal abstract suspend fun daoQueryUnused(): List<RoomDbAutomatic>
 
-    final override suspend fun queryById(
-        id: DbAutomatic.Id
-    ): Maybe<out DbAutomatic> =
-        when (val transaction = daoQueryById(id)) {
-          null -> Maybe.None
-          else -> Maybe.Data(transaction)
-        }
+  final override suspend fun queryById(id: DbAutomatic.Id): Maybe<out DbAutomatic> =
+      when (val transaction = daoQueryById(id)) {
+        null -> Maybe.None
+        else -> Maybe.Data(transaction)
+      }
 
   @CheckResult
   @Query(
