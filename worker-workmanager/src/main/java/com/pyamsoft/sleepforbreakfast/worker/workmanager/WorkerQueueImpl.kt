@@ -22,6 +22,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkRequest
 import androidx.work.await
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.WorkJobType
@@ -58,7 +59,7 @@ internal constructor(
         // Resolve the WorkManager instance
         try {
           ensureWorkManagerInitialized().enqueue(work).await()
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           Timber.e(e) { "Error queueing work: $type" }
         }
 
@@ -73,7 +74,7 @@ internal constructor(
         Timber.d { "Cancel work by tag: $type" }
         try {
           ensureWorkManagerInitialized().cancelAllWorkByTag(type.name).await()
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           Timber.e(e) { "Error cancelling work: $type" }
         }
 

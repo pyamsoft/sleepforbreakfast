@@ -16,37 +16,17 @@
 
 package com.pyamsoft.sleepforbreakfast.home
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
-import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
 import java.time.Clock
-import javax.inject.Inject
-
-internal class HomeInjector @Inject internal constructor() : ComposableInjector() {
-
-  @JvmField @Inject internal var viewModel: HomeViewModeler? = null
-
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity)
-        .plusHome()
-        .create(activity = activity, lifecycle = activity.lifecycle)
-        .inject(this)
-  }
-
-  override fun onDispose() {
-    viewModel = null
-  }
-}
 
 @Composable
 private fun MountHooks(viewModel: HomeViewModeler) {

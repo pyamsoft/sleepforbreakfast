@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.transaction
 
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -29,11 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
-import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.main.MainPage
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
@@ -42,34 +39,6 @@ import com.pyamsoft.sleepforbreakfast.transaction.delete.TransactionDeleteEntry
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionScreen
 import com.pyamsoft.sleepforbreakfast.transactions.TransactionViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.complement
-import java.time.Clock
-import javax.inject.Inject
-
-internal class TransactionInjector
-@Inject
-internal constructor(
-    private val page: MainPage.Transactions,
-) : ComposableInjector() {
-
-  @JvmField @Inject internal var viewModel: TransactionViewModeler? = null
-  @JvmField @Inject internal var clock: Clock? = null
-
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity)
-        .plusTransactions()
-        .create(
-            dateRange = page.range,
-            categoryId = page.categoryId,
-            showAllTransactions = page.showAllTransactions,
-        )
-        .inject(this)
-  }
-
-  override fun onDispose() {
-    viewModel = null
-    clock = null
-  }
-}
 
 @Composable
 private fun MountHooks(

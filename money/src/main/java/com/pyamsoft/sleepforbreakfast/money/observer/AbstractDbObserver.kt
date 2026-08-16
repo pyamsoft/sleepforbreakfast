@@ -22,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.ui.util.collectAsStateListWithLifecycle
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -32,6 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@LintIgnoreTooManyFunctions
 internal abstract class AbstractDbObserver<T : Any, R : Any, I : Any>
 protected constructor(
     private val query: DbQuery<T>,
@@ -45,7 +48,7 @@ protected constructor(
     try {
       val list = query.query()
       cache.value = list.toSet()
-    } catch (e: Throwable) {
+    } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
       Timber.e(e) { "Error during observer initial query" }
       cache.value = emptySet()
     }

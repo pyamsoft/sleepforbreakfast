@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.transaction.delete
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,37 +23,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
-import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteParams
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteScreen
 import com.pyamsoft.sleepforbreakfast.transactions.delete.TransactionDeleteViewModeler
 import com.pyamsoft.sleepforbreakfast.ui.CardDialog
-import javax.inject.Inject
-
-internal class TransactionDeleteInjector
-@Inject
-internal constructor(
-    private val params: TransactionDeleteParams,
-) : ComposableInjector() {
-
-  @JvmField @Inject internal var viewModel: TransactionDeleteViewModeler? = null
-
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity)
-        .plusDeleteTransactions()
-        .create(
-            params = params,
-        )
-        .inject(this)
-  }
-
-  override fun onDispose() {
-    viewModel = null
-  }
-}
 
 @Composable
 private fun MountHooks(viewModel: TransactionDeleteViewModeler) {

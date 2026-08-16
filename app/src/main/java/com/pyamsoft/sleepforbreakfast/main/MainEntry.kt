@@ -26,11 +26,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
-import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.getSystemDarkMode
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContainerColor
 import com.pyamsoft.sleepforbreakfast.money.LocalCategoryContentColor
@@ -38,27 +36,6 @@ import com.pyamsoft.sleepforbreakfast.money.LocalCategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.LocalTransactionObserver
 import com.pyamsoft.sleepforbreakfast.money.observer.CategoryObserver
 import com.pyamsoft.sleepforbreakfast.money.observer.TransactionObserver
-import java.time.Clock
-import javax.inject.Inject
-
-internal class MainInjector @Inject internal constructor() : ComposableInjector() {
-
-  @JvmField @Inject internal var transactionObserver: TransactionObserver? = null
-  @JvmField @Inject internal var categoryObserver: CategoryObserver? = null
-  @JvmField @Inject internal var viewModel: MainViewModeler? = null
-  @JvmField @Inject internal var clock: Clock? = null
-
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity).inject(this)
-  }
-
-  override fun onDispose() {
-    viewModel = null
-    categoryObserver = null
-    transactionObserver = null
-    clock = null
-  }
-}
 
 @Composable
 private fun MountHooks(

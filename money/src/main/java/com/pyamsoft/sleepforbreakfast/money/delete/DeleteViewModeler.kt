@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.delete
 
+import com.pyamsoft.pydroid.core.LintIgnoreEmptyFunctionBlock
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
@@ -37,7 +38,7 @@ protected constructor(
         dispatchers = dispatchers,
     ) {
 
-  final override fun onBind(scope: CoroutineScope) {}
+  @LintIgnoreEmptyFunctionBlock final override fun onBind(scope: CoroutineScope) {}
 
   final override fun CoroutineScope.onDataLoaded(result: T) {
     state.item.value = result

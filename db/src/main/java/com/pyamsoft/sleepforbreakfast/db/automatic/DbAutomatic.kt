@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.db.automatic
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Stable
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.sleepforbreakfast.core.IdGenerator
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -25,6 +26,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 @Stable
+@LintIgnoreTooManyFunctions
 interface DbAutomatic {
 
   @get:CheckResult val id: Id
@@ -104,6 +106,7 @@ interface DbAutomatic {
     }
   }
 
+  @LintIgnoreTooManyFunctions
   private data class Impl(
       override val id: Id,
       override val createdAt: LocalDateTime,

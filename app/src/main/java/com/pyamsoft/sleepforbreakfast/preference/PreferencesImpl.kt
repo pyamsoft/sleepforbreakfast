@@ -25,6 +25,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.preference.PreferenceManager
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -91,7 +92,7 @@ internal constructor(
     scope.launch(context = dispatchers.io) {
       try {
         preferences.edit { it[key] = value(it) }
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         e.ifNotCancellation { preferences.edit { it[key] = fallbackValue } }
       }
     }

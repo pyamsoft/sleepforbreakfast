@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.category
 
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.util.AppDispatchers
@@ -30,6 +31,7 @@ import com.pyamsoft.sleepforbreakfast.ui.savedstate.fromJson
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 
+@LintIgnoreTooManyFunctions
 class CategoryViewModeler
 @Inject
 internal constructor(

@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -60,7 +61,7 @@ constructor(
 
         try {
           ResultWrapper.success(autoQueryDao.queryById(r))
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           Timber.e(e) { "Error loading Automatic from transaction: $transaction" }
           ResultWrapper.failure(e)
         }

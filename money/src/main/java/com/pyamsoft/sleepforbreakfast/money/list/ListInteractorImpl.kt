@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
@@ -38,7 +39,7 @@ protected constructor(
 
         return@withContext try {
           ResultWrapper.success(performQueryAll())
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           Timber.e(e) { "Error loading items" }
           ResultWrapper.failure(e)
         }
@@ -60,7 +61,7 @@ protected constructor(
               ResultWrapper.failure(err)
             }
           }
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           Timber.e(e) { "Error loading item $id" }
           ResultWrapper.failure(e)
         }
@@ -70,7 +71,7 @@ protected constructor(
       withContext(context = dispatchers.default) {
         try {
           ResultWrapper.success(performDelete(item))
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           e.ifNotCancellation {
             Timber.e(e) { "Error deleting item: $item" }
             ResultWrapper.failure(e)
@@ -82,7 +83,7 @@ protected constructor(
       withContext(context = dispatchers.default) {
         try {
           ResultWrapper.success(performInsert(item))
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           e.ifNotCancellation {
             Timber.e(e) { "Error submitting item: $item" }
             ResultWrapper.failure(e)

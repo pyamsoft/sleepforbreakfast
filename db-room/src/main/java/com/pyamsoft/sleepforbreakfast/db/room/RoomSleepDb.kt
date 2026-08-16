@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.db.room
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticDeleteDao
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.automatic.dao.RoomAutomaticQueryDao
@@ -30,6 +31,7 @@ import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionDel
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionInsertDao
 import com.pyamsoft.sleepforbreakfast.db.room.transaction.dao.RoomTransactionQueryDao
 
+@LintIgnoreTooManyFunctions
 internal interface RoomSleepDb {
 
   // Transactions

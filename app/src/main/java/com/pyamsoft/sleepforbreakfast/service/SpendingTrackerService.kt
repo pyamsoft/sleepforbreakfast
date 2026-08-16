@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.service
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.pyamsoft.pydroid.core.LintIgnoreEmptyFunctionBlock
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
@@ -55,7 +56,7 @@ class SpendingTrackerService : NotificationListenerService() {
     }
   }
 
-  override fun onListenerConnected() {}
+  @LintIgnoreEmptyFunctionBlock override fun onListenerConnected() {}
 
   override fun onDestroy() {
     scope?.cancelChildren()

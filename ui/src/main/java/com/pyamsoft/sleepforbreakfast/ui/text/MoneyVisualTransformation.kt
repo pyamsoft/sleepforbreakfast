@@ -78,10 +78,12 @@ class MoneyVisualTransformation : VisualTransformation {
 
   companion object {
 
+    private const val CENTS_TO_DOLLAR = 100
+
     @JvmStatic
     @CheckResult
     private fun format(amount: Double): String {
-      return moneyFormatter.format(amount / 100)
+      return moneyFormatter.format(amount / CENTS_TO_DOLLAR)
     }
 
     @JvmStatic

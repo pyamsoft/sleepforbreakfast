@@ -18,6 +18,8 @@ package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -31,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@LintIgnoreTooManyFunctions
 abstract class MoneyAddViewModeler<I : Any, T : Any, S : MutableMoneyAddViewState>
 protected constructor(
     state: S,
@@ -127,7 +130,7 @@ protected constructor(
       val data: T
       try {
         data = compile()
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         Timber.e(e) { "Error compiling data" }
         state.working.value = false
         // TODO handle error in UI
@@ -200,7 +203,7 @@ protected constructor(
 
         // Converts -> 15049 ==> 150.48
         return BigDecimal.valueOf(this, 2).toPlainString()
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         // For whatever reason we have failed
 
         // Either return a default
@@ -227,7 +230,7 @@ protected constructor(
         }
 
         return raw
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         // For whatever reason we have failed
 
         // Either return a default

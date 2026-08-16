@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.money.list
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.util.AppDispatchers
@@ -35,6 +36,7 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@LintIgnoreTooManyFunctions
 abstract class ListViewModeler<T : Any, CE : Any, S : MutableListViewState<T>>
 protected constructor(
     final override val state: S,

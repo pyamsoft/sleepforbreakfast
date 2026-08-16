@@ -18,6 +18,8 @@ package com.pyamsoft.sleepforbreakfast.automatic.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.automatic.AutomaticInteractor
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@LintIgnoreTooManyFunctions
 class AutomaticAddViewModeler
 @Inject
 internal constructor(
@@ -213,7 +216,7 @@ internal constructor(
       val notification: DbNotificationWithRegexes
       try {
         notification = compile()
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         Timber.e(e) { "Error compiling notification" }
         state.working.value = false
         // TODO handle error in UI

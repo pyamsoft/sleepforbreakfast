@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic
 import android.os.Bundle
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -174,7 +175,7 @@ protected constructor(
                 title = title,
                 bigTitle = bigTitle,
             )
-          } catch (e: Throwable) {
+          } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
             Timber.e(e) {
               "Failed to compile regex ${
                         mapOf(

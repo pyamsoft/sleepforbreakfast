@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.main
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.sleepforbreakfast.automatic.AutomaticComponent
 import com.pyamsoft.sleepforbreakfast.automatic.add.AutomaticAddComponent
 import com.pyamsoft.sleepforbreakfast.automatic.delete.AutomaticDeleteComponent
@@ -39,6 +40,7 @@ import dagger.Subcomponent
             MainComponent.MainModule::class,
         ],
 )
+@LintIgnoreTooManyFunctions
 internal interface MainComponent {
 
   fun inject(activity: MainActivity)

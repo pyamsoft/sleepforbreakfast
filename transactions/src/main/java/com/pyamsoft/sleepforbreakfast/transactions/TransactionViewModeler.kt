@@ -18,6 +18,8 @@ package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.util.AppDispatchers
@@ -43,6 +45,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@LintIgnoreTooManyFunctions
 class TransactionViewModeler
 @Inject
 internal constructor(
@@ -148,7 +151,7 @@ internal constructor(
         }
         val items = transactionQueryDao.queryByCategory(category)
         ResultWrapper.success(items)
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         ResultWrapper.failure(e)
       }
     }

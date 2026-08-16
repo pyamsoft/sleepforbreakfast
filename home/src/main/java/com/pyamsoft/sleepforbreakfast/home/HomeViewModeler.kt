@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.home
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ifNotCancellation
 import com.pyamsoft.sleepforbreakfast.core.Timber
@@ -52,7 +53,7 @@ internal constructor(
   private suspend fun fetchTransactions(): List<DbTransaction> {
     try {
       return transactionQueryDao.query()
-    } catch (e: Throwable) {
+    } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
       e.ifNotCancellation {
         Timber.e(e) { "Error fetching transactions" }
         return emptyList()
@@ -64,7 +65,7 @@ internal constructor(
   private suspend fun fetchCategories(): List<DbCategory> {
     try {
       return categoryLoader.query()
-    } catch (e: Throwable) {
+    } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
       e.ifNotCancellation {
         Timber.e(e) { "Error fetching categories" }
         return emptyList()

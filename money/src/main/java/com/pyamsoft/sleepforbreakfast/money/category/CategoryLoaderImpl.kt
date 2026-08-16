@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.category
 
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.pydroid.util.ifNotCancellation
@@ -42,7 +43,7 @@ constructor(
       withContext(context = dispatchers.default) {
         try {
           ResultWrapper.success(query())
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           e.ifNotCancellation {
             Timber.e(e) { "Error getting Categories" }
             ResultWrapper.failure(e)

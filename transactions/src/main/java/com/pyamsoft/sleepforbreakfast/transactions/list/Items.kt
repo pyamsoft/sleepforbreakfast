@@ -18,18 +18,8 @@ package com.pyamsoft.sleepforbreakfast.transactions.list
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
-import java.time.Month
-
-@Stable
-internal sealed class TransactionOrHeader private constructor() {
-
-  @Stable data class Transaction(val transaction: DbTransaction) : TransactionOrHeader()
-
-  @Stable data class Header(val month: Month) : TransactionOrHeader()
-}
 
 @Composable
 @CheckResult

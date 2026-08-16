@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.annotation.CheckResult
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.worker.work.BgWorker
 import com.pyamsoft.sleepforbreakfast.worker.workmanager.WorkerComponent
@@ -64,7 +65,7 @@ protected constructor(
       inject()
 
       return process(worker())
-    } catch (e: Throwable) {
+    } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
       Timber.e(e) { "Error running work" }
       return Result.failure()
     } finally {

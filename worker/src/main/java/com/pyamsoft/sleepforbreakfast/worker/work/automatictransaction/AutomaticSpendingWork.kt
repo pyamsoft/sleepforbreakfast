@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.worker.work.automatictransaction
 
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.automatic.AutomaticQueryDao
@@ -52,7 +53,7 @@ internal constructor(
         try {
           processJobs()
           return@withContext BgWorker.WorkResult.Success
-        } catch (e: Throwable) {
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
           if (e is CancellationException) {
             Timber.w { "Job cancelled during processing" }
             return@withContext BgWorker.WorkResult.Cancelled

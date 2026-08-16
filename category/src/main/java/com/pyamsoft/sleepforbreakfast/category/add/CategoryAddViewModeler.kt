@@ -18,6 +18,8 @@ package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.cast
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.category.CategoryInteractor
@@ -31,6 +33,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@LintIgnoreTooManyFunctions
 class CategoryAddViewModeler
 @Inject
 internal constructor(
@@ -158,7 +161,7 @@ internal constructor(
       val category: DbCategory
       try {
         category = compile()
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         Timber.e(e) { "Error compiling category" }
         state.working.value = false
         // TODO handle error in UI

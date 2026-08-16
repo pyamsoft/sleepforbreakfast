@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.main
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.ui.model.TransactionDateRange
@@ -63,7 +64,7 @@ sealed interface MainPage {
                         from = rangeDataFrom.toLong(),
                         to = rangeDataTo.toLong(),
                     )
-                  } catch (e: Throwable) {
+                  } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
                     Timber.e(e) { "Failed to restore range data from bundle" }
                     null
                   }

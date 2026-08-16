@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.automatic
 
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,27 +25,11 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
-import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.automatic.add.AutomaticAddEntry
 import com.pyamsoft.sleepforbreakfast.automatic.delete.AutomaticDeleteEntry
-import javax.inject.Inject
-
-internal class AutomaticInjector @Inject internal constructor() : ComposableInjector() {
-
-  @JvmField @Inject internal var viewModel: AutomaticViewModeler? = null
-
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity).plusAutomatic().create().inject(this)
-  }
-
-  override fun onDispose() {
-    viewModel = null
-  }
-}
 
 @Composable
 private fun MountHooks(

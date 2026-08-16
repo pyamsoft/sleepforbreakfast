@@ -21,6 +21,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.sleepforbreakfast.db.automatic.DbAutomatic
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
@@ -28,6 +29,7 @@ import java.time.LocalDateTime
 
 @ConsistentCopyVisibility
 @Entity(tableName = RoomDbAutomatic.TABLE_NAME)
+@LintIgnoreTooManyFunctions
 internal data class RoomDbAutomatic
 internal constructor(
     @JvmField @PrimaryKey @ColumnInfo(name = COLUMN_ID) val dbId: DbAutomatic.Id,

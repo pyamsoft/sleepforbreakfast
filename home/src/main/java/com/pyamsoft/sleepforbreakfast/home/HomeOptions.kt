@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pyamsoft.pydroid.core.LintIgnoreMaxLineLength
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.haptics.LocalHapticManager
 import com.pyamsoft.pydroid.ui.uri.rememberUriHandler
@@ -115,6 +116,7 @@ internal fun HomeOptions(
 
         AnimatedVisibility(visible = isExpanded) {
           Column(modifier = Modifier.padding(vertical = MaterialTheme.keylines.baseline)) {
+            @LintIgnoreMaxLineLength
             Text(
                 text =
                     "Enabling this feature will give $appName the ability to see ALL of your notifications, but it will only take action on the notifications that it knows are related to transactions.",

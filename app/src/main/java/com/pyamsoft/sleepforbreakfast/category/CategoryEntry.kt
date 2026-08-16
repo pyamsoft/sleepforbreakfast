@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.category
 
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,27 +24,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.arch.SaveStateDisposableEffect
-import com.pyamsoft.pydroid.ui.inject.ComposableInjector
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.fillUpToPortraitSize
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
-import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.category.add.CategoryAddEntry
 import com.pyamsoft.sleepforbreakfast.category.delete.CategoryDeleteEntry
-import javax.inject.Inject
-
-internal class CategoryInjector @Inject internal constructor() : ComposableInjector() {
-
-  @JvmField @Inject internal var viewModel: CategoryViewModeler? = null
-
-  override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity).plusCategory().create().inject(this)
-  }
-
-  override fun onDispose() {
-    viewModel = null
-  }
-}
 
 @Composable
 private fun MountHooks(

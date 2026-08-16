@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.spending.guaranteed.impl
 
+import com.pyamsoft.pydroid.core.LintIgnoreMaxLineLength
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
@@ -71,6 +72,7 @@ internal constructor(
                  * Chase Freedom: AUTHORIZED USER made an online, phone, or mail transaction of
                  * $2.00 with My Favorite Merchant on Oct 7, 2023 at 1:23PM ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("49a223d5-68bd-4023-83fd-942567ad0ef5"),
                     clock = clock,
@@ -88,6 +90,7 @@ internal constructor(
                  * Chase Freedom: You made a $2.00 transaction with My Favorite Merchant on Oct 7,
                  * 2023 at 1:23PM ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("647c8a72-ed9d-4e62-8393-feca7068c067"),
                     clock = clock,
@@ -105,6 +108,7 @@ internal constructor(
                  * You made a $2.00 transaction Account Chase Freedom (...1234) Date Oct 7, 2023 at
                  * 1:23PM ET Merchant My Favorite Merchant Amount
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("3dd63de5-06bc-41e1-86b8-dc52bc4830bc"),
                     clock = clock,
@@ -120,6 +124,7 @@ internal constructor(
                  * 2023 at 10:13AM ET was more than the $1.00 amount in your Alerts settings 1:23PM
                  * ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("78f25cea-04e2-448d-87e0-13ccd712109c"),
                     clock = clock,
@@ -139,6 +144,7 @@ internal constructor(
                  * Oct 20, 2023 at 10:13AM ET was more than the $1.00 amount in your Alerts settings
                  * 1:23PM ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("f5e2e797-4f40-4534-a2b9-217f37a16909"),
                     clock = clock,
@@ -153,6 +159,7 @@ internal constructor(
                  * Your debit card transaction of $12.34 with My Favorite Merchant Account ending in
                  * (...1234) Made on 2023 at 10:13AM ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("0bb2b4dd-7c34-4ad0-b94e-6abcb668a906"),
                     clock = clock,
@@ -170,6 +177,7 @@ internal constructor(
                  * You made a debit card transaction of $12.34 with My Favorite Merchant Account
                  * ending in (...1234) Made on 2023 at 10:13AM ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("0b36cb4f-52f2-44e3-bf4c-2d269161f831"),
                     clock = clock,
@@ -184,6 +192,7 @@ internal constructor(
                  * Transfer alert AUTHORIZED USER sent $12.34 to MERCHANT MAN Account ending in
                  * ACCOUNT NAME Sent on Oct 20, 2023 at 10:13AM ET
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("a39b55f7-0ab7-4626-ad0d-72bb5c5d91ac"),
                     clock = clock,
@@ -218,6 +227,7 @@ internal constructor(
                  * Deposit posted You have a direct deposit of $123.45 Account ending in (...1234)
                  * Posted Oct 12, 2023 at 5:37 AM ET Amount $123.45
                  */
+                @LintIgnoreMaxLineLength
                 DbNotificationMatchRegex.create(
                     id = DbNotificationMatchRegex.Id("3560841b-6798-4bfc-9ad2-9335df04f4d6"),
                     clock = clock,

@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.worker.work.automatictransaction
 
 import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
@@ -86,7 +87,7 @@ internal constructor(
             .atZone(ZoneId.of(goodTZ, KNOWN_SHORT_IDS))
             .withZoneSameInstant(ZoneId.systemDefault())
             .toLocalDateTime()
-      } catch (e: Throwable) {
+      } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
         Timber.e(e) {
           "Failed to parse timestamp into Chase Transaction Date: ${mapOf(
             "pattern" to CHASE_DATE_PATTERN,

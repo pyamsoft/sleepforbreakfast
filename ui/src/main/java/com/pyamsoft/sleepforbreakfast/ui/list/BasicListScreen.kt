@@ -142,6 +142,8 @@ private enum class ContentTypes {
   BOTTOM_SPACER,
 }
 
+private const val FAB_OFFSET_SPACE_SCALAR = 4
+
 @Composable
 fun <T : Any> ListScreen(
     modifier: Modifier = Modifier,
@@ -197,7 +199,7 @@ fun <T : Any> ListScreen(
             modifier =
                 Modifier
                     // Space to offset the FAB
-                    .height(MaterialTheme.keylines.content * 4),
+                    .height(MaterialTheme.keylines.content * FAB_OFFSET_SPACE_SCALAR),
         )
       }
     }
