@@ -16,80 +16,40 @@
 
 package com.pyamsoft.sleepforbreakfast.preference
 
-import android.content.Context
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.SharedPreferencesMigration
+import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.preference.PreferenceManager
 import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.pydroid.util.ifNotCancellation
+import com.pyamsoft.sleepforbreakfast.PreferenceKeys
+import com.pyamsoft.sleepforbreakfast.core.AppCoroutineScope
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbPreferences
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 @Singleton
 internal class PreferencesImpl
 @Inject
 internal constructor(
-    private val context: Context,
+    private val appScope: AppCoroutineScope,
     private val dispatchers: AppDispatchers,
+    dataStore: DataStore<Preferences>,
 ) : DbPreferences {
 
-  private val Context.dataStore by
-      preferencesDataStore(
-          name = "sleepforbreakfast_preferences",
-          corruptionHandler =
-              ReplaceFileCorruptionHandler { err ->
-                Timber.e(err) { "File corruption detected, start with empty Preferences" }
-                return@ReplaceFileCorruptionHandler emptyPreferences()
-              },
-          produceMigrations = {
-            listOf(
-                // NOTE(Peter): Since our shared preferences was the DEFAULT process one, loading up
-                //              a migration without specifying all keys will also migrate
-                //              PYDROID SPECIFIC PREFERENCES which is what we do NOT want to do.
-                //              We instead maintain ONLY a list of the known app preference keys
-                SharedPreferencesMigration(
-                    keysToMigrate =
-                        setOf(
-                            KEY_DEFAULT_CATEGORIES.name,
-                        ),
-                    produceSharedPreferences = {
-                      PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
-                    },
-                ),
-            )
-          },
-      )
-
-  private val preferences by lazy { context.applicationContext.dataStore }
-
-  private val scope by lazy {
-    CoroutineScope(
-        context = dispatchers.io + SupervisorJob() + CoroutineName(this::class.java.name),
-    )
-  }
+  private val preferences = dataStore
 
   private inline fun <T : Any> setPreference(
       key: Preferences.Key<T>,
       fallbackValue: T,
       crossinline value: suspend (Preferences) -> T,
   ) {
-    scope.launch(context = dispatchers.io) {
+    appScope.launch(context = dispatchers.io) {
       try {
         preferences.edit { it[key] = value(it) }
       } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
@@ -112,21 +72,20 @@ internal constructor(
 
   override fun listenSystemCategoriesPreloaded(): Flow<Boolean> =
       getPreference(
-              key = KEY_DEFAULT_CATEGORIES,
+              key = PreferenceKeys.KEY_DEFAULT_CATEGORIES,
               value = DEFAULT_DEFAULT_CATEGORIES,
           )
           .flowOn(context = dispatchers.io)
 
   override fun markSystemCategoriesPreloaded() =
       setPreference(
-          key = KEY_DEFAULT_CATEGORIES,
+          key = PreferenceKeys.KEY_DEFAULT_CATEGORIES,
           fallbackValue = DEFAULT_DEFAULT_CATEGORIES,
           value = { true },
       )
 
   companion object {
 
-    private val KEY_DEFAULT_CATEGORIES = booleanPreferencesKey("key_default_categories")
     private const val DEFAULT_DEFAULT_CATEGORIES = false
   }
 }

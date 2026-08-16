@@ -20,11 +20,19 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import androidx.annotation.CheckResult
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.SharedPreferencesMigration
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.preference.PreferenceManager
 import com.pyamsoft.pydroid.core.ThreadEnforcer
 import com.pyamsoft.pydroid.ui.theme.Theming
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.automatic.AutomaticAppModule
 import com.pyamsoft.sleepforbreakfast.category.CategoryAppModule
+import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbModule
 import com.pyamsoft.sleepforbreakfast.db.DbPreferences
 import com.pyamsoft.sleepforbreakfast.db.room.RoomModule
@@ -48,6 +56,35 @@ import java.time.Clock
 import javax.inject.Named
 import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
+
+private val Context.dataStore by
+    preferencesDataStore(
+        name = "sleepforbreakfast_preferences",
+        corruptionHandler =
+            ReplaceFileCorruptionHandler { err ->
+              Timber.e(err) { "File corruption detected, start with empty Preferences" }
+              return@ReplaceFileCorruptionHandler emptyPreferences()
+            },
+        produceMigrations = { migrationContext ->
+          listOf(
+              // NOTE(Peter): Since our shared preferences was the DEFAULT process one, loading up
+              //              a migration without specifying all keys will also migrate
+              //              PYDROID SPECIFIC PREFERENCES which is what we do NOT want to do.
+              //              We instead maintain ONLY a list of the known app preference keys
+              SharedPreferencesMigration(
+                  keysToMigrate =
+                      setOf(
+                          PreferenceKeys.KEY_DEFAULT_CATEGORIES.name,
+                      ),
+                  produceSharedPreferences = {
+                    PreferenceManager.getDefaultSharedPreferences(
+                        migrationContext.applicationContext
+                    )
+                  },
+              ),
+          )
+        },
+    )
 
 @Singleton
 @Component(
@@ -116,6 +153,13 @@ internal interface BreakfastComponent {
       @JvmStatic
       internal fun provideContext(application: Application): Context {
         return application
+      }
+
+      @Provides
+      @JvmStatic
+      @Singleton
+      internal fun provideDataStore(context: Context): DataStore<Preferences> {
+        return context.applicationContext.dataStore
       }
 
       @Provides
