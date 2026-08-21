@@ -71,7 +71,42 @@ internal constructor(
                     id = DbNotificationMatchRegex.Id("38875bfe-8dbc-49e4-9732-9a50b08dd588"),
                     clock = clock,
                     notificationId = notificationId,
-                    text = "$CAPTURE_GROUP_AMOUNT with $ACCOUNT_GROUP",
+                    text = "$CAPTURE_GROUP_AMOUNT\\s+with\\s+$ACCOUNT_GROUP",
+                ),
+            ),
+    )
+  }
+
+  private val googleWalletEarn by lazy {
+    val notificationId = DbNotification.Id("def80da2-9ff6-47ea-9089-cd457c0cd52e")
+    DbNotificationWithRegexes.create(
+        notification =
+            DbNotification.create(
+                system = true,
+                clock = clock,
+                id = notificationId,
+                name = "Google Wallet Earning",
+                actOnPackageNames =
+                    setOf(
+                        "com.google.android.gms",
+                        "com.google.android.apps.walletnfcrel",
+                    ),
+                type = DbTransaction.Type.SPEND,
+            ),
+        regexes =
+            setOf(
+                /**
+                 * From Google Wallet App
+                 *
+                 * -$123.45 was refunded to Amex ••1234
+                 *
+                 * 09/19/2025 noticed Wallet notification updated to $123.45 with Amex ••1234
+                 */
+                DbNotificationMatchRegex.create(
+                    id = DbNotificationMatchRegex.Id("38875bfe-8dbc-49e4-9732-9a50b08dd588"),
+                    clock = clock,
+                    notificationId = notificationId,
+                    text = "$CAPTURE_GROUP_AMOUNT\\s+with\\s+$ACCOUNT_GROUP",
                 ),
             ),
     )
@@ -87,6 +122,12 @@ internal constructor(
             insert = insert,
             notification = googleWalletSpend,
         )
+
+        upsertIfUntainted(
+            query = query,
+            insert = insert,
+            notification = googleWalletEarn,
+        )
       }
 
   companion object {
@@ -97,6 +138,6 @@ internal constructor(
     // Chase Freedom •• 1234
     // Chase Freedom ••••1234
     // Chase Freedom •••• 1234
-    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>.* •{1,4} ?\\d{4})"
+    private const val ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>.*\\s+•{1,4}\\s*\\d{4})"
   }
 }

@@ -78,7 +78,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: .* made an online, phone, or mail transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP on $DATE_GROUP.",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP:\\s+.*\\s+made\\s+an\\s+online,\\s+phone,\\s+or\\s+mail\\s+transaction\\s+of\\s+$CAPTURE_GROUP_AMOUNT\\s+with\\s+$MERCHANT_GROUP\\s+on\\s+$DATE_GROUP.",
                 ),
 
                 /**
@@ -96,7 +96,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: .* made a $CAPTURE_GROUP_AMOUNT transaction with $MERCHANT_GROUP on $DATE_GROUP.",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP:\\s+.*\\s+made\\s+a\\s+$CAPTURE_GROUP_AMOUNT\\s+transaction\\s+with\\s+$MERCHANT_GROUP\\s+on\\s+$DATE_GROUP.",
                 ),
 
                 /**
@@ -114,7 +114,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        ".* made a $CAPTURE_GROUP_AMOUNT transaction Account $CHASE_PREFIXED_ACCOUNT_GROUP Date $DATE_GROUP Merchant $MERCHANT_GROUP Amount",
+                        ".*\\s+made\\s+a\\s+$CAPTURE_GROUP_AMOUNT\\s+transaction\\s+Account\\s+$CHASE_PREFIXED_ACCOUNT_GROUP\\s+Date\\s+$DATE_GROUP\\s+Merchant\\s+$MERCHANT_GROUP\\s+Amount",
                 ),
 
                 /**
@@ -130,7 +130,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: Your $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP:\\s+Your\\s+$CAPTURE_GROUP_AMOUNT\\s+debit\\s+card\\s+transaction\\s+to\\s+$MERCHANT_GROUP\\s+on\\s+$DATE_GROUP\\s+was\\s+more\\s+than\\s+the",
                 ),
 
                 /**
@@ -150,7 +150,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$CHASE_PREFIXED_ACCOUNT_GROUP: .* made a $CAPTURE_GROUP_AMOUNT debit card transaction to $MERCHANT_GROUP on $DATE_GROUP was more than the",
+                        "$CHASE_PREFIXED_ACCOUNT_GROUP:\\s+.*\\s+made\\s+a\\s+$CAPTURE_GROUP_AMOUNT\\s+debit\\s+card\\s+transaction\\s+to\\s+$MERCHANT_GROUP\\s+on\\s+$DATE_GROUP\\s+was\\s+more\\s+than\\s+the",
                 ),
 
                 /**
@@ -165,7 +165,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "Your debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Made on $DATE_GROUP",
+                        "Your\\s+debit\\s+card\\s+transaction\\s+of\\s+$CAPTURE_GROUP_AMOUNT\\s+with\\s+$MERCHANT_GROUP\\s+Account\\s+ending\\s+in\\s+$PLAIN_ACCOUNT_GROUP\\s+Made\\s+on\\s+$DATE_GROUP",
                 ),
 
                 /**
@@ -183,7 +183,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        ".* made a debit card transaction of $CAPTURE_GROUP_AMOUNT with $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Made on $DATE_GROUP",
+                        ".*\\s+made\\s+a\\s+debit\\s+card\\s+transaction\\s+of\\s+$CAPTURE_GROUP_AMOUNT\\s+with\\s+$MERCHANT_GROUP\\s+Account\\s+ending\\s+in\\s+$PLAIN_ACCOUNT_GROUP\\s+Made\\s+on\\s+$DATE_GROUP",
                 ),
 
                 /**
@@ -198,7 +198,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "Transfer alert .* sent $CAPTURE_GROUP_AMOUNT to $MERCHANT_GROUP Account ending in $PLAIN_ACCOUNT_GROUP Sent on $DATE_GROUP",
+                        "Transfer\\s+alert\\s+.*\\s+sent\\s+$CAPTURE_GROUP_AMOUNT\\s+to\\s+$MERCHANT_GROUP\\s+Account\\s+ending\\s+in\\s+$PLAIN_ACCOUNT_GROUP\\s+Sent\\s+on\\s+$DATE_GROUP",
                 ),
             ),
     )
@@ -233,7 +233,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "Deposit posted .* Account ending in $PLAIN_ACCOUNT_GROUP Posted $DATE_GROUP Amount $CAPTURE_GROUP_AMOUNT",
+                        "Deposit\\s+posted\\s+.*\\s+Account\\s+ending\\s+in\\s+$PLAIN_ACCOUNT_GROUP\\s+Posted\\s+$DATE_GROUP\\s+Amount\\s+$CAPTURE_GROUP_AMOUNT",
                 ),
             ),
     )
@@ -262,7 +262,7 @@ internal constructor(
     private const val CHASE_PREFIXED_ACCOUNT_GROUP = "(?<$CAPTURE_NAME_ACCOUNT>Chase .*)"
 
     private const val DATE_GROUP =
-        "(?<$CAPTURE_NAME_DATE>\\w*\\s\\w*,\\s\\w*\\sat\\s\\w*:\\w*\\s\\w*\\s\\w*)"
+        "(?<$CAPTURE_NAME_DATE>\\w*\\s+\\w*,\\s+\\w*\\s+at\\s+\\w*:\\w*\\s+\\w*\\s+\\w*)"
     private const val MERCHANT_GROUP = "(?<$CAPTURE_NAME_MERCHANT>.*)"
   }
 }

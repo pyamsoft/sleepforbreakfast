@@ -71,7 +71,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "You completed $MERCHANT_GROUP's request for $CAPTURE_GROUP_AMOUNT - $DESCRIPTION_GROUP",
+                        "You\\s+completed\\s+$MERCHANT_GROUP's\\s+request\\s+for\\s+$CAPTURE_GROUP_AMOUNT\\s+-\\s+$DESCRIPTION_GROUP",
                 ),
 
                 /**
@@ -83,7 +83,7 @@ internal constructor(
                     id = DbNotificationMatchRegex.Id("6c9a736c-bc90-405b-bbc5-1d287073e0a8"),
                     clock = clock,
                     notificationId = notificationId,
-                    text = "You paid $MERCHANT_GROUP $CAPTURE_GROUP_AMOUNT",
+                    text = "You\\s+paid\\s+$MERCHANT_GROUP\\s+$CAPTURE_GROUP_AMOUNT",
                 ),
             ),
     )
@@ -117,7 +117,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$MERCHANT_GROUP paid you $CAPTURE_GROUP_AMOUNT. - $DESCRIPTION_GROUP - You now have \$",
+                        "$MERCHANT_GROUP\\s+paid\\s+you\\s+$CAPTURE_GROUP_AMOUNT.\\s+-\\s+$DESCRIPTION_GROUP\\s+-\\s+You\\s+now\\s+have\\s+\\$",
                 ),
 
                 /**
@@ -130,7 +130,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
-                        "$MERCHANT_GROUP completed your request for $CAPTURE_GROUP_AMOUNT - $DESCRIPTION_GROUP",
+                        "$MERCHANT_GROUP\\s+completed\\s+your\\s+request\\s+for\\s+$CAPTURE_GROUP_AMOUNT\\s+-\\s+$DESCRIPTION_GROUP",
                 ),
             ),
     )

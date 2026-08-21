@@ -14,7 +14,7 @@ coroutines = "1.11.0"
 
 # Us
 pydroid = "29.6.0"
-cachify = "0.3.13"
+cachify = "0.3.14"
 
 # Square
 leakCanary = "2.14"
