@@ -26,10 +26,10 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_GROUP_AMOUNT
 import com.pyamsoft.sleepforbreakfast.spending.automatic.CAPTURE_NAME_ACCOUNT
 import com.pyamsoft.sleepforbreakfast.spending.guaranteed.BaseGuarantee
+import kotlinx.coroutines.withContext
 import java.time.Clock
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.withContext
 
 @Singleton
 internal class GoogleWalletGuarantee
@@ -103,7 +103,7 @@ internal constructor(
                  * 09/19/2025 noticed Wallet notification updated to $123.45 with Amex ••1234
                  */
                 DbNotificationMatchRegex.create(
-                    id = DbNotificationMatchRegex.Id("38875bfe-8dbc-49e4-9732-9a50b08dd588"),
+                    id = DbNotificationMatchRegex.Id("51a3da0e-61dc-4488-9108-0a6cdaffd437"),
                     clock = clock,
                     notificationId = notificationId,
                     text = "$CAPTURE_GROUP_AMOUNT\\s+with\\s+$ACCOUNT_GROUP",
