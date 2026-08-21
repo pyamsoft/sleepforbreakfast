@@ -106,7 +106,7 @@ internal constructor(
                     id = DbNotificationMatchRegex.Id("51a3da0e-61dc-4488-9108-0a6cdaffd437"),
                     clock = clock,
                     notificationId = notificationId,
-                    text = "$CAPTURE_GROUP_AMOUNT\\s+with\\s+$ACCOUNT_GROUP",
+                    text = "-$CAPTURE_GROUP_AMOUNT\\s+was\\s+refunded\\s+to\\s+$ACCOUNT_GROUP",
                 ),
             ),
     )
