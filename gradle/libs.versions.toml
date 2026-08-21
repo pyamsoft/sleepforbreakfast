@@ -13,7 +13,7 @@ kotlin = "2.4.10"
 coroutines = "1.11.0"
 
 # Us
-pydroid = "29.6.0"
+pydroid = "30.0.0"
 cachify = "0.3.14"
 
 # Square
@@ -102,6 +102,10 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 
 pydroid-arch = { group = "com.github.pyamsoft.pydroid", name = "arch", version.ref = "pydroid" }
 pydroid-ui = { group = "com.github.pyamsoft.pydroid", name = "ui", version.ref = "pydroid" }
+pydroid-billing-noop = { group = "com.github.pyamsoft.pydroid", name = "billing-noop", version.ref = "pydroid" }
+pydroid-billing-play = { group = "com.github.pyamsoft.pydroid", name = "billing-play", version.ref = "pydroid" }
+pydroid-bootstrap-noop = { group = "com.github.pyamsoft.pydroid", name = "bootstrap-noop", version.ref = "pydroid" }
+pydroid-bootstrap-play = { group = "com.github.pyamsoft.pydroid", name = "bootstrap-play", version.ref = "pydroid" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
