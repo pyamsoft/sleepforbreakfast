@@ -93,9 +93,9 @@ allprojects {
 
   repositories {
     mavenLocal()
-    gradlePluginPortal()
     google()
     mavenCentral()
+    gradlePluginPortal()
 
     // Jitpack
     maven {
