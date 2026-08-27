@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.spending.guaranteed.impl
 
+import com.pyamsoft.pydroid.core.LintIgnoreMaxLineLength
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotification
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
@@ -71,6 +72,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
+                        @LintIgnoreMaxLineLength
                         "You\\s+completed\\s+$MERCHANT_GROUP's\\s+request\\s+for\\s+$CAPTURE_GROUP_AMOUNT\\s+-\\s+$DESCRIPTION_GROUP",
                 ),
 
@@ -117,6 +119,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
+                        @LintIgnoreMaxLineLength
                         "$MERCHANT_GROUP\\s+paid\\s+you\\s+$CAPTURE_GROUP_AMOUNT.\\s+-\\s+$DESCRIPTION_GROUP\\s+-\\s+You\\s+now\\s+have\\s+\\$",
                 ),
 
@@ -130,6 +133,7 @@ internal constructor(
                     clock = clock,
                     notificationId = notificationId,
                     text =
+                        @LintIgnoreMaxLineLength
                         "$MERCHANT_GROUP\\s+completed\\s+your\\s+request\\s+for\\s+$CAPTURE_GROUP_AMOUNT\\s+-\\s+$DESCRIPTION_GROUP",
                 ),
             ),

@@ -50,8 +50,8 @@ import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 private enum class ContentTypes {
   NAME,
-    REGEX_TEST,
-    REGEX_ROW,
+  REGEX_TEST,
+  REGEX_ROW,
   SUBMIT,
 }
 
@@ -69,9 +69,9 @@ fun AutomaticAddScreen(
 ) {
   val name by state.name.collectAsStateWithLifecycle()
   val working by state.working.collectAsStateWithLifecycle()
-    val workingRegexes by state.workingRegexes.collectAsStateWithLifecycle()
+  val workingRegexes by state.workingRegexes.collectAsStateWithLifecycle()
 
-    var testText by rememberSaveable { mutableStateOf("") }
+  var testText by rememberSaveable { mutableStateOf("") }
 
   val keyboardTextOptions = remember {
     KeyboardOptions(
@@ -114,14 +114,10 @@ fun AutomaticAddScreen(
             contentType = ContentTypes.NAME,
         ) {
           Row(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(
-                      horizontal = MaterialTheme.keylines.content
-                  )
-                  .padding(
-                      bottom = MaterialTheme.keylines.content
-                  ),
+              modifier =
+                  Modifier.fillMaxWidth()
+                      .padding(horizontal = MaterialTheme.keylines.content)
+                      .padding(bottom = MaterialTheme.keylines.content),
               verticalAlignment = Alignment.CenterVertically,
           ) {
             AddName(
@@ -133,39 +129,33 @@ fun AutomaticAddScreen(
           }
         }
 
-          if (isEditMode) {
-              item(
-                  contentType = ContentTypes.REGEX_TEST,
-              ) {
-                  AutomaticAddRegexTestField(
-                      modifier = Modifier
-                          .fillMaxWidth()
-                          .padding(
-                              horizontal = MaterialTheme.keylines.content
-                          )
-                          .padding(
-                              bottom = MaterialTheme.keylines.content
-                          )
-                      ,
-                      testText = testText,
-                      onTestTextChanged = { testText = it },
-                  )
-              }
+        if (isEditMode) {
+          item(
+              contentType = ContentTypes.REGEX_TEST,
+          ) {
+            AutomaticAddRegexTestField(
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.keylines.content)
+                        .padding(bottom = MaterialTheme.keylines.content),
+                testText = testText,
+                onTestTextChanged = { testText = it },
+            )
+          }
 
-              items(
-                  items = workingRegexes,
-                  key = { it.id },
-                  contentType = { ContentTypes.REGEX_ROW },
-              ) { regex ->
-                  AutomaticAddRegexRow(
-                      modifier =
-                          Modifier
-                              .fillMaxWidth()
-                              .padding(horizontal = MaterialTheme.keylines.content)
-                              .padding(bottom = MaterialTheme.keylines.content),
-                      regex = regex,
-                      testText = testText,
-                      onRegexChanged = onRegexChanged,
+          items(
+              items = workingRegexes,
+              key = { it.id },
+              contentType = { ContentTypes.REGEX_ROW },
+          ) { regex ->
+            AutomaticAddRegexRow(
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(horizontal = MaterialTheme.keylines.content)
+                        .padding(bottom = MaterialTheme.keylines.content),
+                regex = regex,
+                testText = testText,
+                onRegexChanged = onRegexChanged,
             )
           }
         }
@@ -174,9 +164,7 @@ fun AutomaticAddScreen(
             contentType = ContentTypes.SUBMIT,
         ) {
           AddSubmit(
-              modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(MaterialTheme.keylines.content),
+              modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
               working = working,
               onReset = onReset,
               onSubmit = onSubmit,

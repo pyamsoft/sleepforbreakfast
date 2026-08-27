@@ -19,6 +19,7 @@ package com.pyamsoft.sleepforbreakfast.spending.automatic
 import android.os.Bundle
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationCompat
+import com.pyamsoft.pydroid.core.LintIgnoreLongMethod
 import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -56,6 +57,7 @@ protected constructor(
   }
 
   @CheckResult
+  @LintIgnoreLongMethod
   private suspend fun handleRegex(
       notificationId: Int,
       packageName: String,
@@ -139,6 +141,7 @@ protected constructor(
     )
   }
 
+  @LintIgnoreLongMethod
   final override suspend fun extract(
       notificationId: Int,
       packageName: String,

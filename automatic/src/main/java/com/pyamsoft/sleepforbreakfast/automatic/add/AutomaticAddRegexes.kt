@@ -42,12 +42,12 @@ import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import java.util.regex.PatternSyntaxException
 
 private val REGEX_BORDER_WIDTH: Dp = 2.dp
-private val REGEX_ICON_SIZE:Dp = 24.dp
+private val REGEX_ICON_SIZE: Dp = 24.dp
 
 private enum class RegexMatch {
-    NONE,
-    PASS,
-    FAIL
+  NONE,
+  PASS,
+  FAIL,
 }
 
 @CheckResult
@@ -55,17 +55,17 @@ private fun matchRegex(
     pattern: String,
     testText: String,
 ): RegexMatch {
-    if (testText.isBlank() || pattern.isBlank()) {
-        return RegexMatch.NONE
-    }
+  if (testText.isBlank() || pattern.isBlank()) {
+    return RegexMatch.NONE
+  }
 
-    return try {
-        val matches = Regex(pattern, RegexOption.MULTILINE).containsMatchIn(testText)
-        if (matches) RegexMatch.PASS else RegexMatch.FAIL
-    } catch (e: PatternSyntaxException) {
-        Timber.e(e) { "Invalid regex pattern: $pattern" }
-        RegexMatch.FAIL
-    }
+  return try {
+    val matches = Regex(pattern, RegexOption.MULTILINE).containsMatchIn(testText)
+    if (matches) RegexMatch.PASS else RegexMatch.FAIL
+  } catch (e: PatternSyntaxException) {
+    Timber.e(e) { "Invalid regex pattern: $pattern" }
+    RegexMatch.FAIL
+  }
 }
 
 @Composable
@@ -74,32 +74,32 @@ internal fun AutomaticAddRegexTestField(
     testText: String,
     onTestTextChanged: (String) -> Unit,
 ) {
-    Column(
-        modifier = modifier,
-    ) {
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = "Test Text",
-            fontWeight = FontWeight.W700,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodySmall,
-        )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = testText,
-            onValueChange = onTestTextChanged,
-            label = {
-                Text(
-                    text = "Sample Notification Text",
-                )
-            },
-            placeholder = {
-                Text(
-                    text = "Type text here to test it against your regexes below",
-                )
-            },
-        )
-    }
+  Column(
+      modifier = modifier,
+  ) {
+    Text(
+        modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
+        text = "Test Text",
+        fontWeight = FontWeight.W700,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.bodySmall,
+    )
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = testText,
+        onValueChange = onTestTextChanged,
+        label = {
+          Text(
+              text = "Sample Notification Text",
+          )
+        },
+        placeholder = {
+          Text(
+              text = "Type text here to test it against your regexes below",
+          )
+        },
+    )
+  }
 }
 
 @Composable
@@ -109,85 +109,82 @@ internal fun AutomaticAddRegexRow(
     testText: String,
     onRegexChanged: (AutomaticAddViewState.BuildMatchRegex) -> Unit,
 ) {
-    val matches = remember(regex.text, testText) { matchRegex(regex.text, testText) }
+  val matches = remember(regex.text, testText) { matchRegex(regex.text, testText) }
 
-    val passColor = MaterialTheme.colorScheme.primary
-    val failColor = MaterialTheme.colorScheme.error
-    val neutralColor = MaterialTheme.colorScheme.outline
-    val statusColor =
-        remember(
-            matches,
-            passColor,
-            failColor,
-            neutralColor,
-        ) {
-            when (matches) {
-                RegexMatch.NONE -> neutralColor
-                RegexMatch.PASS -> passColor
-                RegexMatch.FAIL -> failColor
-            }
+  val passColor = MaterialTheme.colorScheme.primary
+  val failColor = MaterialTheme.colorScheme.error
+  val neutralColor = MaterialTheme.colorScheme.outline
+  val statusColor =
+      remember(
+          matches,
+          passColor,
+          failColor,
+          neutralColor,
+      ) {
+        when (matches) {
+          RegexMatch.NONE -> neutralColor
+          RegexMatch.PASS -> passColor
+          RegexMatch.FAIL -> failColor
         }
+      }
 
-    Row(
+  Row(
+      modifier = modifier.fillMaxWidth(),
+      verticalAlignment = Alignment.CenterVertically,
+  ) {
+    TextField(
         modifier =
-            modifier.fillMaxWidth(),
-
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        TextField(
-            modifier = Modifier
-                .weight(1F)
+            Modifier.weight(1F)
                 .border(
                     width = REGEX_BORDER_WIDTH,
                     color = statusColor,
                     shape = MaterialTheme.shapes.small,
                 ),
-            value = regex.text,
-            onValueChange = { v ->
-                val changed = regex.copy(text = v)
-                onRegexChanged(changed)
-            },
-            label = {
-                Text(
-                    // TODO language res file
-                    text = "Regex",
-                )
-            },
-            placeholder = {
-                Text(
-                    // TODO language res file
-                    text = "Your test regular expression",
-                )
-            },
-        )
+        value = regex.text,
+        onValueChange = { v ->
+          val changed = regex.copy(text = v)
+          onRegexChanged(changed)
+        },
+        label = {
+          Text(
+              // TODO language res file
+              text = "Regex",
+          )
+        },
+        placeholder = {
+          Text(
+              // TODO language res file
+              text = "Your test regular expression",
+          )
+        },
+    )
 
-        when (matches) {
-            RegexMatch.NONE -> {
-                Spacer(
-                    modifier = Modifier
-                        .padding(start = MaterialTheme.keylines.baseline)
-                        .size(REGEX_ICON_SIZE),
-                )
-            }
-            RegexMatch.PASS, RegexMatch.FAIL -> {
-                val painter: Painter
-                val description: String
-                if (matches == RegexMatch.PASS) {
-                    painter = IconPainters.check()
-                    description = "Matches"
-                } else {
-                    painter = IconPainters.cancel()
-                    description = "No Match"
-                }
-                Icon(
-                    modifier = Modifier
-                        .padding(start = MaterialTheme.keylines.baseline)
-                        .size(REGEX_ICON_SIZE),
-                    painter = painter,
-                    contentDescription = description,
-                    tint = statusColor,
-                )
-            }
+    when (matches) {
+      RegexMatch.NONE -> {
+        Spacer(
+            modifier =
+                Modifier.padding(start = MaterialTheme.keylines.baseline).size(REGEX_ICON_SIZE),
+        )
+      }
+      RegexMatch.PASS,
+      RegexMatch.FAIL -> {
+        val painter: Painter
+        val description: String
+        if (matches == RegexMatch.PASS) {
+          painter = IconPainters.check()
+          description = "Matches"
+        } else {
+          painter = IconPainters.cancel()
+          description = "No Match"
         }
+        Icon(
+            modifier =
+                Modifier.padding(start = MaterialTheme.keylines.baseline).size(REGEX_ICON_SIZE),
+            painter = painter,
+            contentDescription = description,
+            tint = statusColor,
+        )
+      }
     }
+  }
 }
