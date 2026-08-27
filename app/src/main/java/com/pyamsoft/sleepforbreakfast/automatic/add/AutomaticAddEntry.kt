@@ -62,8 +62,10 @@ internal fun AutomaticAddEntry(
   ) {
     AutomaticAddScreen(
         state = viewModel,
+        isEditMode = !params.notificationId.isEmpty,
         onDismiss = onDismiss,
         onNameChanged = { viewModel.handleNameChanged(it) },
+        onRegexChanged = { viewModel.handleUpdateMatchRegex(it) },
         onReset = { viewModel.handleReset() },
         onSubmit = {
           viewModel.handleSubmit(

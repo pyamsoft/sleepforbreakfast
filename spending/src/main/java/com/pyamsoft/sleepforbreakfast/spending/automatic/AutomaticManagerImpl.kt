@@ -68,6 +68,6 @@ internal constructor(
   companion object {
 
     /** Test the regex system by letting it run against ANY package */
-    private const val TEST_CAN_ALWAYS_EXTRACT = false
+    private const val TEST_CAN_ALWAYS_EXTRACT = true
   }
 }

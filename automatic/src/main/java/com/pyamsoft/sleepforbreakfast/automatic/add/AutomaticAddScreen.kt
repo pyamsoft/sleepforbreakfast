@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,7 +33,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +50,8 @@ import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 private enum class ContentTypes {
   NAME,
+    REGEX_TEST,
+    REGEX_ROW,
   SUBMIT,
 }
 
@@ -54,13 +60,18 @@ private enum class ContentTypes {
 fun AutomaticAddScreen(
     modifier: Modifier = Modifier,
     state: AutomaticAddViewState,
+    isEditMode: Boolean,
     onNameChanged: (String) -> Unit,
+    onRegexChanged: (AutomaticAddViewState.BuildMatchRegex) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
 ) {
   val name by state.name.collectAsStateWithLifecycle()
   val working by state.working.collectAsStateWithLifecycle()
+    val workingRegexes by state.workingRegexes.collectAsStateWithLifecycle()
+
+    var testText by rememberSaveable { mutableStateOf("") }
 
   val keyboardTextOptions = remember {
     KeyboardOptions(
@@ -103,7 +114,14 @@ fun AutomaticAddScreen(
             contentType = ContentTypes.NAME,
         ) {
           Row(
-              modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(
+                      horizontal = MaterialTheme.keylines.content
+                  )
+                  .padding(
+                      bottom = MaterialTheme.keylines.content
+                  ),
               verticalAlignment = Alignment.CenterVertically,
           ) {
             AddName(
@@ -115,11 +133,50 @@ fun AutomaticAddScreen(
           }
         }
 
+          if (isEditMode) {
+              item(
+                  contentType = ContentTypes.REGEX_TEST,
+              ) {
+                  AutomaticAddRegexTestField(
+                      modifier = Modifier
+                          .fillMaxWidth()
+                          .padding(
+                              horizontal = MaterialTheme.keylines.content
+                          )
+                          .padding(
+                              bottom = MaterialTheme.keylines.content
+                          )
+                      ,
+                      testText = testText,
+                      onTestTextChanged = { testText = it },
+                  )
+              }
+
+              items(
+                  items = workingRegexes,
+                  key = { it.id },
+                  contentType = { ContentTypes.REGEX_ROW },
+              ) { regex ->
+                  AutomaticAddRegexRow(
+                      modifier =
+                          Modifier
+                              .fillMaxWidth()
+                              .padding(horizontal = MaterialTheme.keylines.content)
+                              .padding(bottom = MaterialTheme.keylines.content),
+                      regex = regex,
+                      testText = testText,
+                      onRegexChanged = onRegexChanged,
+            )
+          }
+        }
+
         item(
             contentType = ContentTypes.SUBMIT,
         ) {
           AddSubmit(
-              modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
+              modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(MaterialTheme.keylines.content),
               working = working,
               onReset = onReset,
               onSubmit = onSubmit,
