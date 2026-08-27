@@ -38,6 +38,8 @@ object IconPainters {
 
   @Composable fun add() = painterResource(R.drawable.add_24px)
 
+  @Composable fun check() = painterResource(R.drawable.check_24px)
+
   @Composable fun attachMoney() = painterResource(R.drawable.attach_money_24px)
 
   @Composable fun category() = painterResource(R.drawable.category_24px)
