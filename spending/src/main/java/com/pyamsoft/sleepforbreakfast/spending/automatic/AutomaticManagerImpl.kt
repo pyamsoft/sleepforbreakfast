@@ -48,21 +48,23 @@ internal constructor(
       notificationId: Int,
       packageName: String,
       bundle: Bundle,
-  ): PaymentNotification? {
+  ): List<PaymentNotification> {
     // This loop continues until we find a result since multiple handlers may
     // handle the same packagename, like Venmo
     val handlers = collectNotificationHandlers()
 
+    val allResults = mutableListOf<PaymentNotification>()
     for (handler in handlers) {
       if (handler.canExtract(packageName) || TEST_CAN_ALWAYS_EXTRACT) {
+        // This can potentially return MANY notifications
         val result = handler.extract(notificationId, packageName, bundle)
-        if (result != null) {
-          return result
+        if (result.isNotEmpty()) {
+          allResults.addAll(result)
         }
       }
     }
 
-    return null
+    return allResults
   }
 
   companion object {

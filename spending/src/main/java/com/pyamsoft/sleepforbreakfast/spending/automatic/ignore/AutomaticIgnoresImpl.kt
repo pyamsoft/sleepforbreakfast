@@ -66,13 +66,13 @@ internal class AutomaticIgnoresImpl @Inject internal constructor() : AutomaticIg
       }
 
       ignorable.title?.let { ignore ->
-        if (text.isNotBlank()) {
+        if (title.isNotBlank()) {
           if (ignore.matches(title)) {
             return true
           }
         }
 
-        if (bigText.isNotBlank()) {
+        if (bigTitle.isNotBlank()) {
           if (ignore.matches(bigTitle)) {
             return true
           }

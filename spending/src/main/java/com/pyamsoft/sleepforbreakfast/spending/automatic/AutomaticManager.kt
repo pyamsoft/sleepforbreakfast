@@ -27,5 +27,5 @@ internal interface AutomaticManager {
       notificationId: Int,
       packageName: String,
       bundle: Bundle,
-  ): PaymentNotification?
+  ): List<PaymentNotification>
 }

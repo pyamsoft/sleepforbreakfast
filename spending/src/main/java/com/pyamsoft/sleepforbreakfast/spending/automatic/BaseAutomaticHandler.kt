@@ -62,37 +62,30 @@ protected constructor(
       notificationId: Int,
       packageName: String,
       regexMatch: RegexMatch,
-      text: CharSequence,
-      bigText: CharSequence,
+      payText: CharSequence,
       title: CharSequence,
       bigTitle: CharSequence,
   ): PaymentNotification? {
     val regex = regexMatch.regex
-    val payText =
-        if (regex.containsMatchIn(text)) {
-          text
-        } else if (regex.containsMatchIn(bigText)) {
-          bigText
-        } else {
-          Timber.w {
-            "Could not match notification: ${
-                        mapOf(
-                            "notificationId" to notificationId,
-                            "package" to packageName,
-                            "text" to text,
-                            "bigText" to bigText,
-                            "title" to title,
-                            "bigTitle" to bigTitle,
-                            "regex" to regex.pattern,
-                        )
-                    }"
-          }
-          return null
-        }
+    if (!regex.containsMatchIn(payText)) {
+      Timber.w {
+        "${handlerId()}: Could not match notification ${
+                  mapOf(
+                      "notificationId" to notificationId,
+                      "package" to packageName,
+                      "payText" to payText,
+                      "title" to title,
+                      "bigTitle" to bigTitle,
+                      "regex" to regex.pattern,
+                  )
+              }"
+      }
+      return null
+    }
 
     val capture = regex.find(payText)
     if (capture == null) {
-      Timber.w { "Unable to capture from payText: $payText" }
+      Timber.w { "${handlerId()}: Unable to capture from payText: $payText" }
       return null
     }
 
@@ -106,12 +99,11 @@ protected constructor(
 
     if (justPrice == null) {
       Timber.w {
-        "Unable to get justPrice from payText: $payText ${
+        "${handlerId()}: Unable to get justPrice from payText: $payText ${
                 mapOf(
                     "notificationId" to notificationId,
                     "package" to packageName,
-                    "text" to text,
-                    "bigText" to bigText,
+                    "payText" to payText,
                     "title" to title,
                     "bigTitle" to bigTitle,
                     "regex" to regex.pattern,
@@ -141,17 +133,127 @@ protected constructor(
     )
   }
 
+  @CheckResult
   @LintIgnoreLongMethod
-  final override suspend fun extract(
+  private suspend fun extractFromCandidates(
       notificationId: Int,
       packageName: String,
-      bundle: Bundle,
+      regexList: Collection<RegexMatch>,
+      candidates: List<CharSequence>,
+      title: CharSequence,
+      bigTitle: CharSequence,
   ): PaymentNotification? {
+    for (regex in regexList) {
+      for (candidate in candidates) {
+        if (candidate.isBlank()) {
+          continue
+        }
+
+        // If regex is bad, we catch and result NULL
+        val result =
+            try {
+              handleRegex(
+                  notificationId = notificationId,
+                  packageName = packageName,
+                  regexMatch = regex,
+                  payText = candidate,
+                  title = title,
+                  bigTitle = bigTitle,
+              )
+            } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
+              Timber.e(e) {
+                "${handlerId()}: Failed to compile regex ${
+                            mapOf(
+                                "notificationId" to notificationId,
+                                "package" to packageName,
+                                "payText" to candidate,
+                                "title" to title,
+                                "bigTitle" to bigTitle,
+                                "regex" to regex.regex.pattern,
+                            )
+                        }"
+              }
+              null
+            }
+
+        if (result != null) {
+          Timber.d {
+            "${handlerId()}: Notification handled! ${
+                        mapOf(
+                            "notificationId" to notificationId,
+                            "payText" to candidate,
+                            "title" to title,
+                            "bigTitle" to bigTitle,
+                            "result" to result,
+                        )
+                    }"
+          }
+          return result
+        }
+      }
+    }
+
+    return null
+  }
+
+  @CheckResult
+  private suspend fun extractGroupedNotification(
+      notificationId: Int,
+      packageName: String,
+      title: CharSequence,
+      bigTitle: CharSequence,
+      regexList: Collection<RegexMatch>,
+      lines: List<CharSequence>,
+  ): List<PaymentNotification> {
+    val results =
+        lines
+            .filter { line ->
+              !ignores.shouldIgnoreNotification(
+                  packageName = packageName,
+                  title = title,
+                  bigTitle = bigTitle,
+                  text = line,
+                  bigText = "",
+              )
+            }
+            .mapNotNull { line ->
+              extractFromCandidates(
+                  notificationId = notificationId,
+                  packageName = packageName,
+                  regexList = regexList,
+                  candidates = listOf(line),
+                  title = title,
+                  bigTitle = bigTitle,
+              )
+            }
+
+    if (results.isEmpty()) {
+      Timber.w {
+        "${handlerId()}: No regexes handled grouped notification ${
+                    mapOf(
+                        "notificationId" to notificationId,
+                        "title" to title,
+                        "bigTitle" to bigTitle,
+                        "lines" to lines,
+                    )
+                }"
+      }
+    }
+
+    return results
+  }
+
+  @CheckResult
+  private suspend fun extractSingleNotification(
+      notificationId: Int,
+      packageName: String,
+      title: CharSequence,
+      bigTitle: CharSequence,
+      regexList: Collection<RegexMatch>,
+      bundle: Bundle,
+  ): List<PaymentNotification> {
     val text = bundle.getCharSequence(NotificationCompat.EXTRA_TEXT, "")
     val bigText = bundle.getCharSequence(NotificationCompat.EXTRA_BIG_TEXT, "")
-    val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
-    val bigTitle = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE_BIG, "")
-
     if (
         ignores.shouldIgnoreNotification(
             packageName = packageName,
@@ -161,69 +263,70 @@ protected constructor(
             bigText = bigText,
         )
     ) {
-      return null
+      return emptyList()
     }
 
-    val regexList = getPossibleRegexes()
-    for (regex in regexList) {
-      // If regex is bad, we catch and result NULL
-      val result =
-          try {
-            handleRegex(
-                notificationId = notificationId,
-                packageName = packageName,
-                regexMatch = regex,
-                text = text,
-                bigText = bigText,
-                title = title,
-                bigTitle = bigTitle,
-            )
-          } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
-            Timber.e(e) {
-              "Failed to compile regex ${
-                        mapOf(
-                            "notificationId" to notificationId,
-                            "package" to packageName,
-                            "text" to text,
-                            "bigText" to bigText,
-                            "title" to title,
-                            "bigTitle" to bigTitle,
-                            "regex" to regex.regex.pattern,
-                        )
-                    }"
-            }
-            null
-          }
+    val result =
+        extractFromCandidates(
+            notificationId = notificationId,
+            packageName = packageName,
+            regexList = regexList,
+            candidates = listOf(text, bigText),
+            title = title,
+            bigTitle = bigTitle,
+        )
 
-      if (result != null) {
-        Timber.d {
-          "Notification handled! ${
-                        mapOf(
-                            "notificationId" to notificationId,
-                            "text" to text,
-                            "bigText" to bigText,
-                            "title" to title,
-                            "bigTitle" to bigTitle,
-                            "result" to result,
-                        )
-                    }"
-        }
-        return result
+    if (result == null) {
+      Timber.w {
+        "${handlerId()}: No regexes handled single notification ${
+                    mapOf(
+                        "notificationId" to notificationId,
+                        "text" to text,
+                        "bigText" to bigText,
+                        "title" to title,
+                        "bigTitle" to bigTitle,
+                    )
+                }"
       }
     }
 
-    Timber.w {
-      "No regexes handled notification: ${
-                mapOf(
-                    "notificationId" to notificationId,
-                    "text" to text,
-                    "bigText" to bigText,
-                    "title" to title,
-                    "bigTitle" to bigTitle,
-                )
-            }"
+    return listOfNotNull(result)
+  }
+
+  final override suspend fun extract(
+      notificationId: Int,
+      packageName: String,
+      bundle: Bundle,
+  ): List<PaymentNotification> {
+    val title = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE, "")
+    val bigTitle = bundle.getCharSequence(NotificationCompat.EXTRA_TITLE_BIG, "")
+
+    val regexList = getPossibleRegexes()
+
+    // If the notification collpases, the individual notification data will be in this extra
+    val lines = bundle.getCharSequenceArray(NotificationCompat.EXTRA_TEXT_LINES)?.toList().orEmpty()
+    if (lines.isNotEmpty()) {
+      Timber.d { "${handlerId()}: Extracting grouped notification" }
+      return extractGroupedNotification(
+          notificationId = notificationId,
+          packageName = packageName,
+          title = title,
+          bigTitle = bigTitle,
+          regexList = regexList,
+          lines = lines,
+      )
     }
-    return null
+
+    // Otherwise its a single notification, so read it's text bits
+    Timber.d { "${handlerId()}: Extracting single notification" }
+    return extractSingleNotification(
+        notificationId = notificationId,
+        packageName = packageName,
+        title = title,
+        bigTitle = bigTitle,
+        regexList = regexList,
+        bundle = bundle,
+    )
   }
 
   @CheckResult protected open suspend fun getCategories(): Set<DbCategory.Id> = emptySet()
@@ -231,6 +334,8 @@ protected constructor(
   @CheckResult protected abstract fun getPossibleRegexes(): Collection<RegexMatch>
 
   @CheckResult protected abstract fun getType(): DbTransaction.Type
+
+  @CheckResult protected abstract fun handlerId(): String
 
   data class RegexMatch(
       val id: String,

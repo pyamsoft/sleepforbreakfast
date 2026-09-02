@@ -52,17 +52,10 @@ internal constructor(
     workerQueue.enqueue(job)
   }
 
-  override suspend fun processNotification(
+  private suspend fun processExtractedPayment(
       sbn: StatusBarNotification,
-      extras: Bundle,
-  ): Unit = GLOBAL_LOCK.withLock {
-    val automaticPayment =
-        manager.extractPayment(
-            notificationId = sbn.id,
-            packageName = sbn.packageName,
-            bundle = extras,
-        ) ?: return
-
+      automaticPayment: PaymentNotification,
+  ) {
     val automatic =
         DbAutomatic.create(clock)
             .notificationId(sbn.id)
@@ -105,6 +98,23 @@ internal constructor(
           }
         }
       }
+    }
+  }
+
+  override suspend fun processNotification(
+      sbn: StatusBarNotification,
+      extras: Bundle,
+  ): Unit = GLOBAL_LOCK.withLock {
+    // This could be a grouped notification and deliver MANY notifications
+    val automaticPayments =
+        manager.extractPayment(
+            notificationId = sbn.id,
+            packageName = sbn.packageName,
+            bundle = extras,
+        )
+
+    for (automaticPayment in automaticPayments) {
+      processExtractedPayment(sbn, automaticPayment)
     }
   }
 

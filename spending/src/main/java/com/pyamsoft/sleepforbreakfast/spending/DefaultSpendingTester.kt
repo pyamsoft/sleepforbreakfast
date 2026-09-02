@@ -22,10 +22,10 @@ import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.spending.automatic.AutomaticManager
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 internal class DefaultSpendingTester
@@ -47,15 +47,18 @@ internal constructor(
     }
 
     val bundle = Bundle().apply { putCharSequence(NotificationCompat.EXTRA_TEXT, text) }
-    val automaticPayment = manager.extractPayment(notificationId = 0, packageName, bundle)
-    if (automaticPayment == null) {
+    val automaticPayments = manager.extractPayment(notificationId = 0, packageName, bundle)
+    if (automaticPayments.isEmpty()) {
       Timber.w { "Regex test failed, no matches!" }
       return@withLock null
     }
 
     return@withLock SpendingTester.Result(
         notification = notification.id,
-        matching = setOf(DbNotificationMatchRegex.Id(automaticPayment.regexMatch.id)),
+        matching =
+            automaticPayments.map {
+              DbNotificationMatchRegex.Id(it.regexMatch.id)
+            },
     )
   }
 

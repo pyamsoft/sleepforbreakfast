@@ -40,6 +40,10 @@ private constructor(
     }
   }
 
+  override fun handlerId(): String {
+    return notification.notification.name
+  }
+
   override fun getPossibleRegexes(): Collection<RegexMatch> {
     return regexes
   }

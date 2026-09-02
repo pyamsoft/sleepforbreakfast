@@ -16,9 +16,9 @@
 
 package com.pyamsoft.sleepforbreakfast.service
 
+import android.content.ComponentName
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.pyamsoft.pydroid.core.LintIgnoreEmptyFunctionBlock
 import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
@@ -32,6 +32,10 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class SpendingTrackerService : NotificationListenerService() {
+
+  private val serviceComponentName: ComponentName by lazy {
+    ComponentName(applicationContext, SpendingTrackerService::class.java)
+  }
 
   @Inject @JvmField internal var handler: SpendingTrackerHandler? = null
 
@@ -56,7 +60,14 @@ class SpendingTrackerService : NotificationListenerService() {
     }
   }
 
-  @LintIgnoreEmptyFunctionBlock override fun onListenerConnected() {}
+  override fun onListenerConnected() {
+    Timber.d { "Notification listener service is connected!" }
+  }
+
+  override fun onListenerDisconnected() {
+    Timber.d { "Listener has disconnected, request rebind()" }
+    requestRebind(serviceComponentName)
+  }
 
   override fun onDestroy() {
     scope?.cancelChildren()

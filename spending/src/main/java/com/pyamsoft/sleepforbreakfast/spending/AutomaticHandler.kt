@@ -26,7 +26,7 @@ internal interface AutomaticHandler {
       notificationId: Int,
       packageName: String,
       bundle: Bundle,
-  ): PaymentNotification?
+  ): List<PaymentNotification>
 
   @CheckResult fun canExtract(packageName: String): Boolean
 }
