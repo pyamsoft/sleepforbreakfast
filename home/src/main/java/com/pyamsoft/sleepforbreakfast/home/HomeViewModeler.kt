@@ -127,7 +127,8 @@ internal constructor(
         scope.async(context = dispatchers.default) {
           val transactions = fetchTransactions()
 
-          val startOfDay = LocalDate.now(clock)
+          val today = LocalDate.now(clock)
+          val startOfDay = today.minusDays(1)
           val startOfWeek = startOfDay.minusDays(7)
           val startOfMonth = startOfDay.minusDays(30)
 
