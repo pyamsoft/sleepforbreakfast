@@ -249,10 +249,10 @@ private fun HomeCategories(
               )
             }
 
-              items(
-                  items = categories,
-                  key = { it.id.raw },
-              ) { category ->
+            items(
+                items = categories,
+                key = { it.id.raw },
+            ) { category ->
               val transactions = rememberCategories(transactionsByCategory, category.id)
               Category(category = category, onOpen = onOpenCategory, transactions = transactions)
             }
@@ -339,13 +339,13 @@ private fun DateBreakdown(
           style = MaterialTheme.typography.bodySmall,
           text =
               remember(today, type, dateRange, dateRangeFormatter) {
-                  if (dateRange.from == dateRange.to) {
-                      return@remember dateRangeFormatter.format(today)
-                  }
+                if (dateRange.from == dateRange.to) {
+                  return@remember dateRangeFormatter.format(today)
+                }
 
-                  val start = dateRangeFormatter.format(dateRange.from)
-                  val end = dateRangeFormatter.format(dateRange.to)
-                  return@remember "$start - $end"
+                val start = dateRangeFormatter.format(dateRange.from)
+                val end = dateRangeFormatter.format(dateRange.to)
+                return@remember "$start - $end"
               },
       )
 
