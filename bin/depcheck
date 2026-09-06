@@ -24,8 +24,9 @@ readonly ROOT
 unset BINDIR
 
 main() {
+  # Gradle expects to run from root
   cd "${ROOT}" || {
-    printf -- 'Unable to cd into root directory: %s\n' "${ROOT}"
+    printf -- 'Unable to cd into gradle root directory: %s\n' "${ROOT}"
     return 1
   }
 
