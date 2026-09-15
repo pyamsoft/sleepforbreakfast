@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast
 
 import androidx.annotation.CheckResult
 import com.pyamsoft.pydroid.billing.BillingModule
+import com.pyamsoft.pydroid.bootstrap.libraries.OssLibraries
 import com.pyamsoft.pydroid.billing.store.PlayBillingModule
 import com.pyamsoft.pydroid.bootstrap.play.rating.PlayRatingModule
 import com.pyamsoft.pydroid.bootstrap.play.version.PlayVersionModule
@@ -26,15 +27,18 @@ import com.pyamsoft.pydroid.bootstrap.version.VersionModule
 
 @CheckResult
 internal fun provideBillingModule(params: BillingModule.Parameters): BillingModule {
+  OssLibraries.usingBillingGooglePlay = true
   return PlayBillingModule(params)
 }
 
 @CheckResult
 internal fun provideRatingModule(params: RatingModule.Parameters): RatingModule {
+  OssLibraries.usingBootstrapGooglePlay = true
   return PlayRatingModule(params)
 }
 
 @CheckResult
 internal fun provideVersionModule(params: VersionModule.Parameters): VersionModule {
+  OssLibraries.usingBootstrapGooglePlay = true
   return PlayVersionModule(params)
 }
