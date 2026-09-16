@@ -14,7 +14,7 @@ coroutines = "1.11.0"
 
 # Us
 pydroid = "30.0.1"
-cachify = "0.3.15"
+cachify = "0.3.16"
 
 # Square
 leakCanary = "2.14"
@@ -33,7 +33,7 @@ room = "2.8.5"
 workManager = "2.11.2"
 
 # Compose
-compose = "1.12.0"
+compose = "1.12.1"
 composeMaterial3 = "1.4.0"
 
 # Google
