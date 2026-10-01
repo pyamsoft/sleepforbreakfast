@@ -24,13 +24,13 @@ moshi = "1.15.2"
 dagger = "2.60.1"
 
 # AndroidX
-core = "1.19.0"
+core = "1.19.1"
 activity = "1.13.0"
 lifecycle = "2.11.0"
 dataStore = "1.2.1"
 preference = "1.2.1"
 room = "2.8.5"
-workManager = "2.11.2"
+workManager = "2.12.0"
 
 # Compose
 compose = "1.12.1"
@@ -45,7 +45,7 @@ colorPicker = "0.7.0"
 
 # Developer Tools
 ktfmt = "0.64"
-spotless = "8.10.2"
+spotless = "8.10.3"
 jdkDesugar = "2.1.5"
 caupain = "1.10.1"
 detekt = "2.0.0-alpha.6"
