@@ -23,12 +23,12 @@ import com.pyamsoft.pydroid.core.requireNotNull
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.core.Timber
-import com.pyamsoft.sleepforbreakfast.core.cancelChildren
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class SpendingTrackerService : NotificationListenerService() {
@@ -42,6 +42,7 @@ class SpendingTrackerService : NotificationListenerService() {
   @Inject @JvmField internal var dispatchers: AppDispatchers? = null
 
   private var scope: CoroutineScope? = null
+  private var isDestroying = false
 
   private fun ensureScope(): CoroutineScope {
     return scope
@@ -65,12 +66,20 @@ class SpendingTrackerService : NotificationListenerService() {
   }
 
   override fun onListenerDisconnected() {
-    Timber.d { "Listener has disconnected, request rebind()" }
-    requestRebind(serviceComponentName)
+    if (!isDestroying) {
+      Timber.d { "Listener has disconnected, request rebind()" }
+      requestRebind(serviceComponentName)
+    }
   }
 
   override fun onDestroy() {
-    scope?.cancelChildren()
+    // Mark before super, which runs onListenerDisconnected()
+    isDestroying = true
+
+    super.onDestroy()
+    scope?.cancel()
+
+    scope = null
     handler = null
     dispatchers = null
   }

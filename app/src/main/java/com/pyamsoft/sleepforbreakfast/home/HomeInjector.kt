@@ -26,10 +26,7 @@ internal class HomeInjector @Inject internal constructor() : ComposableInjector(
   @JvmField @Inject internal var viewModel: HomeViewModeler? = null
 
   override fun onInject(activity: ComponentActivity) {
-    ObjectGraph.ActivityScope.retrieve(activity)
-        .plusHome()
-        .create(activity = activity, lifecycle = activity.lifecycle)
-        .inject(this)
+    ObjectGraph.ActivityScope.retrieve(activity).plusHome().create(activity = activity).inject(this)
   }
 
   override fun onDispose() {

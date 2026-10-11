@@ -22,14 +22,12 @@ import androidx.compose.ui.graphics.Color
 val COLOR_EARN = Color.Green
 val COLOR_SPEND = Color.Red
 
-private val complementaryColorMap by lazy { mutableMapOf<Color, Color>() }
-
 /** Get the complementary color */
 @get:CheckResult
 val Color.complement: Color
   get() {
     val self = this
-    return complementaryColorMap.getOrPut(self) { resolveComplementaryColor(self) }
+    return resolveComplementaryColor(self)
   }
 
 /** https://rgbcolorpicker.com/complementary */

@@ -57,6 +57,8 @@ dependencies {
 
   ksp(libs.dagger.compiler)
 
+  implementation(libs.androidx.activity.compose)
+
   implementation(project(":core"))
   implementation(project(":db"))
   implementation(project(":money"))

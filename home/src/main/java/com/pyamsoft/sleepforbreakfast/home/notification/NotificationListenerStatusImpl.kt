@@ -16,45 +16,29 @@
 
 package com.pyamsoft.sleepforbreakfast.home.notification
 
-import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import javax.inject.Inject
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
 internal class NotificationListenerStatusImpl
 @Inject
 internal constructor(
-    private val activity: Activity,
+    private val activity: ComponentActivity,
     private val dispatchers: AppDispatchers,
-    lifecycle: Lifecycle,
 ) : NotificationListenerStatus {
-
-  private val status = MutableStateFlow(isNotificationListenerEnabled())
-
-  init {
-    lifecycle.addObserver(
-        object : DefaultLifecycleObserver {
-          override fun onResume(owner: LifecycleOwner) {
-            status.value = isNotificationListenerEnabled()
-          }
-
-          override fun onDestroy(owner: LifecycleOwner) {
-            owner.lifecycle.removeObserver(this)
-          }
-        },
-    )
-  }
 
   @CheckResult
   private fun isNotificationListenerEnabled(): Boolean {
@@ -91,7 +75,18 @@ internal constructor(
   }
 
   override fun isNotificationListenerActive(): Flow<Boolean> {
-    return status
+    return callbackFlow {
+          val observer =
+              object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                  trySend(isNotificationListenerEnabled())
+                }
+              }
+
+          activity.lifecycle.addObserver(observer)
+          awaitClose { activity.lifecycle.removeObserver(observer) }
+        }
+        .flowOn(context = dispatchers.main)
   }
 
   override suspend fun activateNotificationListener() =

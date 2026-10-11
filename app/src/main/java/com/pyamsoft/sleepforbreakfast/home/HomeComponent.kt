@@ -16,9 +16,8 @@
 
 package com.pyamsoft.sleepforbreakfast.home
 
-import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.annotation.CheckResult
-import androidx.lifecycle.Lifecycle
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Subcomponent
@@ -39,8 +38,7 @@ internal interface HomeComponent {
 
     @CheckResult
     fun create(
-        @BindsInstance activity: Activity,
-        @BindsInstance lifecycle: Lifecycle,
+        @BindsInstance activity: ComponentActivity,
     ): HomeComponent
   }
 
