@@ -24,12 +24,12 @@ import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SpendingTrackerService : NotificationListenerService() {
 
@@ -61,8 +61,32 @@ class SpendingTrackerService : NotificationListenerService() {
     }
   }
 
+  private fun processNotification(sbn: StatusBarNotification) {
+    val notif = sbn.notification
+    if (notif == null) {
+      Timber.w { "SBN is missing notification data" }
+      return
+    }
+
+    val extras = notif.extras
+    if (extras == null) {
+      Timber.w { "SBN Notification data is missing extras bundle" }
+      return
+    }
+
+    ensureInjected()
+    handler?.also { h -> ensureScope().launch { h.processNotification(sbn, extras) } }
+  }
+
   override fun onListenerConnected() {
     Timber.d { "Notification listener service is connected!" }
+    ensureInjected()
+
+    // Re-process all current notifications
+    val allNotifs = activeNotifications
+    if (allNotifs != null) {
+      allNotifs.forEach { processNotification(it) }
+    }
   }
 
   override fun onListenerDisconnected() {
@@ -85,19 +109,7 @@ class SpendingTrackerService : NotificationListenerService() {
   }
 
   override fun onNotificationPosted(sbn: StatusBarNotification) {
-    val notif = sbn.notification
-    if (notif == null) {
-      Timber.w { "SBN is missing notification data" }
-      return
-    }
-
-    val extras = notif.extras
-    if (extras == null) {
-      Timber.w { "SBN Notification data is missing extras bundle" }
-      return
-    }
-
     ensureInjected()
-    handler?.also { h -> ensureScope().launch { h.processNotification(sbn, extras) } }
+    processNotification(sbn)
   }
 }
