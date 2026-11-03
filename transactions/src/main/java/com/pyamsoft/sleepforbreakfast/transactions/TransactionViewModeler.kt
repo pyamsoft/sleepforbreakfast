@@ -88,7 +88,7 @@ internal constructor(
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   ) {
     registry
         .registerProvider(KEY_ADD_PARAMS) {
@@ -159,7 +159,7 @@ internal constructor(
 
   @CheckResult
   private fun Sequence<DbTransaction>.filterByCategory(
-      category: DbCategory
+      category: DbCategory,
   ): Sequence<DbTransaction> = filter { t ->
     // If we are showing all transactions, don't filter
     if (showAllTransactions) {
@@ -290,7 +290,7 @@ internal constructor(
 
     @CheckResult
     private fun Sequence<DbTransaction>.filterByPossibleDateRange(
-        range: TransactionDateRange?
+        range: TransactionDateRange?,
     ): Sequence<DbTransaction> = filter { t ->
       val r = range ?: return@filter true
       return@filter t.date.toLocalDate().let { it >= r.from && it <= r.to }

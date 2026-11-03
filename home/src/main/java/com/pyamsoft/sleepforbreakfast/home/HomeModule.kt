@@ -28,6 +28,6 @@ abstract class HomeModule {
   @Binds
   @CheckResult
   internal abstract fun bindNotificationListenerStatus(
-      impl: NotificationListenerStatusImpl
+      impl: NotificationListenerStatusImpl,
   ): NotificationListenerStatus
 }

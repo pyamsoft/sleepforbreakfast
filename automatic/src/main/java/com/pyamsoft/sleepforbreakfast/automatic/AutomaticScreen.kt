@@ -40,7 +40,7 @@ import com.pyamsoft.sleepforbreakfast.ui.ScreenTopBar
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 private enum class ContentTypes {
-  AUTOMATIC
+  AUTOMATIC,
 }
 
 @Composable

@@ -53,7 +53,7 @@ constructor(
   }
 
   override suspend fun performQueryOne(
-      id: DbNotification.Id
+      id: DbNotification.Id,
   ): Maybe<out DbNotificationWithRegexes> {
     return automaticQueryDao.queryById(id)
   }
@@ -71,7 +71,7 @@ constructor(
   }
 
   override suspend fun performInsert(
-      item: DbNotificationWithRegexes
+      item: DbNotificationWithRegexes,
   ): DbInsert.InsertResult<DbNotificationWithRegexes> {
     return automaticInsertDao.insert(item)
   }

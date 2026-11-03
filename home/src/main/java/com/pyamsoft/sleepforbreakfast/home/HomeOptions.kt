@@ -86,7 +86,7 @@ internal fun HomeOptions(
                     hapticManager?.actionButtonPress()
                     onOpenNotificationListenerSettings()
                   }
-                  .padding(MaterialTheme.keylines.content)
+                  .padding(MaterialTheme.keylines.content),
       ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
           Text(
@@ -110,7 +110,7 @@ internal fun HomeOptions(
                 "$appName could automatically enter transaction information for certain purchases.",
             style =
                 MaterialTheme.typography.bodyLarge.copy(
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 ),
         )
 
@@ -122,7 +122,7 @@ internal fun HomeOptions(
                     "Enabling this feature will give $appName the ability to see ALL of your notifications, but it will only take action on the notifications that it knows are related to transactions.",
                 style =
                     MaterialTheme.typography.bodyMedium.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
             )
 
@@ -148,7 +148,7 @@ internal fun HomeOptions(
                               linkStyle,
                               start = ppIndex,
                               end = ppIndex + PRIVACY_POLICY_TEXT.length,
-                          )
+                          ),
                       )
 
                   val visualString = AnnotatedString(rawText, spanStyles = spanStyles)

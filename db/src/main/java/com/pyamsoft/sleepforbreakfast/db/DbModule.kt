@@ -104,7 +104,7 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideTransactionRealtimeDao(
-        @InternalApi db: TransactionDb
+        @InternalApi db: TransactionDb,
     ): TransactionRealtime {
       return db.realtime
     }
@@ -217,7 +217,7 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideNotificationRealtimeDao(
-        @InternalApi db: NotificationDb
+        @InternalApi db: NotificationDb,
     ): NotificationRealtime {
       return db.realtime
     }
@@ -226,7 +226,7 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideNotificationQueryDao(
-        @InternalApi db: NotificationDb
+        @InternalApi db: NotificationDb,
     ): NotificationQueryDao {
       return db.queryDao
     }
@@ -235,7 +235,7 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideNotificationInsertDao(
-        @InternalApi db: NotificationDb
+        @InternalApi db: NotificationDb,
     ): NotificationInsertDao {
       return db.insertDao
     }
@@ -244,7 +244,7 @@ abstract class DbModule {
     @Provides
     @CheckResult
     internal fun provideNotificationDeleteDao(
-        @InternalApi db: NotificationDb
+        @InternalApi db: NotificationDb,
     ): NotificationDeleteDao {
       return db.deleteDao
     }

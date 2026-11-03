@@ -53,7 +53,7 @@ interface AutomaticQueryDao : DbQuery<DbAutomatic> {
 
 @CheckResult
 suspend fun AutomaticQueryDao.queryByAutomaticNotification(
-    automatic: DbAutomatic
+    automatic: DbAutomatic,
 ): Maybe<out DbAutomatic> {
   return this.queryByNotification(
       notificationMatchText = automatic.notificationMatchText,

@@ -36,7 +36,7 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
       """
       SELECT * FROM ${RoomDbCategory.TABLE_NAME}
       WHERE ${RoomDbCategory.COLUMN_ARCHIVED} = 0
-      """
+      """,
   )
   internal abstract suspend fun daoQuery(): List<RoomDbCategory>
 
@@ -52,7 +52,7 @@ internal abstract class RoomCategoryQueryDao : CategoryQueryDao {
 SELECT * FROM ${RoomDbCategory.TABLE_NAME}
   WHERE ${RoomDbCategory.COLUMN_ID} = :id
   LIMIT 1
-"""
+""",
   )
   internal abstract suspend fun daoQueryById(id: DbCategory.Id): RoomDbCategory?
 }

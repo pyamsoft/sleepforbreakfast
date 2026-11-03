@@ -92,7 +92,7 @@ internal constructor(
   }
 
   private fun MutableMap<DbCategory.Id, MutableSet<DbTransaction>>.categorize(
-      transaction: DbTransaction
+      transaction: DbTransaction,
   ) {
     if (transaction.categories.isEmpty()) {
       // If no categories add this Transaction to the Uncategorized
@@ -121,7 +121,7 @@ internal constructor(
         scope.async(context = dispatchers.default) {
           val categories = fetchCategories()
           state.categories.value = categories.sortedBy { it.name.lowercase() }
-        }
+        },
     )
     jobs.add(
         scope.async(context = dispatchers.default) {
@@ -146,7 +146,7 @@ internal constructor(
 
           state.transactionsByCategory.value = cats
           state.transactionsByDateRange.value = breaks
-        }
+        },
     )
 
     try {

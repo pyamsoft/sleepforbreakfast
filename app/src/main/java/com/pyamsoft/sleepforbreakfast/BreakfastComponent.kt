@@ -78,7 +78,7 @@ private val Context.dataStore by
                       ),
                   produceSharedPreferences = {
                     PreferenceManager.getDefaultSharedPreferences(
-                        migrationContext.applicationContext
+                        migrationContext.applicationContext,
                     )
                   },
               ),

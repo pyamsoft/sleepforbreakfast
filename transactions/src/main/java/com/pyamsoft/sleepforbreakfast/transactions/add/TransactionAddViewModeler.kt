@@ -162,7 +162,7 @@ internal constructor(
   }
 
   override fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   ) {
     registry
         .registerProvider(KEY_DATE) {

@@ -135,7 +135,7 @@ internal fun TransactionCard(
           MaterialTheme.typography.bodySmall.copy(
               color =
                   MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                      alpha = TypographyDefaults.ALPHA_DISABLED
+                      alpha = TypographyDefaults.ALPHA_DISABLED,
                   ),
           ),
       currentCategory = currentCategory,

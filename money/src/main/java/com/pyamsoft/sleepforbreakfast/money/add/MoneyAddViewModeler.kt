@@ -49,7 +49,7 @@ protected constructor(
     ) {
 
   final override fun registerSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
         registry.registerProvider(KEY_NAME) { state.name.value }.also { add(it) }
@@ -176,7 +176,7 @@ protected constructor(
   @CheckResult protected abstract suspend fun compile(): T
 
   protected abstract fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   )
 
   protected abstract fun onConsumeRestoredState(registry: SaveableStateRegistry)

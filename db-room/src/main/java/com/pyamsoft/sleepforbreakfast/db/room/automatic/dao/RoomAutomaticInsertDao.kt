@@ -69,7 +69,7 @@ internal abstract class RoomAutomaticInsertDao : AutomaticInsertDao {
         SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE
         ${RoomDbAutomatic.COLUMN_ID} = :id
         LIMIT 1
-        """
+        """,
   )
   internal abstract suspend fun daoQuery(id: DbAutomatic.Id): RoomDbAutomatic?
 

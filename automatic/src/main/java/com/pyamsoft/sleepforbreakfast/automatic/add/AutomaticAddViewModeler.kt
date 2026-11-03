@@ -79,7 +79,7 @@ internal constructor(
 
   @CheckResult
   private fun compileMatchRegexes(
-      notificationId: DbNotification.Id
+      notificationId: DbNotification.Id,
   ): Collection<DbNotificationMatchRegex> {
     val existing = state.existingAutomatic.value?.matchRegexes.orEmpty()
     return state.workingRegexes.value.map { r ->
@@ -149,7 +149,7 @@ internal constructor(
   }
 
   override fun registerSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
         registry.registerProvider(KEY_NAME) { state.name.value }.also { add(it) }

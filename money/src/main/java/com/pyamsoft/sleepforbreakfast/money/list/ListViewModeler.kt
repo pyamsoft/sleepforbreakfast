@@ -61,7 +61,7 @@ protected constructor(
   }
 
   final override fun registerSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
         registry.registerProvider(KEY_SEARCH) { state.search.value }.also { add(it) }
@@ -237,7 +237,7 @@ protected constructor(
   @CheckResult protected abstract fun List<T>.sort(): List<T>
 
   protected abstract fun MutableList<SaveableStateRegistry.Entry>.onRegisterSaveState(
-      registry: SaveableStateRegistry
+      registry: SaveableStateRegistry,
   )
 
   protected abstract fun onConsumeRestoredState(registry: SaveableStateRegistry)

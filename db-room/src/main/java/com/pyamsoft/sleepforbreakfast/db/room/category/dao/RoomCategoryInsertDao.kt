@@ -69,7 +69,7 @@ internal abstract class RoomCategoryInsertDao : CategoryInsertDao {
         SELECT * FROM ${RoomDbCategory.TABLE_NAME} WHERE
         ${RoomDbCategory.COLUMN_ID} = :id
         LIMIT 1
-        """
+        """,
   )
   internal abstract suspend fun daoQuery(id: DbCategory.Id): RoomDbCategory?
 

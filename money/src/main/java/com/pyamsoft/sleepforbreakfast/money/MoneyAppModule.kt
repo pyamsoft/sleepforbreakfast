@@ -31,7 +31,7 @@ abstract class MoneyAppModule {
 
   @Binds
   internal abstract fun provideTransactionObserver(
-      impl: DefaultTransactionObserver
+      impl: DefaultTransactionObserver,
   ): TransactionObserver
 
   @Binds

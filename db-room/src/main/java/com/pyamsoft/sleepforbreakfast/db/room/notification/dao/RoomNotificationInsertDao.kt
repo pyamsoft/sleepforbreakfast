@@ -40,7 +40,7 @@ internal abstract class RoomNotificationInsertDao : NotificationInsertDao {
   // Transaction methods cannot be final
   @Transaction
   /* final */ override suspend fun insert(
-      o: DbNotificationWithRegexes
+      o: DbNotificationWithRegexes,
   ): DbInsert.InsertResult<DbNotificationWithRegexes> {
     val roomNotification = RoomDbNotificationWithRegexes.create(o)
     val existing = daoQuery(roomNotification.notification.id)
@@ -112,7 +112,7 @@ internal abstract class RoomNotificationInsertDao : NotificationInsertDao {
         SELECT * FROM ${RoomDbNotification.TABLE_NAME} WHERE
         ${RoomDbNotification.COLUMN_ID} = :id
         LIMIT 1
-        """
+        """,
   )
   internal abstract suspend fun daoQuery(id: DbNotification.Id): RoomDbNotificationWithRegexes?
 

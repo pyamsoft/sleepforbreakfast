@@ -66,7 +66,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_PACKAGE} = :packageName
   AND ${RoomDbAutomatic.COLUMN_NOTIFICATION_MATCH_TEXT} = :matchText
   LIMIT 1
-"""
+""",
   )
   internal abstract suspend fun daoQueryByNotification(
       id: Int,
@@ -83,7 +83,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   @Query(
       """
 SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_USED}
-"""
+""",
   )
   internal abstract suspend fun daoQueryUnused(): List<RoomDbAutomatic>
 
@@ -99,7 +99,7 @@ SELECT * FROM ${RoomDbAutomatic.TABLE_NAME} WHERE NOT ${RoomDbAutomatic.COLUMN_U
 SELECT * FROM ${RoomDbAutomatic.TABLE_NAME}
   WHERE ${RoomDbAutomatic.COLUMN_ID} = :id
   LIMIT 1
-"""
+""",
   )
   internal abstract suspend fun daoQueryById(id: DbAutomatic.Id): RoomDbAutomatic?
 }

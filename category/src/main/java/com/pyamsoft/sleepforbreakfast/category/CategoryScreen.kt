@@ -38,7 +38,7 @@ import com.pyamsoft.sleepforbreakfast.ui.ScreenTopBar
 import com.pyamsoft.sleepforbreakfast.ui.list.ListScreen
 
 private enum class ContentTypes {
-  CATEGORY
+  CATEGORY,
 }
 
 @Composable

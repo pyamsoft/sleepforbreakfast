@@ -67,7 +67,7 @@ internal abstract class RoomTransactionInsertDao : TransactionInsertDao {
         SELECT * FROM ${RoomDbTransaction.TABLE_NAME} WHERE
         ${RoomDbTransaction.COLUMN_ID} = :id
         LIMIT 1
-        """
+        """,
   )
   internal abstract suspend fun daoQuery(id: DbTransaction.Id): RoomDbTransaction?
 

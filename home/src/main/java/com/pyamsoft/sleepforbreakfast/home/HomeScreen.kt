@@ -108,7 +108,7 @@ fun HomeScreen(
                 // So this basically doesn't do anything since we handle the padding ourselves
                 // BUT, we don't just want to consume it because we DO actually care when using
                 // Modifier.navigationBarsPadding()
-                .heightIn(min = remember(pv) { pv.calculateBottomPadding() })
+                .heightIn(min = remember(pv) { pv.calculateBottomPadding() }),
     ) {
       Spacer(modifier = Modifier.statusBarsPadding())
       HomeHeader(
@@ -331,7 +331,7 @@ private fun DateBreakdown(
       colors = CardDefaults.elevatedCardColors(),
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content)
+        modifier = Modifier.clickable { onOpen(dateRange) }.padding(MaterialTheme.keylines.content),
     ) {
       Text(style = MaterialTheme.typography.headlineSmall, text = rangeName)
 
@@ -353,7 +353,7 @@ private fun DateBreakdown(
           modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
           style =
               MaterialTheme.typography.bodyLarge.copy(
-                  color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)
+                  color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED),
               ),
           text = totalPrice,
       )
@@ -409,7 +409,7 @@ private fun Category(
           ),
   ) {
     Column(
-        modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content)
+        modifier = Modifier.clickable { onOpen(category) }.padding(MaterialTheme.keylines.content),
     ) {
       Text(
           style = MaterialTheme.typography.headlineSmall,
@@ -421,7 +421,7 @@ private fun Category(
           modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
           style =
               MaterialTheme.typography.bodyLarge.copy(
-                  color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED)
+                  color = priceColor.copy(alpha = TypographyDefaults.ALPHA_DISABLED),
               ),
           text = totalPrice,
       )

@@ -107,7 +107,7 @@ internal constructor(
       }
 
   override suspend fun insert(
-      o: DbNotificationWithRegexes
+      o: DbNotificationWithRegexes,
   ): DbInsert.InsertResult<DbNotificationWithRegexes> =
       withContext(context = dispatchers.io) {
         realInsertDao.insert(o).also { result ->

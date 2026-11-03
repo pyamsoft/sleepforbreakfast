@@ -24,7 +24,7 @@ import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 @Composable
 @CheckResult
 internal fun rememberTransactionsWithHeaders(
-    transactions: List<DbTransaction>
+    transactions: List<DbTransaction>,
 ): List<TransactionOrHeader> {
   return remember(transactions) {
     if (transactions.isEmpty()) {
