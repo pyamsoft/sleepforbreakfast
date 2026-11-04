@@ -37,7 +37,9 @@ compose = "1.12.1"
 composeMaterial3 = "1.4.0"
 
 # Google
-ksp = "2.3.13"
+# 2.3.13 is buggy
+# https://github.com/google/ksp/issues/3286
+ksp = "2.3.12"
 
 # Images
 vico = "3.3.1"
