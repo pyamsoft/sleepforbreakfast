@@ -25,12 +25,12 @@ import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
 import com.pyamsoft.sleepforbreakfast.ui.spending.SpendingServiceHelper
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SpendingTrackerService : NotificationListenerService() {
 
@@ -91,6 +91,12 @@ class SpendingTrackerService : NotificationListenerService() {
     if (allNotifs != null) {
       allNotifs.forEach { processNotification(scope, it) }
     }
+  }
+
+  override fun onCreate() {
+    super.onCreate()
+    Timber.d { "Notification listener service is created!" }
+    ensureInjected()
   }
 
   override fun onListenerConnected() {
