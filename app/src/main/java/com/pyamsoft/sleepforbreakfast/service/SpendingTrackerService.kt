@@ -24,6 +24,7 @@ import com.pyamsoft.pydroid.util.AppDispatchers
 import com.pyamsoft.sleepforbreakfast.ObjectGraph
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.spending.SpendingTrackerHandler
+import com.pyamsoft.sleepforbreakfast.ui.spending.SpendingServiceHelper
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -41,7 +42,11 @@ class SpendingTrackerService : NotificationListenerService() {
 
   @Inject @JvmField internal var dispatchers: AppDispatchers? = null
 
+  @Inject @JvmField internal var helper: SpendingServiceHelper? = null
+
   private var scope: CoroutineScope? = null
+
+  // We are actually going down and do not want to rebind
   private var isDestroying = false
 
   private fun ensureScope(): CoroutineScope {
@@ -61,7 +66,10 @@ class SpendingTrackerService : NotificationListenerService() {
     }
   }
 
-  private fun processNotification(sbn: StatusBarNotification) {
+  private fun processNotification(
+      scope: CoroutineScope,
+      sbn: StatusBarNotification,
+  ) {
     val notif = sbn.notification
     if (notif == null) {
       Timber.w { "SBN is missing notification data" }
@@ -75,18 +83,23 @@ class SpendingTrackerService : NotificationListenerService() {
     }
 
     ensureInjected()
-    handler?.also { h -> ensureScope().launch { h.processNotification(sbn, extras) } }
+    handler?.also { h -> scope.launch { h.processNotification(sbn, extras) } }
+  }
+
+  private fun replayAllActiveNotifications(scope: CoroutineScope) {
+    val allNotifs = activeNotifications
+    if (allNotifs != null) {
+      allNotifs.forEach { processNotification(scope, it) }
+    }
   }
 
   override fun onListenerConnected() {
     Timber.d { "Notification listener service is connected!" }
     ensureInjected()
 
-    // Re-process all current notifications
-    val allNotifs = activeNotifications
-    if (allNotifs != null) {
-      allNotifs.forEach { processNotification(it) }
-    }
+    val scope = ensureScope()
+
+    replayAllActiveNotifications(scope)
   }
 
   override fun onListenerDisconnected() {
@@ -97,19 +110,43 @@ class SpendingTrackerService : NotificationListenerService() {
   }
 
   override fun onDestroy() {
-    // Mark before super, which runs onListenerDisconnected()
-    isDestroying = true
+    var rebind = false
+    val h = helper
+
+    if (h == null) {
+      Timber.w { "Helper was NULL, we never injected? Assume dead" }
+      isDestroying = true
+    } else {
+      if (h.isNotificationListenerEnabled()) {
+        Timber.d { "fresh: onDestroy called but listener is still enabled. Request rebind!" }
+        rebind = true
+        isDestroying = false
+      } else {
+        Timber.d { "fresh: Notification Listener was disabled, stop service!" }
+        // Mark before super, which runs onListenerDisconnected()
+        isDestroying = true
+      }
+    }
 
     super.onDestroy()
+
     scope?.cancel()
 
     scope = null
+    helper = null
     handler = null
     dispatchers = null
+
+    if (rebind) {
+      Timber.d { "Request rebind after destroy!" }
+      requestRebind(serviceComponentName)
+    }
   }
 
   override fun onNotificationPosted(sbn: StatusBarNotification) {
     ensureInjected()
-    processNotification(sbn)
+
+    val scope = ensureScope()
+    processNotification(scope, sbn)
   }
 }

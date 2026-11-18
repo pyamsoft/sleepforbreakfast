@@ -19,6 +19,8 @@ package com.pyamsoft.sleepforbreakfast.ui
 import androidx.annotation.CheckResult
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.JsonParser
 import com.pyamsoft.sleepforbreakfast.ui.savedstate.MoshiJsonParser
+import com.pyamsoft.sleepforbreakfast.ui.spending.DefaultSpendingServiceHelper
+import com.pyamsoft.sleepforbreakfast.ui.spending.SpendingServiceHelper
 import com.squareup.moshi.Moshi
 import dagger.Binds
 import dagger.Module
@@ -32,6 +34,12 @@ import javax.inject.Singleton
 abstract class UiAppModule {
 
   @Binds @CheckResult internal abstract fun bindMoshiJsonParser(impl: MoshiJsonParser): JsonParser
+
+  @Binds
+  @CheckResult
+  internal abstract fun bindSpendingServiceHelper(
+      impl: DefaultSpendingServiceHelper,
+  ): SpendingServiceHelper
 
   @Module
   companion object {

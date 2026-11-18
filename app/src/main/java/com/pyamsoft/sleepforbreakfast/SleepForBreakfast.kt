@@ -96,6 +96,7 @@ class SleepForBreakfast : Application(), Configuration.Provider {
 
     installObjectGraph(component)
     component.inject(this)
+    configureLeakCanary()
   }
 
   private fun beginWork(
