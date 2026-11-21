@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.ui.text
 
+import androidx.annotation.CheckResult
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import androidx.compose.runtime.saveable.SaverScope
@@ -34,11 +35,12 @@ fun TextFieldState.replaceWith(other: TextFieldState) {
 }
 
 /** Easy save text field state */
-fun TextFieldState.saveToRegistry(registry: SaveableStateRegistry) {
+@CheckResult
+fun TextFieldState.saveToRegistry(registry: SaveableStateRegistry): Any? {
   val self = this
 
   val scope = SaverScope { registry.canBeSaved(it) }
-  with(TextFieldState.Saver) {
+  return with(TextFieldState.Saver) {
     scope.save(self)
   }
 }
