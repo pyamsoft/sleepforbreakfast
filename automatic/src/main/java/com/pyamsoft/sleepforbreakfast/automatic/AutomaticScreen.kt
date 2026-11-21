@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.automatic
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +43,6 @@ private enum class ContentTypes {
 }
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun AutomaticScreen(
     modifier: Modifier = Modifier,
     state: AutomaticViewState,
@@ -52,7 +50,6 @@ fun AutomaticScreen(
     // App Bar
     onBack: () -> Unit,
     onSearchToggled: () -> Unit,
-    onSearchUpdated: (String) -> Unit,
 
     // Fab
     showActionButton: Boolean,
@@ -101,7 +98,6 @@ fun AutomaticScreen(
             SearchBar(
                 state = state,
                 onToggle = onSearchToggled,
-                onChange = onSearchUpdated,
             )
           }
         }

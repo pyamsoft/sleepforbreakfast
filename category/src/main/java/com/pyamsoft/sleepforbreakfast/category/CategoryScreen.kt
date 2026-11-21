@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.category
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +41,6 @@ private enum class ContentTypes {
 }
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun CategoryScreen(
     modifier: Modifier = Modifier,
     state: CategoryViewState,
@@ -50,7 +48,6 @@ fun CategoryScreen(
     // App Bar
     onBack: () -> Unit,
     onSearchToggled: () -> Unit,
-    onSearchUpdated: (String) -> Unit,
 
     // Fab
     showActionButton: Boolean,
@@ -99,7 +96,6 @@ fun CategoryScreen(
             SearchBar(
                 state = state,
                 onToggle = onSearchToggled,
-                onChange = onSearchUpdated,
             )
           }
         }

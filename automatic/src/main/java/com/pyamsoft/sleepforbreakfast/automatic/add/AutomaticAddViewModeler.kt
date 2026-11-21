@@ -17,6 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.automatic.add
 
 import androidx.annotation.CheckResult
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
@@ -30,6 +32,8 @@ import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationMatchRegex
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import com.pyamsoft.sleepforbreakfast.ui.text.replaceWith
+import com.pyamsoft.sleepforbreakfast.ui.text.saveToRegistry
 import java.time.Clock
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -69,7 +73,7 @@ internal constructor(
                 type = DbTransaction.Type.SPEND,
             )
     return notification
-        .name(state.name.value)
+        .name(state.name.text.toString())
         .actOnPackageName(state.actOnPackageNames.value)
         .type(state.type.value)
         .enabled(state.enabled.value)
@@ -120,13 +124,13 @@ internal constructor(
 
   private fun resetData(s: DbNotificationWithRegexes? = null) {
     if (s == null) {
-      handleNameChanged("")
+      state.name.setTextAndPlaceCursorAtEnd("")
       handleTypeChanged(DbTransaction.Type.SPEND)
       handleEnabledChanged(true)
       handleLoadMatchRegexes(emptySet())
     } else {
       val n = s.notification
-      handleNameChanged(n.name)
+      state.name.setTextAndPlaceCursorAtEnd(n.name)
       handleTypeChanged(n.type)
       handleEnabledChanged(n.enabled)
       handleLoadMatchRegexes(s.matchRegexes)
@@ -152,13 +156,16 @@ internal constructor(
       registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry.registerProvider(KEY_NAME) { state.name.value }.also { add(it) }
+        registry.registerProvider(KEY_NAME) { state.name.saveToRegistry(registry) }.also { add(it) }
         registry.registerProvider(KEY_TYPE) { state.type.value.name }.also { add(it) }
         registry.registerProvider(KEY_ENABLED) { state.enabled.value }.also { add(it) }
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_NAME)?.cast<String>()?.also { handleNameChanged(it) }
+    registry
+        .consumeRestored(KEY_NAME)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also { state.name.replaceWith(it) }
 
     registry
         .consumeRestored(KEY_TYPE)
@@ -171,10 +178,6 @@ internal constructor(
 
   fun handleReset() {
     resetData(state.existingAutomatic.value)
-  }
-
-  fun handleNameChanged(name: String) {
-    state.name.value = name
   }
 
   fun handleTypeChanged(type: DbTransaction.Type) {

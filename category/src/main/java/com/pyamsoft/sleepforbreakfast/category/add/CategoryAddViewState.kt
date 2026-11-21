@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.category.add
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -25,8 +26,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface CategoryAddViewState : UiViewState {
-  val name: StateFlow<String>
-  val note: StateFlow<String>
+  val name: TextFieldState
+  val note: TextFieldState
 
   val color: StateFlow<Long>
   val showColorPicker: StateFlow<Boolean>
@@ -40,8 +41,8 @@ class MutableCategoryAddViewState
 internal constructor(
     params: CategoryAddParams,
 ) : CategoryAddViewState {
-  override val name = MutableStateFlow("")
-  override val note = MutableStateFlow("")
+  override val name = TextFieldState("")
+  override val note = TextFieldState("")
 
   override val color = MutableStateFlow(params.categoryColor)
   override val showColorPicker = MutableStateFlow(false)

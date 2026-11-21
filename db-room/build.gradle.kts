@@ -28,6 +28,7 @@ android {
   namespace = "com.pyamsoft.sleepforbreakfast.db.room"
 
   compileSdk = libs.versions.compileSdk.get().toInt()
+  compileSdkMinor = libs.versions.compileSdkMinor.get().toInt()
 
   defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
 

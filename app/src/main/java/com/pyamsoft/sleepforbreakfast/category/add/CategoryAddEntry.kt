@@ -96,8 +96,6 @@ internal fun CategoryAddEntry(
       CategoryAddScreen(
           state = viewModel,
           onDismiss = onDismiss,
-          onNameChanged = { viewModel.handleNameChanged(it) },
-          onNoteChanged = { viewModel.handleNoteChanged(it) },
           onColorChanged = { viewModel.handleColorChanged(it.value.toLong()) },
           onOpenColorPicker = { viewModel.handleOpenColorPicker() },
           onCloseColorPicker = { viewModel.handleCloseColorPicker() },

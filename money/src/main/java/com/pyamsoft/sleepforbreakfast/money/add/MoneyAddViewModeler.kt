@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.money.add
 
 import androidx.annotation.CheckResult
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
@@ -28,6 +29,8 @@ import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.db.transaction.DbTransaction
 import com.pyamsoft.sleepforbreakfast.money.list.ListInteractor
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
+import com.pyamsoft.sleepforbreakfast.ui.text.replaceWith
+import com.pyamsoft.sleepforbreakfast.ui.text.saveToRegistry
 import java.math.BigDecimal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -52,13 +55,15 @@ protected constructor(
       registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry.registerProvider(KEY_NAME) { state.name.value }.also { add(it) }
+        registry.registerProvider(KEY_NAME) { state.name.saveToRegistry(registry) }.also { add(it) }
 
-        registry.registerProvider(KEY_NOTE) { state.note.value }.also { add(it) }
+        registry.registerProvider(KEY_NOTE) { state.note.saveToRegistry(registry) }.also { add(it) }
 
         registry.registerProvider(KEY_TYPE) { state.type.value.name }.also { add(it) }
 
-        registry.registerProvider(KEY_AMOUNT) { state.amount.value }.also { add(it) }
+        registry
+            .registerProvider(KEY_AMOUNT) { state.amount.saveToRegistry(registry) }
+            .also { add(it) }
 
         registry
             .registerProvider(KEY_CATEGORIES) {
@@ -70,11 +75,22 @@ protected constructor(
       }
 
   final override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_NAME)?.cast<String>()?.also { state.name.value = it }
+    registry
+        .consumeRestored(KEY_NAME)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also { state.name.replaceWith(it) }
 
-    registry.consumeRestored(KEY_NOTE)?.cast<String>()?.also { state.note.value = it }
+    registry
+        .consumeRestored(KEY_NOTE)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also { state.note.replaceWith(it) }
 
-    registry.consumeRestored(KEY_AMOUNT)?.cast<String>()?.also { state.amount.value = it }
+    registry
+        .consumeRestored(KEY_AMOUNT)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also {
+          state.amount.replaceWith(it)
+        }
 
     registry
         .consumeRestored(KEY_CATEGORIES)
@@ -94,20 +110,8 @@ protected constructor(
 
   protected open suspend fun onNewCreated(data: T) {}
 
-  fun handleNameChanged(name: String) {
-    state.name.value = name
-  }
-
-  fun handleNoteChanged(note: String) {
-    state.note.value = note
-  }
-
   fun handleTypeChanged(type: DbTransaction.Type) {
     state.type.value = type
-  }
-
-  fun handleAmountChanged(amount: String) {
-    state.amount.value = amount
   }
 
   fun handleSubmit(
@@ -219,12 +223,12 @@ protected constructor(
     /** Convert a string to a cents amount */
     @JvmStatic
     @CheckResult
-    protected fun String.toCents(orElse: (() -> Long)? = null): Long {
+    protected fun CharSequence.toCents(orElse: (() -> Long)? = null): Long {
       try {
         val plainNumberLike = this.removePrefix("$")
 
         // Guard negative
-        val raw = BigDecimal(plainNumberLike).multiply(ONE_HUNDRED).longValueExact()
+        val raw = BigDecimal(plainNumberLike.toString()).multiply(ONE_HUNDRED).longValueExact()
         if (raw < 0) {
           throw IllegalArgumentException("Amount string cannot be negative: $this => $raw")
         }

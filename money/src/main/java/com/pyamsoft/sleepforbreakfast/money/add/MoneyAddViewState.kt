@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.add
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
@@ -25,20 +26,20 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface MoneyAddViewState : UiViewState {
-  val name: StateFlow<String>
+  val name: TextFieldState
   val categories: StateFlow<List<DbCategory.Id>>
-  val amount: StateFlow<String>
+  val amount: TextFieldState
   val type: StateFlow<DbTransaction.Type>
-  val note: StateFlow<String>
+  val note: TextFieldState
   val working: StateFlow<Boolean>
 }
 
 @Stable
 abstract class MutableMoneyAddViewState protected constructor() : MoneyAddViewState {
-  final override val name = MutableStateFlow("")
+  final override val name = TextFieldState("")
   final override val categories = MutableStateFlow<List<DbCategory.Id>>(emptyList())
-  final override val amount = MutableStateFlow("")
+  final override val amount = TextFieldState("")
   final override val type = MutableStateFlow(DbTransaction.Type.SPEND)
-  final override val note = MutableStateFlow("")
+  final override val note = TextFieldState("")
   final override val working = MutableStateFlow(false)
 }

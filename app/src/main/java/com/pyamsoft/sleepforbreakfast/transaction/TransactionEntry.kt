@@ -123,7 +123,6 @@ internal fun TransactionEntry(
 
         // Search
         onSearchToggled = { viewModel.handleToggleSearch() },
-        onSearchUpdated = { viewModel.handleSearchUpdated(it) },
 
         // Date Range
         onDateRangeToggled = { viewModel.handleToggleDateRange() },

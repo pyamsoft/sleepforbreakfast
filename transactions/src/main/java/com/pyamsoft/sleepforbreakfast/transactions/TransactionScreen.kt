@@ -16,7 +16,6 @@
 
 package com.pyamsoft.sleepforbreakfast.transactions
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
@@ -57,7 +56,6 @@ private enum class ContentTypes {
 private const val FAB_OFFSET_SPACE_SCALAR = 4
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun TransactionScreen(
     modifier: Modifier = Modifier,
     clock: Clock,
@@ -76,7 +74,6 @@ fun TransactionScreen(
 
     // Search
     onSearchToggled: () -> Unit,
-    onSearchUpdated: (String) -> Unit,
 
     // Date Range
     onDateRangeToggled: () -> Unit,
@@ -116,7 +113,6 @@ fun TransactionScreen(
           range = range,
           onDismiss = onDismiss,
           onSearchToggle = onSearchToggled,
-          onSearchChange = onSearchUpdated,
           onDateRangeToggle = onDateRangeToggled,
           onDateRangeChange = onDateRangeUpdated,
       )

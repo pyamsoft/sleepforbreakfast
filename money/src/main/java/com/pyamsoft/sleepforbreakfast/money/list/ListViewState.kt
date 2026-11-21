@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.list
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
@@ -31,7 +32,7 @@ interface ListViewState<T : Any> : UiViewState {
   val recentlyDeleted: StateFlow<T?>
 
   val isSearchOpen: StateFlow<Boolean>
-  val search: StateFlow<String>
+  val search: TextFieldState
 }
 
 abstract class MutableListViewState<T : Any> protected constructor() : ListViewState<T> {
@@ -42,5 +43,5 @@ abstract class MutableListViewState<T : Any> protected constructor() : ListViewS
   final override val recentlyDeleted = MutableStateFlow<T?>(null)
 
   final override val isSearchOpen = MutableStateFlow(false)
-  final override val search = MutableStateFlow("")
+  final override val search = TextFieldState("")
 }

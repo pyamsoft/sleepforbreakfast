@@ -67,9 +67,6 @@ internal fun TransactionAddEntry(
     TransactionAddScreen(
         state = viewModel,
         onDismiss = onDismiss,
-        onNameChanged = { viewModel.handleNameChanged(it) },
-        onNoteChanged = { viewModel.handleNoteChanged(it) },
-        onAmountChanged = { viewModel.handleAmountChanged(it) },
         onTypeChanged = { viewModel.handleTypeChanged(it) },
         onOpenTimeDialog = { viewModel.handleOpenTimeDialog() },
         onCloseTimeDialog = { viewModel.handleCloseTimeDialog() },

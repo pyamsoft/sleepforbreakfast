@@ -29,7 +29,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -70,12 +69,9 @@ private enum class ContentTypes {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun CategoryAddScreen(
     modifier: Modifier = Modifier,
     state: CategoryAddViewState,
-    onNameChanged: (String) -> Unit,
-    onNoteChanged: (String) -> Unit,
     onColorChanged: (Color) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
@@ -83,8 +79,8 @@ fun CategoryAddScreen(
     onOpenColorPicker: () -> Unit,
     onCloseColorPicker: () -> Unit,
 ) {
-  val name by state.name.collectAsStateWithLifecycle()
-  val note by state.note.collectAsStateWithLifecycle()
+  val name = state.name
+  val note = state.note
   val working by state.working.collectAsStateWithLifecycle()
 
   val showColorPicker by state.showColorPicker.collectAsStateWithLifecycle()
@@ -135,9 +131,8 @@ fun CategoryAddScreen(
           ) {
             AddName(
                 modifier = Modifier.weight(1F),
-                name = name,
+                state = name,
                 keyboardTextOptions = keyboardTextOptions,
-                onNameChanged = onNameChanged,
             )
 
             CategoryColor(
@@ -155,8 +150,7 @@ fun CategoryAddScreen(
         ) {
           AddNote(
               modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-              note = note,
-              onNoteChanged = onNoteChanged,
+              state = note,
               label = {
                 Text(
                     text = "Note about this Category",
@@ -188,7 +182,6 @@ fun CategoryAddScreen(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ColorPickerDialog(
     modifier: Modifier = Modifier,
     onColorChanged: (Color) -> Unit,

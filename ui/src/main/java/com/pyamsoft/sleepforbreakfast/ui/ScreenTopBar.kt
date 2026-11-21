@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun ScreenTopBar(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,

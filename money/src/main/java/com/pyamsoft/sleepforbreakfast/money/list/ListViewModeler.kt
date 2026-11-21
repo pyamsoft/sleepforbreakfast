@@ -17,7 +17,9 @@
 package com.pyamsoft.sleepforbreakfast.money.list
 
 import androidx.annotation.CheckResult
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import androidx.compose.runtime.snapshotFlow
 import com.pyamsoft.pydroid.arch.AbstractViewModeler
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.ThreadEnforcer
@@ -27,6 +29,8 @@ import com.pyamsoft.pydroid.util.ResultWrapper
 import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.ui.LoadingState
+import com.pyamsoft.sleepforbreakfast.ui.text.replaceWith
+import com.pyamsoft.sleepforbreakfast.ui.text.saveToRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,7 +53,11 @@ protected constructor(
 
   private fun listenForItems(scope: CoroutineScope) {
     interactor.listenForItemChanges().also { f ->
-      scope.launch(context = dispatchers.default) { f.collect { onItemRealtimeEvent(it) } }
+      scope.launch(context = dispatchers.default) {
+        f.collect {
+          scope.onItemRealtimeEvent(it)
+        }
+      }
     }
   }
 
@@ -64,14 +72,19 @@ protected constructor(
       registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry.registerProvider(KEY_SEARCH) { state.search.value }.also { add(it) }
+        registry
+            .registerProvider(KEY_SEARCH) { state.search.saveToRegistry(registry) }
+            .also { add(it) }
         registry.registerProvider(KEY_IS_SEARCH_OPEN) { state.isSearchOpen.value }.also { add(it) }
 
         onRegisterSaveState(registry)
       }
 
   final override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_SEARCH)?.cast<String>()?.also { state.search.value = it }
+    registry
+        .consumeRestored(KEY_SEARCH)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also { state.search.replaceWith(it) }
 
     registry.consumeRestored(KEY_IS_SEARCH_OPEN)?.cast<Boolean>()?.also {
       state.isSearchOpen.value = it
@@ -90,10 +103,12 @@ protected constructor(
       allItems: StateFlow<List<T>>,
   ) {
     // Create a source that generates data based on the latest from all sources
+    val searchFlow = snapshotFlow { state.search.text }
+
     val combined =
         combineTransform(
                 allItems,
-                state.search,
+                searchFlow,
             ) { all, search ->
               enforcer.assertOffMainThread()
 
@@ -220,10 +235,6 @@ protected constructor(
     state.isSearchOpen.update { !it }
   }
 
-  fun handleSearchUpdated(search: String) {
-    state.search.value = search
-  }
-
   protected abstract fun CoroutineScope.onItemRealtimeEvent(event: CE)
 
   @CheckResult protected abstract fun isEqual(o1: T, o2: T): Boolean
@@ -231,7 +242,7 @@ protected constructor(
   @CheckResult
   protected abstract fun isMatchingSearch(
       item: T,
-      search: String,
+      search: CharSequence,
   ): Boolean
 
   @CheckResult protected abstract fun List<T>.sort(): List<T>
@@ -244,7 +255,7 @@ protected constructor(
 
   private data class ItemPayload<T : Any>(
       val items: List<T>,
-      val search: String,
+      val search: CharSequence,
   )
 
   companion object {

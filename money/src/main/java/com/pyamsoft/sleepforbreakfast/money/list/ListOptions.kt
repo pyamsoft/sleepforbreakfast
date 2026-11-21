@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.sleepforbreakfast.ui.debouncedOnTextChange
 import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 import kotlinx.coroutines.flow.filter
 
@@ -180,8 +180,9 @@ fun Search(
     state: ListViewState<*>,
     onToggle: () -> Unit,
 ) {
-  val search by state.search.collectAsStateWithLifecycle()
-  val showUsage = remember(search) { search.isNotBlank() }
+  val search = state.search
+  val searchText = search.text
+  val showUsage = remember(searchText) { searchText.isNotBlank() }
 
   ToggleIcon(
       modifier = modifier,
@@ -201,15 +202,11 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     state: ListViewState<*>,
     onToggle: () -> Unit,
-    onChange: (String) -> Unit,
     leadingIcon: @Composable () -> Unit = {},
     trailingIcon: @Composable () -> Unit = {},
 ) {
-  val initialSearch by state.search.collectAsStateWithLifecycle()
+  val search = state.search
   val isOpen by state.isSearchOpen.collectAsStateWithLifecycle()
-
-  // Do this so that we can debounce typing events
-  val (search, setSearch) = debouncedOnTextChange(initialSearch, onChange)
 
   KnobBar(
       modifier = modifier,
@@ -218,8 +215,7 @@ fun SearchBar(
   ) {
     TextField(
         modifier = Modifier.weight(1F),
-        value = search,
-        onValueChange = { setSearch(it) },
+        state = search,
         keyboardOptions =
             remember { KeyboardOptions(autoCorrectEnabled = true, imeAction = ImeAction.Search) },
         leadingIcon = {
@@ -234,7 +230,7 @@ fun SearchBar(
               verticalAlignment = Alignment.CenterVertically,
           ) {
             Icon(
-                modifier = Modifier.clickable { setSearch("") },
+                modifier = Modifier.clickable { search.setTextAndPlaceCursorAtEnd("") },
                 painter = IconPainters.cancel(),
                 contentDescription = "Clear",
             )

@@ -31,6 +31,7 @@ android {
   namespace = "com.pyamsoft.sleepforbreakfast"
 
   compileSdk = libs.versions.compileSdk.get().toInt()
+  compileSdkMinor = libs.versions.compileSdkMinor.get().toInt()
 
   defaultConfig {
     applicationId = "com.pyamsoft.sleepforbreakfast"

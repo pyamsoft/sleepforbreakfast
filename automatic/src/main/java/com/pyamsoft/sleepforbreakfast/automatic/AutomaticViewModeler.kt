@@ -101,7 +101,7 @@ internal constructor(
     }
   }
 
-  override fun isMatchingSearch(item: DbNotificationWithRegexes, search: String): Boolean {
+  override fun isMatchingSearch(item: DbNotificationWithRegexes, search: CharSequence): Boolean {
     return item.notification.name.contains(search, ignoreCase = true)
   }
 

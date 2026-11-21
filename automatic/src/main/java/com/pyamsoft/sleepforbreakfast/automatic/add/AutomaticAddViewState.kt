@@ -16,6 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.automatic.add
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Stable
 import com.pyamsoft.pydroid.arch.UiViewState
 import com.pyamsoft.sleepforbreakfast.db.notification.DbNotificationWithRegexes
@@ -26,7 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Stable
 interface AutomaticAddViewState : UiViewState {
-  val name: StateFlow<String>
+  val name: TextFieldState
   val type: StateFlow<DbTransaction.Type>
   val enabled: StateFlow<Boolean>
 
@@ -43,7 +44,7 @@ interface AutomaticAddViewState : UiViewState {
 
 @Stable
 class MutableAutomaticAddViewState @Inject internal constructor() : AutomaticAddViewState {
-  override val name = MutableStateFlow("")
+  override val name = TextFieldState("")
   override val type = MutableStateFlow(DbTransaction.Type.SPEND)
   override val enabled = MutableStateFlow(true)
 

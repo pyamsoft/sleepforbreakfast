@@ -17,6 +17,8 @@
 package com.pyamsoft.sleepforbreakfast.category.add
 
 import androidx.annotation.CheckResult
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
@@ -27,11 +29,13 @@ import com.pyamsoft.sleepforbreakfast.core.Timber
 import com.pyamsoft.sleepforbreakfast.db.DbInsert
 import com.pyamsoft.sleepforbreakfast.db.category.DbCategory
 import com.pyamsoft.sleepforbreakfast.money.one.OneViewModeler
-import java.time.Clock
-import javax.inject.Inject
+import com.pyamsoft.sleepforbreakfast.ui.text.replaceWith
+import com.pyamsoft.sleepforbreakfast.ui.text.saveToRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Clock
+import javax.inject.Inject
 
 @LintIgnoreTooManyFunctions
 class CategoryAddViewModeler
@@ -56,17 +60,20 @@ internal constructor(
   @CheckResult
   private fun compile(): DbCategory {
     val category = state.existingCategory.value ?: DbCategory.create(clock, initialId)
-    return category.name(state.name.value).note(state.note.value).color(state.color.value)
+    return category
+        .name(state.name.text.toString())
+        .note(state.note.text.toString())
+        .color(state.color.value)
   }
 
   private fun resetData(s: DbCategory? = null) {
     if (s == null) {
-      handleNameChanged("")
-      handleNoteChanged("")
+      state.name.setTextAndPlaceCursorAtEnd("")
+      state.note.setTextAndPlaceCursorAtEnd("")
       handleColorChanged(defaultColor)
     } else {
-      handleNameChanged(s.name)
-      handleNoteChanged(s.note)
+      state.name.setTextAndPlaceCursorAtEnd(s.name)
+      state.note.setTextAndPlaceCursorAtEnd(s.note)
       handleColorChanged(s.color)
     }
 
@@ -92,8 +99,8 @@ internal constructor(
       registry: SaveableStateRegistry,
   ): List<SaveableStateRegistry.Entry> =
       mutableListOf<SaveableStateRegistry.Entry>().apply {
-        registry.registerProvider(KEY_NAME) { state.name.value }.also { add(it) }
-        registry.registerProvider(KEY_NOTE) { state.note.value }.also { add(it) }
+        registry.registerProvider(KEY_NAME) { state.name.saveToRegistry(registry) }.also { add(it) }
+        registry.registerProvider(KEY_NOTE) { state.note.saveToRegistry(registry) }.also { add(it) }
         registry.registerProvider(KEY_COLOR) { state.color.value }.also { add(it) }
 
         registry
@@ -102,9 +109,15 @@ internal constructor(
       }
 
   override fun consumeRestoredState(registry: SaveableStateRegistry) {
-    registry.consumeRestored(KEY_NAME)?.cast<String>()?.also { handleNameChanged(it) }
+    registry
+        .consumeRestored(KEY_NAME)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also { state.name.replaceWith(it) }
 
-    registry.consumeRestored(KEY_NOTE)?.cast<String>()?.also { handleNoteChanged(it) }
+    registry
+        .consumeRestored(KEY_NOTE)
+        ?.let { TextFieldState.Saver.restore(it) }
+        ?.also { state.note.replaceWith(it) }
 
     registry.consumeRestored(KEY_COLOR)?.cast<Long>()?.also { handleColorChanged(it) }
 
@@ -119,14 +132,6 @@ internal constructor(
 
   fun handleReset() {
     resetData(state.existingCategory.value)
-  }
-
-  fun handleNameChanged(name: String) {
-    state.name.value = name
-  }
-
-  fun handleNoteChanged(note: String) {
-    state.note.value = note
   }
 
   fun handleColorChanged(color: Long) {

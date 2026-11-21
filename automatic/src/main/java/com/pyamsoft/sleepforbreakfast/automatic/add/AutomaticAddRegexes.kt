@@ -24,12 +24,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -52,15 +57,15 @@ private enum class RegexMatch {
 
 @CheckResult
 private fun matchRegex(
-    pattern: String,
-    testText: String,
+    pattern: CharSequence,
+    testText: CharSequence,
 ): RegexMatch {
   if (testText.isBlank() || pattern.isBlank()) {
     return RegexMatch.NONE
   }
 
   return try {
-    val matches = Regex(pattern, RegexOption.MULTILINE).containsMatchIn(testText)
+    val matches = Regex(pattern.toString(), RegexOption.MULTILINE).containsMatchIn(testText)
     if (matches) RegexMatch.PASS else RegexMatch.FAIL
   } catch (e: PatternSyntaxException) {
     Timber.e(e) { "Invalid regex pattern: $pattern" }
@@ -71,8 +76,7 @@ private fun matchRegex(
 @Composable
 internal fun AutomaticAddRegexTestField(
     modifier: Modifier = Modifier,
-    testText: String,
-    onTestTextChanged: (String) -> Unit,
+    testText: TextFieldState,
 ) {
   Column(
       modifier = modifier,
@@ -86,8 +90,7 @@ internal fun AutomaticAddRegexTestField(
     )
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = testText,
-        onValueChange = onTestTextChanged,
+        state = testText,
         label = {
           Text(
               text = "Sample Notification Text",
@@ -106,7 +109,7 @@ internal fun AutomaticAddRegexTestField(
 internal fun AutomaticAddRegexRow(
     modifier: Modifier = Modifier,
     regex: AutomaticAddViewState.BuildMatchRegex,
-    testText: String,
+    testText: CharSequence,
     onRegexChanged: (AutomaticAddViewState.BuildMatchRegex) -> Unit,
 ) {
   val matches = remember(regex.text, testText) { matchRegex(regex.text, testText) }
@@ -128,6 +131,15 @@ internal fun AutomaticAddRegexRow(
         }
       }
 
+  val regexState = rememberTextFieldState(regex.text)
+  val regexText = regexState.text
+
+  val handleRegexChanged by rememberUpdatedState(onRegexChanged)
+  val updatedRegex by rememberUpdatedState(regex)
+  LaunchedEffect(regexText) {
+    handleRegexChanged(updatedRegex.copy(text = regexText.toString()))
+  }
+
   Row(
       modifier = modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically,
@@ -140,11 +152,7 @@ internal fun AutomaticAddRegexRow(
                     color = statusColor,
                     shape = MaterialTheme.shapes.small,
                 ),
-        value = regex.text,
-        onValueChange = { v ->
-          val changed = regex.copy(text = v)
-          onRegexChanged(changed)
-        },
+        state = regexState,
         label = {
           Text(
               // TODO language res file

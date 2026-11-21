@@ -65,7 +65,6 @@ internal fun CategoryEntry(
       state = viewModel,
       onBack = onDismiss,
       onSearchToggled = { viewModel.handleToggleSearch() },
-      onSearchUpdated = { viewModel.handleSearchUpdated(it) },
       onActionButtonClicked = { viewModel.handleAddNewCategory() },
       onCategoryClicked = { viewModel.handleEditCategory(it) },
       onCategoryLongClicked = { viewModel.handleDeleteCategory(it) },

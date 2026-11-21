@@ -17,6 +17,7 @@
 package com.pyamsoft.sleepforbreakfast.transactions.add
 
 import androidx.annotation.CheckResult
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.saveable.SaveableStateRegistry
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.cast
@@ -116,13 +117,13 @@ internal constructor(
   override suspend fun compile(): DbTransaction {
     val transaction = state.existingTransaction.value ?: DbTransaction.create(clock, initialId)
     return transaction
-        .name(state.name.value)
+        .name(state.name.text.toString())
+        .note(state.note.text.toString())
         .date(state.date.value)
-        .note(state.note.value)
         .type(state.type.value)
         .replaceCategories(getOnlyExistingCategories())
         // This will throw if toCents() fails, and will be caught by the caller
-        .amountInCents(state.amount.value.toCents())
+        .amountInCents(state.amount.text.toCents())
   }
 
   override fun isIdEmpty(id: DbTransaction.Id): Boolean {
@@ -180,22 +181,22 @@ internal constructor(
   override fun handleReset() {
     val source = state.existingTransaction.value
     if (source == null) {
-      state.name.value = ""
-      state.note.value = ""
+      state.name.setTextAndPlaceCursorAtEnd("")
+      state.note.setTextAndPlaceCursorAtEnd("")
       state.type.value = DbTransaction.Type.SPEND
-      state.amount.value = ""
+      state.amount.setTextAndPlaceCursorAtEnd("")
 
       state.categories.value = emptyList()
 
       state.date.value = LocalDateTime.now(clock)
     } else {
-      state.name.value = source.name
-      state.note.value = source.note
+      state.name.setTextAndPlaceCursorAtEnd(source.name)
+      state.note.setTextAndPlaceCursorAtEnd(source.note)
       state.type.value = source.type
       state.categories.value = source.categories
 
       // If toAmount() fails, fallback to empty string
-      state.amount.value = source.amountInCents.toAmount { "" }
+      state.amount.setTextAndPlaceCursorAtEnd(source.amountInCents.toAmount { "" })
 
       state.date.value = source.date
     }

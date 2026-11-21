@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -76,13 +75,9 @@ private enum class AddContentTypes {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun TransactionAddScreen(
     modifier: Modifier = Modifier,
     state: TransactionAddViewState,
-    onNameChanged: (String) -> Unit,
-    onNoteChanged: (String) -> Unit,
-    onAmountChanged: (String) -> Unit,
     onTypeChanged: (DbTransaction.Type) -> Unit,
     onDateChanged: (LocalDate) -> Unit,
     onOpenDateDialog: () -> Unit,
@@ -148,7 +143,6 @@ fun TransactionAddScreen(
             modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
             state = state,
             keyboardTextOptions = keyboardTextOptions,
-            onNameChanged = onNameChanged,
         )
       }
 
@@ -166,7 +160,6 @@ fun TransactionAddScreen(
               modifier = Modifier.weight(1F),
               state = state,
               keyboardNumberOptions = keyboardNumberOptions,
-              onAmountChanged = onAmountChanged,
           )
 
           MoneyTypes(
@@ -186,7 +179,6 @@ fun TransactionAddScreen(
                     .padding(horizontal = MaterialTheme.keylines.content)
                     .padding(bottom = MaterialTheme.keylines.content),
             state = state,
-            onNoteChanged = onNoteChanged,
             label = {
               Text(
                   text = "Note about this Transaction",

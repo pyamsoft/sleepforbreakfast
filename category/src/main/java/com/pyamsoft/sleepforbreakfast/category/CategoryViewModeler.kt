@@ -100,7 +100,7 @@ internal constructor(
     }
   }
 
-  override fun isMatchingSearch(item: DbCategory, search: String): Boolean {
+  override fun isMatchingSearch(item: DbCategory, search: CharSequence): Boolean {
     return item.name.contains(search, ignoreCase = true)
   }
 

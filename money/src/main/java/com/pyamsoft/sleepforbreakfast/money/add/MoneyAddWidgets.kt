@@ -24,7 +24,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -35,6 +34,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldBuffer
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,6 +51,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldLabelScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -83,14 +87,53 @@ import java.time.LocalTime
 // This is basically longer than any expected money amount.
 private const val MAX_ALLOWED_AMOUNT_LENGTH = 18
 
+private val WHITESPACE_REGEX = Regex("\\s")
+private val INVALID_CHAR_REGEX = Regex("[,\\-/_]")
+
+private object AmountInputTransformation : InputTransformation {
+  override fun TextFieldBuffer.transformInput() {
+    val self = this
+    val proposed = self.asCharSequence()
+
+    // No long strings
+    if (proposed.length >= MAX_ALLOWED_AMOUNT_LENGTH) {
+      revertAllChanges()
+      return
+    }
+
+    // No white space
+    if (proposed.contains(WHITESPACE_REGEX)) {
+      revertAllChanges()
+      return
+    }
+
+    // Also don't allow other characters
+    if (proposed.contains(INVALID_CHAR_REGEX)) {
+      revertAllChanges()
+      return
+    }
+
+    // Can't start with decimal
+    if (proposed.startsWith('.')) {
+      revertAllChanges()
+      return
+    }
+
+    // No double decimals
+    if (proposed.count { it == '.' } >= 2) {
+      revertAllChanges()
+      return
+    }
+  }
+}
+
 @Composable
 fun MoneyAmount(
     modifier: Modifier = Modifier,
     state: MoneyAddViewState,
     keyboardNumberOptions: KeyboardOptions,
-    onAmountChanged: (String) -> Unit,
 ) {
-  val amount by state.amount.collectAsStateWithLifecycle()
+  val amount = state.amount
 
   Row(
       modifier = modifier,
@@ -98,36 +141,9 @@ fun MoneyAmount(
   ) {
     TextField(
         modifier = Modifier.weight(1F),
-        value = amount,
-        onValueChange = { v ->
-          // No long strings
-          if (v.length >= MAX_ALLOWED_AMOUNT_LENGTH) {
-            return@TextField
-          }
-
-          // No white space
-          if (v.contains(Regex("\\s"))) {
-            return@TextField
-          }
-
-          // Also don't allow other characters
-          if (v.contains(Regex("[,\\-/_]"))) {
-            return@TextField
-          }
-
-          // Can't start with decimal
-          if (v.startsWith('.')) {
-            return@TextField
-          }
-
-          // No double decimals
-          if (v.count { it == '.' } >= 2) {
-            return@TextField
-          }
-
-          onAmountChanged(v)
-        },
+        state = amount,
         keyboardOptions = keyboardNumberOptions,
+        inputTransformation = AmountInputTransformation,
         leadingIcon = {
           Icon(
               painter = IconPainters.attachMoney(),
@@ -353,29 +369,23 @@ fun MoneyName(
     modifier: Modifier = Modifier,
     state: MoneyAddViewState,
     keyboardTextOptions: KeyboardOptions,
-    onNameChanged: (String) -> Unit,
 ) {
-  val name by state.name.collectAsStateWithLifecycle()
-
   AddName(
       modifier = modifier,
-      name = name,
+      state = state.name,
       keyboardTextOptions = keyboardTextOptions,
-      onNameChanged = onNameChanged,
   )
 }
 
 @Composable
 fun AddName(
     modifier: Modifier = Modifier,
-    name: String,
+    state: TextFieldState,
     keyboardTextOptions: KeyboardOptions,
-    onNameChanged: (String) -> Unit,
 ) {
   TextField(
       modifier = modifier,
-      value = name,
-      onValueChange = onNameChanged,
+      state = state,
       keyboardOptions = keyboardTextOptions,
       label = {
         Text(
@@ -394,14 +404,12 @@ fun AddName(
 fun MoneyNote(
     modifier: Modifier = Modifier,
     state: MoneyAddViewState,
-    onNoteChanged: (String) -> Unit,
-    label: (@Composable () -> Unit)? = null,
+    label: (@Composable TextFieldLabelScope.() -> Unit)? = null,
 ) {
-  val note by state.note.collectAsStateWithLifecycle()
+  val note = state.note
   AddNote(
       modifier = modifier,
-      note = note,
-      onNoteChanged = onNoteChanged,
+      state = note,
       label = label,
   )
 }
@@ -409,15 +417,13 @@ fun MoneyNote(
 @Composable
 fun AddNote(
     modifier: Modifier = Modifier,
-    note: String,
-    onNoteChanged: (String) -> Unit,
-    label: (@Composable () -> Unit)? = null,
+    state: TextFieldState,
+    label: (@Composable TextFieldLabelScope.() -> Unit)? = null,
 ) {
   TextField(
       modifier = modifier,
-      value = note,
-      onValueChange = onNoteChanged,
-      maxLines = 4,
+      state = state,
+      lineLimits = TextFieldLineLimits.MultiLine(4),
       label = label,
       colors = TextFieldDefaults.colors(),
   )
@@ -498,7 +504,6 @@ fun MoneyCategories(
 }
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class)
 fun AddCategories(
     modifier: Modifier = Modifier,
     canAdd: Boolean,

@@ -18,6 +18,7 @@ package com.pyamsoft.sleepforbreakfast.transactions
 
 import androidx.annotation.CheckResult
 import androidx.compose.runtime.saveable.SaveableStateRegistry
+import androidx.compose.runtime.snapshotFlow
 import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.core.ThreadEnforcer
@@ -128,7 +129,7 @@ internal constructor(
     }
   }
 
-  override fun isMatchingSearch(item: DbTransaction, search: String): Boolean {
+  override fun isMatchingSearch(item: DbTransaction, search: CharSequence): Boolean {
     return item.name.contains(search, ignoreCase = true)
   }
 
@@ -178,24 +179,27 @@ internal constructor(
   }
 
   @CheckResult
-  private fun Sequence<DbTransaction>.filterBySearch(search: String): Sequence<DbTransaction> =
-      filter { t ->
-        if (search.isBlank()) {
-          return@filter true
-        }
+  private fun Sequence<DbTransaction>.filterBySearch(
+      search: CharSequence,
+  ): Sequence<DbTransaction> = filter { t ->
+    if (search.isBlank()) {
+      return@filter true
+    }
 
-        return@filter isMatchingSearch(t, search)
-      }
+    return@filter isMatchingSearch(t, search)
+  }
 
   override fun onGenerateItemsBasedOnAllItems(
       scope: CoroutineScope,
       allItems: StateFlow<List<DbTransaction>>,
   ) {
     // Create a source that generates data based on the latest from all sources
+    val searchFlow = snapshotFlow { state.search.text }
+
     val combined =
         combineTransform(
                 allItems,
-                state.search,
+                searchFlow,
                 state.dateRange,
             ) { all, search, dateRange ->
               enforcer.assertOffMainThread()
@@ -280,7 +284,7 @@ internal constructor(
 
   private data class ItemPayload(
       val transactions: List<DbTransaction>,
-      val search: String,
+      val search: CharSequence,
       val dateRange: TransactionDateRange?,
   )
 

@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -33,10 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,22 +53,20 @@ private enum class ContentTypes {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun AutomaticAddScreen(
     modifier: Modifier = Modifier,
     state: AutomaticAddViewState,
     isEditMode: Boolean,
-    onNameChanged: (String) -> Unit,
     onRegexChanged: (AutomaticAddViewState.BuildMatchRegex) -> Unit,
     onReset: () -> Unit,
     onSubmit: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-  val name by state.name.collectAsStateWithLifecycle()
+  val name = state.name
   val working by state.working.collectAsStateWithLifecycle()
   val workingRegexes by state.workingRegexes.collectAsStateWithLifecycle()
 
-  var testText by rememberSaveable { mutableStateOf("") }
+  val testText = rememberTextFieldState()
 
   val keyboardTextOptions = remember {
     KeyboardOptions(
@@ -122,9 +117,8 @@ fun AutomaticAddScreen(
           ) {
             AddName(
                 modifier = Modifier.weight(1F),
-                name = name,
+                state = name,
                 keyboardTextOptions = keyboardTextOptions,
-                onNameChanged = onNameChanged,
             )
           }
         }
@@ -139,7 +133,6 @@ fun AutomaticAddScreen(
                         .padding(horizontal = MaterialTheme.keylines.content)
                         .padding(bottom = MaterialTheme.keylines.content),
                 testText = testText,
-                onTestTextChanged = { testText = it },
             )
           }
 
@@ -154,7 +147,7 @@ fun AutomaticAddScreen(
                         .padding(horizontal = MaterialTheme.keylines.content)
                         .padding(bottom = MaterialTheme.keylines.content),
                 regex = regex,
-                testText = testText,
+                testText = testText.text,
                 onRegexChanged = onRegexChanged,
             )
           }

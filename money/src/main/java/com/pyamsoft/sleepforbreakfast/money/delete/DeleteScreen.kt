@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -41,7 +40,6 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.sleepforbreakfast.ui.icons.IconPainters
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun <T : Any> DeleteScreen(
     modifier: Modifier = Modifier,
     state: DeleteViewState<T>,

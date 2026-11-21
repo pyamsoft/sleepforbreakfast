@@ -70,7 +70,6 @@ internal fun TransactionTotal(
 
     // Search
     onSearchToggle: () -> Unit,
-    onSearchChange: (String) -> Unit,
 
     // Date Range
     onDateRangeToggle: () -> Unit,
@@ -106,7 +105,6 @@ internal fun TransactionTotal(
     SearchBar(
         state = state,
         onToggle = onSearchToggle,
-        onChange = onSearchChange,
     )
 
     DateRangeBar(

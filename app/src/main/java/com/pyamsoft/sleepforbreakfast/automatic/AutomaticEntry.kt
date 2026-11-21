@@ -70,7 +70,6 @@ internal fun AutomaticEntry(
       state = viewModel,
       onBack = onDismiss,
       onSearchToggled = { viewModel.handleToggleSearch() },
-      onSearchUpdated = { viewModel.handleSearchUpdated(it) },
       onActionButtonClicked = { viewModel.handleAddNewAutomatic() },
       onAutomaticClicked = { viewModel.handleEditAutomatic(it) },
       onAutomaticLongClicked = { viewModel.handleDeleteAutomatic(it) },
