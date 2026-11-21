@@ -16,7 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.home
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.CapturedAnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -114,7 +114,7 @@ internal fun HomeOptions(
                 ),
         )
 
-        AnimatedVisibility(visible = isExpanded) {
+        CapturedAnimatedVisibility(visible = isExpanded) {
           Column(modifier = Modifier.padding(vertical = MaterialTheme.keylines.baseline)) {
             @LintIgnoreMaxLineLength
             Text(

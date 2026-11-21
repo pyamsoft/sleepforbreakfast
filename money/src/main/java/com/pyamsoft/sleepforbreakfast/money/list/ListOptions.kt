@@ -16,7 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.money.list
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.CapturedAnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -62,7 +62,7 @@ private fun UsageIndicator(
     modifier: Modifier = Modifier,
     show: Boolean,
 ) {
-  AnimatedVisibility(
+  CapturedAnimatedVisibility(
       visible = show,
       enter = scaleIn(),
       exit = scaleOut(),
@@ -91,7 +91,7 @@ fun KnobBar(
     onToggle: () -> Unit,
     content: @Composable RowScope.() -> Unit,
 ) {
-  AnimatedVisibility(
+  CapturedAnimatedVisibility(
       visible = isOpen,
       enter = fadeIn() + slideInHorizontally(),
       exit = fadeOut() + slideOutHorizontally(),

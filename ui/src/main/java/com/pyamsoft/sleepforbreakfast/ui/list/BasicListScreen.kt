@@ -16,7 +16,7 @@
 
 package com.pyamsoft.sleepforbreakfast.ui.list
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.CapturedAnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -118,7 +118,7 @@ private fun AnimatedFab(
     show: Boolean,
     onClick: () -> Unit,
 ) {
-  AnimatedVisibility(
+  CapturedAnimatedVisibility(
       visible = show,
       enter = scaleIn(),
       exit = scaleOut(),
