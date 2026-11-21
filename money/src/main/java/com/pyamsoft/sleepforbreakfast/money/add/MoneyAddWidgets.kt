@@ -423,7 +423,7 @@ fun AddNote(
   TextField(
       modifier = modifier,
       state = state,
-      lineLimits = TextFieldLineLimits.MultiLine(4),
+      lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 4),
       label = label,
       colors = TextFieldDefaults.colors(),
   )
